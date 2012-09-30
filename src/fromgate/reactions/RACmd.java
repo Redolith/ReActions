@@ -51,15 +51,32 @@ public class RACmd implements CommandExecutor{
 		if (cmd.equalsIgnoreCase("help")){
 			u.PrintHLP(p);
 			return true;
+		} else if (cmd.equalsIgnoreCase("debug")){
+			plg.debug.offPlayerDebug(p);
+			u.PrintMSG(p, "cmd_debugoff");
+			return true;
+		} else if (cmd.equalsIgnoreCase("list")){
+			u.PrintMSG(p,"msg_listcount",plg.clickers.size()+";"+plg.tports.size());
+			return true;
 		}
-
-
 		return false;
 	}
 
 	public boolean ExecuteCmd (Player p, String cmd, String arg){
 		if (cmd.equalsIgnoreCase("help")){
 			u.PrintHLP(p,arg);
+			return true;
+		} else if (cmd.equalsIgnoreCase("debug")){
+			if (arg.equalsIgnoreCase("false")) {
+				plg.debug.setPlayerDebug(p, false);
+				u.PrintMSG(p, "cmd_debugtrue");
+			} else if (arg.equalsIgnoreCase("true")) {
+				plg.debug.setPlayerDebug(p, true);
+				u.PrintMSG(p, "cmd_debugfalse");
+			} else {
+				plg.debug.offPlayerDebug(p);
+				u.PrintMSG(p, "cmd_debugoff");
+			}
 			return true;
 		} else if (cmd.equalsIgnoreCase("edit")){
 			if (plg.clickers.containsKey(arg)){

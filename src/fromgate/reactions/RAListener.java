@@ -8,6 +8,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.material.Button;
 
 
@@ -33,6 +34,12 @@ public class RAListener implements Listener{
 						plg.executeClicker(event.getPlayer(), plg.clickers.get(clicker));
 			}
 		}
+	}
+	
+	
+	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = false)
+	public void onPlayerJoin (PlayerJoinEvent event){
+		plg.debug.offPlayerDebug(event.getPlayer());
 	}
 }
 

@@ -1,7 +1,6 @@
 package fromgate.reactions;
 
 
-import net.minecraft.server.NBTBase;
 import net.minecraft.server.NBTTagCompound;
 import net.minecraft.server.NBTTagList;
 import net.minecraft.server.NBTTagString;

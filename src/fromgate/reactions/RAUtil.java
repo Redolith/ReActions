@@ -82,10 +82,11 @@ public class RAUtil extends FGUtilCore {
 		cmds.clear();
 		cmdlist = "";
 		AddCmd("help", "config",MSG("cmd_help","&3/react help [command]",'b'));
-		AddCmd("add", "config",MSG("cmd_check","&3/react add [b <id>|loc <id>|<id> f <flag> <param>|<id> r <action> <param>|<id> r <reaction> <param>>",'b'));
+		AddCmd("add", "config",MSG("cmd_add","&3/react add [b <id>|loc <id>|<id> f <flag> <param>|<id> r <action> <param>|<id> r <reaction> <param>",'b'));
 		AddCmd("list", "config",MSG("cmd_list","&3/react list [loc|b]",'b'));
 		AddCmd("remove", "config",MSG("cmd_remove","&3/react remove [loc|b] <id>",'b'));
 		AddCmd("clear", "config",MSG("cmd_clear","&3/react clear <id> [f|a|r]",'b'));
+		AddCmd("debug", "config",MSG("cmd_debug","&3/react debug [true|false|off]",'b'));
 		//AddCmd("edit", "config",MSG("cmd_edit","&3/react edit <id>",'b'));
 	
 	}
@@ -105,6 +106,17 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("cmd_flagnotadded", "Flag was not added: %1%");
 		addMSG ("cmd_unknownbutton", "Button %1% is not found");
 		addMSG ("loc_unknown", "Unknown location");
+		addMSG ("cmd_add", "%1% - main command to add new triggers, locations, add flags, actions and reactions to current triggers");
+		addMSG ("cmd_list", "%1% - list all triggers or locations");
+		addMSG ("cmd_remove", "%1% - remove stored trigger or location");
+		addMSG ("cmd_clear", "%1% - clear flags/actions/reactions bounded with trigger with defined id");
+		addMSG ("cmd_debug", "%1% - switches debug mode (all checks - true, all checks - false, disabled)");
+		addMSG ("cmd_debugtrue", "Debug mode enabled (always - true)");
+		addMSG ("cmd_debugfalse", "Debug mode enabled (always - false)");
+		addMSG ("cmd_debugoff", "Debug mode disabled");
+		
+		
+		
 		//tp,grpadd,grprmv,msg,dmg,townset,townkick,itemrmv,itemgive,cmdplr,cmdsrv,moneypay,moneygive
 		addMSG ("act_tp", "You was teleported to %1%");
 		addMSG ("act_grpadd", "You were added to group %1%");

@@ -60,6 +60,7 @@ public class ReActions extends JavaPlugin {
 
 	HashMap<String,Clicker> clickers = new HashMap<String,Clicker>();
 	HashMap<String,RALoc> tports = new HashMap<String,RALoc>();
+	RADebug debug = new RADebug();
 
 
 
@@ -115,11 +116,17 @@ public class ReActions extends JavaPlugin {
 	}
 	
 	public boolean checkFlags (Player p, Clicker c){
+		return debug.checkFlagAndDebug(p, checkAllFlags (p, c));
+	}
+	
+	
+	public boolean checkAllFlags (Player p, Clicker c){
 		if (c.flags.size()>0)
 			for (String flag : c.flags.keySet())
 				if (!checkFlag (p, flag, c.flags.get(flag))) return false;
 		return true;
 	}
+
 
 	public void performActions (Player p, boolean action, Clicker c){
 		if (action&&(c.actions.size()>0))
