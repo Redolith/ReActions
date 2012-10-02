@@ -1,6 +1,7 @@
 package fromgate.reactions;
 
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -58,6 +59,23 @@ public class RACmd implements CommandExecutor{
 		} else if (cmd.equalsIgnoreCase("list")){
 			u.PrintMSG(p,"msg_listcount",plg.clickers.size()+";"+plg.tports.size());
 			return true;
+
+		} else if (cmd.equalsIgnoreCase("check")){
+			int radius = 8;
+			World w = p.getWorld();
+			int count = 0;
+			for (int ix = p.getLocation().getBlockX()-radius; ix<=p.getLocation().getBlockX()+radius;ix++)
+				for (int iy = p.getLocation().getBlockY()-radius; iy<=p.getLocation().getBlockY()+radius;iy++)
+					for (int iz = p.getLocation().getBlockZ()-radius; iz<=p.getLocation().getBlockZ()+radius;iz++)
+						for (String clicker : plg.clickers.keySet()){
+							Clicker c = plg.clickers.get(clicker);
+							if (c.equalWXYZ(w, ix, iy, iz)){
+								count++;
+								u.PrintMsg(p, "&a"+count+". &3"+clicker+" &e"+c.toString());
+							}
+						}
+			if (count>0) u.PrintMSG(p, "cmd_check", count+";"+radius); 
+			return true;
 		}
 		return false;
 	}
@@ -65,6 +83,28 @@ public class RACmd implements CommandExecutor{
 	public boolean ExecuteCmd (Player p, String cmd, String arg){
 		if (cmd.equalsIgnoreCase("help")){
 			u.PrintHLP(p,arg);
+			return true;
+		} else if (cmd.equalsIgnoreCase("check")){
+			if (arg.matches("[1-9]+[0-9]*")){
+				int radius = Integer.parseInt(arg);
+				World w = p.getWorld();
+				int count = 0;
+				for (int ix = p.getLocation().getBlockX()-radius; ix<=p.getLocation().getBlockX()+radius;ix++)
+					for (int iy = p.getLocation().getBlockY()-radius; iy<=p.getLocation().getBlockY()+radius;iy++)
+						for (int iz = p.getLocation().getBlockZ()-radius; iz<=p.getLocation().getBlockZ()+radius;iz++)
+							for (String clicker : plg.clickers.keySet()){
+								Clicker c = plg.clickers.get(clicker);
+								if (c.equalWXYZ(w, ix, iy, iz)){
+									count++;
+									u.PrintMsg(p, "&a"+count+". &3"+clicker+" &e"+c.toString());
+								}
+							}
+				if (count>0) u.PrintMSG(p, "cmd_check", count+";"+radius); 
+				else u.PrintMSG(p, "cmd_checkfail",radius);
+
+				return true;
+
+			} else u.PrintMSG(p, "cmd_checkneednumber",arg,'c','4');
 			return true;
 		} else if (cmd.equalsIgnoreCase("debug")){
 			if (arg.equalsIgnoreCase("false")) {
@@ -156,9 +196,9 @@ public class RACmd implements CommandExecutor{
 				}
 				plg.saveClickers();
 			} else u.PrintMSG(p, "cmd_unknownbutton");
-			
+
 			return true;
-			
+
 			//AddCmd("clear", "config",MSG("cmd_clear","&3/react clear <id> [f|a|r]",'b'));
 
 		}

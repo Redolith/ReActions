@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 
 public class Clicker {
 
@@ -49,6 +50,14 @@ public class Clicker {
 				(loc.getBlockY()==this.y)&&
 				(loc.getBlockZ()==this.z));
 	}
+	
+	public boolean equalWXYZ (World w, int x, int y, int z){
+		return 	(w.getName().equalsIgnoreCase(this.world)&&
+				(x==this.x)&&
+				(y==this.y)&&
+				(z==this.z));
+	}
+
 	
 	public class FlagVal{
 		String flag;

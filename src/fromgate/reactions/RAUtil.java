@@ -87,6 +87,7 @@ public class RAUtil extends FGUtilCore {
 		AddCmd("remove", "config",MSG("cmd_remove","&3/react remove [loc|b] <id>",'b'));
 		AddCmd("clear", "config",MSG("cmd_clear","&3/react clear <id> [f|a|r]",'b'));
 		AddCmd("debug", "config",MSG("cmd_debug","&3/react debug [true|false|off]",'b'));
+		AddCmd("check", "config",MSG("cmd_check","&3/react check [radius]",'b'));
 		//AddCmd("edit", "config",MSG("cmd_edit","&3/react edit <id>",'b'));
 	
 	}
@@ -106,16 +107,17 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("cmd_flagnotadded", "Flag was not added: %1%");
 		addMSG ("cmd_unknownbutton", "Button %1% is not found");
 		addMSG ("loc_unknown", "Unknown location");
-		addMSG ("cmd_add", "%1% - main command to add new triggers, locations, add flags, actions and reactions to current triggers");
-		addMSG ("cmd_list", "%1% - list all triggers or locations");
-		addMSG ("cmd_remove", "%1% - remove stored trigger or location");
-		addMSG ("cmd_clear", "%1% - clear flags/actions/reactions bounded with trigger with defined id");
+		addMSG ("cmd_add", "%1% - main command to add new activator, locations, add flags, actions and reactions to activator");
+		addMSG ("cmd_list", "%1% - list all activators or locations");
+		addMSG ("cmd_remove", "%1% - remove stored activator or location");
+		addMSG ("cmd_clear", "%1% - clear flags/actions/reactions bounded with activator with defined id");
 		addMSG ("cmd_debug", "%1% - switches debug mode (all checks - true, all checks - false, disabled)");
+		addMSG ("cmd_check", "%1% - check is you looking at block (button) with bounded activator, or find activators around you (radius)");
+		
+		
 		addMSG ("cmd_debugtrue", "Debug mode enabled (always - true)");
 		addMSG ("cmd_debugfalse", "Debug mode enabled (always - false)");
 		addMSG ("cmd_debugoff", "Debug mode disabled");
-		
-		
 		
 		//tp,grpadd,grprmv,msg,dmg,townset,townkick,itemrmv,itemgive,cmdplr,cmdsrv,moneypay,moneygive
 		addMSG ("act_tp", "You was teleported to %1%");
@@ -142,10 +144,13 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("msg_clearflag", "Flags cleared for button %1%");
 		addMSG ("msg_clearact", "Flags cleared for button %1%");
 		addMSG ("msg_cleareract", "Flags cleared for button %1%");
+		addMSG ("cmd_check", "Found %1% activators around you (radius %2%)");
+		addMSG ("cmd_checkfail", "Activators around you was not found (radius %1%)");
+		addMSG ("cmd_checkneednumber", "Wrong number: %1%");
 		
 		/*
 		
-		addMSG ("", "");
+		
 		addMSG ("", "");
 		addMSG ("", "");
 		addMSG ("", "");
