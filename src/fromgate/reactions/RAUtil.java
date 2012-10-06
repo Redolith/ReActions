@@ -1,10 +1,10 @@
 package fromgate.reactions;
 /*  
- *  WeatherMan, Minecraft bukkit plugin
+ *  ReActions, Minecraft bukkit plugin
  *  (c)2012, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/weatherman/
  *   * 
- *  This file is part of WeatherMan.
+ *  This file is part of ReActions.
  *  
  *  WeatherMan is free software: you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License as published by
@@ -41,39 +41,6 @@ public class RAUtil extends FGUtilCore {
 
 	public void PrintCfg(Player p){
 		
-		
-		/*PrintMsg(p, "&6&lWeatherMan "+des.getVersion()+" &r&6| "+MSG("msg_config", "",'6','6'));
-		PrintMSG(p, "cfg_plgconfig");
-		PrintMSG(p, "cfg_wanditem",Integer.toString(plg.wand)+" "+Material.getMaterial(plg.wand).name());
-		PrintMSG(p, "cfg_melt",EnDis(plg.meltsnow)+";"+EnDis(plg.meltice));
-		PrintEnDis(p, "cfg_mobspawn",plg.nethermob);
-		PrintMsg(p, MSG("cfg_defbiome",plg.Biome2Str(plg.dbiome))+" "+ MSG("cfg_defradius",Integer.toString(plg.dradius)));
-		PrintMSG(p, "cfg_maxradius");
-		PrintMsg(p, MSG("cfg_maxrcmd",Integer.toString(plg.maxrcmd))+" "+MSG("cfg_maxrwand",Integer.toString(plg.maxrwand))+" "+
-				MSG("cfg_maxrsign",Integer.toString(plg.maxrsign)));
-		if (plg.unsnowbiomes.isEmpty()){
-			PrintMSG(p, "cfg_nosnow_empty");
-		} else {
-			PrintMSG(p, "cfg_nosnow", plg.unsnowbiomes);
-		}
-
-		if (plg.unicebiomes.isEmpty()){
-			PrintMSG(p, "cfg_noice_empty");
-		} else {
-			PrintMSG(p, "cfg_noice", plg.unicebiomes);
-		}
-
-		PrintMSG(p, "cfg_player");
-		PrintMSG(p, "cfg_wandbiomeradius",EnDis(plg.pcfg.get(p.getName()).wand)+";"+plg.Biome2Str(plg.pcfg.get(p.getName()).biome)+";"+Integer.toString(plg.pcfg.get(p.getName()).radius));
-		
-		} else u.PrintPxMSG(p, "cmd_unknownadd",'c');
-		} else u.PrintMsg(p, "cmd_addbreqbut");
-		u.PrintPxMSG(p, "cmd_addbadded",arg2);
-		u.PrintPxMSG(p, "cmd_addtpadded",arg2);
-		
-		u.PrintPxMSG(p, "cmd_unknownbutton",arg);
-		
-		*/
 	}
 
 
@@ -86,17 +53,15 @@ public class RAUtil extends FGUtilCore {
 		AddCmd("list", "config",MSG("cmd_list","&3/react list [loc|b]",'b'));
 		AddCmd("remove", "config",MSG("cmd_remove","&3/react remove [loc|b] <id>",'b'));
 		AddCmd("clear", "config",MSG("cmd_clear","&3/react clear <id> [f|a|r]",'b'));
-		AddCmd("debug", "config",MSG("cmd_debug","&3/react debug [true|false|off]",'b'));
+		AddCmd("debug", "debug",MSG("cmd_debug","&3/react debug [true|false|off]",'b'));
 		AddCmd("check", "config",MSG("cmd_check","&3/react check [radius]",'b'));
-		//AddCmd("edit", "config",MSG("cmd_edit","&3/react edit <id>",'b'));
-	
 	}
 
 	public void FillMSG(){
-		addMSG ("msg_listclicker", "List of buttons:");
+		addMSG ("msg_listclicker", "List of activators:");
 		addMSG ("msg_listloc", "List of store locations:");
-		addMSG ("cmd_addbadded", "Events successfully defined");
-		addMSG ("cmd_addbreqbut", "You can define events only for buttons");
+		addMSG ("cmd_addbadded", "Activator successfully defined");
+		addMSG ("cmd_addbreqbut", "You can define activators for buttons only (now :))");
 		addMSG ("cmd_addtpadded", "Location %1% added");
 		addMSG ("cmd_unknownadd", "You can add only locations (loc) and buttons (b)");
 		addMSG ("cmd_actadded", "Action was added: %1%");
@@ -113,13 +78,9 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("cmd_clear", "%1% - clear flags/actions/reactions bounded with activator with defined id");
 		addMSG ("cmd_debug", "%1% - switches debug mode (all checks - true, all checks - false, disabled)");
 		addMSG ("cmd_check", "%1% - check is you looking at block (button) with bounded activator, or find activators around you (radius)");
-		
-		
 		addMSG ("cmd_debugtrue", "Debug mode enabled (always - true)");
 		addMSG ("cmd_debugfalse", "Debug mode enabled (always - false)");
 		addMSG ("cmd_debugoff", "Debug mode disabled");
-		
-		//tp,grpadd,grprmv,msg,dmg,townset,townkick,itemrmv,itemgive,cmdplr,cmdsrv,moneypay,moneygive
 		addMSG ("act_tp", "You was teleported to %1%");
 		addMSG ("act_grpadd", "You were added to group %1%");
 		addMSG ("act_grpaddfail", "Cannot add you in group %1%");
@@ -136,7 +97,7 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("act_cmdsrv", "Command executed (by console): %1%");
 		addMSG ("act_moneypay", "You paid %1% %2%");
 		addMSG ("act_moneygive", "You credited by %1% %2%");
-		addMSG ("msg_listcount", "There's %1% configured buttons and %2% stored locations");
+		addMSG ("msg_listcount", "There's %1% configured activators and %2% stored locations");
 		addMSG ("msg_removebnf", "Configured button %1% not found and not removed");
 		addMSG ("msg_removelocnf", "Stored location %1% not found and not removed");
 		addMSG ("msg_removebok", "Configured button %1% was removed");
@@ -144,21 +105,13 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("msg_clearflag", "Flags cleared for button %1%");
 		addMSG ("msg_clearact", "Flags cleared for button %1%");
 		addMSG ("msg_cleareract", "Flags cleared for button %1%");
-		addMSG ("cmd_check", "Found %1% activators around you (radius %2%)");
+		addMSG ("cmd_checkmsg", "Found %1% activators around you (radius %2%)");
 		addMSG ("cmd_checkfail", "Activators around you was not found (radius %1%)");
 		addMSG ("cmd_checkneednumber", "Wrong number: %1%");
-		
 		/*
-		
-		
 		addMSG ("", "");
 		addMSG ("", "");
 		addMSG ("", "");
 		*/
-		
-		
-		
-	
-		
 	}
 }

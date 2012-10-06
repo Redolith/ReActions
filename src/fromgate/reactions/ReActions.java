@@ -1,3 +1,25 @@
+/*  
+ *  ReActions, Minecraft bukkit plugin
+ *  (c)2012, fromgate, fromgate@gmail.com
+ *  http://dev.bukkit.org/server-mods/weatherman/
+ *   * 
+ *  This file is part of ReActions.
+ *  
+ *  WeatherMan is free software: you can redistribute it and/or modify
+ *	it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  WeatherMan is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with WeatherMan.  If not, see <http://www.gnorg/licenses/>.
+ * 
+ */
+
 package fromgate.reactions;
 
 import java.io.File;
@@ -7,11 +29,9 @@ import java.util.List;
 import java.util.logging.Logger;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
-
 import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -34,13 +54,16 @@ public class ReActions extends JavaPlugin {
 
 	//конфигурация
 	//String actionmsg="tp,grpadd,grprmv,msg,dmg,townset,townkick,itemrmv,itemgive,cmdplr,cmdsrv"; //отображать сообщения о выполнении действий
-	String actionmsg="tp,grpadd,grprmv,townset,townkick,itemrmv,itemgive"; //отображать сообщения о выполнении действий
+	String actionmsg="tp,grpadd,grprmv,townset,townkick,itemrmv,itemgive,moneypay,moneygive"; //отображать сообщения о выполнении действий
+	String language="english";
+	boolean language_save=false;
+	boolean version_check=false;
 
 
 
 	//разные переменные
-	String ftypes = "group,perm,time,item";
-	String atypes = "tp,grpadd,grprmv,msg,dmg,townset,townkick,itemrmv,itemgive,cmdplr,cmdsrv";
+	String ftypes = "group,perm,time,item,town,money";
+	String atypes = "tp,grpadd,grprmv,msg,dmg,townset,townkick,itemrmv,itemgive,cmdplr,cmdsrv,moneypay,moneygive";
 	RAUtil u;
 	Logger log = Logger.getLogger("Minecraft");
 	private RACmd cmd;
@@ -51,22 +74,17 @@ public class ReActions extends JavaPlugin {
 	boolean vault_eco = false;
 	protected Towny towny = null;
 	boolean towny_conected = false;
-	
-	
-
-	/*Vault vault;
-	boolean vault_found;*/
-
-
-	HashMap<String,Clicker> clickers = new HashMap<String,Clicker>();
+	HashMap<String,Activator> clickers = new HashMap<String,Activator>();
 	HashMap<String,RALoc> tports = new HashMap<String,RALoc>();
 	RADebug debug = new RADebug();
 
-
-
 	@Override
 	public void onEnable() {
-		u = new RAUtil (this, false, false, "english", "reactions", "ReActions", "react", "&3[R/A]&f ");
+		loadCfg();
+		saveCfg();
+		
+		
+		u = new RAUtil (this, version_check, language_save, language, "reactions", "ReActions", "react", "&3[RA]&f ");
 		if (!getDataFolder().exists()) getDataFolder().mkdirs();
 
 		l = new RAListener (this);
@@ -76,7 +94,7 @@ public class ReActions extends JavaPlugin {
 		cmd = new RACmd (this);
 		getCommand("react").setExecutor(cmd);
 
-		loadClickers();
+		loadActivators();
 		loadLocs();
 
 		vault_perm = setupPermissions();
@@ -100,8 +118,8 @@ public class ReActions extends JavaPlugin {
 	}
 
 	private boolean playerHasMoney (Player p, String amountstr){
-		if ((!vault_eco)||amountstr.matches("[0-9]*")) return false;
-		return (Integer.parseInt(amountstr)>=economy.getBalance(p.getName())); 
+		//if (!vault_eco) return false;
+		return vault_eco&&(amountstr.matches("[0-9]*")&&(Integer.parseInt(amountstr)<=economy.getBalance(p.getName()))); 
 	}
 	
 	private boolean playerInTown(Player p, String townname){
@@ -115,12 +133,12 @@ public class ReActions extends JavaPlugin {
 		}
 	}
 	
-	public boolean checkFlags (Player p, Clicker c){
+	public boolean checkFlags (Player p, Activator c){
 		return debug.checkFlagAndDebug(p, checkAllFlags (p, c));
 	}
 	
 	
-	public boolean checkAllFlags (Player p, Clicker c){
+	public boolean checkAllFlags (Player p, Activator c){
 		if (c.flags.size()>0)
 			for (String flag : c.flags.keySet())
 				if (!checkFlag (p, flag, c.flags.get(flag))) return false;
@@ -128,7 +146,7 @@ public class ReActions extends JavaPlugin {
 	}
 
 
-	public void performActions (Player p, boolean action, Clicker c){
+	public void performActions (Player p, boolean action, Activator c){
 		if (action&&(c.actions.size()>0))
 			for (int i = 0;i<c.actions.size();i++)
 				performAction (p, c.actions.get(i).flag, c.actions.get(i).value);
@@ -232,22 +250,24 @@ public class ReActions extends JavaPlugin {
 	private int moneyGive (Player p, String mstr){
 		if (mstr.isEmpty()) return 0;
 		String money="";
-		String target="";
+		String source="";
 		if (mstr.contains("/")) {
 			String [] m = mstr.split("/");
 			if (m.length>=2){
 				money = m[0];	
-				target = m[1];
+				source = m[1];
 			}
 		} else money = mstr;
 		if (!money.matches("[0-9]*")) return 0;
 		int amount = Integer.parseInt(money);
 		if (amount<=0) return 0;		
-		if (!target.isEmpty()){
-			if (amount<economy.getBalance(target)) return 0;
-			else economy.depositPlayer(target, amount);
+		
+		if (!source.isEmpty()){
+			if (amount<economy.getBalance(source)) return 0;
+			economy.withdrawPlayer(source, amount);
 		} 
-		economy.withdrawPlayer(p.getName(), amount);
+		
+		economy.depositPlayer(p.getName(), amount);
 		return amount;
 	}
 
@@ -262,7 +282,7 @@ public class ReActions extends JavaPlugin {
 			u.PrintMsg(p, msg);
 	}
 
-	public void executeClicker(Player p, Clicker c){
+	public void executeClicker(Player p, Activator c){
 		performActions(p, (checkFlags(p,c)), c); 
 	}
 
@@ -316,43 +336,12 @@ public class ReActions extends JavaPlugin {
 	}
 
 	protected boolean removeItemInHand (Player p, String item){
-		String [] ti = item.split(":");
-		if ((ti.length>0)&&(ti[0].matches("[1-9]+[0-9]*"))){
-			int id=Integer.parseInt(ti[0]);
-			int count = 1;
-			if ((ti.length>1)&&(ti[1].matches("[1-9]+[0-9]*")))
-				count = Integer.parseInt(ti[1]);
-			short data = -1;
-			if ((ti.length==3)&&(ti[2].matches("[1-9]+[0-9]*")))
-				data = Short.parseShort(ti[2]);
-			if ((p.getItemInHand().getTypeId()==id)&&
-					(p.getItemInHand().getAmount()>=count)&&
-					((data<0)||(p.getItemInHand().getDurability() == data))){
-				if (p.getItemInHand().getAmount()==count)
-					p.setItemInHand(new ItemStack (Material.AIR,0));
-				else p.getItemInHand().setAmount(p.getItemInHand().getAmount()-count);
-				return true;
-			}
-		}
-		return false;
+		return u.removeItemInHand(p, item);
 	}
 
 	// item <id>:<count>:<data>
 	protected boolean checkItem(Player p, String item){
-		String [] ti = item.split(":");
-		if ((ti.length>0)&&(ti[0].matches("[1-9]+[0-9]*"))){
-			int id=Integer.parseInt(ti[0]);
-			int count = 1;
-			if ((ti.length>1)&&(ti[1].matches("[1-9]+[0-9]*")))
-				count = Integer.parseInt(ti[1]);
-			short data = -1;
-			if ((ti.length==3)&&(ti[2].matches("[1-9]+[0-9]*")))
-				data = Short.parseShort(ti[2]);
-			return ((p.getItemInHand().getTypeId()==id)&&
-					(p.getItemInHand().getAmount()>=count)&&
-					((data<0)||(p.getItemInHand().getDurability() == data)));
-		}
-		return false;
+		return u.compareItemStr(p.getItemInHand(), item);
 	}
 
 
@@ -421,7 +410,7 @@ public class ReActions extends JavaPlugin {
 				f.createNewFile();
 				YamlConfiguration btn = new YamlConfiguration();
 				for (String key : clickers.keySet()){
-					Clicker c = clickers.get(key);
+					Activator c = clickers.get(key);
 					btn.set(key+".world", c.world);
 					btn.set(key+".x",c.x);
 					btn.set(key+".y",c.y);
@@ -466,14 +455,14 @@ public class ReActions extends JavaPlugin {
 	}
 
 
-	protected void loadClickers(){
+	protected void loadActivators(){
 		try {
 			File f = new File (this.getDataFolder()+File.separator+"buttons.yml");
 			if (f.exists()){
 				YamlConfiguration lcs = new YamlConfiguration();
 				lcs.load(f);
 				for (String key : lcs.getKeys(false)){
-					Clicker clk = new Clicker (lcs.getString(key+".world"),
+					Activator clk = new Activator (lcs.getString(key+".world"),
 							lcs.getInt(key+".x"),
 							lcs.getInt(key+".y"),
 							lcs.getInt(key+".z"));
@@ -569,6 +558,20 @@ public class ReActions extends JavaPlugin {
 			e.printStackTrace();
 		}			
 
+	}
+	
+	protected void saveCfg(){
+		getConfig().set("general.language-save",language);
+		getConfig().set("general.check-updates",version_check);
+		getConfig().set("reactions.show-messages-for-actions",actionmsg);
+		saveConfig();
+	}
+	
+	protected void loadCfg(){
+		language= getConfig().getString("general.language","english");
+		version_check = getConfig().getBoolean("general.check-updates",false);
+		language_save = getConfig().getBoolean("general.language-save",false);
+		actionmsg= getConfig().getString("reactions.show-messages-for-actions","tp,grpadd,grprmv,townset,townkick,itemrmv,itemgive,moneypay,moneygive");
 	}
 
 

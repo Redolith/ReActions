@@ -68,13 +68,13 @@ public class RACmd implements CommandExecutor{
 				for (int iy = p.getLocation().getBlockY()-radius; iy<=p.getLocation().getBlockY()+radius;iy++)
 					for (int iz = p.getLocation().getBlockZ()-radius; iz<=p.getLocation().getBlockZ()+radius;iz++)
 						for (String clicker : plg.clickers.keySet()){
-							Clicker c = plg.clickers.get(clicker);
+							Activator c = plg.clickers.get(clicker);
 							if (c.equalWXYZ(w, ix, iy, iz)){
 								count++;
 								u.PrintMsg(p, "&a"+count+". &3"+clicker+" &e"+c.toString());
 							}
 						}
-			if (count>0) u.PrintMSG(p, "cmd_check", count+";"+radius); 
+			if (count>0) u.PrintMSG(p, "cmd_checkmsg", count+";"+radius); 
 			return true;
 		}
 		return false;
@@ -93,13 +93,13 @@ public class RACmd implements CommandExecutor{
 					for (int iy = p.getLocation().getBlockY()-radius; iy<=p.getLocation().getBlockY()+radius;iy++)
 						for (int iz = p.getLocation().getBlockZ()-radius; iz<=p.getLocation().getBlockZ()+radius;iz++)
 							for (String clicker : plg.clickers.keySet()){
-								Clicker c = plg.clickers.get(clicker);
+								Activator c = plg.clickers.get(clicker);
 								if (c.equalWXYZ(w, ix, iy, iz)){
 									count++;
 									u.PrintMsg(p, "&a"+count+". &3"+clicker+" &e"+c.toString());
 								}
 							}
-				if (count>0) u.PrintMSG(p, "cmd_check", count+";"+radius); 
+				if (count>0) u.PrintMSG(p, "cmd_checkmsg", count+";"+radius); 
 				else u.PrintMSG(p, "cmd_checkfail",radius);
 
 				return true;
@@ -109,10 +109,10 @@ public class RACmd implements CommandExecutor{
 		} else if (cmd.equalsIgnoreCase("debug")){
 			if (arg.equalsIgnoreCase("false")) {
 				plg.debug.setPlayerDebug(p, false);
-				u.PrintMSG(p, "cmd_debugtrue");
+				u.PrintMSG(p, "cmd_debugfalse");
 			} else if (arg.equalsIgnoreCase("true")) {
 				plg.debug.setPlayerDebug(p, true);
-				u.PrintMSG(p, "cmd_debugfalse");
+				u.PrintMSG(p, "cmd_debugtrue");
 			} else {
 				plg.debug.offPlayerDebug(p);
 				u.PrintMSG(p, "cmd_debugoff");
@@ -156,7 +156,7 @@ public class RACmd implements CommandExecutor{
 			if (arg1.equalsIgnoreCase("b")){
 				Block b = p.getTargetBlock(null, 100); 
 				if ((b != null)&&(b.getType()==Material.STONE_BUTTON)){
-					plg.clickers.put(arg2, new Clicker (b.getLocation()));
+					plg.clickers.put(arg2, new Activator (b.getLocation()));
 					plg.saveClickers();
 					u.PrintPxMSG(p, "cmd_addbadded",arg2);
 				} else u.PrintPxMSG(p, "cmd_addbreqbut");

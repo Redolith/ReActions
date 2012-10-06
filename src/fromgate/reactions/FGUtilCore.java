@@ -29,8 +29,12 @@ import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -280,6 +284,86 @@ public abstract class FGUtilCore {
 		return false;
 	}
 
+	/* Функция проверяет входит есть ли item (блок) с заданным id и data в списке,
+	 * представленным в виде строки вида id1:data1,id2:data2,MATERIAL_NAME:data
+	 * При этом если data может быть опущена
+	 */
+	public boolean isItemInList (int id, short data, String str){
+		String [] ln = str.split(",");
+		if (ln.length>0) 
+			for (int i = 0; i<ln.length; i++)
+				if (compareItemStr (id, data,ln[i])) return true;
+		return false;
+	}
+
+	
+	public boolean compareItemStr (ItemStack item, String itemstr){
+		return compareItemStr (item.getTypeId(), item.getData().getData(), item.getAmount(), itemstr);
+	}
+	
+	public boolean compareItemStr (int item_id, int item_data, String itemstr){
+		return compareItemStr (item_id,item_data,1,itemstr);
+	}
+	
+
+	
+	
+	
+	// Надо использовать маску: id:data*amount, id:data, id*amount
+	public boolean compareItemStr (int item_id, int item_data, int item_amount, String itemstr){
+		if (!itemstr.isEmpty()){
+				int id = -1;
+				int amount =1;
+				int data =-1;
+				String [] si = itemstr.split("\\*");
+				if (si.length>0){
+					if ((si.length==2)&&si[1].matches("[1-9]+[0-9]*")) amount = Integer.parseInt(si[1]);
+					String ti[] = si[0].split(":");
+					if (ti.length>0){
+						if (ti[0].matches("[0-9]*")) id=Integer.parseInt(ti[0]);
+						else id=Material.getMaterial(ti[0]).getId();						
+						if ((ti.length==2)&&(ti[1]).matches("[0-9]*")) data = Integer.parseInt(ti[1]);
+						return ((item_id==id)&&((item_data<0)||(item_data==data))&&(item_amount>=amount));
+					}
+				}
+		}									
+		return false;
+	}
+
+	public boolean removeItemInHand(Player p, String itemstr){
+		if (!itemstr.isEmpty()){
+			int id = -1;
+			int amount =1;
+			int data =-1;
+			String [] si = itemstr.split("\\*");
+			if (si.length>0){
+				if ((si.length==2)&&si[1].matches("[1-9]+[0-9]*")) amount = Integer.parseInt(si[1]);
+				String ti[] = si[0].split(":");
+				if (ti.length>0){
+					if (ti[0].matches("[0-9]*")) id=Integer.parseInt(ti[0]);
+					else id=Material.getMaterial(ti[0]).getId();						
+					if ((ti.length==2)&&(ti[1]).matches("[0-9]*")) data = Integer.parseInt(ti[1]);
+					return removeItemInHand (p, id,data,amount);
+				}
+			}
+		}
+		return false;
+	}
+
+	public boolean removeItemInHand(Player p, int item_id, int item_data, int item_amount){
+		if ((p.getItemInHand() != null)&&
+				(p.getItemInHand().getTypeId()==item_id)&&
+				(p.getItemInHand().getAmount()>=item_amount)&&
+				((item_data<0)||(item_data==p.getItemInHand().getData().getData()))){
+			
+			if (p.getItemInHand().getAmount()>item_amount) p.getItemInHand().setAmount(p.getItemInHand().getAmount()-item_amount);
+			else p.setItemInHand(new ItemStack (Material.AIR));
+			
+			return true;
+		}
+		return false;
+	}
+	
 
 	/*
 	 * Вывод сообщения пользователю 
@@ -309,7 +393,7 @@ public abstract class FGUtilCore {
 	public void SC (String msg){
 		plg.getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', px+msg));
 	}
-	
+
 
 
 	/*
@@ -485,7 +569,7 @@ public abstract class FGUtilCore {
 	public String EnDis (boolean b){
 		return b ? MSG ("enabled",'2') : MSG ("disabled",'c'); 
 	}
-	
+
 	public String EnDis (String str, boolean b){
 		String str2 = ChatColor.stripColor(str);
 		return b ? ChatColor.DARK_GREEN+str2 : ChatColor.RED+str2; 
@@ -497,19 +581,19 @@ public abstract class FGUtilCore {
 	public void PrintEnDis (Player p, String msg_id, boolean b){
 		p.sendMessage(MSG (msg_id)+": "+EnDis(b));
 	}
-	
+
 	/* 
 	 * Печать значения логической переменной 
 	 */
 	public void PrintMSG (Player p, String msg_id, boolean b){
 		PrintMSG (p,msg_id,EnDis(b));
 	}
-	
-	
+
+
 	/* 
 	 * Дополнительные процедуры
 	 */
-	
+
 	/*
 	 * Переопределение префикса пермишенов 
 	 */
@@ -517,7 +601,7 @@ public abstract class FGUtilCore {
 		this.permprefix = ppfx+".";
 		this.version_info_perm=this.permprefix+"config";
 	}
-	
+
 	/*
 	 * Проверка соответствия пермишена (указывать без префикса)
 	 * заданной команде 
@@ -527,11 +611,21 @@ public abstract class FGUtilCore {
 				((cmds.get(cmd.toLowerCase())).perm.equalsIgnoreCase(permprefix+perm));
 	}
 	
+	
+	/* 
+	 * Преобразует строку вида <id>:<data> в ItemStack
+	 * Возвращает null если строка кривая
+	 */
 	public ItemStack parseItem (String itemstr){
 		if (!itemstr.isEmpty()){
 			String[] ti = itemstr.split(":");
-			if ((ti.length>0)&&(ti[0].matches("[1-9]+[0-9]*"))){
-				int id=Integer.parseInt(ti[0]);
+			if (ti.length>0){
+
+				int id = -1;
+				if (ti[0].matches("[1-9]+[0-9]*")) id=Integer.parseInt(ti[0]);
+				else id = Material.getMaterial(ti[0]).getId();
+
+
 				int count = 1;
 				if ((ti.length>1)&&(ti[1].matches("[1-9]+[0-9]*")))
 					count = Integer.parseInt(ti[1]);
@@ -544,39 +638,45 @@ public abstract class FGUtilCore {
 		return null;
 	}
 
-/*
- * 	protected boolean checkItem(Player p, String item){
-		String [] ti = item.split(":");
-		if ((ti.length>0)&&(ti[0].matches("[1-9]+[0-9]*"))){
-			int id=Integer.parseInt(ti[0]);
-			int count = 1;
-			if ((ti.length>1)&&(ti[1].matches("[1-9]+[0-9]*")))
-				count = Integer.parseInt(ti[1]);
-			short data = -1;
-			if ((ti.length==3)&&(ti[2].matches("[1-9]+[0-9]*")))
-				data = Short.parseShort(ti[2]);
-			
-			return ((p.getItemInHand().getTypeId()==id)&&
-					(p.getItemInHand().getAmount()>=count)&&
-					((data<0)||(p.getItemInHand().getDurability() == data)));
-		}
-		return false;
-	}
-	
- * 
- */
-	
+	/*
+	 * Проверяет, есть ли игроки в пределах заданного радиуса
+	 */
 	public boolean isPlayerAround (Location loc, int radius){
 		for (Player p : loc.getWorld().getPlayers()){
 			if (p.getLocation().distance(loc)<=radius) return true;
 		}
 		return false;		
 	}
-	
+
+	/*
+	 *  Тоже, что и MSG, но обрезает цвет
+	 */
 	public String MSGnc(String id){
 		return ChatColor.stripColor(MSG (id));
 	}
+
+
+	/*
+	 * Установка блока с проверкой на приват
+	 */
+	public boolean placeBlock(Location loc, Player p, Material newType, byte newData, boolean phys){
+		return placeBlock (loc.getBlock(),p,newType,newData, phys);
+	}
 	
+	/*
+	 * Установка блока с проверкой на приват
+	 */
+	public boolean placeBlock(Block block, Player p, Material newType, byte newData, boolean phys){
+		BlockState state = block.getState();
+		block.setTypeIdAndData(newType.getId(), newData, phys);
+		BlockPlaceEvent event = new BlockPlaceEvent(state.getBlock(), state, block, p.getItemInHand(), p, true);
+		plg.getServer().getPluginManager().callEvent(event);
+		if (event.isCancelled()) state.update(true);
+		return event.isCancelled();
+	}
+
+
+
 
 }
 

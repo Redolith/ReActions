@@ -1,3 +1,25 @@
+/*  
+ *  ReActions, Minecraft bukkit plugin
+ *  (c)2012, fromgate, fromgate@gmail.com
+ *  http://dev.bukkit.org/server-mods/weatherman/
+ *   * 
+ *  This file is part of ReActions.
+ *  
+ *  WeatherMan is free software: you can redistribute it and/or modify
+ *	it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  WeatherMan is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with WeatherMan.  If not, see <http://www.gnorg/licenses/>.
+ * 
+ */
+
 package fromgate.reactions;
 
 import java.util.ArrayList;
@@ -6,7 +28,7 @@ import java.util.HashMap;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-public class Clicker {
+public class Activator {
 
 	String world;
 	int x;
@@ -30,14 +52,14 @@ public class Clicker {
 	//HashMap<String,String> actions = new HashMap<String,String>();   //действия в случае успешной выполнения условий флагов
 	//HashMap<String,String> reactions = new HashMap<String,String>(); //действия в случае неуспешной выполнения условий флагов
 
-	public Clicker(Location loc){
+	public Activator(Location loc){
 		this.world = loc.getWorld().getName();
 		this.x = loc.getBlockX();
 		this.y = loc.getBlockY();
 		this.z = loc.getBlockZ();
 	}
 	
-	public Clicker(String world, int x, int y, int z){
+	public Activator(String world, int x, int y, int z){
 		this.world = world;
 		this.x = x;
 		this.y = y;
