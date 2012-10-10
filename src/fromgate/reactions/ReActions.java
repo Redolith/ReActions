@@ -140,8 +140,8 @@ public class ReActions extends JavaPlugin {
 	
 	public boolean checkAllFlags (Player p, Activator c){
 		if (c.flags.size()>0)
-			for (String flag : c.flags.keySet())
-				if (!checkFlag (p, flag, c.flags.get(flag))) return false;
+			for (int i = 0; i<c.flags.size();i++)
+				if (!checkFlag (p, c.flags.get(i).flag, c.flags.get(i).value)) return false;
 		return true;
 	}
 
@@ -214,7 +214,7 @@ public class ReActions extends JavaPlugin {
 		} else if (act.equalsIgnoreCase("cmdplr")&&(!param.isEmpty())){
 			getServer().dispatchCommand(p, param.replaceAll("%player%",p.getName()));
 		} else if (act.equalsIgnoreCase("cmdsrv")&&(!param.isEmpty())){
-			getServer().dispatchCommand(getServer().getConsoleSender(), param);
+			getServer().dispatchCommand(getServer().getConsoleSender(), param.replaceAll("%player%",p.getName()));
 		} else if (act.equalsIgnoreCase("moneypay")&&(vault_eco)&&(!param.isEmpty())){
 			msgparam = Integer.toString(moneyPay (p, param))+";"+this.economy.currencyNamePlural();
 		} else if (act.equalsIgnoreCase("moneygive")&&(vault_eco)&&(!param.isEmpty())){
@@ -418,10 +418,13 @@ public class ReActions extends JavaPlugin {
 					if (c.flags.size()>0){
 						List<String> flg = new ArrayList<String>();
 
-						for (String fkey : c.flags.keySet()){
+						for (int i = 0; i<c.flags.size();i++)	flg.add(c.flags.get(i).toString());
+						
+/*						for (String fkey : c.flags.keySet()){
 							String s = fkey+"="+c.flags.get(fkey);
 							flg.add(s);
-						}
+						}*/
+						
 						if (flg.size()>0)
 							btn.set(key+".flags",flg);
 					}
@@ -471,11 +474,13 @@ public class ReActions extends JavaPlugin {
 					List<String> flg = lcs.getStringList(key+".flags");
 					if (flg.size()>0){
 						for (int i = 0; i< flg.size();i++){
-							String []ln = flg.get(i).split("=");
+							clk.addFlag(flg.get(i));
+							
+							/*String []ln = flg.get(i).split("=");
 							if (ln.length>0){
 								if (ln.length==2) clk.flags.put(ln[0], ln[1]);
-								else clk.flags.put(ln[0], "");
-							}
+								else clk.flags.put(ln[0], "");*/
+							//}
 						}
 					}
 

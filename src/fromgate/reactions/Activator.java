@@ -23,8 +23,7 @@
 package fromgate.reactions;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-
+import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -43,10 +42,11 @@ public class Activator {
 	
 	boolean reqflag = false;
 	
-	HashMap<String,String> flags = new HashMap<String,String>();     //флаг (условия)
+	//HashMap<String,String> flags = new HashMap<String,String>();     //флаг (условия)
+	List<FlagVal> flags = new ArrayList<FlagVal>();
 	
-	ArrayList<FlagVal> actions = new ArrayList<FlagVal>();
-	ArrayList<FlagVal> reactions = new ArrayList<FlagVal>();
+	List<ActVal> actions = new ArrayList<ActVal>();
+	List<ActVal> reactions = new ArrayList<ActVal>();
 	
 
 	//HashMap<String,String> actions = new HashMap<String,String>();   //действия в случае успешной выполнения условий флагов
@@ -81,14 +81,14 @@ public class Activator {
 	}
 
 	
-	public class FlagVal{
+	public class ActVal{
 		String flag;
 		String value;
-		public FlagVal(String f, String v){
+		public ActVal(String f, String v){
 			this.flag =f;
 			this.value = v;
 		}
-		public FlagVal(String f){
+		public ActVal(String f){
 			this.flag =f;
 			this.value = "";
 		}
@@ -96,28 +96,61 @@ public class Activator {
 		public String toString() {
 			return flag + "=" + value;
 		}
-		
-		
-		
 	}
+
+	
+	public class FlagVal{
+		String flag;
+		String value;
+		boolean not;
+		
+		public FlagVal(String f, String v, boolean not){
+			this.flag =f;
+			this.value = v;
+			this.not = true;
+		}
+		
+		
+		
+		@Override
+		public String toString() {
+			String str =flag + "=" + value;
+			if (this.not) str = "!"+str;
+			return str; 
+		}
+	}
+
+
+	public void addFlag (String flg, String param, boolean not){
+		this.flags.add(new FlagVal (flg, param, not));
+	}
+	
+	public void addFlag (String flgstr){
+		if (!flgstr.isEmpty()){
+			boolean not = flgstr.startsWith("!");
+			String [] fl = (flgstr.replaceFirst("!", "")).split("="); 
+			if (fl.length==2) flags.add(new FlagVal (fl[0],fl[1],not));
+		}
+	}
+
 
 
 	public void addAction (String act, String param){
-		this.actions.add(new FlagVal (act,param));
+		this.actions.add(new ActVal (act,param));
 	}
 	
 	public void addReAction (String act, String param){
-		this.reactions.add(new FlagVal (act,param));
+		this.reactions.add(new ActVal (act,param));
 	}
 
-	public String [] toBookCfg(){
+	/*public String [] toBookCfg(){
 		/* [FLAG]
 		 * x=y
 		 * [ACTION]
 		 * xx=yy
 		 * [REACTION]
 		 * xxx=yyy
-		 */
+		 *  /
 		String [] cfg = new  String [3+flags.size()+actions.size()+reactions.size()];
 		int i = 0;
 		cfg[i] = "[FLAGS]";
@@ -142,13 +175,13 @@ public class Activator {
 				cfg[i]=reactions.get(j).flag+"="+reactions.get(j).value;
 			}
 		return cfg;
-	}
+	}*/
 	
 	@Override
 	public String toString() {
 
 		return "[" + world + "] (" + x + ", " + y + ", " + z
-				+ ")"+"F:"+this.flags.size()+" A:"+this.actions.size()+" R:"+this.reactions.size();
+				+ ") F:"+this.flags.size()+" A:"+this.actions.size()+" R:"+this.reactions.size();
 	}
 
 	

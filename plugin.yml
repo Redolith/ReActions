@@ -1,6 +1,6 @@
 name: ReActions
 main: fromgate.reactions.ReActions
-version: 0.0.1
+version: 0.0.1/2
 website: http://www.minecraft-mccity.ru
 author: fromgate, fromgate@gmail.com
 softdepend: [Vault,Towny]

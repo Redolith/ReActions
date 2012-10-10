@@ -118,7 +118,7 @@ public class RACmd implements CommandExecutor{
 				u.PrintMSG(p, "cmd_debugoff");
 			}
 			return true;
-		} else if (cmd.equalsIgnoreCase("edit")){
+		/*} else if (cmd.equalsIgnoreCase("edit")){
 			if (plg.clickers.containsKey(arg)){
 				if ((p.getItemInHand().getType()==Material.WRITTEN_BOOK)||
 						(p.getItemInHand().getType()==Material.BOOK_AND_QUILL)){
@@ -126,7 +126,7 @@ public class RACmd implements CommandExecutor{
 					p.setItemInHand(book.generateItemStack());
 				} else u.PrintMSG(p, "msg_editneedbook",arg);
 			} else u.PrintMSG(p, "msg_editunknown",arg);
-			return true;
+			return true; */
 		} else if (cmd.equalsIgnoreCase("list")){
 			if (arg.equalsIgnoreCase("b")){
 				u.PrintMSG(p, "msg_listclicker", '6');
@@ -232,7 +232,9 @@ public class RACmd implements CommandExecutor{
 
 	public boolean addFlag(String clicker, String flag, String param){
 		if (u.isWordInList(flag, plg.ftypes)){
-			plg.clickers.get(clicker).flags.put(flag, param);
+			boolean not = flag.startsWith("!");
+			plg.clickers.get(clicker).addFlag(flag.replaceFirst("!", ""), param, not);
+			//plg.clickers.get(clicker).flags.put(flag, param);
 			return true;
 		}
 		return false;
