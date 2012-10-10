@@ -107,14 +107,16 @@ public class ReActions extends JavaPlugin {
 
 
 	//	String ftypes = "group,perm,time,item,town,money";
-	private boolean checkFlag (Player p, String flag, String param){
-		if (flag.equalsIgnoreCase("group")) return (vault_perm&&permission.playerInGroup(p, param));
-		else if (flag.equalsIgnoreCase("perm")) return p.hasPermission(param);
-		else if (flag.equalsIgnoreCase("time")) return checkTime(p, param);
-		else if (flag.equalsIgnoreCase("item")) return checkItem (p, param);
-		else if (flag.equalsIgnoreCase("town")) return playerInTown (p, param);
-		else if (flag.equalsIgnoreCase("money")) return playerHasMoney (p, param);
-		return false;
+	private boolean checkFlag (Player p, String flag, String param, boolean not){
+		boolean chr = false;
+		if (flag.equalsIgnoreCase("group")) chr= (vault_perm&&permission.playerInGroup(p, param));
+		else if (flag.equalsIgnoreCase("perm")) chr=p.hasPermission(param);
+		else if (flag.equalsIgnoreCase("time")) chr=checkTime(p, param);
+		else if (flag.equalsIgnoreCase("item")) chr=checkItem (p, param);
+		else if (flag.equalsIgnoreCase("town")) chr=playerInTown (p, param);
+		else if (flag.equalsIgnoreCase("money")) chr=playerHasMoney (p, param);
+		if (not) chr= !chr;
+		return chr;
 	}
 
 	private boolean playerHasMoney (Player p, String amountstr){
@@ -141,7 +143,7 @@ public class ReActions extends JavaPlugin {
 	public boolean checkAllFlags (Player p, Activator c){
 		if (c.flags.size()>0)
 			for (int i = 0; i<c.flags.size();i++)
-				if (!checkFlag (p, c.flags.get(i).flag, c.flags.get(i).value)) return false;
+				if (!checkFlag (p, c.flags.get(i).flag, c.flags.get(i).value, c.flags.get(i).not)) return false;
 		return true;
 	}
 

@@ -230,11 +230,11 @@ public class RACmd implements CommandExecutor{
 		return false;
 	}
 
-	public boolean addFlag(String clicker, String flag, String param){
+	public boolean addFlag(String clicker, String fl, String param){
+		String flag=fl.replaceFirst("!", "");
+		boolean not = fl.startsWith("!");
 		if (u.isWordInList(flag, plg.ftypes)){
-			boolean not = flag.startsWith("!");
-			plg.clickers.get(clicker).addFlag(flag.replaceFirst("!", ""), param, not);
-			//plg.clickers.get(clicker).flags.put(flag, param);
+			plg.clickers.get(clicker).addFlag(flag, param, not);
 			return true;
 		}
 		return false;
