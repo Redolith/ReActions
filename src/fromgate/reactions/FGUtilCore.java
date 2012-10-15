@@ -290,7 +290,7 @@ public abstract class FGUtilCore {
 	 * представленным в виде строки вида id1:data1,id2:data2,MATERIAL_NAME:data
 	 * При этом если data может быть опущена
 	 */
-	public boolean isItemInList (int id, short data, String str){
+	public boolean isItemInList (int id, int data, String str){
 		String [] ln = str.split(",");
 		if (ln.length>0) 
 			for (int i = 0; i<ln.length; i++)
@@ -325,7 +325,7 @@ public abstract class FGUtilCore {
 					if (ti[0].matches("[0-9]*")) id=Integer.parseInt(ti[0]);
 					else id=Material.getMaterial(ti[0]).getId();						
 					if ((ti.length==2)&&(ti[1]).matches("[0-9]*")) data = Integer.parseInt(ti[1]);
-					return ((item_id==id)&&((item_data<0)||(item_data==data))&&(item_amount>=amount));
+					return ((item_id==id)&&((data<0)||(item_data==data))&&(item_amount>=amount));
 				}
 			}
 		}									
@@ -489,6 +489,21 @@ public abstract class FGUtilCore {
 				for (int i = 0; i<ln.length;i++)
 					str = str.replace("%"+Integer.toString(i+1)+"%", "&"+c2+ln[i]+"&"+c1);
 		} 
+		return ChatColor.translateAlternateColorCodes('&', str);
+	}
+	
+	public String MSG(String id, char c1, char c2, Object... keys){
+		String str = "&4Unknown message ("+id+")";
+		if (msg.containsKey(id)){
+			String clr1 = "";
+			String clr2 = "";
+			if (c1 != 'z') clr1 = "&"+c1;
+			if (c2 != 'z') clr2 = "&"+c2;
+			str = clr1 + msg.get(id);
+			if (keys.length>0)
+				for (int i =0; i<keys.length;i++)
+					str.replace("%"+Integer.toString(i+1)+"%", clr2+keys[i].toString()+clr1);
+		}
 		return ChatColor.translateAlternateColorCodes('&', str);
 	}
 
@@ -675,6 +690,10 @@ public abstract class FGUtilCore {
 		plg.getServer().getPluginManager().callEvent(event);
 		if (event.isCancelled()) state.update(true);
 		return event.isCancelled();
+	}
+	
+	public boolean rollDiceChance (int chance){
+		return (random.nextInt(100)<chance);
 	}
 
 

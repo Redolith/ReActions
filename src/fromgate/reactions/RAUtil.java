@@ -55,6 +55,7 @@ public class RAUtil extends FGUtilCore {
 		AddCmd("clear", "config",MSG("cmd_clear","&3/react clear <id> [f|a|r]",'b'));
 		AddCmd("debug", "debug",MSG("cmd_debug","&3/react debug [true|false|off]",'b'));
 		AddCmd("check", "config",MSG("cmd_check","&3/react check [radius]",'b'));
+		AddCmd("reload", "config",MSG("cmd_reload","&3/react reload",'b'));
 	}
 
 	public void FillMSG(){
@@ -78,6 +79,7 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("cmd_clear", "%1% - clear flags/actions/reactions bounded with activator with defined id");
 		addMSG ("cmd_debug", "%1% - switches debug mode (all checks - true, all checks - false, disabled)");
 		addMSG ("cmd_check", "%1% - check is you looking at block (button) with bounded activator, or find activators around you (radius)");
+		addMSG ("cmd_reload", "%1% - reload stored locations and activators from configuration files");
 		addMSG ("cmd_debugtrue", "Debug mode enabled (always - true)");
 		addMSG ("cmd_debugfalse", "Debug mode enabled (always - false)");
 		addMSG ("cmd_debugoff", "Debug mode disabled");
@@ -103,11 +105,13 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("msg_removebok", "Configured button %1% was removed");
 		addMSG ("msg_removelocok", "Stored location %1% was removed");
 		addMSG ("msg_clearflag", "Flags cleared for button %1%");
-		addMSG ("msg_clearact", "Flags cleared for button %1%");
-		addMSG ("msg_cleareract", "Flags cleared for button %1%");
+		addMSG ("msg_clearact", "Actions cleared for button %1%");
+		addMSG ("msg_clearreact", "Reactions cleared for button %1%");
 		addMSG ("cmd_checkmsg", "Found %1% activators around you (radius %2%)");
 		addMSG ("cmd_checkfail", "Activators around you was not found (radius %1%)");
 		addMSG ("cmd_checkneednumber", "Wrong number: %1%");
+		addMSG ("msg_cmdreload", "Reload completed. Loaded %1% activators, %2% locations.");
+		
 		/*
 		addMSG ("", "");
 		addMSG ("", "");

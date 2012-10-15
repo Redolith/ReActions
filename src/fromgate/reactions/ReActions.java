@@ -29,9 +29,10 @@ import java.util.List;
 import java.util.logging.Logger;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
-import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -39,18 +40,18 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+
 import com.palmergames.bukkit.towny.Towny;
-import com.palmergames.bukkit.towny.event.TownAddResidentEvent;
-import com.palmergames.bukkit.towny.event.TownRemoveResidentEvent;
-import com.palmergames.bukkit.towny.exceptions.EmptyTownException;
-import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
-import com.palmergames.bukkit.towny.object.Town;
-import com.palmergames.bukkit.towny.object.Resident;
-import com.palmergames.bukkit.towny.object.TownyUniverse;
-import static com.palmergames.bukkit.towny.object.TownyObservableType.TOWN_ADD_RESIDENT;
-import static com.palmergames.bukkit.towny.object.TownyObservableType.TOWN_REMOVE_RESIDENT;
 
 public class ReActions extends JavaPlugin {
+
+	/*
+	 *  1 - !not
+	 *  2 - округление координат +
+	 *  3 - раскраска в командах и в этом
+	 *  4 - 
+	 * 
+	 */
 
 	//конфигурация
 	//String actionmsg="tp,grpadd,grprmv,msg,dmg,townset,townkick,itemrmv,itemgive,cmdplr,cmdsrv"; //отображать сообщения о выполнении действий
@@ -58,11 +59,12 @@ public class ReActions extends JavaPlugin {
 	String language="english";
 	boolean language_save=false;
 	boolean version_check=false;
+	boolean tp_center_coors = true;
 
 
 
 	//разные переменные
-	String ftypes = "group,perm,time,item,town,money";
+	String ftypes = "group,perm,time,item,town,money,chance";
 	String atypes = "tp,grpadd,grprmv,msg,dmg,townset,townkick,itemrmv,itemgive,cmdplr,cmdsrv,moneypay,moneygive";
 	RAUtil u;
 	Logger log = Logger.getLogger("Minecraft");
@@ -72,8 +74,11 @@ public class ReActions extends JavaPlugin {
 	protected Economy economy = null;
 	boolean vault_perm = false;
 	boolean vault_eco = false;
-	protected Towny towny = null;
+
+	RATowny towny;
 	boolean towny_conected = false;
+
+
 	HashMap<String,Activator> clickers = new HashMap<String,Activator>();
 	HashMap<String,RALoc> tports = new HashMap<String,RALoc>();
 	RADebug debug = new RADebug();
@@ -82,8 +87,8 @@ public class ReActions extends JavaPlugin {
 	public void onEnable() {
 		loadCfg();
 		saveCfg();
-		
-		
+
+
 		u = new RAUtil (this, version_check, language_save, language, "reactions", "ReActions", "react", "&3[RA]&f ");
 		if (!getDataFolder().exists()) getDataFolder().mkdirs();
 
@@ -99,10 +104,11 @@ public class ReActions extends JavaPlugin {
 
 		vault_perm = setupPermissions();
 		vault_eco = setupEconomy();
-		towny_conected = connectToTowny();
 
-		//vault_found = connectToVault(); 
-
+		if (checkTowny()){
+			towny = new RATowny (this);
+			towny_conected = towny.connected;
+		}
 	}
 
 
@@ -113,33 +119,36 @@ public class ReActions extends JavaPlugin {
 		else if (flag.equalsIgnoreCase("perm")) chr=p.hasPermission(param);
 		else if (flag.equalsIgnoreCase("time")) chr=checkTime(p, param);
 		else if (flag.equalsIgnoreCase("item")) chr=checkItem (p, param);
-		else if (flag.equalsIgnoreCase("town")) chr=playerInTown (p, param);
+		else if (flag.equalsIgnoreCase("town")) chr=playerInTown(p, param);
 		else if (flag.equalsIgnoreCase("money")) chr=playerHasMoney (p, param);
+		else if (flag.equalsIgnoreCase("chance")) chr=rollDice (p, param);
 		if (not) chr= !chr;
 		return chr;
 	}
+	
+	private boolean rollDice (Player p, String param){
+		int d = 50;
+		if ((!param.isEmpty())&&(param.matches("[1-9]+[0-9]*"))) d = Integer.parseInt(param);
+		
+		if (d>100) d = 100;
+		else if (d<0) d = 0;
+		return u.rollDiceChance(d);
+	}
+	private boolean playerInTown (Player p, String param){
+		if (!towny_conected) return false; 
+		return towny.playerInTown(p, param);
+	}
 
 	private boolean playerHasMoney (Player p, String amountstr){
-		//if (!vault_eco) return false;
 		return vault_eco&&(amountstr.matches("[0-9]*")&&(Integer.parseInt(amountstr)<=economy.getBalance(p.getName()))); 
 	}
-	
-	private boolean playerInTown(Player p, String townname){
-		if (!towny_conected) return false;
-		Resident rsd = towny.getTownyUniverse().getResidentMap().get(p.getName());
-		if (!rsd.hasTown()||townname.isEmpty()) return false;
-		try {
-			return (townname.equalsIgnoreCase(rsd.getTown().getName()));
-		} catch (NotRegisteredException e) {
-			return false;
-		}
-	}
-	
+
+
 	public boolean checkFlags (Player p, Activator c){
 		return debug.checkFlagAndDebug(p, checkAllFlags (p, c));
 	}
-	
-	
+
+
 	public boolean checkAllFlags (Player p, Activator c){
 		if (c.flags.size()>0)
 			for (int i = 0; i<c.flags.size();i++)
@@ -171,7 +180,7 @@ public class ReActions extends JavaPlugin {
 		else loc = tports.get(locstr).getLocation();
 		return loc;
 	}
-	
+
 	public String locToString(Player p, String locstr){
 		String loc = u.MSGnc("loc_unknown");
 		Location tl = locToLocation (p, locstr);
@@ -180,18 +189,28 @@ public class ReActions extends JavaPlugin {
 	}
 
 
+	private void teleportPlayer (Player p, String param){
+		Location loc = locToLocation (p,param);
+		if (loc != null){
+			if (tp_center_coors) {
+				loc.setX(loc.getBlockX()+0.5);
+				loc.setZ(loc.getBlockZ()+0.5);
+			}
+			p.teleport(loc);
+		}
+	}
 
 	//String atypes = "tp,grpadd,grprmv,msg,dmg,townset,townkick,itemrmv,itemgive,cmdplr,cmdsrv,moneypay,moneygive";
 	public void performAction(Player p, String act, String param){
 		String msgparam =param;
-		
+
 		if (act.equalsIgnoreCase("tp")&&checkLoc(param)){
-			p.teleport(locToLocation (p,param));
+			teleportPlayer (p,param);
 		} else if (act.equalsIgnoreCase("grpadd")&&vault_perm&&(!param.isEmpty())){
-			
+
 			if (!permission.playerAddGroup(p, param))
 				msgparam=msgparam+"fail";
-			
+
 		} else if (act.equalsIgnoreCase("grprmv")&&vault_perm&&(!param.isEmpty())){
 			if (permission.playerInGroup(p, param)) {
 				if (!permission.playerRemoveGroup(p, param)) msgparam=msgparam+"fail";;
@@ -214,20 +233,31 @@ public class ReActions extends JavaPlugin {
 		} else if (act.equalsIgnoreCase("itemgive")&&(!param.isEmpty())){
 			giveItemPlayer(p,param);
 		} else if (act.equalsIgnoreCase("cmdplr")&&(!param.isEmpty())){
-			getServer().dispatchCommand(p, param.replaceAll("%player%",p.getName()));
+			executeCommand (p,false,param);
 		} else if (act.equalsIgnoreCase("cmdsrv")&&(!param.isEmpty())){
-			getServer().dispatchCommand(getServer().getConsoleSender(), param.replaceAll("%player%",p.getName()));
+			executeCommand (p,true,param);
 		} else if (act.equalsIgnoreCase("moneypay")&&(vault_eco)&&(!param.isEmpty())){
 			msgparam = Integer.toString(moneyPay (p, param))+";"+this.economy.currencyNamePlural();
 		} else if (act.equalsIgnoreCase("moneygive")&&(vault_eco)&&(!param.isEmpty())){
 			msgparam = Integer.toString(moneyGive (p, param))+";"+this.economy.currencyNamePlural();
 		}
-		
-		//выводим сообщение о выполнении действия
 		if (u.isWordInList(act, actionmsg)) u.PrintMSG(p, "act_"+act,msgparam);
 	}
 	
+	private void addToTown(Player p, String param){
+		if (towny_conected) towny.addToTown(p, param);
+	}
 	
+	private void kickFromTown(Player p){
+		if (towny_conected)	towny.kickFromTown (p);
+	}
+
+	private void executeCommand (Player p, boolean console, String cmd){
+		CommandSender sender = p;
+		if (console) sender = getServer().getConsoleSender();
+		getServer().dispatchCommand(sender, ChatColor.translateAlternateColorCodes('&', cmd.replaceAll("%player%", p.getName())));
+	}
+
 
 
 	private int moneyPay (Player p, String mstr){
@@ -248,7 +278,7 @@ public class ReActions extends JavaPlugin {
 		if (!target.isEmpty()) economy.depositPlayer(target, amount);
 		return amount;
 	}
-	
+
 	private int moneyGive (Player p, String mstr){
 		if (mstr.isEmpty()) return 0;
 		String money="";
@@ -263,12 +293,12 @@ public class ReActions extends JavaPlugin {
 		if (!money.matches("[0-9]*")) return 0;
 		int amount = Integer.parseInt(money);
 		if (amount<=0) return 0;		
-		
+
 		if (!source.isEmpty()){
 			if (amount<economy.getBalance(source)) return 0;
 			economy.withdrawPlayer(source, amount);
 		} 
-		
+
 		economy.depositPlayer(p.getName(), amount);
 		return amount;
 	}
@@ -286,15 +316,6 @@ public class ReActions extends JavaPlugin {
 
 	public void executeClicker(Player p, Activator c){
 		performActions(p, (checkFlags(p,c)), c); 
-	}
-
-	protected boolean connectToTowny(){
-		Plugin twn = getServer().getPluginManager().getPlugin("Towny");
-		if ((twn != null)&&(twn instanceof Towny)){
-			this.towny = (Towny) twn;
-			return true;
-		}
-		return false;
 	}
 
 
@@ -347,60 +368,8 @@ public class ReActions extends JavaPlugin {
 	}
 
 
-	protected void kickFromTown (Player p){
-		Resident rsd = towny.getTownyUniverse().getResidentMap().get(p.getName());
-		
-		if (rsd.hasTown()){
-			Town town;
-			try {
-				town = rsd.getTown();
-				if (!rsd.isMayor())	townRemoveResident (town,rsd);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
 
 
-	private void townRemoveResident (Town town, Resident resident) throws NotRegisteredException, EmptyTownException {
-			town.removeResident(resident);
-			towny.deleteCache(resident.getName());
-			TownyUniverse.getDataSource().saveResident(resident);
-			TownyUniverse.getDataSource().saveTown(town);
-			towny.getTownyUniverse().setChangedNotify(TOWN_REMOVE_RESIDENT);
-			Bukkit.getPluginManager().callEvent(new TownRemoveResidentEvent (resident, town));
-	}
-
-
-	protected void addToTown (Player p, String town){
-		if (towny_conected){
-			Town newtown = towny.getTownyUniverse().getTownsMap().get(town.toLowerCase());
-			if (newtown != null){
-				Resident rsd = towny.getTownyUniverse().getResidentMap().get(p.getName()); 
-				if (rsd.hasTown()){
-					Town twn = null;
-					try {
-						twn = rsd.getTown();
-						townRemoveResident  (twn, rsd);
-					} catch (Exception e){
-						e.printStackTrace();
-					}
-				}
-				if (!rsd.hasTown()){
-					try {
-						newtown.addResident(rsd);
-						towny.deleteCache(rsd.getName());
-						TownyUniverse.getDataSource().saveResident(rsd);
-						TownyUniverse.getDataSource().saveTown(newtown);
-						towny.getTownyUniverse().setChangedNotify(TOWN_ADD_RESIDENT);
-						Bukkit.getPluginManager().callEvent(new TownAddResidentEvent (rsd, newtown));
-					} catch (Exception e) {
-						e.printStackTrace();
-					}					
-				}
-			}
-		}
-	}
 
 
 	protected void saveClickers(){
@@ -421,12 +390,12 @@ public class ReActions extends JavaPlugin {
 						List<String> flg = new ArrayList<String>();
 
 						for (int i = 0; i<c.flags.size();i++)	flg.add(c.flags.get(i).toString());
-						
-/*						for (String fkey : c.flags.keySet()){
+
+						/*						for (String fkey : c.flags.keySet()){
 							String s = fkey+"="+c.flags.get(fkey);
 							flg.add(s);
 						}*/
-						
+
 						if (flg.size()>0)
 							btn.set(key+".flags",flg);
 					}
@@ -477,12 +446,6 @@ public class ReActions extends JavaPlugin {
 					if (flg.size()>0){
 						for (int i = 0; i< flg.size();i++){
 							clk.addFlag(flg.get(i));
-							
-							/*String []ln = flg.get(i).split("=");
-							if (ln.length>0){
-								if (ln.length==2) clk.flags.put(ln[0], ln[1]);
-								else clk.flags.put(ln[0], "");*/
-							//}
 						}
 					}
 
@@ -555,9 +518,9 @@ public class ReActions extends JavaPlugin {
 				lcs.load(f);
 				for (String key : lcs.getKeys(false))
 					tports.put(key,new RALoc (lcs.getString(key+".world"),
-							lcs.getInt(key+".x"),
-							lcs.getInt(key+".y"),
-							lcs.getInt(key+".z"),
+							lcs.getDouble(key+".x"),
+							lcs.getDouble(key+".y"),
+							lcs.getDouble(key+".z"),
 							(float) lcs.getDouble(key+".yaw"),
 							(float) lcs.getDouble(key+".pitch")));
 			}
@@ -566,22 +529,28 @@ public class ReActions extends JavaPlugin {
 		}			
 
 	}
-	
+
 	protected void saveCfg(){
-		getConfig().set("general.language-save",language);
+		getConfig().set("general.language",language);
 		getConfig().set("general.check-updates",version_check);
 		getConfig().set("reactions.show-messages-for-actions",actionmsg);
+		getConfig().set("general.center-player-teleport",tp_center_coors);
 		saveConfig();
 	}
-	
+
 	protected void loadCfg(){
 		language= getConfig().getString("general.language","english");
 		version_check = getConfig().getBoolean("general.check-updates",false);
 		language_save = getConfig().getBoolean("general.language-save",false);
+		tp_center_coors = getConfig().getBoolean("general.center-player-teleport",true);
 		actionmsg= getConfig().getString("reactions.show-messages-for-actions","tp,grpadd,grprmv,townset,townkick,itemrmv,itemgive,moneypay,moneygive");
 	}
 
 
+	private boolean checkTowny(){
+		Plugin twn = this.getServer().getPluginManager().getPlugin("Towny");
+		return  ((twn != null)&&(twn instanceof Towny));
+	}
 
 
 }

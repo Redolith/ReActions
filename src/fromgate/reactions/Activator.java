@@ -107,7 +107,7 @@ public class Activator {
 		public FlagVal(String f, String v, boolean not){
 			this.flag =f;
 			this.value = v;
-			this.not = true;
+			this.not = not;
 		}
 		
 		

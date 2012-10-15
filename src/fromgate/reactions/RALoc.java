@@ -27,24 +27,24 @@ import org.bukkit.Location;
 
 public class RALoc {
 	String world;
-	int x;
-	int y;
-	int z;
+	double x;
+	double y;
+	double z;
 	float yaw;
 	float pitch;
 	
 	
 	public RALoc (Location loc){
 		this.world = loc.getWorld().getName();
-		this.x = loc.getBlockX();
-		this.y = loc.getBlockY();
-		this.z = loc.getBlockZ();
+		this.x = loc.getX();
+		this.y = loc.getY();
+		this.z = loc.getZ();
 		this.yaw= loc.getYaw();
 		this.pitch = loc.getPitch();
 	
 	}
 	
-	public RALoc (String world, int x, int y, int z, float yaw, float pitch){
+	public RALoc (String world, double x, double y, double z, float yaw, float pitch){
 		this.world = world;
 		this.x = x;
 		this.y = y;
@@ -59,9 +59,9 @@ public class RALoc {
 	
 	public boolean equalToLoc(Location loc){
 		return 	(loc.getWorld().getName().equalsIgnoreCase(this.world)&&
-				(loc.getBlockX()==this.x)&&
-				(loc.getBlockY()==this.y)&&
-				(loc.getBlockZ()==this.z));
+				(Math.round(loc.getX())==Math.round(x))&&
+				(Math.round(loc.getY())==Math.round(y))&&
+				(Math.round(loc.getZ())==Math.round(z)));
 	}
 	
 	

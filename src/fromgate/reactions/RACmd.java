@@ -59,7 +59,14 @@ public class RACmd implements CommandExecutor{
 		} else if (cmd.equalsIgnoreCase("list")){
 			u.PrintMSG(p,"msg_listcount",plg.clickers.size()+";"+plg.tports.size());
 			return true;
-
+		} else if (cmd.equalsIgnoreCase("reload")){
+			plg.clickers.clear();
+			plg.loadActivators();
+			plg.tports.clear();
+			plg.loadLocs();
+			u.PrintMSG(p, "msg_cmdreload",plg.clickers.size()+";"+plg.tports.size());
+			
+			return true;
 		} else if (cmd.equalsIgnoreCase("check")){
 			int radius = 8;
 			World w = p.getWorld();
@@ -265,8 +272,6 @@ public class RACmd implements CommandExecutor{
 		}
 		return false;
 	}
-
-
 
 	//                                          add          a           <name>   <flag>    <param>
 	//                                          add          <name>        a      <flag>    <param>
