@@ -53,6 +53,11 @@ public abstract class Activator {
         flags.add(new FlagVal(flag,param,not));
     }
 
+    public boolean removeFlag (int index){
+        if (flags.size()<=index) return false;
+        flags.remove(index);
+        return true;
+    }
     public List<FlagVal> getFlags(){
         return flags;
     }
@@ -61,8 +66,20 @@ public abstract class Activator {
         actions.add(new ActVal (action,param));
     }
 
+    public boolean removeAction (int index){
+        if (actions.size()<=index) return false;
+        actions.remove(index);
+        return true;
+    }
+
     public void addReaction (String action, String param){
         reactions.add(new ActVal (action,param));
+    }
+
+    public boolean removeReaction (int index){
+        if (reactions.size()<=index) return false;
+        reactions.remove(index);
+        return true;
     }
 
     public List<ActVal> getActions(){

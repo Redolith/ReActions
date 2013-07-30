@@ -1,6 +1,6 @@
 name: ReActions
 main: me.fromgate.reactions.ReActions
-version: 0.0.3/2
+version: 0.2.0
 website: http://fromgate.me
 author: fromgate, fromgate@gmail.com
 softdepend: [Vault,Towny,WorldGuard]

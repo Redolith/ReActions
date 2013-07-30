@@ -23,28 +23,29 @@
 package me.fromgate.reactions;
 
 import java.text.DecimalFormat;
-
+import java.util.Map;
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.Activator.FlagVal;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 
 
 
 public class Actions {
-
-    static String atypes = "tp,sound,potion,rmvpot,grpadd,grprmv,msg,dmg,townset,townkick,itemrmv,invitemrmv,itemgive,cmdplr,cmdop,cmdsrv,moneypay,moneygive,delay,pdelay,back";
-
+    static String atypes = "tp,velocity,sound,potion,rmvpot,grpadd,grprmv,msg,dmg,townset,townkick,itemrmv,invitemrmv,itemgive,cmdplr,cmdop,cmdsrv,moneypay,moneygive,delay,pdelay,back,mob,effect";
 
     static ReActions plg;
     static RAUtil u;
@@ -56,7 +57,7 @@ public class Actions {
 
 
     public static void executeActivator (Player p, Activator act){
-        if (Flag.checkAllFlags(p, act)){
+        if (Flag.checkFlags(p, act)){
             if (act.getActions().size()>0)
                 for (int i = 0; i<act.getActions().size(); i++)
                     performAction (p, act,true, act.getActions().get(i).flag,act.getActions().get(i).value);
@@ -72,29 +73,34 @@ public class Actions {
         String actname = a.getName();
         String actkey = "act_"+act;
         boolean annoying = a.isAnnoying();
+        Map<String,String> params = Util.parseActionParam(param);
         String msgparam =param;
 
         if (act.equalsIgnoreCase("tp")){
-            if (checkLoc(param)) {
-                teleportPlayer (p,param);
-                Location loc = RALoc.parseLocation(param);
-                if (param != null) msgparam = RALoc.locactionToStringFormated(loc);
-            } else actkey=actkey+"fail";
+            Location loc = teleportPlayer (p,params);
+            if (loc!= null) msgparam = Util.locationToStringFormated(loc);
+            else actkey=actkey+"fail";
+        } else if (act.equalsIgnoreCase("effect")){
+            playEffect(p,params);
+        } else if (act.equalsIgnoreCase("velocity")){
+            setPlayerVelocity(p,params);
+        } else if (act.equalsIgnoreCase("mob")){
+            mobSpawn(p, params);
         } else if (act.equalsIgnoreCase("back")){
             int prev = 1;
             if (u.isIntegerGZ(param)) prev = Integer.parseInt(param);
             RAPushBack.teleportToPrev(p, prev);
         } else if (act.equalsIgnoreCase("sound")&&(!param.isEmpty())){
-            soundPlay (p, param);
+            soundPlay (p, params);
         } else if (act.equalsIgnoreCase("potion")&&(!param.isEmpty())){
-            potionEffect (p, param);
+            potionEffect (p, params);
         } else if (act.equalsIgnoreCase("rmvpot")&&(!param.isEmpty())){
             removePotionEffect (p, param);
-        } else if (act.equalsIgnoreCase("grpadd")&&plg.vault_perm&&(!param.isEmpty())){
-            if (!plg.permission.playerAddGroup(p, param)) actkey=actkey+"fail";
-        } else if (act.equalsIgnoreCase("grprmv")&&plg.vault_perm&&(!param.isEmpty())){
-            if (plg.permission.playerInGroup(p, param)) {
-                if (!plg.permission.playerRemoveGroup(p, param)) actkey=actkey+"fail";
+        } else if (act.equalsIgnoreCase("grpadd")&&plg.vault.isPermissionConected()&&(!param.isEmpty())){
+            if (!plg.vault.playerAddGroup(p, param)) actkey=actkey+"fail";
+        } else if (act.equalsIgnoreCase("grprmv")&&plg.vault.isPermissionConected()&&(!param.isEmpty())){
+            if (plg.vault.playerInGroup(p, param)) {
+                if (!plg.vault.playerRemoveGroup(p, param)) actkey=actkey+"fail";
             }
         } else if (act.equalsIgnoreCase("msg")&&(!param.isEmpty())){
             sendMessage (p, actname, annoying, doact,  replacePlaceholders(p,a,param));
@@ -121,10 +127,12 @@ public class Actions {
             executeCommand (p,false,replacePlaceholders(p,a,param));
         } else if (act.equalsIgnoreCase("cmdsrv")&&(!param.isEmpty())){
             executeCommand (p,true,replacePlaceholders(p,a,param));
-        } else if (act.equalsIgnoreCase("moneypay")&&(plg.vault_eco)&&(!param.isEmpty())){
-            msgparam = Integer.toString(moneyPay (p, param))+" "+plg.economy.currencyNamePlural();
-        } else if (act.equalsIgnoreCase("moneygive")&&(plg.vault_eco)&&(!param.isEmpty())){
-            msgparam = Integer.toString(moneyGive (p, param))+" "+plg.economy.currencyNamePlural();
+        } else if (act.equalsIgnoreCase("moneypay")&&(plg.vault.isEconomyConected())&&(!param.isEmpty())){
+            //msgparam = Integer.toString(moneyPay (p, param))+" "+plg.economy.currencyNamePlural();
+            msgparam = plg.vault.formatMoney(Integer.toString(moneyPay (p, param)));
+        } else if (act.equalsIgnoreCase("moneygive")&&(plg.vault.isEconomyConected())&&(!param.isEmpty())){
+            //msgparam = Integer.toString(moneyGive (p, param))+" "+plg.economy.currencyNamePlural();
+            msgparam  = plg.vault.formatMoney(Integer.toString(moneyGive (p, param)));
         } else if (act.equalsIgnoreCase("delay")&&(!param.isEmpty())){
             setDelay(p, param);
         } else if (act.equalsIgnoreCase("pdelay")&&(!param.isEmpty())){
@@ -134,7 +142,126 @@ public class Actions {
     }
 
 
+    private static void playEffect(Player p, Map<String,String> params) {
+        RAEffects.playEffect(p, params);
+    }
 
+
+    private static void setPlayerVelocity(Player p, Map<String,String> params) {
+        String velstr = "";
+        boolean multiply = false;
+        if (params.containsKey("param")){
+            velstr = Util.getParam(params, "param", "");
+        } else {
+            velstr = Util.getParam(params, "direction","");
+            multiply = Util.getParam(params, "multiply", false);
+        }
+        
+        if (velstr.isEmpty()) return;
+        Vector v = p.getVelocity();
+        String [] ln = velstr.split(",");
+        if ((ln.length == 1)&&(velstr.matches("-?(([0-9]+\\.[0-9]*)|([0-9]+))"))) {
+            double power = Double.parseDouble(velstr);
+            v.setY(Math.min(10, multiply ? power*p.getVelocity().getY() : power));
+        } else if ((ln.length == 3)&&
+                ln[0].matches("-?(([0-9]+\\.[0-9]*)|([0-9]+))")&&
+                ln[1].matches("-?(([0-9]+\\.[0-9]*)|([0-9]+))")&&
+                ln[2].matches("-?(([0-9]+\\.[0-9]*)|([0-9]+))")) {
+            double powerx = Double.parseDouble(ln[0]);
+            double powery = Double.parseDouble(ln[1]);
+            double powerz = Double.parseDouble(ln[2]);
+            if (multiply){
+             powerx = powerx*p.getVelocity().getX();
+             powery = powery*p.getVelocity().getY();
+             powerz = powerz*p.getVelocity().getZ();
+            }
+            
+            v = new Vector (Math.min(10,powerx),Math.min(10,powery),Math.min(10,powerz));
+        }
+        p.setVelocity(v);
+    }
+
+
+    private static void mobSpawn(Player p, Map<String,String> params) {
+        String mob = Util.getParam(params, "type", "PIG");
+        String locstr = Util.getParam(params, "loc", "");
+        Location loc = locToLocation(p,locstr);
+        int radius = Util.getParam(params, "radius", 0);
+        int num=Util.getMinMaxRandom(Util.getParam(params, "num", "1"));
+        String hparam = Util.getParam(params, "health", "1");
+        double health = Util.getMinMaxRandom(hparam);
+        String playeffect = Util.getParam(params, "effect", "");
+        String chest = Util.getParam(params, "chest", "");
+        String leg = Util.getParam(params, "leg", "");
+        String helm = Util.getParam(params, "helm", "");
+        String boot = Util.getParam(params, "boot", "");
+        String weapon = Util.getParam(params, "weapon", "");
+        boolean land = Util.getParam(params, "land", true);
+        
+        
+        String name = Util.getParam(params, "name", ""); 
+        
+        for (int i = 0; i<num; i++){
+            if (loc == null) loc = p.getLocation();
+            Location l = Util.getRandomLocationInRadius(loc, radius,land);
+            Entity e = loc.getWorld().spawnEntity(l, EntityType.fromName(mob));
+            if (e == null) break;
+            if (!(e instanceof LivingEntity)) {
+                e.remove();
+                break;
+            }
+            
+            if (!playeffect.isEmpty()){
+                int data = 0;
+                if (playeffect.equalsIgnoreCase("smoke")) data = 9;
+                RAEffects.playEffect(loc, playeffect, data);
+            }
+            
+            LivingEntity le = (LivingEntity)e;
+            if (health>0){
+                le.setMaxHealth(health);
+                le.setHealth(health);
+            }
+            if (!name.isEmpty()){
+                le.setCustomName(name);    
+                le.setCustomNameVisible(true);
+            }
+            
+            if (u.isWordInList(le.getType().name(), "zombie,skeleton")){
+                
+                if (!helm.isEmpty()){
+                    ItemStack item = Util.getRndItem(helm);
+                    if (item != null) le.getEquipment().setHelmet(item);
+                }
+                
+                if (!chest.isEmpty()){
+                    ItemStack item = Util.getRndItem(chest);
+                    if (item != null) le.getEquipment().setChestplate(item);
+                }
+
+                if (!leg.isEmpty()){
+                    ItemStack item = Util.getRndItem(leg);
+                    if (item != null) le.getEquipment().setLeggings(item);
+                }
+                
+                if (!boot.isEmpty()){
+                    ItemStack item = Util.getRndItem(boot);
+                    if (item != null) le.getEquipment().setBoots(item);
+                }
+                
+                if (!weapon.isEmpty()){
+                    ItemStack item = Util.getRndItem(weapon);
+                    if (item != null) le.getEquipment().setItemInHand(item);
+                }
+                
+            }
+            
+            
+            //TODO chest,helm,leg,boot,weapon
+            //flyloc
+            
+        }
+    }
 
 
     public static String replacePlaceholders (Player p, Activator a, String param){
@@ -178,8 +305,8 @@ public class Actions {
                 if (!r.isEmpty()) rst = r;	
             }
         } else if (flag.equalsIgnoreCase("money")) {
-            if (plg.vault_eco&&u.isIntegerSigned(value)){
-                rst = plg.economy.format(Integer.parseInt(value));
+            if (plg.vault.isEconomyConected()&&u.isIntegerSigned(value)){
+                rst = plg.vault.formatMoney(value);
             }
         } else if (flag.equalsIgnoreCase("chance")) {
             rst = value +"%";
@@ -229,42 +356,54 @@ public class Actions {
     }
 
 
-    
+
     private static void removePotionEffect(Player p, String param) {
         if (param.equalsIgnoreCase("all")||param.equalsIgnoreCase("*")){
-            p.getActivePotionEffects().clear();
+            for (PotionEffect pe :p.getActivePotionEffects()) p.removePotionEffect(pe.getType());
         } else {
             String [] pefs = param.split(",");
             if (pefs.length>0){
-                for (int i = 0; i>pefs.length; i++){
+                for (int i = 0; i<pefs.length; i++){
                     PotionEffectType pef = parsePotionEffect (pefs[i]);
                     if (pef == null) continue;
-                    p.removePotionEffect(pef);
+                    if (p.hasPotionEffect(pef)) p.removePotionEffect(pef);
+                    //p.addPotionEffect(new PotionEffect (pef, 0,0,false));
                 }
             }
         }
     }
 
     // <POTION EFFECT>/<duration>/<amplifier>
-    private static void potionEffect(Player p, String param) {
-        if (param.isEmpty()) return;
+    private static void potionEffect(Player p, Map<String,String> params) {
+        if (params.isEmpty()) return;
         String peffstr = "";
         int duration=20;
         int amplifier = 1;
-        if (param.contains("/")){
-            String[] prm = param.split("/");
-            if (prm.length>1){
-                peffstr = prm[0];
-                if (u.isIntegerGZ(prm[1])) duration = Integer.parseInt(prm[1]);
-                if ((prm.length>2)&&u.isIntegerGZ(prm[2])) amplifier= Integer.parseInt(prm[2]);
-            }
-        } else peffstr = param;
+        boolean ambient = false;
+        if (params.containsKey("param")){
+            String param = Util.getParam(params, "param", "");
+            if (param.isEmpty()) return;
+            if (param.contains("/")){
+                String[] prm = param.split("/");
+                if (prm.length>1){
+                    peffstr = prm[0];
+                    if (u.isIntegerGZ(prm[1])) duration = Integer.parseInt(prm[1]);
+                    if ((prm.length>2)&&u.isIntegerGZ(prm[2])) amplifier= Integer.parseInt(prm[2]);
+                }
+            } else peffstr = param;            
+        } else {
+            peffstr = Util.getParam(params, "type", "");
+            duration = Util.getParam(params, "time", 20);
+            amplifier = Util.getParam(params, "level", 1);
+            ambient = Util.getParam(params, "ambient", false);
+        }
+        
         PotionEffectType pef = parsePotionEffect (peffstr);
         if (pef == null) return;
-        PotionEffect pe = new PotionEffect (pef, duration, amplifier,false);
+        PotionEffect pe = new PotionEffect (pef, duration, amplifier,ambient);
         p.addPotionEffect(pe);
     }
-    
+
     private static PotionEffectType parsePotionEffect (String name) {
         PotionEffectType pef = null;
         try{
@@ -276,25 +415,32 @@ public class Actions {
 
 
     // <SOUNDNAME>/<volume>/<yaw>
-    private static void soundPlay (Player p, String param){
-        if (param.isEmpty()) return;
+    private static void soundPlay (Player p, Map<String,String> params){
+        if (params.isEmpty()) return;
         String sndstr = "";
         String strvolume ="1";
         String strpitch = "1";
-        if (param.contains("/")){
-            String[] prm = param.split("/");
-            if (prm.length>1){
-                sndstr = prm[0];
-                strvolume = prm[1];
-                if (prm.length>2) strpitch = prm[2];
-            }
-        } else sndstr = param;
-        float volume = 1;
-        if (strvolume.matches("[0-9]+-?\\.[0-9]*")) volume = Float.parseFloat(strvolume);
         float pitch = 1;
-        if (strpitch.matches("[0-9]+-?\\.[0-9]*")) pitch = Float.parseFloat(strpitch);
+        float volume = 1;
+        if (params.containsKey("param")){
+            String param = Util.getParam(params, "param", "");
+            if (param.isEmpty()) return;
+            if (param.contains("/")){
+                String[] prm = param.split("/");
+                if (prm.length>1){
+                    sndstr = prm[0];
+                    strvolume = prm[1];
+                    if (prm.length>2) strpitch = prm[2];
+                }
+            } else sndstr = param;
+            if (strvolume.matches("[0-9]+-?\\.[0-9]*")) volume = Float.parseFloat(strvolume);
+            if (strpitch.matches("[0-9]+-?\\.[0-9]*")) pitch = Float.parseFloat(strpitch);            
+        } else {
+            sndstr = Util.getParam(params, "type", "");
+            pitch = Util.getParam(params, "pitch", 1.0f);
+            volume = Util.getParam(params, "volume", 1.0f);
+        }
         Sound sound = getSoundStr (sndstr);
-
         p.getWorld().playSound(p.getLocation(), sound, volume, pitch);
     }
 
@@ -360,9 +506,9 @@ public class Actions {
         } else money = mstr;
         if (!money.matches("[0-9]*")) return 0;
         int amount = Integer.parseInt(money);
-        if ((amount<=0)||(amount>plg.economy.getBalance(p.getName()))) return 0;
-        plg.economy.withdrawPlayer(p.getName(), amount);
-        if (!target.isEmpty()) plg.economy.depositPlayer(target, amount);
+        if ((amount<=0)||(amount>plg.vault.getBalance(p.getName()))) return 0;
+        plg.vault.withdrawPlayer(p.getName(), amount);
+        if (!target.isEmpty()) plg.vault.depositPlayer(target, amount);
         return amount;
     }
 
@@ -382,11 +528,11 @@ public class Actions {
         if (amount<=0) return 0;		
 
         if (!source.isEmpty()){
-            if (amount<plg.economy.getBalance(source)) return 0;
-            plg.economy.withdrawPlayer(source, amount);
+            if (amount<plg.vault.getBalance(source)) return 0;
+            plg.vault.withdrawPlayer(source, amount);
         } 
 
-        plg.economy.depositPlayer(p.getName(), amount);
+        plg.vault.depositPlayer(p.getName(), amount);
         return amount;
     }
 
@@ -422,15 +568,15 @@ public class Actions {
         return (locstr.equalsIgnoreCase("player")||
                 locstr.equalsIgnoreCase("viewpoint")||
                 plg.tports.containsKey(locstr)||
-                (RALoc.parseLocation(locstr)!=null));
+                (Util.parseLocation(locstr)!=null));
     }
 
     public static Location locToLocation(Player p, String locstr){
         Location loc = null;
         if (locstr.equalsIgnoreCase("player")) loc = p.getLocation();
         else if (locstr.equalsIgnoreCase("viewpoint")) loc = p.getTargetBlock(null, 100).getLocation(); 
-        else if (plg.tports.containsValue(locstr)) loc = plg.tports.get(locstr).getLocation();
-        else loc = RALoc.parseLocation(locstr);
+        else if (plg.tports.containsKey(locstr)) loc = plg.tports.get(locstr).getLocation();
+        else loc = Util.parseLocation(locstr);
         return loc;
     }
 
@@ -445,15 +591,36 @@ public class Actions {
     }
 
 
-    private static void teleportPlayer (Player p, String param){
-        Location loc = locToLocation (p,param);
+    private static Location teleportPlayer (Player p, Map<String,String> params){
+        Location loc = null;
+        int radius = 0;
+        if (params.isEmpty()) return null;
+        if (params.containsKey("param")) {
+            loc = locToLocation (p, Util.getParam(params, "param", ""));
+            
+        } else { 
+            loc = locToLocation (p, Util.getParam(params, "loc", ""));
+            radius = Util.getParam(params, "radius", 0);
+        }
+        boolean land = Util.getParam(params, "land", true);
+        
         if (loc != null){
+            if (radius>0) loc = Util.getRandomLocationInRadius(loc, radius,land);
             if (plg.tp_center_coors) {
                 loc.setX(loc.getBlockX()+0.5);
                 loc.setZ(loc.getBlockZ()+0.5);
             }
             p.teleport(loc);
+            String playeffect = Util.getParam(params, "effect", "");
+            if (!playeffect.isEmpty()){
+                int data = 0;
+                if (playeffect.equalsIgnoreCase("smoke")) data = 9;
+                RAEffects.playEffect(loc, playeffect, data);
+            }
+
+            
         }
+        return loc;
     }
 
 

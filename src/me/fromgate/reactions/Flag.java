@@ -42,7 +42,7 @@ public class Flag {
 
     public static boolean checkFlag (Player p, String flag, String param, boolean not){
         boolean chr = false;
-        if (flag.equalsIgnoreCase("group")) chr= (plg.vault_perm&&plg.permission.playerInGroup(p, param));
+        if (flag.equalsIgnoreCase("group")) chr= plg.vault.playerInGroup(p, param);
         else if (flag.equalsIgnoreCase("perm")) chr=p.hasPermission(param);
         else if (flag.equalsIgnoreCase("time")) chr=checkTime(p, param);
         else if (flag.equalsIgnoreCase("item")) chr=checkItem (p, param);
@@ -112,7 +112,7 @@ public class Flag {
     }
 
     private static boolean playerHasMoney (Player p, String amountstr){
-        return plg.vault_eco&&(amountstr.matches("[0-9]*")&&(Integer.parseInt(amountstr)<=plg.economy.getBalance(p.getName()))); 
+        return plg.vault.isEconomyConected()&&(amountstr.matches("[0-9]*")&&(Integer.parseInt(amountstr)<=plg.vault.getBalance(p.getName()))); 
     }
 
     public static boolean checkFlags (Player p, Activator c){

@@ -45,7 +45,7 @@ public class RAUtil extends FGUtilCore {
         addCmd("list", "config","cmd_list","&3/react list [loc|group|type] [page]",'b');
         addCmd("info", "config","cmd_info","&3/react info <activator> [f|a|r]",'b');
         addCmd("group", "config","cmd_group","&3/react group <activator> <groupname>",'b');
-        addCmd("remove", "config","cmd_remove","&3/react remove [loc|b] <id>",'b');
+        addCmd("remove", "config","cmd_remove","&3/react remove [loc|activator] <id>",'b');
         addCmd("clear", "config","cmd_clear","&3/react clear <id> [f|a|r]",'b');
         addCmd("debug", "debug","cmd_debug","&3/react debug [true|false|off]",'b');
         addCmd("check", "config","cmd_check","&3/react check [radius]",'b');
@@ -109,8 +109,6 @@ public class RAUtil extends FGUtilCore {
         addMSG ("cmd_checkfail", "Activators around you was not found (radius %1%)");
         addMSG ("cmd_checkneednumber", "Wrong number: %1%");
         addMSG ("msg_cmdreload", "Reload completed. Loaded %1% activators, %2% locations.");
-
-
         addMSG ("cmd_copy", "%1% - to copy all parameters (or flags, actions, reactions) from <source> activator to <destination>");
         addMSG ("msg_copyall", "All parameters of activator %1% was copied to %2%");
         addMSG ("msg_copyallfailed", "Failed to copy parameters from activator %1% to %2%");
@@ -120,18 +118,14 @@ public class RAUtil extends FGUtilCore {
         addMSG ("msg_copyactionsfailed", "Failed to copy actions from activator %1% to %2%");
         addMSG ("msg_copyreactions", "Reactions of activator %1% was copied to %2%");
         addMSG ("msg_copyreactionsfailed", "Failed to copy reactions from activator %1% to %2%");
-
         addMSG ("msg_grouplisttitle", "Groups of activators");
         addMSG ("msg_actlist", "Activators");
         addMSG ("msg_actlistgrp", "Activators (Group: %1%)");
         addMSG ("msg_actlisttype", "Activators (Type: %1%)");
         addMSG ("msg_listloc", "List of stored locations");
-
-
         addMSG ("cmd_group", "%1% - set the group of <activator> to group <group>");
         addMSG ("msg_groupset", "Activator %1% was moved to group %2%");
         addMSG ("msg_groupsetfailed", "Failed to move activator %1% to group %2%");
-        
         addMSG ("msg_actinfotitle", "Activator info");
         addMSG ("msg_actinfo", "Id: %1% (Type: %2% Group: %3%)");
         addMSG ("msg_actinfo2", "Flags: %1% Actions: %2% Reactions: %3%");
@@ -139,14 +133,14 @@ public class RAUtil extends FGUtilCore {
         addMSG ("lst_actions", "Actions");
         addMSG ("lst_reactions", "Reactions");
         addMSG ("msg_check", "Activators around you");
+        addMSG ("msg_flagremoved", "Flag No.%2% of activator %1% was removed!");
+        addMSG ("msg_failedtoremoveflag", "Failed to remove flag No.%2% of actiovator %1%");
+        addMSG ("msg_actionremoved", "Action No.%2% of activator %1% was removed!");
+        addMSG ("msg_failedtoremoveaction", "Failed to remove action No.%2% of actiovator %1%");
+        addMSG ("msg_reactionremoved", "Reaction No.%2% of activator %1% was removed!");
+        addMSG ("msg_failedtoremovereaction", "Failed to remove reaction No.%2% of actiovator %1%");
+        addMSG ("msg_wrongnumber", "Wrong number %1%!");
         
-        
-        //u.printMSG(p, "msg_actinfo",act.getName(), act.getType(), act.getGroup(), act.getFlags().size(),act.getActions().size(), act.getReactions().size());
-
-        /*
-			if (plg.activators.setGroup(arg1, arg2)) u.printMSG(p, "msg_groupset",arg1, arg2);
-			else u.printMSG(p, "msg_groupsetfailed",arg1, arg2);
-         */
 
         /*
 		addMSG ("", "");

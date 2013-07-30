@@ -65,6 +65,7 @@ public class RACmd implements CommandExecutor{
                 else if (args.length==3) return ExecuteCmd (p, args[0],args[1],args[2]);
                 else if (args.length==4) return ExecuteCmd (p, args[0],args[1],args[2],args[3]);
                 else if (args.length==5) return ExecuteCmd (p, args[0],args[1],args[2],args[3],args[4]);
+                //else if ((args.length==6)&&args[0].equalsIgnoreCase("add")&&args[3].equalsIgnoreCase("tp")&&(args[4].equalsIgnoreCase("here"))) return ExecuteCmd (p, args[0],args[1],args[2],args[3],args[4],args[5]);
                 else if (args.length>=5){
                     String arg4 = "";
                     for (int i = 4; i<args.length;i++) 
@@ -77,6 +78,32 @@ public class RACmd implements CommandExecutor{
         } 
         return false;
     }
+
+/*    private boolean ExecuteCmd(Player p, String cmd, String arg1,String arg2, String arg3, String arg4, String arg5) {
+        if (cmd.equalsIgnoreCase("add")&&plg.activators.contains(arg1)){
+            String param = arg4;
+            int radius = 0;
+            if (arg3.equalsIgnoreCase("tp")){
+                if (param.equalsIgnoreCase("here")) param = Util.locationToString(p.getLocation());
+                if (u.isInteger(arg5)) radius = Integer.parseInt(arg5); 
+                param = param+"@"+Integer.toString(radius);
+                if (arg2.equalsIgnoreCase("a")){
+                    if (addAction (arg1, arg3, param)){
+                        plg.activators.saveActivators();
+                        u.printMSG(p, "cmd_actadded", arg3 + " ("+ param+")"); //TODO~
+                        return true;
+                    } else u.printMSG(p, "cmd_actnotadded",arg3 + " ("+ param+")");
+                } else if (arg2.equalsIgnoreCase("r")){
+                    if (addReAction (arg1, arg3, param)){
+                        plg.activators.saveActivators();
+                        u.printMSG(p, "cmd_reactadded",arg3 + " ("+ param+")"); 
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    } */
 
     public boolean ExecuteCmd (Player p, String cmd){
         if (cmd.equalsIgnoreCase("help")){
@@ -290,7 +317,30 @@ public class RACmd implements CommandExecutor{
                     plg.activators.saveActivators();
                     u.printMSG(p, "cmd_addbadded",wga.toString());
                 }
-            } 
+            /*} else if (arg1.equalsIgnoreCase("loc")){
+                int radius = 0;
+                if (u.isInteger(arg3)) radius = Integer.parseInt(arg3);
+                plg.tports.put(arg2, new RALoc (p.getLocation(),radius));
+                plg.saveLocs();
+                u.printMSG(p, "cmd_addtpadded",arg2); */
+            }
+        } else if (cmd.equalsIgnoreCase("remove")) {
+            if (plg.activators.contains(arg1)){
+                Activator act = plg.activators.get(arg1);
+                if (u.isIntegerGZ(arg3)) {
+                    int num = Integer.parseInt(arg3);
+                    if (arg2.equalsIgnoreCase("f")){
+                        if (act.removeFlag(num-1)) u.printMSG(p, "msg_flagremoved",act.getName(),num);
+                        else u.printMSG(p, "msg_failedtoremoveflag",act.getName(),num);
+                    } else if (arg2.equalsIgnoreCase("a")){
+                        if (act.removeAction(num-1)) u.printMSG(p, "msg_actionremoved",act.getName(),num);
+                        else u.printMSG(p, "msg_failedtoremoveaction",act.getName(),num);
+                    } else if (arg2.equalsIgnoreCase("r")){
+                        if (act.removeReaction(num-1)) u.printMSG(p, "msg_reactionremoved",act.getName(),num);
+                        else u.printMSG(p, "msg_failedtoremovereaction",act.getName(),num);
+                    } else return false;
+                } else u.printMSG(p, "msg_wrongnumber",arg3); 
+            } else u.printMSG(p, "cmd_unknownbutton",arg1);
         } else if (cmd.equalsIgnoreCase("copy")) {
             if (arg1.equalsIgnoreCase("f")||arg1.equalsIgnoreCase("flag")){
                 if (plg.activators.copyFlags(arg2, arg3)) u.printMSG(p, "msg_copyflags",arg2,arg3);
@@ -337,12 +387,13 @@ public class RACmd implements CommandExecutor{
     public boolean ExecuteCmd (Player p, String cmd, String arg1, String arg2, String arg3, String arg4){
         if (cmd.equalsIgnoreCase("add")&&plg.activators.contains(arg1)){
             String param = arg4;
-            if (arg3.equalsIgnoreCase("tp")&&param.equalsIgnoreCase("here"))
-                param = RALoc.locationToString(p.getLocation());
+            
+            if (!u.isWordInList(arg3, "msg,msgall,cmdsrv,cmdplr,cmdop")&&param.contains("here"))
+                param = param.replace("here", Util.locationToString(p.getLocation()));
             if (arg2.equalsIgnoreCase("a")){
                 if (addAction (arg1, arg3, param)){
                     plg.activators.saveActivators();
-                    u.printMSG(p, "cmd_actadded", arg3 + " ("+ param+")");
+                    u.printMSG(p, "cmd_actadded", arg3 + " ("+ param+")"); //TODO~
                     return true;
                 } else u.printMSG(p, "cmd_actnotadded",arg3 + " ("+ param+")");
             } else if (arg2.equalsIgnoreCase("r")){
@@ -443,8 +494,8 @@ public class RACmd implements CommandExecutor{
                 String action = act.getActions().get(i).flag;
                 String param = act.getActions().get(i).value;
                 if (action.equalsIgnoreCase("tp")) {
-                    Location loc = RALoc.parseLocation(param);
-                    if (loc!=null) param = RALoc.locactionToStringFormated(loc);
+                    Location loc = Util.parseLocation(param);
+                    if (loc!=null) param = Util.locationToStringFormated(loc);
                 }
                 flg.add("  &e" + action +" &3= &a"+param);
             }
@@ -456,8 +507,8 @@ public class RACmd implements CommandExecutor{
                 String action = act.getReactions().get(i).flag;
                 String param = act.getReactions().get(i).value;
                 if (action.equalsIgnoreCase("tp")) {
-                    Location loc = RALoc.parseLocation(param);
-                    if (loc!=null) param = RALoc.locactionToStringFormated(loc);
+                    Location loc = Util.parseLocation(param);
+                    if (loc!=null) param = Util.locationToStringFormated(loc);
                 }
                 flg.add("  &e" + action +" &3= &a"+param);
             }

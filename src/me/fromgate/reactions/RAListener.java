@@ -75,6 +75,7 @@ public class RAListener implements Listener{
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = false)
     public void onPlayerJoin (PlayerJoinEvent event){
         plg.debug.offPlayerDebug(event.getPlayer());
+        plg.u.UpdateMsg(event.getPlayer());
     }
 
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)

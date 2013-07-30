@@ -37,6 +37,8 @@ import com.palmergames.bukkit.towny.object.TownyUniverse;
 
 public class RATowny {
 
+    //public boolean towny_conected = false;
+    
     ReActions plg;
     private Towny towny = null;
 
@@ -130,4 +132,9 @@ public class RATowny {
             return false;
         }
     }
+
+
+    /*public boolean isConnected() {
+       return connected;
+    }*/
 }
