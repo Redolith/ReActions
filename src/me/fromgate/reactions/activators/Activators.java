@@ -29,13 +29,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator.ActVal;
 import me.fromgate.reactions.activators.Activator.FlagVal;
 import me.fromgate.reactions.event.*;
-
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -53,10 +51,34 @@ public class Activators {
     List<Activator> act;
     Map<String,YamlConfiguration> ymls;
 
-    String types = "button,plate,region,rgenter,rgleave";
+    Map<String,Class<?>> typesEvents = new HashMap<String,Class<?>>();
+    Map<String,Class<?>> typesActivators = new HashMap<String,Class<?>>();
 
+    private void initActivatorTypes(){
+        typesEvents.put("button", RAButtonEvent.class);
+        typesActivators.put("button", ButtonActivator.class);
+        
+        typesEvents.put("plate", RAPlateEvent.class);
+        typesActivators.put("plate", PlateActivator.class);
+        
+        typesEvents.put("region", RARegionEvent.class);
+        typesActivators.put("region", RegionActivator.class);
+        
+        typesEvents.put("rgenter", RARegionEnterEvent.class);
+        typesActivators.put("rgenter", RgEnterActivator.class);
+        
+        typesEvents.put("rgleave", RARegionLeaveEvent.class);
+        typesActivators.put("rgleave", RgLeaveActivator.class);
+        
+        typesEvents.put("exec", RAExecEvent.class);
+        typesActivators.put("exec", ExecActivator.class);
+        
+        typesEvents.put("command", RACommandEvent.class);
+        typesActivators.put("command", CommandActivator.class);
+    }
 
     public Activators (ReActions reactions){
+        this.initActivatorTypes();
         this.plg = reactions;
         plugin = reactions;
         this.act = new ArrayList<Activator>();
@@ -225,19 +247,30 @@ public class Activators {
         }
 
         for (String type : cfg.getKeys(false)){
-            if (!u.isWordInList(type, types)) continue;
+            if (!isValidActivatorType(type)) continue;
             ConfigurationSection cs = cfg.getConfigurationSection(type);
             if (cs == null) continue;
             for (String name : cs.getKeys(false)){
-                if (type.equalsIgnoreCase("button")) addActivator(new ButtonActivator (name, group, cfg));
-                else if (type.equalsIgnoreCase("plate")) addActivator(new PlateActivator (name, group, cfg));
-                else if (type.equals("region"))	addActivator(new RegionActivator (name, group, cfg));
-                else if (type.equals("rgenter")) addActivator(new RgEnterActivator (name, group, cfg));
-                else if (type.equals("rgleave")) addActivator(new RgLeaveActivator (name, group, cfg));
+                if (typesActivators.containsKey(type)){
+                    Activator a = createActivator (type,name,group,cfg);
+                    if (a==null) continue;
+                    addActivator (a);
+                    
+                }
             }
         }
     }
 
+    private Activator createActivator (String type, String name, String group, YamlConfiguration cfg){
+        try{
+        Object a = typesActivators.get(type).getDeclaredConstructor(String.class,String.class,YamlConfiguration.class).newInstance(name,group,cfg);
+        return (Activator) a;
+        } catch (Exception e){
+            u.logOnce("cannotcreate"+type, "Failed to create new activator. Type: "+type);
+        }
+        return null;
+    }
+    
     public List<String> getActivatorsList(){
         List<String> lst = new ArrayList<String>();
         if (!act.isEmpty())
@@ -269,11 +302,8 @@ public class Activators {
         if (act.isEmpty()) return;
         for (int i = 0; i<act.size(); i++){
             Activator a = act.get(i);
-            if (a.isTypeOf("button")&&(event instanceof RAButtonEvent))	a.activate(event);
-            else if (a.isTypeOf("plate")&&(event instanceof RAPlateEvent)) a.activate(event);
-            else if (a.isTypeOf("region")&&(event instanceof RARegionEvent)) a.activate(event);
-            else if (a.isTypeOf("rgenter")&&(event instanceof RARegionEnterEvent)) a.activate(event);
-            else if (a.isTypeOf("rgleave")&&(event instanceof RARegionLeaveEvent)) a.activate(event);
+            if (isValidActivatorType(a.getType())&&
+                    typesEvents.get(a.getType()).isInstance(event)) a.activate(event);
         }
     }
 
@@ -335,6 +365,10 @@ public class Activators {
     public String getGroup(String activator){
         if (!contains(activator)) return "activator";
         return get (activator).getGroup();
+    }
+    
+    public boolean isValidActivatorType(String type){
+        return this.typesActivators.containsKey(type.toLowerCase());
     }
 
 

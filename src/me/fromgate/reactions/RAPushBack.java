@@ -8,11 +8,9 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 
 public class RAPushBack {
-
-    private static ReActions plg;
-
-    public static void init(ReActions plugin){
-        plg = plugin;
+    
+    private static ReActions plg(){
+        return ReActions.instance;
     }
 
     public static boolean teleportToPrev(Player p, int prev){
@@ -29,7 +27,7 @@ public class RAPushBack {
 
     private static double distance(Location loc1, Location loc2){
         if (!loc1.getWorld().equals(loc2.getWorld())) return 1000;
-        if (plg.horizontal_pushback){
+        if (plg().horizontal_pushback){
             double dx = loc2.getX()-loc1.getX();
             double dy = loc2.getZ()-loc1.getZ();
             return Math.sqrt((dx*dx)+(dy*dy));    
@@ -49,38 +47,38 @@ public class RAPushBack {
     }
 
     private static void setPlayerPrevLoc2(Player p, Location prev2) {
-        p.setMetadata("ra-pb-loc2-world", new FixedMetadataValue(plg, prev2.getWorld().getName()));
-        p.setMetadata("ra-pb-loc2-x", new FixedMetadataValue(plg, prev2.getX()));
-        p.setMetadata("ra-pb-loc2-y", new FixedMetadataValue(plg, prev2.getY()));
-        p.setMetadata("ra-pb-loc2-z", new FixedMetadataValue(plg, prev2.getZ()));
-        p.setMetadata("ra-pb-loc2-yaw", new FixedMetadataValue(plg, prev2.getYaw()));
-        p.setMetadata("ra-pb-loc2-pitch", new FixedMetadataValue(plg, prev2.getPitch()));
+        p.setMetadata("ra-pb-loc2-world", new FixedMetadataValue(plg(), prev2.getWorld().getName()));
+        p.setMetadata("ra-pb-loc2-x", new FixedMetadataValue(plg(), prev2.getX()));
+        p.setMetadata("ra-pb-loc2-y", new FixedMetadataValue(plg(), prev2.getY()));
+        p.setMetadata("ra-pb-loc2-z", new FixedMetadataValue(plg(), prev2.getZ()));
+        p.setMetadata("ra-pb-loc2-yaw", new FixedMetadataValue(plg(), prev2.getYaw()));
+        p.setMetadata("ra-pb-loc2-pitch", new FixedMetadataValue(plg(), prev2.getPitch()));
     }
 
     private static void setPlayerPrevLoc1(Player p, Location prev1) {
-        p.setMetadata("ra-pb-loc1-world", new FixedMetadataValue(plg, prev1.getWorld().getName()));
-        p.setMetadata("ra-pb-loc1-x", new FixedMetadataValue(plg, prev1.getX()));
-        p.setMetadata("ra-pb-loc1-y", new FixedMetadataValue(plg, prev1.getY()));
-        p.setMetadata("ra-pb-loc1-z", new FixedMetadataValue(plg, prev1.getZ()));
-        p.setMetadata("ra-pb-loc1-yaw", new FixedMetadataValue(plg, prev1.getYaw()));
-        p.setMetadata("ra-pb-loc1-pitch", new FixedMetadataValue(plg, prev1.getPitch()));
+        p.setMetadata("ra-pb-loc1-world", new FixedMetadataValue(plg(), prev1.getWorld().getName()));
+        p.setMetadata("ra-pb-loc1-x", new FixedMetadataValue(plg(), prev1.getX()));
+        p.setMetadata("ra-pb-loc1-y", new FixedMetadataValue(plg(), prev1.getY()));
+        p.setMetadata("ra-pb-loc1-z", new FixedMetadataValue(plg(), prev1.getZ()));
+        p.setMetadata("ra-pb-loc1-yaw", new FixedMetadataValue(plg(), prev1.getYaw()));
+        p.setMetadata("ra-pb-loc1-pitch", new FixedMetadataValue(plg(), prev1.getPitch()));
     }
 
     
     public static void clear(Player p){
-        if (p.hasMetadata("ra-pb-loc1-world")) p.removeMetadata("ra-pb-loc1-world", plg);
-        if (p.hasMetadata("ra-pb-loc1-x")) p.removeMetadata("ra-pb-loc1-x", plg);
-        if (p.hasMetadata("ra-pb-loc1-y")) p.removeMetadata("ra-pb-loc1-y", plg);
-        if (p.hasMetadata("ra-pb-loc1-z")) p.removeMetadata("ra-pb-loc1-z", plg);
-        if (p.hasMetadata("ra-pb-loc1-yaw")) p.removeMetadata("ra-pb-loc1-yaw", plg);
-        if (p.hasMetadata("ra-pb-loc1-pitch")) p.removeMetadata("ra-pb-loc1-pitch", plg);
+        if (p.hasMetadata("ra-pb-loc1-world")) p.removeMetadata("ra-pb-loc1-world", plg());
+        if (p.hasMetadata("ra-pb-loc1-x")) p.removeMetadata("ra-pb-loc1-x", plg());
+        if (p.hasMetadata("ra-pb-loc1-y")) p.removeMetadata("ra-pb-loc1-y", plg());
+        if (p.hasMetadata("ra-pb-loc1-z")) p.removeMetadata("ra-pb-loc1-z", plg());
+        if (p.hasMetadata("ra-pb-loc1-yaw")) p.removeMetadata("ra-pb-loc1-yaw", plg());
+        if (p.hasMetadata("ra-pb-loc1-pitch")) p.removeMetadata("ra-pb-loc1-pitch", plg());
         
-        if (p.hasMetadata("ra-pb-loc2-world")) p.removeMetadata("ra-pb-loc2-world", plg);
-        if (p.hasMetadata("ra-pb-loc2-x")) p.removeMetadata("ra-pb-loc2-x", plg);
-        if (p.hasMetadata("ra-pb-loc2-y")) p.removeMetadata("ra-pb-loc2-y", plg);
-        if (p.hasMetadata("ra-pb-loc2-z")) p.removeMetadata("ra-pb-loc2-z", plg);
-        if (p.hasMetadata("ra-pb-loc2-yaw")) p.removeMetadata("ra-pb-loc2-yaw", plg);
-        if (p.hasMetadata("ra-pb-loc2-pitch")) p.removeMetadata("ra-pb-loc2-pitch", plg);        
+        if (p.hasMetadata("ra-pb-loc2-world")) p.removeMetadata("ra-pb-loc2-world", plg());
+        if (p.hasMetadata("ra-pb-loc2-x")) p.removeMetadata("ra-pb-loc2-x", plg());
+        if (p.hasMetadata("ra-pb-loc2-y")) p.removeMetadata("ra-pb-loc2-y", plg());
+        if (p.hasMetadata("ra-pb-loc2-z")) p.removeMetadata("ra-pb-loc2-z", plg());
+        if (p.hasMetadata("ra-pb-loc2-yaw")) p.removeMetadata("ra-pb-loc2-yaw", plg());
+        if (p.hasMetadata("ra-pb-loc2-pitch")) p.removeMetadata("ra-pb-loc2-pitch", plg());        
         
     }
     

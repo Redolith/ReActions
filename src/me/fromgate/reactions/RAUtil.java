@@ -22,6 +22,8 @@
 
 package me.fromgate.reactions;
 
+import org.bukkit.inventory.ItemStack;
+
 public class RAUtil extends FGUtilCore {
     ReActions plg;
 
@@ -40,6 +42,7 @@ public class RAUtil extends FGUtilCore {
         cmds.clear();
         cmdlist = "";
         addCmd("help", "config", "hlp_thishelp","&3/react help [command]",'b');
+        addCmd("run", "run","cmd_run","&3/react run <command activator> [target player]",'b');
         addCmd("add", "config","cmd_add","&3/react add [b <id>|loc <id>|<id> f <flag> <param>|<id> r <action> <param>|<id> r <reaction> <param>",'b');
         addCmd("copy", "config","cmd_copy","&3/react copy [flag|actions|reactions] <source> <destination>",'b');
         addCmd("list", "config","cmd_list","&3/react list [loc|group|type] [page]",'b');
@@ -140,12 +143,21 @@ public class RAUtil extends FGUtilCore {
         addMSG ("msg_reactionremoved", "Reaction No.%2% of activator %1% was removed!");
         addMSG ("msg_failedtoremovereaction", "Failed to remove reaction No.%2% of actiovator %1%");
         addMSG ("msg_wrongnumber", "Wrong number %1%!");
+        addMSG ("cmd_runplayer", "Activator %1% executed (for player %2%)");
+        addMSG ("cmd_runplayerfail", "Failed to run activator %1%");
+        addMSG ("cmd_rundelayplayer", "Execution of activator %1% for player %2% will start after %3% ticks");
+        addMSG ("cmd_runplayerunknown", "Failed to run activator %1%. Player %2% is unknown");
         
-
         /*
 		addMSG ("", "");
 		addMSG ("", "");
 		addMSG ("", "");
          */
     }
+    
+    @Override
+    public ItemStack parseItemStack (String itemstr){
+        return Util.parseItemStack(itemstr);
+    }
+    
 }

@@ -38,7 +38,7 @@ public class Flag {
     }
 
 
-    static String ftypes = "group,perm,time,item,invitem,town,money,chance,pvp,online,delay,pdelay";
+    static String ftypes = "group,perm,time,item,invitem,town,money,chance,pvp,online,delay,pdelay,region,pose,rgplayer";
 
     public static boolean checkFlag (Player p, String flag, String param, boolean not){
         boolean chr = false;
@@ -54,8 +54,35 @@ public class Flag {
         else if (flag.equalsIgnoreCase("online")) chr=checkServerOnline(p,param);
         else if (flag.equalsIgnoreCase("delay")) chr=checkDelay(p,param);
         else if (flag.equalsIgnoreCase("pdelay")) chr=checkPersonalDelay(p,param);
+        else if (flag.equalsIgnoreCase("region")) chr=checkPlayerInRegion(p,param);
+        else if (flag.equalsIgnoreCase("rgplayer")) chr=playersInRegion(p,param);
+        else if (flag.equalsIgnoreCase("pose")) chr=checkPosture(p,param);
         if (not) chr= !chr;
         return chr;
+    }
+
+    private static boolean checkPosture(Player p, String param) {
+        if (p.isSneaking()&&param.equalsIgnoreCase("sneak")) return true;
+        if (p.isSprinting()&&param.equalsIgnoreCase("sprint")) return true;
+        if (param.equalsIgnoreCase("stand")) return true;
+        if (param.equalsIgnoreCase("normal")) return true;
+        return false;
+    }
+
+    private static boolean playersInRegion(Player p, String param) {
+        if (!plg.worldguard.connected) return false;
+        String rg = param;
+        int minp = 1;
+        if (param.contains("/")){
+            rg = param.substring(0,param.indexOf("/"));
+            String s = param.substring(param.indexOf("/")+1);
+            if ((!s.isEmpty())&&plg.u.isInteger(s)) minp = Integer.parseInt(s);
+        }
+        return (minp<=plg.worldguard.countPlayersInRegion(rg));
+    }
+
+    private static boolean checkPlayerInRegion(Player p, String param) {
+        return plg.worldguard.isPlayerInRegion(p, param);
     }
 
 

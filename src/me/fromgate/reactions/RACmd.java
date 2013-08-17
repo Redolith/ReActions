@@ -28,11 +28,14 @@ import java.util.List;
 import java.util.Set;
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.ButtonActivator;
+import me.fromgate.reactions.activators.CommandActivator;
 import me.fromgate.reactions.activators.PlateActivator;
 import me.fromgate.reactions.activators.RegionActivator;
 import me.fromgate.reactions.activators.RgEnterActivator;
 import me.fromgate.reactions.activators.RgLeaveActivator;
+import me.fromgate.reactions.activators.ExecActivator;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -126,7 +129,10 @@ public class RACmd implements CommandExecutor{
     }
 
     public boolean ExecuteCmd (Player p, String cmd, String arg){
-        if (cmd.equalsIgnoreCase("help")){
+        if (cmd.equalsIgnoreCase("run")){
+            if (EventManager.raiseExecEvent(p, p, arg)) u.printMSG(p, "cmd_runplayer",arg,p.getName());
+            else u.printMSG(p, "cmd_runplayerfail",'c','6',arg,p.getName());
+        } else if (cmd.equalsIgnoreCase("help")){
             int page = 1;
             if (u.isIntegerGZ(arg)) page = Integer.parseInt(arg);
             u.PrintHlpList(p, page, 10);
@@ -163,9 +169,17 @@ public class RACmd implements CommandExecutor{
         return true;
     }
 
+    
+    //rea add cmd <id>
 
     public boolean ExecuteCmd (Player p, String cmd, String arg1, String arg2){
-        if (cmd.equalsIgnoreCase("add")){
+        if (cmd.equalsIgnoreCase("run")){
+            if (!p.hasPermission("reactions.run.player")) return false;
+            Player targetPlayer = Bukkit.getPlayer(arg2);   
+            if (EventManager.raiseExecEvent(p, targetPlayer, arg1)) u.printMSG(p, "cmd_runplayer",arg1,targetPlayer.getName());
+            else u.printMSG(p, "cmd_runplayerfail",'c','6',arg1,arg2);
+            
+        } else if (cmd.equalsIgnoreCase("add")){
             if (arg1.equalsIgnoreCase("button")||arg1.equalsIgnoreCase("b")){
                 Block b = p.getTargetBlock(null, 100); 
                 if ((b != null)&&((b.getType()==Material.STONE_BUTTON)||
@@ -176,6 +190,13 @@ public class RACmd implements CommandExecutor{
                         u.printMSG(p, "cmd_addbadded",ba.toString());
                     } else u.printMSG(p, "cmd_notaddbadded",ba.toString());
                 } else u.printMSG(p, "cmd_addbreqbut");
+                return true;
+            } else if (arg1.equalsIgnoreCase("exec")||arg1.equalsIgnoreCase("ex")){
+                ExecActivator ca = new ExecActivator (arg2);
+                if (plg.activators.addActivator(ca)) {
+                    plg.activators.saveActivators();
+                    u.printMSG(p, "cmd_addbadded",ca.toString());
+                } else u.printMSG(p, "cmd_notaddbadded",ca.toString());
                 return true;
             } else if (arg1.equalsIgnoreCase("plate")||arg1.equalsIgnoreCase("p")){
                 Block b = p.getTargetBlock(null, 100); 
@@ -292,7 +313,15 @@ public class RACmd implements CommandExecutor{
     //   /ra add     region        name wg
     //   /ra add      a|r          dmg/msg  value 	
     public boolean ExecuteCmd (Player p, String cmd, String arg1, String arg2, String arg3){
-        if (cmd.equalsIgnoreCase("add")){
+        if (cmd.equalsIgnoreCase("run")){
+            if (!p.hasPermission("reactions.run.player")) return false;
+            long delay = Util.timeToTicks(Util.parseTime(arg3));
+            Player targetPlayer = Bukkit.getPlayer(arg2);
+            if (targetPlayer != null){
+                Actions.execActivator(p, targetPlayer, arg1, delay);
+                u.printMSG(p, "cmd_rundelayplayer",arg1,targetPlayer.getName(),delay);
+            } else u.printMSG(p, "cmd_runplayerunknown",arg1,arg2); 
+        } else if (cmd.equalsIgnoreCase("add")){
             if (arg1.equalsIgnoreCase("region")||arg1.equalsIgnoreCase("rg")){
                 if (!plg.worldguard_conected) u.printMSG(p, "cmd_wgnotfound",'c');
                 else {
@@ -317,6 +346,12 @@ public class RACmd implements CommandExecutor{
                     plg.activators.saveActivators();
                     u.printMSG(p, "cmd_addbadded",wga.toString());
                 }
+                
+            } else if (arg1.equalsIgnoreCase("command")||arg1.equalsIgnoreCase("cmd")){
+                CommandActivator ca = new CommandActivator (arg2,arg3);
+                plg.activators.addActivator(ca);
+                plg.activators.saveActivators();
+                u.printMSG(p, "cmd_addbadded",ca.toString());
             /*} else if (arg1.equalsIgnoreCase("loc")){
                 int radius = 0;
                 if (u.isInteger(arg3)) radius = Integer.parseInt(arg3);
@@ -339,6 +374,7 @@ public class RACmd implements CommandExecutor{
                         if (act.removeReaction(num-1)) u.printMSG(p, "msg_reactionremoved",act.getName(),num);
                         else u.printMSG(p, "msg_failedtoremovereaction",act.getName(),num);
                     } else return false;
+                    plg.activators.saveActivators();
                 } else u.printMSG(p, "msg_wrongnumber",arg3); 
             } else u.printMSG(p, "cmd_unknownbutton",arg1);
         } else if (cmd.equalsIgnoreCase("copy")) {

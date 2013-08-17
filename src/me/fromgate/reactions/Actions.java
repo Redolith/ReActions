@@ -22,7 +22,8 @@
 
 package me.fromgate.reactions;
 
-import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.Activator.FlagVal;
@@ -30,11 +31,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
-import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -45,7 +42,7 @@ import org.bukkit.util.Vector;
 
 
 public class Actions {
-    static String atypes = "tp,velocity,sound,potion,rmvpot,grpadd,grprmv,msg,dmg,townset,townkick,itemrmv,invitemrmv,itemgive,cmdplr,cmdop,cmdsrv,moneypay,moneygive,delay,pdelay,back,mob,effect";
+    static String atypes = "tp,velocity,sound,potion,rmvpot,grpadd,grprmv,msg,dmg,townset,townkick,itemrmv,invitemrmv,itemgive,cmdplr,cmdop,cmdsrv,moneypay,moneygive,delay,pdelay,back,mob,effect,run,rgplayer";
 
     static ReActions plg;
     static RAUtil u;
@@ -75,11 +72,12 @@ public class Actions {
         boolean annoying = a.isAnnoying();
         Map<String,String> params = Util.parseActionParam(param);
         String msgparam =param;
-
         if (act.equalsIgnoreCase("tp")){
             Location loc = teleportPlayer (p,params);
             if (loc!= null) msgparam = Util.locationToStringFormated(loc);
             else actkey=actkey+"fail";
+        } else if (act.equalsIgnoreCase("run")){
+            execActivator (p,params);
         } else if (act.equalsIgnoreCase("effect")){
             playEffect(p,params);
         } else if (act.equalsIgnoreCase("velocity")){
@@ -137,10 +135,27 @@ public class Actions {
             setDelay(p, param);
         } else if (act.equalsIgnoreCase("pdelay")&&(!param.isEmpty())){
             setPersonalDelay(p, param);
+        /*} else if (act.equalsIgnoreCase("flag")&&(!param.isEmpty())){
+            setFlag(p, params);
+        } else if (act.equalsIgnoreCase("pflag")&&(!param.isEmpty())){
+            setPersonalFlag(p, params);*/
         }
         if (u.isWordInList(act, plg.actionmsg)) u.printMSG(p, "act_"+act,msgparam);
     }
 
+
+    /*private static void setPersonalFlag(Player p, Map<String, String> params) {
+        String id = p.getName();
+        boolean value = true;
+        if (params.containsKey("param")){
+            id = p.getName()+"#"+Util.getParam(params, "param", "");
+            value = true;
+        } else {
+            id = p.getName()+"#"+Util.getParam(params, "id","");
+            value = Util.getParam(params, "set", true);
+        }
+        if (id.equalsIgnoreCase(p.getName()+"#")) return;
+    }*/
 
     private static void playEffect(Player p, Map<String,String> params) {
         RAEffects.playEffect(p, params);
@@ -183,84 +198,7 @@ public class Actions {
 
 
     private static void mobSpawn(Player p, Map<String,String> params) {
-        String mob = Util.getParam(params, "type", "PIG");
-        String locstr = Util.getParam(params, "loc", "");
-        Location loc = locToLocation(p,locstr);
-        int radius = Util.getParam(params, "radius", 0);
-        int num=Util.getMinMaxRandom(Util.getParam(params, "num", "1"));
-        String hparam = Util.getParam(params, "health", "1");
-        double health = Util.getMinMaxRandom(hparam);
-        String playeffect = Util.getParam(params, "effect", "");
-        String chest = Util.getParam(params, "chest", "");
-        String leg = Util.getParam(params, "leg", "");
-        String helm = Util.getParam(params, "helm", "");
-        String boot = Util.getParam(params, "boot", "");
-        String weapon = Util.getParam(params, "weapon", "");
-        boolean land = Util.getParam(params, "land", true);
-        
-        
-        String name = Util.getParam(params, "name", ""); 
-        
-        for (int i = 0; i<num; i++){
-            if (loc == null) loc = p.getLocation();
-            Location l = Util.getRandomLocationInRadius(loc, radius,land);
-            Entity e = loc.getWorld().spawnEntity(l, EntityType.fromName(mob));
-            if (e == null) break;
-            if (!(e instanceof LivingEntity)) {
-                e.remove();
-                break;
-            }
-            
-            if (!playeffect.isEmpty()){
-                int data = 0;
-                if (playeffect.equalsIgnoreCase("smoke")) data = 9;
-                RAEffects.playEffect(loc, playeffect, data);
-            }
-            
-            LivingEntity le = (LivingEntity)e;
-            if (health>0){
-                le.setMaxHealth(health);
-                le.setHealth(health);
-            }
-            if (!name.isEmpty()){
-                le.setCustomName(name);    
-                le.setCustomNameVisible(true);
-            }
-            
-            if (u.isWordInList(le.getType().name(), "zombie,skeleton")){
-                
-                if (!helm.isEmpty()){
-                    ItemStack item = Util.getRndItem(helm);
-                    if (item != null) le.getEquipment().setHelmet(item);
-                }
-                
-                if (!chest.isEmpty()){
-                    ItemStack item = Util.getRndItem(chest);
-                    if (item != null) le.getEquipment().setChestplate(item);
-                }
-
-                if (!leg.isEmpty()){
-                    ItemStack item = Util.getRndItem(leg);
-                    if (item != null) le.getEquipment().setLeggings(item);
-                }
-                
-                if (!boot.isEmpty()){
-                    ItemStack item = Util.getRndItem(boot);
-                    if (item != null) le.getEquipment().setBoots(item);
-                }
-                
-                if (!weapon.isEmpty()){
-                    ItemStack item = Util.getRndItem(weapon);
-                    if (item != null) le.getEquipment().setItemInHand(item);
-                }
-                
-            }
-            
-            
-            //TODO chest,helm,leg,boot,weapon
-            //flyloc
-            
-        }
+        RAMobSpawn.mobSpawn(p, params);
     }
 
 
@@ -269,7 +207,7 @@ public class Actions {
         String placeholders = "curtime,player,dplayer,health,"+Flag.ftypes;
         String [] phs = placeholders.split(",");
         for (String ph : phs){
-            String key = "%"+ph+"%ph";
+            String key = "%"+ph+"%";
             rst = rst.replaceAll(key, getFlagParam(p,a,key));
         }
         return rst;
@@ -281,7 +219,15 @@ public class Actions {
             if (placeholder.equalsIgnoreCase("%curtime%")) return timeToString(p.getWorld().getTime());
             else if (placeholder.equals("%player%")) return p.getName();
             else if (placeholder.equals("%dplayer%")) return p.getDisplayName();
-            else if (placeholder.equals("%health%")) return String.valueOf(p.getHealth());
+            else if (placeholder.equals("%health%")) {
+                String hlth = "0";
+                try {
+                    hlth = String.valueOf(p.getHealth());
+                } catch (Throwable ex){
+                    ReActions.util.logOnce("plr_health", "Failed to get Player health. This feature is not compatible with CB 1.5.2 (and older)...");
+                }
+                return hlth;
+            }
             else for (FlagVal flg : a.getFlags())
                 if (flg.flag.equals(flag)) return formatFlagParam (flag, flg.value);
         }
@@ -294,11 +240,10 @@ public class Actions {
             if (!(value.equals("day")||value.equals("night"))){
                 String [] ln = value.split(",");
                 String r = "";
-                DecimalFormat fmt = new DecimalFormat("00:00");
                 if (ln.length>0)
                     for (int i = 0; i<ln.length;i++){
                         if (!u.isInteger(ln[i])) continue;
-                        String tmp = fmt.format(Integer.parseInt(ln[i]));
+                        String tmp = hourToTimeString(Integer.parseInt(ln[i]));
                         if (i == 0) r = tmp;
                         else r = r+", "+tmp;
                     }
@@ -393,7 +338,7 @@ public class Actions {
             } else peffstr = param;            
         } else {
             peffstr = Util.getParam(params, "type", "");
-            duration = Util.getParam(params, "time", 20);
+            duration = Util.safeLongToInt(Util.timeToTicks(Util.parseTime(Util.getParam(params, "time", "1000")))); 
             amplifier = Util.getParam(params, "level", 1);
             ambient = Util.getParam(params, "ambient", false);
         }
@@ -404,7 +349,7 @@ public class Actions {
         p.addPotionEffect(pe);
     }
 
-    private static PotionEffectType parsePotionEffect (String name) {
+    public static PotionEffectType parsePotionEffect (String name) {
         PotionEffectType pef = null;
         try{
             pef = PotionEffectType.getByName(name);
@@ -416,45 +361,8 @@ public class Actions {
 
     // <SOUNDNAME>/<volume>/<yaw>
     private static void soundPlay (Player p, Map<String,String> params){
-        if (params.isEmpty()) return;
-        String sndstr = "";
-        String strvolume ="1";
-        String strpitch = "1";
-        float pitch = 1;
-        float volume = 1;
-        if (params.containsKey("param")){
-            String param = Util.getParam(params, "param", "");
-            if (param.isEmpty()) return;
-            if (param.contains("/")){
-                String[] prm = param.split("/");
-                if (prm.length>1){
-                    sndstr = prm[0];
-                    strvolume = prm[1];
-                    if (prm.length>2) strpitch = prm[2];
-                }
-            } else sndstr = param;
-            if (strvolume.matches("[0-9]+-?\\.[0-9]*")) volume = Float.parseFloat(strvolume);
-            if (strpitch.matches("[0-9]+-?\\.[0-9]*")) pitch = Float.parseFloat(strpitch);            
-        } else {
-            sndstr = Util.getParam(params, "type", "");
-            pitch = Util.getParam(params, "pitch", 1.0f);
-            volume = Util.getParam(params, "volume", 1.0f);
-        }
-        Sound sound = getSoundStr (sndstr);
-        p.getWorld().playSound(p.getLocation(), sound, volume, pitch);
+        Util.soundPlay(p.getLocation(), params);
     }
-
-
-    private static Sound getSoundStr(String param) {
-        Sound snd = null;
-        try{
-            snd= Sound.valueOf(param.toUpperCase());
-        } catch(Exception e){
-        }
-        if (snd == null) snd = Sound.CLICK; 
-        return snd;
-    }
-
 
 
     private static void setPersonalDelay(Player p, String mstr){
@@ -469,8 +377,8 @@ public class Actions {
             }
         } else seconds = mstr;
         if (seconds.isEmpty()) return;
-        if (!u.isInteger(seconds)) return;
-        int sec = Integer.parseInt(seconds);
+        Long sec = Util.parseTime(seconds);
+        if (sec == 0) return;
         RAFlagDelay.setPersonalDelay(p,varname, sec);		
     }
 
@@ -488,8 +396,8 @@ public class Actions {
             }
         } else seconds = mstr;
         if (seconds.isEmpty()) return;
-        if (!u.isInteger(seconds)) return;
-        int sec = Integer.parseInt(seconds);
+        Long sec = Util.parseTime(seconds);
+        if (sec == 0) return;        
         RAFlagDelay.setDelay(varname, sec);
     }
 
@@ -552,18 +460,6 @@ public class Actions {
             u.printMsg(p, msg);
     }
 
-    /*public void executeClickerDelayed(final Player p, final RAActivator c){
-		Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable(){
-			public void run(){
-				performActions(p, (RAFlag.checkFlags(p,c)), c);	}
-		}, 1);
-	}*/
-
-
-    /*public static void executeClicker(Player p, RAActivator c){
-		performActions(p, (RAFlag.checkFlags(p,c)), c);
-	}*/
-
     public static boolean checkLoc(String locstr){
         return (locstr.equalsIgnoreCase("player")||
                 locstr.equalsIgnoreCase("viewpoint")||
@@ -580,9 +476,6 @@ public class Actions {
         return loc;
     }
 
-
-
-    //if (ln[1].matches("[0-9]+\\.[0-9]+")||ln[1].matches("[1-9]+[0-9]*")) {
     public static String locToString(Player p, String locstr){
         String loc = u.getMSGnc("loc_unknown");
         Location tl = locToLocation (p, locstr);
@@ -610,6 +503,7 @@ public class Actions {
                 loc.setX(loc.getBlockX()+0.5);
                 loc.setZ(loc.getBlockZ()+0.5);
             }
+            while (!loc.getChunk().isLoaded()) loc.getChunk().load();
             p.teleport(loc);
             String playeffect = Util.getParam(params, "effect", "");
             if (!playeffect.isEmpty()){
@@ -617,8 +511,6 @@ public class Actions {
                 if (playeffect.equalsIgnoreCase("smoke")) data = 9;
                 RAEffects.playEffect(loc, playeffect, data);
             }
-
-            
         }
         return loc;
     }
@@ -632,11 +524,60 @@ public class Actions {
         u.removeItemInInventory(p, item);
     }
 
+    public static String hourToTimeString (int hours){
+        return String.format("%02d:00", hours);
+    }
+    
     public static String timeToString(long time) {
         int hours = (int) ((time / 1000 + 8) % 24);
         int minutes = (int) (60 * (time % 1000) / 1000);
         return String.format("%02d:%02d", hours, minutes);
     }
+ 
+    // run <activator>
+    // run command=<activator> delay=<delay, ticks> player=<target player>
+    public static void execActivator (Player p, Map<String,String> params){
+        String id = "";
+        String tps= "";
+        List<Player> targetPlayers = new ArrayList<Player>();
+        Player targetPlayer = p;
+        long delay = 1;
+        if (params.containsKey("param")) id = Util.getParam(params, "param", "");
+        else {
+            tps = Util.getParam(params, "player", "");
+            targetPlayer = (tps.isEmpty() ? p : Bukkit.getPlayer(tps));
+            delay = Util.timeToTicks(Util.parseTime(Util.getParam(params, "delay", "1000")));
+            id = Util.getParam(params, "exec", "");
+            String region = Util.getParam(params, "rgplayer", "");
+            if (!region.isEmpty()) targetPlayers = plg.worldguard.playersInRegion(region);
+            else targetPlayers.add(targetPlayer);
+        }
+        //if (targetPlayer == null) return;
+        if (id.isEmpty()) return;
+        if (targetPlayers.isEmpty()) return;
+         //execActivator (p,targetPlayer,id, delay);
+        for (Player player : targetPlayers) execActivator (p,player,id, delay);
+    }
 
+    public static void execActivator(final Player p, final Player targetPlayer, final String id, long delay_ticks){
+        Activator act = plg.activators.get(id);
+        if (act == null) {
+            plg.u.logOnce("wrongact_"+id, "Failed to run command activator "+id+". Activator not found.");
+            return;
+        }
+        
+        if (!act.getType().equalsIgnoreCase("exec")){
+            plg.u.logOnce("wrongactype_"+id, "Failed to run command activator "+id+". Wrong activator type.");
+            return;
+        }
+        
+        Bukkit.getScheduler().runTaskLater(plg, new Runnable(){
+            @Override
+            public void run() {
+                EventManager.raiseExecEvent(p, targetPlayer, id);
+            }
+        }, Math.max(1, delay_ticks));
+    }
 
+    
 }

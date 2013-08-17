@@ -23,8 +23,9 @@
 package me.fromgate.reactions;
 
 import java.util.List;
-
 import me.fromgate.reactions.event.RAButtonEvent;
+import me.fromgate.reactions.event.RACommandEvent;
+import me.fromgate.reactions.event.RAExecEvent;
 import me.fromgate.reactions.event.RAPlateEvent;
 import me.fromgate.reactions.event.RARegionEnterEvent;
 import me.fromgate.reactions.event.RARegionLeaveEvent;
@@ -32,9 +33,11 @@ import me.fromgate.reactions.event.RARegionEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.material.Button;
 import org.bukkit.metadata.FixedMetadataValue;
 
 
@@ -49,6 +52,11 @@ public class EventManager {
     public static void raiseButtonEvent (PlayerInteractEvent event){
         if (!((event.getAction()==Action.RIGHT_CLICK_BLOCK)||(event.getAction()==Action.LEFT_CLICK_BLOCK))) return;
         if (!((event.getClickedBlock().getType()==Material.STONE_BUTTON)||(event.getClickedBlock().getType()==Material.WOOD_BUTTON))) return;
+        BlockState state = event.getClickedBlock().getState();
+        if (state.getData() instanceof Button){
+            Button button = (Button) state.getData();
+            if (button.isPowered()) return;
+        }
         RAButtonEvent be = new RAButtonEvent (event.getPlayer(), event.getClickedBlock().getLocation());
         Bukkit.getServer().getPluginManager().callEvent(be);
         /*
@@ -62,6 +70,27 @@ public class EventManager {
 				}
 			}
          */
+    }
+    
+    
+    
+    public static boolean raiseCommandEvent (Player p, String command){
+        if (command.isEmpty()) return false;
+        RACommandEvent ce = new RACommandEvent (p,command);
+        Bukkit.getServer().getPluginManager().callEvent(ce);
+        if (ce.isCancelled()) return true;
+        return false;
+    }
+    
+    
+    public static boolean raiseExecEvent (Player player, Player targetPlayer, String activator){
+        if (targetPlayer == null) return false;
+        if (!targetPlayer.isOnline()) return false;
+        if (activator == null) return false;
+        if (activator.isEmpty()) return false;
+        RAExecEvent ce = new RAExecEvent(player, targetPlayer, activator);
+        Bukkit.getServer().getPluginManager().callEvent(ce);
+        return true;
     }
 
     // Plate Event

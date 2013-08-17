@@ -48,6 +48,8 @@ public class ReActions extends JavaPlugin {
     public int same_msg_delay = 10;
     public boolean horizontal_pushback = false;
 
+    static ReActions instance;
+    static RAUtil util;
 
 
     //разные переменные
@@ -86,10 +88,12 @@ public class ReActions extends JavaPlugin {
         getCommand("react").setExecutor(cmd);
         activators = new Activators (this);
 
+        instance = this;
+        util = u;
+        
         Actions.init(this);
         Flag.init(this);
         EventManager.init(this);
-        RAPushBack.init(this);
         RAEffects.init(this);
         Util.init(this);
 
@@ -197,5 +201,6 @@ public class ReActions extends JavaPlugin {
     public RAUtil getUtils(){
         return this.u;
     }
+    
 
 }

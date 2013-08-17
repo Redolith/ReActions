@@ -24,7 +24,11 @@ package me.fromgate.reactions;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -64,10 +68,64 @@ public class RAWorldGuard {
         return getRegions (p.getLocation());
     }
 
+    public int countPlayersInRegion (String rg){
+        if (!this.connected) return 0;
+        int count = 0;
+        for (Player p : Bukkit.getOnlinePlayers())
+            if (isPlayerInRegion (p, rg)) count++;
+        return count;
+    }
+
+    public List<Player> playersInRegion (String rg){
+        List<Player> plrs = new ArrayList<Player>();
+        if (!this.connected) return plrs;
+        for (Player p : Bukkit.getOnlinePlayers())
+            if (isPlayerInRegion (p, rg)) plrs.add(p);
+        return plrs;
+    }
+
+
     public boolean isPlayerInRegion (Player p, String rg){
+        if (!this.connected) return false;
         List<String> rgs = getRegions(p);
         if (rgs.isEmpty()) return false;
         return rgs.contains(rg);
+    }
+
+    public boolean isRegionExists(String rg){
+        if (!this.connected) return false;
+        if (rg.isEmpty()) return false;
+        for (World w : Bukkit.getWorlds()){
+            if (worldguard.getRegionManager(w).getRegions().containsKey(rg)) return true;
+        }
+        return false;
+    }
+
+    public List<Location> getRegionLocations(String rg, boolean land){
+        List<Location> locs = new ArrayList<Location>();
+        if (!this.connected) return locs;
+        ProtectedRegion prg = null;
+        World world = null;
+        for (World w : Bukkit.getWorlds()){
+            if (worldguard.getRegionManager(w).getRegions().containsKey(rg)){
+                prg = worldguard.getRegionManager(w).getRegionExact(rg);
+                world = w;
+                break;
+            }
+        }
+        if(prg != null){
+            for (int x = prg.getMinimumPoint().getBlockX(); x<=prg.getMaximumPoint().getBlockX(); x++)
+                for (int y = prg.getMinimumPoint().getBlockY(); y<=prg.getMaximumPoint().getBlockY(); y++)
+                    for (int z = prg.getMinimumPoint().getBlockZ(); z<=prg.getMaximumPoint().getBlockZ(); z++){
+                        Location t = new Location (world,x,y,z);
+                        if (t.getBlock().isEmpty()&&t.getBlock().getRelative(BlockFace.UP).isEmpty()){
+                            if (land&&t.getBlock().getRelative(BlockFace.DOWN).isEmpty()) continue;
+                            t.add(0.5, 0, 0.5);
+                            locs.add(t);
+                        }
+                    }
+        }
+        return locs;
     }
 
 }

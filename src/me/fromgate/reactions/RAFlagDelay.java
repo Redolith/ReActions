@@ -40,11 +40,11 @@ public class RAFlagDelay {
         return checkDelay (p.getName()+"#"+id);
     }
 
-    public static void setDelay(String id, int seconds){
-        delays.put(id, System.currentTimeMillis()+(seconds*1000));
+    public static void setDelay(String id, Long seconds){
+        delays.put(id, System.currentTimeMillis()+seconds);
     }
 
-    public static void setPersonalDelay(Player p, String id, int seconds){
+    public static void setPersonalDelay(Player p, String id, Long seconds){
         setDelay (p.getName()+"#"+id, seconds);
     }
 }

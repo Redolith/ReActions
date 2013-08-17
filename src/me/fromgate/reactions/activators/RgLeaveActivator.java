@@ -26,12 +26,11 @@ import java.util.List;
 
 import me.fromgate.reactions.Actions;
 import me.fromgate.reactions.event.RARegionLeaveEvent;
-
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
 
-public class RgLeaveActivator extends Activator {
+public class RgLeaveActivator extends Activator{
 
     private String region;
 
