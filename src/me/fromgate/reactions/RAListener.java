@@ -61,7 +61,10 @@ public class RAListener implements Listener{
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onDropLoot(EntityDeathEvent event){
         if (event.getEntity().hasMetadata("ReActions-drop")) {
-            List<ItemStack> stacks = RAMobSpawn.parseItemStacks(event.getEntity().getMetadata("ReActions-drop").get(0).asString());
+            //List<ItemStack> stacks = RAMobSpawn.parseItemStacks(event.getEntity().getMetadata("ReActions-drop").get(0).asString());
+            List<ItemStack> stacks = Util.parseItemStacks (event.getEntity().getMetadata("ReActions-drop").get(0).asString());
+                    
+            
             if (stacks != null) {
                 event.getDrops().clear();
                 event.getDrops().addAll(stacks);
@@ -73,11 +76,12 @@ public class RAListener implements Listener{
         }
         
         if (event.getEntity().hasMetadata("ReActions-money")) {
+            if (!plg.vault.isEconomyConected()) return;
             Player killer = getKiller (event.getEntity().getLastDamageCause());
             if (killer != null){
                 int money = Util.getMinMaxRandom(event.getEntity().getMetadata("ReActions-money").get(0).asString());    
                 plg.vault.depositPlayer(killer.getName(), money);
-                plg.u.printMSG(killer, "msg_mobbounty",'e','6',money,event.getEntity().getType().name());
+                plg.u.printMSG(killer, "msg_mobbounty",'e','6',plg.vault.formatMoney(Integer.toString(money)),event.getEntity().getType().name());
             }
         }
         

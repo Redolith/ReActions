@@ -121,6 +121,8 @@ public class RACmd implements CommandExecutor{
             plg.activators.loadActivators();
             plg.tports.clear();
             plg.loadLocs();
+            plg.reloadConfig();
+            plg.loadCfg();
             u.printMSG(p, "msg_cmdreload",plg.activators.size(),plg.tports.size());
         } else if (cmd.equalsIgnoreCase("check")){
             printActivatorsAround(p, 8);

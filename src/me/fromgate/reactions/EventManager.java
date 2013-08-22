@@ -97,8 +97,16 @@ public class EventManager {
     public static void raisePlateEvent (PlayerInteractEvent event){
         if (event.getAction() != Action.PHYSICAL) return;
         if (!((event.getClickedBlock().getType()==Material.WOOD_PLATE)||(event.getClickedBlock().getType()==Material.STONE_PLATE))) return;
-        RAPlateEvent pe = new RAPlateEvent (event.getPlayer(), event.getClickedBlock().getLocation());
-        Bukkit.getServer().getPluginManager().callEvent(pe);
+        final Player p = event.getPlayer();
+        final Location l = event.getClickedBlock().getLocation();
+        Bukkit.getScheduler().runTaskLater(plg, new Runnable(){
+            @Override
+            public void run() {
+                RAPlateEvent pe = new RAPlateEvent (p, l);
+                Bukkit.getServer().getPluginManager().callEvent(pe);      
+            }
+        }, 1);        
+
     }
 
     /*

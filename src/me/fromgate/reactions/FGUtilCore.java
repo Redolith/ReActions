@@ -67,6 +67,7 @@ public abstract class FGUtilCore {
     private String plgcmd = "<command>";
     // Сообщения+перевод
     YamlConfiguration lng;
+    private boolean savelng = false;
     //String lngfile = this.language+".lng";
     protected HashMap<String,String> msg = new HashMap<String,String>(); //массив сообщений
     private char c1 = 'a'; //цвет 1 (по умолчанию для текста)
@@ -97,6 +98,9 @@ public abstract class FGUtilCore {
         this.language = lng;
         this.InitMsgFile();
         this.initStdMsg();
+        this.fillLoadedMessages();
+        
+        this.savelng = savelng;
         // if (savelng) this.SaveMSG(); /// ммм... как бы это синхронизировать.... 
 
         if (devbukkitname.isEmpty()) this.version_check=false;
@@ -566,10 +570,8 @@ public abstract class FGUtilCore {
     }
 
     public void giveItemOrDrop (Player p, ItemStack item){
-        HashMap<Integer,ItemStack> result = p.getInventory().addItem(item);
-        if (result.size()>0)
-            for (int i : result.keySet())
-                p.getWorld().dropItemNaturally(p.getLocation(), result.get(i));
+        for (ItemStack i : p.getInventory().addItem(item).values())
+            p.getWorld().dropItemNaturally(p.getLocation(), i);
     }
 
     /*
@@ -657,7 +659,14 @@ public abstract class FGUtilCore {
             e.printStackTrace();
         }
     }
-
+    
+    public void fillLoadedMessages(){
+        if (lng == null) return;
+        for (String key : lng.getKeys(true))
+            addMSG(key, lng.getString(key));
+    }
+    
+    
     /*
      * Добавлене сообщения в список
      * Убираются цвета.
@@ -720,6 +729,9 @@ public abstract class FGUtilCore {
                         str = str.replace("%"+Integer.toString(i-px+1)+"%", color2+f+color1);
                     }
 
+            } else if (this.savelng){
+                addMSG(id, str);
+                SaveMSG();
             }
         }
         return ChatColor.translateAlternateColorCodes('&', str);

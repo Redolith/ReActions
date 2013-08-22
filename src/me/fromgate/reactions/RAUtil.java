@@ -42,7 +42,7 @@ public class RAUtil extends FGUtilCore {
         cmds.clear();
         cmdlist = "";
         addCmd("help", "config", "hlp_thishelp","&3/react help [command]",'b');
-        addCmd("run", "run","cmd_run","&3/react run <command activator> [target player]",'b');
+        addCmd("run", "run","cmd_run","&3/react run <exec-activator> [target player] [delay]",'b');
         addCmd("add", "config","cmd_add","&3/react add [b <id>|loc <id>|<id> f <flag> <param>|<id> r <action> <param>|<id> r <reaction> <param>",'b');
         addCmd("copy", "config","cmd_copy","&3/react copy [flag|actions|reactions] <source> <destination>",'b');
         addCmd("list", "config","cmd_list","&3/react list [loc|group|type] [page]",'b');
@@ -71,6 +71,7 @@ public class RAUtil extends FGUtilCore {
         addMSG ("cmd_unknownbutton", "Activator %1% was not found");
         addMSG ("loc_unknown", "Unknown location");
         addMSG ("cmd_add", "%1% - main command to add new activator, locations, add flags, actions and reactions to activator");
+        addMSG ("cmd_run", "%1% - Execute the <exec-activator> for a defined player after <delay>");
         addMSG ("cmd_list", "%1% - display list of activators (all, groupped by type or group name), list of stored locations");
         addMSG ("cmd_info", "%1% - display full info about activator (or display flags, actions and reactions of it)");
         addMSG ("cmd_remove", "%1% - remove stored activator or location");
@@ -82,24 +83,6 @@ public class RAUtil extends FGUtilCore {
         addMSG ("cmd_debugfalse", "Debug mode enabled (always - false)");
         addMSG ("cmd_debugoff", "Debug mode disabled");
         addMSG ("act_tp", "You was teleported to %1%");
-        addMSG ("act_tpfail", "Failed teleportation to %1% (wrong location?)");
-        addMSG ("act_grpadd", "You were added to group %1%");
-        addMSG ("act_grpaddfail", "Cannot add you in group %1%");
-        addMSG ("act_grprmv", "You were excluded from group %1%");
-        addMSG ("act_grprmvfail", "Cannot remove you from group %1%");
-        addMSG ("act_msg", "Personal message: %1%");
-        addMSG ("act_dmg", "You receive a damage. %1% hit points lost");
-        addMSG ("act_dmghurt", "You receive a slap! It hurts!"); 
-        addMSG ("act_townset", "You was added to town %1%");
-        addMSG ("act_townkick", "You was kicked from town!");
-        addMSG ("act_itemrmv", "You lost item: %1%");
-        addMSG ("act_itemgive", "You receive item: %1%");
-        addMSG ("act_cmdplr", "Command executed (by player): %1%");
-        addMSG ("act_cmdsrv", "Command executed (by console): %1%");
-        addMSG ("act_moneypay", "You paid %1%");
-        addMSG ("act_moneygive", "You credited by %1%");
-        addMSG ("act_sound", "You hear sound: %1%");
-        addMSG ("act_delay", "You will wait some time to do it again!");
         addMSG ("msg_listcount", "There's %1% configured activators and %2% stored locations");
         addMSG ("msg_removebnf", "Activator %1% not found and not removed");
         addMSG ("msg_removelocnf", "Stored location %1% not found and not removed");
@@ -147,12 +130,42 @@ public class RAUtil extends FGUtilCore {
         addMSG ("cmd_runplayerfail", "Failed to run activator %1%");
         addMSG ("cmd_rundelayplayer", "Execution of activator %1% for player %2% will start after %3% ticks");
         addMSG ("cmd_runplayerunknown", "Failed to run activator %1%. Player %2% is unknown");
-        
+        addMSG ("msg_mobbounty", "You received %1% for killing %2%");
+             
         /*
 		addMSG ("", "");
 		addMSG ("", "");
-		addMSG ("", "");
          */
+        
+        addMSG ("act_tpfail", "Failed teleportation to %1% (wrong location?)");
+        addMSG ("act_velocity", "Your movement direction was changed");
+        addMSG ("act_sound", "You hear strange sounds around you");
+        addMSG ("act_potion", "You have strange feeling. Maybe you're bewitched?");
+        addMSG ("act_rmvpot", "You have strange feeling. Potion effect was removed?");
+        addMSG ("act_grpadd", "You were added to group %1%");
+        addMSG ("act_grpaddfail", "Cannot add you in group %1%");
+        addMSG ("act_grprmv", "You were excluded from group %1%");
+        addMSG ("act_grprmvfail", "Cannot remove you from group %1%");
+        addMSG ("act_msg", "Personal message: %1%");
+        addMSG ("act_msgall", "Global message: %1%");
+        addMSG ("act_dmg", "You receive a damage. %1% hit points lost");
+        addMSG ("act_dmghurt", "You receive a slap! It hurts!");
+        addMSG ("act_townset", "You was added to town %1%");
+        addMSG ("act_townkick", "You was kicked from town!");
+        addMSG ("act_itemrmv", "You lost item: %1%");
+        addMSG ("act_itemgive", "You receive item(s): %1%");
+        addMSG ("act_itemgivefail", "Failed to give items");
+        addMSG ("act_cmdplr", "Command executed (by player): %1%");
+        addMSG ("act_cmdsrv", "Command executed (by console): %1%");
+        addMSG ("act_cmdop", "Command executed (as OP): %1%");
+        addMSG ("act_moneypay", "You paid %1%");
+        addMSG ("act_moneygive", "You credited by %1%");
+        addMSG ("act_delay", "You will wait some time to do it again!");
+        addMSG ("act_pdelay", "You will wait some time to do it again!");
+        addMSG ("act_back", "You were pushed back!");
+        addMSG ("act_mob", "Ooops! Mobs was spawned!");
+        addMSG ("act_run", "Another activator started %1%");
+        addMSG ("act_rgclear", "Region %1% was cleared");
     }
     
     @Override

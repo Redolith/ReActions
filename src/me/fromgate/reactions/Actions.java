@@ -32,6 +32,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -42,7 +45,7 @@ import org.bukkit.util.Vector;
 
 
 public class Actions {
-    static String atypes = "tp,velocity,sound,potion,rmvpot,grpadd,grprmv,msg,dmg,townset,townkick,itemrmv,invitemrmv,itemgive,cmdplr,cmdop,cmdsrv,moneypay,moneygive,delay,pdelay,back,mob,effect,run,rgplayer";
+    static String atypes = "tp,velocity,sound,potion,rmvpot,grpadd,grprmv,msg,dmg,townset,townkick,itemrmv,invitemrmv,itemgive,cmdplr,cmdop,cmdsrv,moneypay,moneygive,delay,pdelay,back,mob,effect,run,rgclear";
 
     static ReActions plg;
     static RAUtil u;
@@ -118,7 +121,9 @@ public class Actions {
         } else if (act.equalsIgnoreCase("itemrmv")&&(!param.isEmpty())){
             removeItemInHand(p, param);
         } else if (act.equalsIgnoreCase("itemgive")&&(!param.isEmpty())){
-            giveItemPlayer(p,param);
+               List<ItemStack> items = giveItemPlayer(p,param);
+            if (items.isEmpty()) actkey=actkey+"fail";
+            else msgparam = Util.itemsToString(items);
         } else if (act.equalsIgnoreCase("cmdop")&&(!param.isEmpty())){
             executeCommandAsOp (p,replacePlaceholders(p,a,param));
         } else if (act.equalsIgnoreCase("cmdplr")&&(!param.isEmpty())){
@@ -135,7 +140,9 @@ public class Actions {
             setDelay(p, param);
         } else if (act.equalsIgnoreCase("pdelay")&&(!param.isEmpty())){
             setPersonalDelay(p, param);
-        /*} else if (act.equalsIgnoreCase("flag")&&(!param.isEmpty())){
+        } else if (act.equalsIgnoreCase("rgclear")&&(!param.isEmpty())){
+            clearRegion (p,params);
+            /*} else if (act.equalsIgnoreCase("flag")&&(!param.isEmpty())){
             setFlag(p, params);
         } else if (act.equalsIgnoreCase("pflag")&&(!param.isEmpty())){
             setPersonalFlag(p, params);*/
@@ -157,12 +164,40 @@ public class Actions {
         if (id.equalsIgnoreCase(p.getName()+"#")) return;
     }*/
 
+    private static boolean clearRegion(Player p, Map<String, String> params) {
+        String region = Util.getParam(params, "region", "");
+        String type = Util.getParam(params, "type", "all");
+        if (region.isEmpty()) return false;
+        if (!plg.worldguard.connected) return false;
+        List<Location> locs = plg.worldguard.getRegionMinMaxLocations(region);
+        if (locs.size()!=2) return false;
+        List<Entity> en = Util.getEntities(locs.get(0), locs.get(1));
+        for (Entity e : en){
+            if (e.getType()==EntityType.PLAYER) continue;
+            if (isEntityIsTypeOf (e, type)) e.remove();
+        }
+        return true;
+    }
+    
+    private static boolean isEntityIsTypeOf(Entity e, String type){
+        if (e == null) return false;
+        if (type.isEmpty()) return true;
+        if (type.equalsIgnoreCase("all")) return true;
+        if (e instanceof LivingEntity){
+            if (type.equalsIgnoreCase("mob")||type.equalsIgnoreCase("mobs")) return true;
+        } else {
+            if (type.equalsIgnoreCase("item")||type.equalsIgnoreCase("items")) return true;
+        }
+        return (plg.u.isWordInList(e.getType().name(), type));
+    }
+
+
     private static void playEffect(Player p, Map<String,String> params) {
         RAEffects.playEffect(p, params);
     }
 
 
-    private static void setPlayerVelocity(Player p, Map<String,String> params) {
+    private static Vector setPlayerVelocity(Player p, Map<String,String> params) {
         String velstr = "";
         boolean multiply = false;
         if (params.containsKey("param")){
@@ -171,8 +206,8 @@ public class Actions {
             velstr = Util.getParam(params, "direction","");
             multiply = Util.getParam(params, "multiply", false);
         }
-        
-        if (velstr.isEmpty()) return;
+
+        if (velstr.isEmpty()) return null;
         Vector v = p.getVelocity();
         String [] ln = velstr.split(",");
         if ((ln.length == 1)&&(velstr.matches("-?(([0-9]+\\.[0-9]*)|([0-9]+))"))) {
@@ -186,14 +221,15 @@ public class Actions {
             double powery = Double.parseDouble(ln[1]);
             double powerz = Double.parseDouble(ln[2]);
             if (multiply){
-             powerx = powerx*p.getVelocity().getX();
-             powery = powery*p.getVelocity().getY();
-             powerz = powerz*p.getVelocity().getZ();
+                powerx = powerx*p.getVelocity().getX();
+                powery = powery*p.getVelocity().getY();
+                powerz = powerz*p.getVelocity().getZ();
             }
-            
+
             v = new Vector (Math.min(10,powerx),Math.min(10,powery),Math.min(10,powerz));
         }
         p.setVelocity(v);
+        return v;
     }
 
 
@@ -342,7 +378,7 @@ public class Actions {
             amplifier = Util.getParam(params, "level", 1);
             ambient = Util.getParam(params, "ambient", false);
         }
-        
+
         PotionEffectType pef = parsePotionEffect (peffstr);
         if (pef == null) return;
         PotionEffect pe = new PotionEffect (pef, duration, amplifier,ambient);
@@ -412,8 +448,9 @@ public class Actions {
                 target = m[1];
             }
         } else money = mstr;
-        if (!money.matches("[0-9]*")) return 0;
-        int amount = Integer.parseInt(money);
+        //if (!money.matches("[0-9]*")) return 0;
+        //int amount = Integer.parseInt(money);
+        int amount = Util.getMinMaxRandom(money); 
         if ((amount<=0)||(amount>plg.vault.getBalance(p.getName()))) return 0;
         plg.vault.withdrawPlayer(p.getName(), amount);
         if (!target.isEmpty()) plg.vault.depositPlayer(target, amount);
@@ -431,8 +468,8 @@ public class Actions {
                 source = m[1];
             }
         } else money = mstr;
-        if (!money.matches("[0-9]*")) return 0;
-        int amount = Integer.parseInt(money);
+        //if (!money.matches("[0-9]*")) return 0;
+        int amount = Util.getMinMaxRandom(money); 
         if (amount<=0) return 0;		
 
         if (!source.isEmpty()){
@@ -444,14 +481,16 @@ public class Actions {
         return amount;
     }
 
-    private static void giveItemPlayer(final Player p, final String param) {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plg, new Runnable(){
-            public void run(){
-                ItemStack item = u.parseItemStack(param);
-                if (item!=null)	u.giveItemOrDrop(p, item);
-            }
-        }, 1);
-
+    private static List<ItemStack> giveItemPlayer(final Player p, final String param) {
+        final List<ItemStack> items = Util.parseRandomItems(param);
+        if (!items.isEmpty())
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plg, new Runnable(){
+                public void run(){
+                    for (ItemStack i : items)
+                        u.giveItemOrDrop(p, i);
+                }
+            }, 1);
+        return items;
     }
 
 
@@ -490,13 +529,13 @@ public class Actions {
         if (params.isEmpty()) return null;
         if (params.containsKey("param")) {
             loc = locToLocation (p, Util.getParam(params, "param", ""));
-            
+
         } else { 
             loc = locToLocation (p, Util.getParam(params, "loc", ""));
             radius = Util.getParam(params, "radius", 0);
         }
         boolean land = Util.getParam(params, "land", true);
-        
+
         if (loc != null){
             if (radius>0) loc = Util.getRandomLocationInRadius(loc, radius,land);
             if (plg.tp_center_coors) {
@@ -527,13 +566,13 @@ public class Actions {
     public static String hourToTimeString (int hours){
         return String.format("%02d:00", hours);
     }
-    
+
     public static String timeToString(long time) {
         int hours = (int) ((time / 1000 + 8) % 24);
         int minutes = (int) (60 * (time % 1000) / 1000);
         return String.format("%02d:%02d", hours, minutes);
     }
- 
+
     // run <activator>
     // run command=<activator> delay=<delay, ticks> player=<target player>
     public static void execActivator (Player p, Map<String,String> params){
@@ -555,22 +594,23 @@ public class Actions {
         //if (targetPlayer == null) return;
         if (id.isEmpty()) return;
         if (targetPlayers.isEmpty()) return;
-         //execActivator (p,targetPlayer,id, delay);
+        //execActivator (p,targetPlayer,id, delay);
         for (Player player : targetPlayers) execActivator (p,player,id, delay);
     }
 
     public static void execActivator(final Player p, final Player targetPlayer, final String id, long delay_ticks){
         Activator act = plg.activators.get(id);
         if (act == null) {
-            plg.u.logOnce("wrongact_"+id, "Failed to run command activator "+id+". Activator not found.");
+            plg.u.logOnce("wrongact_"+id, "Failed to run exec activator "+id+". Activator not found.");
             return;
         }
-        
+
         if (!act.getType().equalsIgnoreCase("exec")){
-            plg.u.logOnce("wrongactype_"+id, "Failed to run command activator "+id+". Wrong activator type.");
+            plg.u.logOnce("wrongactype_"+id, "Failed to run exec activator "+id+". Wrong activator type.");
             return;
         }
-        
+
+
         Bukkit.getScheduler().runTaskLater(plg, new Runnable(){
             @Override
             public void run() {
@@ -579,5 +619,5 @@ public class Actions {
         }, Math.max(1, delay_ticks));
     }
 
-    
+
 }

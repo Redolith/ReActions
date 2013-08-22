@@ -1,10 +1,9 @@
 package me.fromgate.reactions;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -24,34 +23,25 @@ public class RAMobSpawn {
         String region = Util.getParam(params, "region", "");
         int radius = Util.getParam(params, "radius", 0);
         int num=Util.getMinMaxRandom(Util.getParam(params, "num", "1"));
-
         String hparam = Util.getParam(params, "health", "0");
         double health = Util.getMinMaxRandom(hparam);
-
         String playeffect = Util.getParam(params, "effect", "");
         String dtheffect = Util.getParam(params, "dtheffect", "");
-
         String chest = Util.getParam(params, "chest", "");
         String leg = Util.getParam(params, "leg", "");
         String helm = Util.getParam(params, "helm", "");
         String boot = Util.getParam(params, "boot", "");
         String weapon = Util.getParam(params, "weapon", "");
         boolean land = Util.getParam(params, "land", true);
-
         String poteff = Util.getParam(params, "potion", "");
         String name = Util.getParam(params, "name", "");
-
         String drop = Util.getParam(params, "drop", "");
         String xp= Util.getParam(params, "xp", "");
         String money = Util.getParam(params, "money", "");
-
         String growl = Util.getParam(params, "growl", "");
         String cry = Util.getParam(params, "cry", "");
-
         String equip = Util.getParam(params, "equip", "");
-        
         double dmg = Util.getParam(params, "dmg", 1.0D);
-
         List<Location> locs = null;
         if (ReActions.instance.worldguard.isRegionExists(region)) locs = Util.getLocationsRegion(region, land);
         else if (radius>0) locs = Util.getLocationsRadius(loc, radius, land);
@@ -66,7 +56,6 @@ public class RAMobSpawn {
                 e.remove();
                 break;
             }
-
             playMobEffect (loc,playeffect);
             LivingEntity le = (LivingEntity)e;
             setMobHealth (le,health);
@@ -95,11 +84,9 @@ public class RAMobSpawn {
 
     public static void setMobName (LivingEntity e, String name){
         if (name.isEmpty()) return;
-        e.setCustomName(name);    
+        e.setCustomName(ChatColor.translateAlternateColorCodes('&', name.replace("_", " ")));    
         e.setCustomNameVisible(true);
     }
-
-    //String xp= Util.getParam(params, "xp", "");
 
     public static void setMobXP(LivingEntity e, String xp){
         if (xp.isEmpty()) return;  
@@ -113,38 +100,11 @@ public class RAMobSpawn {
 
 
     public static void setMobDrop(LivingEntity e, String drop){
-        //id:data*amount,id:dat*amount@chance;id:data*amount;id:dat*amount@chance;id:data*amount;id:dat*amount@chance
-        if (drop.isEmpty()) return;
-        String [] loots = drop.split(";");
-        Map<String,Integer> drops = new HashMap<String,Integer>();
-        int maxchance = 0;
-        int nochcount = 0;
-        for (String loot: loots){
-            String [] ln = loot.split("@");
-            if (ln.length>0){
-                String stacks = ln[0];
-                if (stacks.isEmpty()) continue;
-                int chance =-1;
-                if ((ln.length==2)&&ReActions.util.isInteger(ln[1])) {
-                    chance = Integer.parseInt(ln[1]);
-                    maxchance += chance; 
-                } else nochcount++;
-                drops.put(stacks, chance);
-            }
-        }
-
-        if (drops.isEmpty()) return;
-        int eqperc = (nochcount*100)/drops.size();
-        maxchance = maxchance+eqperc*nochcount;
-        int rnd = ReActions.util.random.nextInt(maxchance);
-        int curchance = 0;
-        for (String stack : drops.keySet()){
-            curchance = curchance+ (drops.get(stack)<0 ? eqperc : drops.get(stack));
-            if (rnd<=curchance) {
-                setMobDropStack (e,stack);
-                return;
-            }
-        }
+        //id:data*amount,id:dat*amount%chance;id:data*amount;id:dat*amount%chance;id:data*amount;id:dat*amount%chance
+        if (drop.isEmpty())  return;
+        String stack = Util.parseRandomItemsStr(drop);
+        if (stack.isEmpty()) return;
+        setMobDropStack (e,stack);
     }
     
     private static void setMobDmgMultiplier(LivingEntity e, double dmg) {
@@ -234,15 +194,7 @@ public class RAMobSpawn {
         }
     }
 
-    public static List<ItemStack> parseItemStacks (String items){
-        List<ItemStack> stacks = new ArrayList<ItemStack>();
-        String[] ln = items.split(",");
-        for (String item : ln){
-            ItemStack stack = ReActions.util.parseItemStack(item);
-            if (stack != null) stacks.add(stack);
-        }
-        return stacks;
-    }
+
 
 
 }

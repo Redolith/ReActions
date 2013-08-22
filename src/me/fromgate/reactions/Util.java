@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,7 +15,9 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 public class Util {
@@ -184,7 +187,7 @@ public class Util {
         if (!str.matches("[1-9]+[0-9]*")) return defparam;
         return Integer.parseInt(str);
     }
-    
+
     public static float getParam(Map<String,String> params, String key, float defparam){
         if (!params.containsKey(key)) return defparam;
         String str = params.get(key);
@@ -199,7 +202,7 @@ public class Util {
         return Double.parseDouble(str);
     }
 
-    
+
     public static boolean getParam(Map<String,String> params, String key, boolean defparam){
         if (!params.containsKey(key)) return defparam;
         String str = params.get(key);
@@ -329,8 +332,8 @@ public class Util {
         if (l > Integer.MAX_VALUE) return Integer.MAX_VALUE;         
         return (int) l;
     }
-    
-    
+
+
     /* 
      * Преобразует строку вида <id>:<data>[*<amount>] в ItemStack
      * Возвращает null если строка кривая
@@ -342,7 +345,15 @@ public class Util {
     public static ItemStack parseItemStack (String itemstr){
         if (!itemstr.isEmpty()){
             String enchant = "";
+            String name = "";
+            
             String istr = itemstr;
+
+            if (itemstr.contains("$")){
+                name =itemstr.substring(0,itemstr.indexOf("$"));
+                itemstr = itemstr.substring(name.length()+1);
+            }
+            
             if (itemstr.contains("@")){
                 istr = itemstr.substring(0,itemstr.indexOf("@"));
                 enchant = itemstr.substring(istr.length()+1);
@@ -351,26 +362,37 @@ public class Util {
             int amount =1;
             short data =0;          
             String [] si = istr.split("\\*");
-            
+
             if (si.length>0){
                 if (si.length==2) amount = Math.max(getMinMaxRandom (si[1]), 1);
                 String ti[] = si[0].split(":");
                 if (ti.length>0){
                     if (ti[0].matches("[0-9]*")) id=Integer.parseInt(ti[0]);
-                    else id=Material.getMaterial(ti[0]).getId();                        
+                    else {
+                        Material m = Material.getMaterial(ti[0]);
+                        if (m== null) {
+                            plg.u.logOnce("wrongitem"+ti[0], "Could not parse item material name (id) "+ti[0]);
+                            return null;
+                        }
+                        id=m.getId();
+                    }
                     if ((ti.length==2)&&(ti[1]).matches("[0-9]*")) data = Short.parseShort(ti[1]);
                     ItemStack item = new ItemStack (id,amount,data);
                     if (!enchant.isEmpty()){
                         item = setEnchantments(item, enchant);
                     }
+                    if (!name.isEmpty()) {
+                        ItemMeta im = item.getItemMeta();
+                        im.setDisplayName(ChatColor.translateAlternateColorCodes('&', name.replace("_", " ")));
+                        item.setItemMeta(im);
+                    }
                     return item;
-                    
                 }
             }
         }
         return null;
     }
-   
+
     public static ItemStack setEnchantments (ItemStack item, String enchants){
         ItemStack i = item.clone();
         if (enchants.isEmpty()) return i;
@@ -398,7 +420,7 @@ public class Util {
         }
         return i;
     }
-    
+
     public static Color colorByName(String colorname){
         Color [] clr = {Color.WHITE, Color.SILVER, Color.GRAY, Color.BLACK, 
                 Color.RED, Color.MAROON, Color.YELLOW, Color.OLIVE,
@@ -412,5 +434,128 @@ public class Util {
             if (colorname.equalsIgnoreCase(clrs[i])) return clr[i];
         return null;
     }
+
+    public static List<Entity> getEntities (Location l1, Location l2){
+        List<Entity> entities = new ArrayList<Entity>();
+        if (!l1.getWorld().equals(l2.getWorld())) return entities;
+        int x1 = Math.min(l1.getBlockX(), l2.getBlockX());
+        int x2 = Math.max(l1.getBlockX(), l2.getBlockX());
+        int y1 = Math.min(l1.getBlockY(), l2.getBlockY());
+        int y2 = Math.max(l1.getBlockY(), l2.getBlockY());
+        int z1 = Math.min(l1.getBlockZ(), l2.getBlockZ());
+        int z2 = Math.max(l1.getBlockZ(), l2.getBlockZ());
+        int chX1 = x1>>4;
+        int chX2 = x2>>4;
+        int chZ1 = z1>>4;
+        int chZ2 = z2>>4;
+        for (int x = chX1; x<=chX2; x++)
+            for (int z = chZ1; z<=chZ2; z++){
+                for (Entity e : l1.getWorld().getChunkAt(x, z).getEntities()){
+                    double ex = e.getLocation().getX();
+                    double ey = e.getLocation().getY();
+                    double ez = e.getLocation().getZ();
+                    if ((x1<=ex)&&(ex<=x2)&&(y1<=ey)&&(ey<=y2)&&(z1<=ez)&&(ez<=z2))
+                        entities.add(e);
+                }
+            }
+        return entities;
+    }
+
+    public static List<ItemStack> parseRandomItems (String stacks){
+        return parseItemStacks (Util.parseRandomItemsStr(stacks));
+    }
+
+    public static List<ItemStack> parseItemStacks (String items){
+        List<ItemStack> stacks = new ArrayList<ItemStack>();
+        String[] ln = items.split(";");
+        for (String item : ln){
+            ItemStack stack = ReActions.util.parseItemStack(item);
+            if (stack != null) stacks.add(stack);
+        }
+        return stacks;
+    }
+
+    public static String itemsToString (List<ItemStack> items){
+        String str ="";
+        for (ItemStack i : items){
+            String n = i.getItemMeta().hasDisplayName() ? ChatColor.stripColor(i.getItemMeta().getDisplayName()) : i.getType().name();
+            String a = i.getAmount()>1 ? "*"+i.getAmount() : "";
+            if (str.isEmpty()) str = n+a;
+            else str = str+", "+n+a;
+        }
+        return str;        
+    }
+
+    //id:data*amount@enchant:level,color;id:data*amount@chance/id:data*amount@enchant:level,color;id:data*amount@chance
+    public static String parseRandomItemsStr (String items){
+        if (items.isEmpty()) return "";
+        String [] loots = items.split("/");
+        Map<String,Integer> drops = new HashMap<String,Integer>();
+        int maxchance = 0;
+        int nochcount = 0;
+        for (String loot: loots){
+            String [] ln = loot.split("%");
+            if (ln.length>0){
+                String stacks = ln[0];
+                if (stacks.isEmpty()) continue;
+                int chance =-1;
+                if ((ln.length==2)&&ReActions.util.isInteger(ln[1])) {
+                    chance = Integer.parseInt(ln[1]);
+                    maxchance += chance; 
+                } else nochcount++;
+                drops.put(stacks, chance);
+            }
+        }
+
+        if (drops.isEmpty()) return "";
+        int eqperc = (nochcount*100)/drops.size();
+        maxchance = maxchance+eqperc*nochcount;
+        int rnd = ReActions.util.random.nextInt(maxchance);
+        int curchance = 0;
+        for (String stack : drops.keySet()){
+            curchance = curchance+ (drops.get(stack)<0 ? eqperc : drops.get(stack));
+            if (rnd<=curchance) return stack;
+        }
+        return "";
+    }
+
+
+    /*
+     *         //id:data*amount,id:dat*amount@chance;id:data*amount;id:dat*amount@chance;id:data*amount;id:dat*amount@chance
+        if (drop.isEmpty()) return;
+        String [] loots = drop.split(";");
+        Map<String,Integer> drops = new HashMap<String,Integer>();
+        int maxchance = 0;
+        int nochcount = 0;
+        for (String loot: loots){
+            String [] ln = loot.split("@");
+            if (ln.length>0){
+                String stacks = ln[0];
+                if (stacks.isEmpty()) continue;
+                int chance =-1;
+                if ((ln.length==2)&&ReActions.util.isInteger(ln[1])) {
+                    chance = Integer.parseInt(ln[1]);
+                    maxchance += chance; 
+                } else nochcount++;
+                drops.put(stacks, chance);
+            }
+        }
+
+        if (drops.isEmpty()) return;
+        int eqperc = (nochcount*100)/drops.size();
+        maxchance = maxchance+eqperc*nochcount;
+        int rnd = ReActions.util.random.nextInt(maxchance);
+        int curchance = 0;
+        for (String stack : drops.keySet()){
+            curchance = curchance+ (drops.get(stack)<0 ? eqperc : drops.get(stack));
+            if (rnd<=curchance) {
+                setMobDropStack (e,stack);
+                return;
+            }
+        }
+     */
+
+
+
 
 }

@@ -69,6 +69,7 @@ public class ReActions extends JavaPlugin {
     public boolean worldguard_conected = false;
     
     public RAVault vault;
+    
 
     Activators activators;
     HashMap<String,RALoc> tports = new HashMap<String,RALoc>();

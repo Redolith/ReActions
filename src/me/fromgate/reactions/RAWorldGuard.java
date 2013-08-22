@@ -101,6 +101,25 @@ public class RAWorldGuard {
         return false;
     }
 
+    public List<Location> getRegionMinMaxLocations(String rg){
+        List<Location> locs = new ArrayList<Location>();
+        if (!this.connected) return locs;
+        ProtectedRegion prg = null;
+        World world = null;
+        for (World w : Bukkit.getWorlds()){
+            if (worldguard.getRegionManager(w).getRegions().containsKey(rg)){
+                prg = worldguard.getRegionManager(w).getRegionExact(rg);
+                world = w;
+                break;
+            }
+        }
+        if (world == null) return locs;
+        if (prg== null) return locs;
+        locs.add(new Location (world, prg.getMinimumPoint().getX(),prg.getMinimumPoint().getY(),prg.getMinimumPoint().getZ()));
+        locs.add(new Location (world, prg.getMaximumPoint().getX(),prg.getMaximumPoint().getY(),prg.getMaximumPoint().getZ()));
+        return locs;
+    }
+    
     public List<Location> getRegionLocations(String rg, boolean land){
         List<Location> locs = new ArrayList<Location>();
         if (!this.connected) return locs;
