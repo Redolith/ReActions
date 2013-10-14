@@ -19,24 +19,24 @@
  *  along with ReActions.  If not, see <http://www.gnorg/licenses/>.
  * 
  */
-package me.fromgate.reactions;
+package me.fromgate.reactions.util;
 
 import java.util.HashMap;
 
 import org.bukkit.entity.Player;
 
 public class RADebug {
-    HashMap<String,Boolean> debug = new HashMap<String,Boolean>();
+    private static HashMap<String,Boolean> debug = new HashMap<String,Boolean>();
 
-    public void setPlayerDebug (Player p, boolean debugmode){
+    public static void setPlayerDebug (Player p, boolean debugmode){
         debug.put (p.getName(),debugmode);
     }
 
-    public void offPlayerDebug(Player p){
+    public static void offPlayerDebug(Player p){
         if (debug.containsKey(p.getName())) debug.remove(p.getName());
     }
 
-    public boolean checkFlagAndDebug (Player p, boolean flag){
+    public static boolean checkFlagAndDebug (Player p, boolean flag){
         if (debug.containsKey(p.getName())) return (debug.get(p.getName()));
         return flag;
     }

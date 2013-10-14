@@ -1,4 +1,6 @@
-package me.fromgate.reactions;
+package me.fromgate.reactions.util;
+
+import me.fromgate.reactions.ReActions;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -21,8 +23,7 @@ public class RAPushBack {
             if (loc == null) loc =  getPlayerPrevLoc1(p);
         }
         if (loc == null) return false;
-        p.teleport(loc);
-        return true;
+        return p.teleport(loc);
     }
 
     private static double distance(Location loc1, Location loc2){

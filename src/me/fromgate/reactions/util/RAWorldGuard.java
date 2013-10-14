@@ -20,11 +20,10 @@
  * 
  */
 
-package me.fromgate.reactions;
+package me.fromgate.reactions.util;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -37,63 +36,62 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 public class RAWorldGuard {
 
-    private ReActions plg;
-    private WorldGuardPlugin worldguard;
-    boolean connected = false;
+    private static WorldGuardPlugin worldguard;
+    private static boolean connected = false;
 
-    public RAWorldGuard (ReActions plg){
-        this.plg = plg;
-        this.connected = connectToWorldGuard();
+    public static boolean init(){
+        connected = connectToWorldGuard();
+        return connected;
     }
 
-    private boolean connectToWorldGuard(){
-        Plugin twn = plg.getServer().getPluginManager().getPlugin("WorldGuard");
-        if ((twn != null)&&(twn instanceof WorldGuardPlugin)){
-            this.worldguard = (WorldGuardPlugin) twn;
-            return true;
-        }
-        return false;
+    private static boolean connectToWorldGuard(){
+        Plugin twn = Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
+        if (twn == null) return false;
+        if (!(twn instanceof WorldGuardPlugin)) return false;
+        worldguard = (WorldGuardPlugin) twn;
+        return true;
     }
 
-    public List<String> getRegions(Location loc){
+    public static List<String> getRegions(Location loc){
         List<String> rgs = new ArrayList<String>();
-        if (!this.connected) return rgs; //Empty!!!
+        if (loc == null) return rgs;
+        if (!connected) return rgs; //Empty!!!
         ApplicableRegionSet rset = worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc);
         if ((rset == null)||(rset.size()==0)) return rgs; //Empty!!!
         for (ProtectedRegion rg : rset ) rgs.add(rg.getId());
         return rgs; 
     }
 
-    public List<String> getRegions (Player p){
+    public static List<String> getRegions (Player p){
         return getRegions (p.getLocation());
     }
 
-    public int countPlayersInRegion (String rg){
-        if (!this.connected) return 0;
+    public static int countPlayersInRegion (String rg){
+        if (!connected) return 0;
         int count = 0;
         for (Player p : Bukkit.getOnlinePlayers())
             if (isPlayerInRegion (p, rg)) count++;
         return count;
     }
 
-    public List<Player> playersInRegion (String rg){
+    public static List<Player> playersInRegion (String rg){
         List<Player> plrs = new ArrayList<Player>();
-        if (!this.connected) return plrs;
+        if (!connected) return plrs;
         for (Player p : Bukkit.getOnlinePlayers())
             if (isPlayerInRegion (p, rg)) plrs.add(p);
         return plrs;
     }
 
 
-    public boolean isPlayerInRegion (Player p, String rg){
-        if (!this.connected) return false;
+    public static boolean isPlayerInRegion (Player p, String rg){
+        if (!connected) return false;
         List<String> rgs = getRegions(p);
         if (rgs.isEmpty()) return false;
         return rgs.contains(rg);
     }
 
-    public boolean isRegionExists(String rg){
-        if (!this.connected) return false;
+    public static boolean isRegionExists(String rg){
+        if (!connected) return false;
         if (rg.isEmpty()) return false;
         for (World w : Bukkit.getWorlds()){
             if (worldguard.getRegionManager(w).getRegions().containsKey(rg)) return true;
@@ -101,9 +99,9 @@ public class RAWorldGuard {
         return false;
     }
 
-    public List<Location> getRegionMinMaxLocations(String rg){
+    public static List<Location> getRegionMinMaxLocations(String rg){
         List<Location> locs = new ArrayList<Location>();
-        if (!this.connected) return locs;
+        if (!connected) return locs;
         ProtectedRegion prg = null;
         World world = null;
         for (World w : Bukkit.getWorlds()){
@@ -120,9 +118,9 @@ public class RAWorldGuard {
         return locs;
     }
     
-    public List<Location> getRegionLocations(String rg, boolean land){
+    public static List<Location> getRegionLocations(String rg, boolean land){
         List<Location> locs = new ArrayList<Location>();
-        if (!this.connected) return locs;
+        if (!connected) return locs;
         ProtectedRegion prg = null;
         World world = null;
         for (World w : Bukkit.getWorlds()){
@@ -145,6 +143,10 @@ public class RAWorldGuard {
                     }
         }
         return locs;
+    }
+    
+    public static boolean isConnected(){
+        return connected;
     }
 
 }

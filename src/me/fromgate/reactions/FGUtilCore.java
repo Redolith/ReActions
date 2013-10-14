@@ -54,6 +54,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+@SuppressWarnings("deprecation")
 public abstract class FGUtilCore {
     JavaPlugin plg;
     //конфигурация утилит
@@ -430,6 +431,7 @@ public abstract class FGUtilCore {
     }
 
 
+ 
     public boolean compareItemStr (ItemStack item, String itemstr){
         return compareItemStr (item.getTypeId(), item.getDurability(), item.getAmount(), itemstr);
     }
@@ -439,6 +441,7 @@ public abstract class FGUtilCore {
     }
 
     // Надо использовать маску: id:data*amount, id:data, id*amount
+ 
     public boolean compareItemStr (int item_id, int item_data, int item_amount, String itemstr){
         if (!itemstr.isEmpty()){
             int id = -1;
@@ -473,6 +476,7 @@ public abstract class FGUtilCore {
         }, 1);
     }
 
+ 
     public int removeItemInInventory (Inventory inv, String itemstr){
         int left = 1;
         if (left<= 0) return -1;
@@ -509,6 +513,7 @@ public abstract class FGUtilCore {
         return left;
     }
 
+ 
     public int countItemInInventory (Inventory inv, String itemstr){
         int count = 0;
         int id = -1;
@@ -535,6 +540,7 @@ public abstract class FGUtilCore {
 
 
 
+ 
     public boolean removeItemInHand(Player p, String itemstr){
         if (!itemstr.isEmpty()){
             int id = -1;
@@ -555,6 +561,7 @@ public abstract class FGUtilCore {
         return false;
     }
 
+ 
     public boolean removeItemInHand(Player p, int item_id, int item_data, int item_amount){
         if ((p.getItemInHand() != null)&&
                 (p.getItemInHand().getTypeId()==item_id)&&
@@ -831,9 +838,11 @@ public abstract class FGUtilCore {
      * Преобразует строку вида <id>:<data>[*<amount>] в ItemStack
      * Возвращает null если строка кривая
      */
+ 
     public ItemStack parseItemStack (String itemstr){
         if (!itemstr.isEmpty()){
-            int id = -1;
+            //int id = -1;
+            Material m = Material.AIR;
             int amount =1;
             short data =0;			
             String [] si = itemstr.split("\\*");
@@ -841,10 +850,10 @@ public abstract class FGUtilCore {
                 if ((si.length==2)&&si[1].matches("[1-9]+[0-9]*")) amount = Integer.parseInt(si[1]);
                 String ti[] = si[0].split(":");
                 if (ti.length>0){
-                    if (ti[0].matches("[0-9]*")) id=Integer.parseInt(ti[0]);
-                    else id=Material.getMaterial(ti[0]).getId();						
+                    if (ti[0].matches("[0-9]*")) m = Material.getMaterial(Integer.parseInt(ti[0]));//id=Integer.parseInt(ti[0]);
+                    else m=Material.getMaterial(ti[0].toUpperCase());						
                     if ((ti.length==2)&&(ti[1]).matches("[0-9]*")) data = Short.parseShort(ti[1]);
-                    return new ItemStack (id,amount,data);
+                    return new ItemStack (m,amount,data);
                 }
             }
         }
@@ -892,6 +901,12 @@ public abstract class FGUtilCore {
     public boolean rollDiceChance (int chance){
         return (random.nextInt(100)<chance);
     }
+    
+    public int tryChance (int chance){
+        return random.nextInt(chance);
+    }
+    
+    
 
     public int getRandomInt(int maxvalue){
         return random.nextInt(maxvalue);

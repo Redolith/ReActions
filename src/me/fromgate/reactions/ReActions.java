@@ -26,14 +26,21 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Logger;
+import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.Activators;
+import me.fromgate.reactions.util.RADebug;
+import me.fromgate.reactions.util.RAEffects;
+import me.fromgate.reactions.util.RATowny;
+import me.fromgate.reactions.util.RAVault;
+import me.fromgate.reactions.util.RAWorldGuard;
+
+import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import com.palmergames.bukkit.towny.Towny;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
+import com.palmergames.bukkit.towny.Towny;
 
 
 public class ReActions extends JavaPlugin {
@@ -47,72 +54,64 @@ public class ReActions extends JavaPlugin {
     public int worlduard_recheck = 2;
     public int same_msg_delay = 10;
     public boolean horizontal_pushback = false;
+    //public boolean play_hearts_heal = true;
 
-    static ReActions instance;
-    static RAUtil util;
+
+
+
+    public static ReActions instance;
+    public static RAUtil util;
 
 
     //разные переменные
 
     RAUtil u;
     Logger log = Logger.getLogger("Minecraft");
-    private RACmd cmd;
+    private Cmd cmd;
     private RAListener l;
 
-    
 
 
+    //public RATowny towny;
+    private boolean towny_conected = false;
+    public boolean isTownyConnected(){
+        return towny_conected;
+    }
+    //public RAWorldGuard worldguard;
+    //public boolean worldguard_conected = false;
 
-    public RATowny towny;
-    public boolean towny_conected = false;
-    public RAWorldGuard worldguard;
-    public boolean worldguard_conected = false;
-    
-    public RAVault vault;
-    
+    //public RAVault vault;
+
 
     Activators activators;
-    HashMap<String,RALoc> tports = new HashMap<String,RALoc>();
+    HashMap<String,TpLoc> tports = new HashMap<String,TpLoc>();
     RADebug debug = new RADebug();
+
+    public Activator getActivator(String id){
+        return  activators.get(id);
+    }
 
     @Override
     public void onEnable() {
         loadCfg();
         saveCfg();
-        u = new RAUtil (this, version_check, language_save, language, "reactions", "ReActions", "react", "&3[RA]&f ");
+        u = new RAUtil (this, version_check, language_save, language, "reactions", "ReActions", "react", "&3[ReActions]&f ");
         if (!getDataFolder().exists()) getDataFolder().mkdirs();
         l = new RAListener (this);
         PluginManager pm = this.getServer().getPluginManager();
         pm.registerEvents(l, this);
 
-        cmd = new RACmd (this);
+        cmd = new Cmd (this);
         getCommand("react").setExecutor(cmd);
         activators = new Activators (this);
-
         instance = this;
         util = u;
-        
-        Actions.init(this);
-        Flag.init(this);
         EventManager.init(this);
-        RAEffects.init(this);
-        Util.init(this);
-
+        RAEffects.init();
         loadLocs();
-
-        vault = new RAVault(this);
-        
-
-
-        if (checkTowny()){
-            towny = new RATowny (this);
-            towny_conected = towny.connected;
-        }
-
-        if (checkWorldGuard()){
-            worldguard = new RAWorldGuard(this);
-            worldguard_conected = worldguard.connected;
-        }
+        RAVault.init();
+        RAWorldGuard.init();
+        if (checkTowny()) towny_conected = RATowny.init();
 
         try {
             MetricsLite metrics = new MetricsLite(this);
@@ -120,6 +119,7 @@ public class ReActions extends JavaPlugin {
         } catch (IOException e) {
         }
     }
+
 
 
     protected void saveLocs(){
@@ -153,7 +153,7 @@ public class ReActions extends JavaPlugin {
                 YamlConfiguration lcs = new YamlConfiguration();
                 lcs.load(f);
                 for (String key : lcs.getKeys(false))
-                    tports.put(key,new RALoc (lcs.getString(key+".world"),
+                    tports.put(key,new TpLoc (lcs.getString(key+".world"),
                             lcs.getDouble(key+".x"),
                             lcs.getDouble(key+".y"),
                             lcs.getDouble(key+".z"),
@@ -173,8 +173,6 @@ public class ReActions extends JavaPlugin {
         getConfig().set("reactions.center-player-teleport",tp_center_coors);
         getConfig().set("reactions.region-recheck-delay",worlduard_recheck);
         getConfig().set("reactions.horizontal-pushback-action",horizontal_pushback );
-
-
         saveConfig();
     }
 
@@ -182,7 +180,6 @@ public class ReActions extends JavaPlugin {
         language= getConfig().getString("general.language","english");
         version_check = getConfig().getBoolean("general.check-updates",false);
         language_save = getConfig().getBoolean("general.language-save",false);
-
         tp_center_coors = getConfig().getBoolean("reactions.center-player-teleport",true);
         actionmsg= getConfig().getString("reactions.show-messages-for-actions","tp,grpadd,grprmv,townset,townkick,itemrmv,itemgive,moneypay,moneygive");
         worlduard_recheck = getConfig().getInt("reactions.region-recheck-delay",2);
@@ -194,14 +191,24 @@ public class ReActions extends JavaPlugin {
         return  ((twn != null)&&(twn instanceof Towny));
     }
 
-    private boolean checkWorldGuard(){
-        Plugin wg = getServer().getPluginManager().getPlugin("WorldGuard");
-        return  ((wg != null)&&(wg instanceof WorldGuardPlugin));
-    }
-
     public RAUtil getUtils(){
         return this.u;
     }
-    
 
+    public boolean isCenterTpLocation(){
+        return this.tp_center_coors;
+    }
+
+    public String getActionMsg(){
+        return this.actionmsg;
+    }
+
+    public boolean containsTpLoc(String locstr){
+        return tports.containsKey(locstr);
+    }
+
+    public Location getTpLoc(String locstr){
+        if (tports.containsKey(locstr)) return tports.get(locstr).getLocation();
+        return null;
+    }
 }

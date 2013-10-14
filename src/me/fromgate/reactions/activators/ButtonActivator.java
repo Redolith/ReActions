@@ -22,7 +22,7 @@
 
 package me.fromgate.reactions.activators;
 
-import me.fromgate.reactions.Actions;
+import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.RAButtonEvent;
 
 import org.bukkit.Location;

@@ -24,8 +24,10 @@ package me.fromgate.reactions.activators;
 
 import java.util.List;
 
-import me.fromgate.reactions.Actions;
+import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.RARegionEnterEvent;
+import me.fromgate.reactions.util.RAWorldGuard;
+
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
@@ -58,8 +60,8 @@ public class RgEnterActivator extends Activator {
 
     @Override
     public boolean isLocatedAt(Location loc) {
-        if (!Activators.plugin.worldguard_conected) return false;
-        List<String> rgs = Activators.plugin.worldguard.getRegions(loc);
+        if (!RAWorldGuard.isConnected()) return false;
+        List<String> rgs = RAWorldGuard.getRegions(loc);
         if (rgs.isEmpty()) return false;
         return rgs.contains(this.region);
     }

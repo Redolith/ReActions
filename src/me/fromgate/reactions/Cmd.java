@@ -26,14 +26,23 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.activators.Activator;
+import me.fromgate.reactions.activators.ActivatorType;
 import me.fromgate.reactions.activators.ButtonActivator;
 import me.fromgate.reactions.activators.CommandActivator;
+import me.fromgate.reactions.activators.PVPDeathActivator;
+import me.fromgate.reactions.activators.PVPKillActivator;
 import me.fromgate.reactions.activators.PlateActivator;
 import me.fromgate.reactions.activators.RegionActivator;
 import me.fromgate.reactions.activators.RgEnterActivator;
 import me.fromgate.reactions.activators.RgLeaveActivator;
 import me.fromgate.reactions.activators.ExecActivator;
+import me.fromgate.reactions.flags.Flags;
+import me.fromgate.reactions.util.RADebug;
+import me.fromgate.reactions.util.RAWorldGuard;
+import me.fromgate.reactions.util.Util;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -46,10 +55,10 @@ import org.bukkit.entity.Player;
 
 
 
-public class RACmd implements CommandExecutor{
+public class Cmd implements CommandExecutor{
     ReActions plg;
     RAUtil u;
-    public RACmd (ReActions plg){
+    public Cmd (ReActions plg){
         this.plg = plg;
         this.u = this.plg.u;
     }
@@ -59,63 +68,39 @@ public class RACmd implements CommandExecutor{
      */
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String cmdLabel, String[] args) {
-        if (sender instanceof Player){
-            Player p = (Player) sender;
-
-            if ((args.length>0)&&u.checkCmdPerm(p, args[0])){
-                if (args.length==1) return ExecuteCmd (p, args[0]);
-                else if (args.length==2) return ExecuteCmd (p, args[0],args[1]);
-                else if (args.length==3) return ExecuteCmd (p, args[0],args[1],args[2]);
-                else if (args.length==4) return ExecuteCmd (p, args[0],args[1],args[2],args[3]);
-                else if (args.length==5) return ExecuteCmd (p, args[0],args[1],args[2],args[3],args[4]);
-                //else if ((args.length==6)&&args[0].equalsIgnoreCase("add")&&args[3].equalsIgnoreCase("tp")&&(args[4].equalsIgnoreCase("here"))) return ExecuteCmd (p, args[0],args[1],args[2],args[3],args[4],args[5]);
-                else if (args.length>=5){
-                    String arg4 = "";
-                    for (int i = 4; i<args.length;i++) 
-                        arg4 = arg4+" "+args[i];
-                    arg4 = arg4.trim();
-                    return ExecuteCmd (p, args[0],args[1],args[2],args[3],arg4);
-                }
-            } else u.printMSG(p, "cmd_cmdpermerr",'c');
-            return true;
-        } 
+        if ((args.length>0)&&u.checkCmdPerm(sender, args[0])){
+            if (args.length==1) return ExecuteCmd (sender, args[0]);
+            else if (args.length==2) return ExecuteCmd (sender, args[0],args[1]);
+            else if (args.length==3) return ExecuteCmd (sender, args[0],args[1],args[2]);
+            else if (args.length==4) return ExecuteCmd (sender, args[0],args[1],args[2],args[3]);
+            else if (args.length==5) return ExecuteCmd (sender, args[0],args[1],args[2],args[3],args[4]);
+            else if (args.length>=5){
+                String arg4 = "";
+                for (int i = 4; i<args.length;i++) 
+                    arg4 = arg4+" "+args[i];
+                arg4 = arg4.trim();
+                return ExecuteCmd (sender, args[0],args[1],args[2],args[3],arg4);
+            }
+        } else u.printMSG(sender, "cmd_cmdpermerr",'c');
         return false;
     }
 
-/*    private boolean ExecuteCmd(Player p, String cmd, String arg1,String arg2, String arg3, String arg4, String arg5) {
-        if (cmd.equalsIgnoreCase("add")&&plg.activators.contains(arg1)){
-            String param = arg4;
-            int radius = 0;
-            if (arg3.equalsIgnoreCase("tp")){
-                if (param.equalsIgnoreCase("here")) param = Util.locationToString(p.getLocation());
-                if (u.isInteger(arg5)) radius = Integer.parseInt(arg5); 
-                param = param+"@"+Integer.toString(radius);
-                if (arg2.equalsIgnoreCase("a")){
-                    if (addAction (arg1, arg3, param)){
-                        plg.activators.saveActivators();
-                        u.printMSG(p, "cmd_actadded", arg3 + " ("+ param+")"); //TODO~
-                        return true;
-                    } else u.printMSG(p, "cmd_actnotadded",arg3 + " ("+ param+")");
-                } else if (arg2.equalsIgnoreCase("r")){
-                    if (addReAction (arg1, arg3, param)){
-                        plg.activators.saveActivators();
-                        u.printMSG(p, "cmd_reactadded",arg3 + " ("+ param+")"); 
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    } */
-
-    public boolean ExecuteCmd (Player p, String cmd){
+    
+    public boolean ExecuteCmd (CommandSender sender, String cmd){
+        Player p = null;
+        if (sender instanceof Player) p = (Player) sender;
         if (cmd.equalsIgnoreCase("help")){
-            u.PrintHlpList(p, 1, 10);
+            int lpp = 10;
+            if (p==null) lpp=1000;
+            u.PrintHlpList(sender, 1, lpp);
         } else if (cmd.equalsIgnoreCase("debug")){
-            plg.debug.offPlayerDebug(p);
+            if (p == null) return false;
+            RADebug.offPlayerDebug(p);
             u.printMSG(p, "cmd_debugoff");
         } else if (cmd.equalsIgnoreCase("list")){
-            printAct(p, 1, 15);
+            int lpp = 15;
+            if (p==null) lpp=1000;
+            printAct(sender, 1, lpp);
         } else if (cmd.equalsIgnoreCase("reload")){
             plg.activators.clear();
             plg.activators.loadActivators();
@@ -123,156 +108,169 @@ public class RACmd implements CommandExecutor{
             plg.loadLocs();
             plg.reloadConfig();
             plg.loadCfg();
-            u.printMSG(p, "msg_cmdreload",plg.activators.size(),plg.tports.size());
+            u.printMSG(sender, "msg_cmdreload",plg.activators.size(),plg.tports.size());
         } else if (cmd.equalsIgnoreCase("check")){
+            if (p==null) return false;
             printActivatorsAround(p, 8);
         } else return false;
         return true;
     }
 
-    public boolean ExecuteCmd (Player p, String cmd, String arg){
+    public boolean ExecuteCmd (CommandSender s, String cmd, String arg){
+        Player p = null;
+        if (s instanceof Player) p = (Player) s;
         if (cmd.equalsIgnoreCase("run")){
+            if (p==null) return false;
             if (EventManager.raiseExecEvent(p, p, arg)) u.printMSG(p, "cmd_runplayer",arg,p.getName());
             else u.printMSG(p, "cmd_runplayerfail",'c','6',arg,p.getName());
         } else if (cmd.equalsIgnoreCase("help")){
+            int lpp = 10;
             int page = 1;
+            if (p==null) {
+                lpp=1000;
+                page = 1;
+            }
             if (u.isIntegerGZ(arg)) page = Integer.parseInt(arg);
-            u.PrintHlpList(p, page, 10);
+            u.PrintHlpList(s, page, lpp);
         } else if (cmd.equalsIgnoreCase("info")){
             if (plg.activators.contains(arg)){
-                printActInfo(p,arg,"");
-            } else u.printMSG(p, "cmd_unknownbutton",arg);
+                printActInfo(s,arg,"");
+            } else u.printMSG(s, "cmd_unknownbutton",arg);
         } else if (cmd.equalsIgnoreCase("list")&&u.isIntegerGZ(arg)){
-            printAct(p, Integer.parseInt(arg), 15);
+            int page = Integer.parseInt(arg);
+            int lpp = 15;
+            if (p==null) {
+                lpp=1000;
+                page = 1;
+            }
+            printAct(s, page, lpp);
         } else if (cmd.equalsIgnoreCase("check")){
+            if (p==null) return false;
             int radius = 8;
             if (u.isInteger(arg)) radius = Integer.parseInt(arg);
             this.printActivatorsAround(p, radius);
         } else if (cmd.equalsIgnoreCase("debug")){
+            if (p==null) return false;
             if (arg.equalsIgnoreCase("false")) {
-                plg.debug.setPlayerDebug(p, false);
+                RADebug.setPlayerDebug(p, false);
                 u.printMSG(p, "cmd_debugfalse");
             } else if (arg.equalsIgnoreCase("true")) {
-                plg.debug.setPlayerDebug(p, true);
+                RADebug.setPlayerDebug(p, true);
                 u.printMSG(p, "cmd_debugtrue");
             } else {
-                plg.debug.offPlayerDebug(p);
+                RADebug.offPlayerDebug(p);
                 u.printMSG(p, "cmd_debugoff");
             }
         } else if (cmd.equalsIgnoreCase("list")){
+            int lpp = 15;
+            if (p==null) lpp=1000;
             if (arg.equalsIgnoreCase("all")){
-                printAct(p, 1, 15);
+                printAct(s, 1, lpp);
             } else if (arg.equalsIgnoreCase("loc")){
-                printLocList(p,1,15);
+                printLocList(s,1,lpp);
             } else {
-                u.printMSG(p,"msg_listcount",plg.activators.size()+";"+plg.tports.size());
+                u.printMSG(s,"msg_listcount",plg.activators.size(),plg.tports.size());
             }
         } else return false; 
         return true;
     }
 
-    
+
     //rea add cmd <id>
 
-    public boolean ExecuteCmd (Player p, String cmd, String arg1, String arg2){
+    @SuppressWarnings("deprecation")
+    public boolean ExecuteCmd (CommandSender s, String cmd, String arg1, String arg2){
+        Player p = null;
+        if (s instanceof Player) p = (Player) s;
+        // /react run <player|region:<region name>> <activator>
         if (cmd.equalsIgnoreCase("run")){
-            if (!p.hasPermission("reactions.run.player")) return false;
-            Player targetPlayer = Bukkit.getPlayer(arg2);   
-            if (EventManager.raiseExecEvent(p, targetPlayer, arg1)) u.printMSG(p, "cmd_runplayer",arg1,targetPlayer.getName());
-            else u.printMSG(p, "cmd_runplayerfail",'c','6',arg1,arg2);
-            
+            if (p!=null){
+                if (!p.hasPermission("reactions.run.player")) return false;
+            }
+            if (arg2.toLowerCase().startsWith("region:")){
+                List<Player> targets = RAWorldGuard.playersInRegion(arg2.replace("region:", ""));
+                if (targets.size()>0){
+                    String plrs = "";
+                    for (Player targetPlayer : targets)
+                        if (EventManager.raiseExecEvent(p, targetPlayer, arg1)){
+                            plrs = plrs.isEmpty() ? targetPlayer.getName() : plrs +", "+ targetPlayer.getName();
+                        }
+                    if (plrs.isEmpty()) u.printMSG(s, "cmd_runplayer",arg1,plrs);
+                    else u.printMSG(s, "cmd_runplayerfail",'c','6',arg1,arg2);
+                } else u.printMSG(s, "cmd_runplayerfail",'c','6',arg1,arg2);
+            } else {
+                Player targetPlayer = Bukkit.getPlayer(arg2);   
+                if (EventManager.raiseExecEvent(p, targetPlayer, arg1)) u.printMSG(s, "cmd_runplayer",arg1,targetPlayer.getName());
+                else u.printMSG(s, "cmd_runplayerfail",'c','6',arg1,arg2);                
+            }
         } else if (cmd.equalsIgnoreCase("add")){
-            if (arg1.equalsIgnoreCase("button")||arg1.equalsIgnoreCase("b")){
-                Block b = p.getTargetBlock(null, 100); 
-                if ((b != null)&&((b.getType()==Material.STONE_BUTTON)||
-                        (b.getType()==Material.WOOD_BUTTON))){
-                    ButtonActivator ba = new ButtonActivator (arg2, b);
-                    if (plg.activators.addActivator(ba)) {
-                        plg.activators.saveActivators();
-                        u.printMSG(p, "cmd_addbadded",ba.toString());
-                    } else u.printMSG(p, "cmd_notaddbadded",ba.toString());
-                } else u.printMSG(p, "cmd_addbreqbut");
-                return true;
-            } else if (arg1.equalsIgnoreCase("exec")||arg1.equalsIgnoreCase("ex")){
-                ExecActivator ca = new ExecActivator (arg2);
-                if (plg.activators.addActivator(ca)) {
-                    plg.activators.saveActivators();
-                    u.printMSG(p, "cmd_addbadded",ca.toString());
-                } else u.printMSG(p, "cmd_notaddbadded",ca.toString());
-                return true;
-            } else if (arg1.equalsIgnoreCase("plate")||arg1.equalsIgnoreCase("p")){
-                Block b = p.getTargetBlock(null, 100); 
-                if ((b != null)&&((b.getType()==Material.STONE_PLATE)||
-                        (b.getType()==Material.WOOD_PLATE))){
-                    PlateActivator ba = new PlateActivator (arg2, b);
-                    if (plg.activators.addActivator(ba)) {
-                        plg.activators.saveActivators();
-                        u.printMSG(p, "cmd_addbadded",ba.toString());
-                    } else u.printMSG(p, "cmd_notaddbadded",ba.toString());
-                } else u.printMSG(p, "cmd_addbreqbut");
-                return true;
+            if (ActivatorType.isValid(arg1))  {
+                Block b = p.getTargetBlock(null, 100);
+                return addActivator(p, arg1, arg2, "", b);
             } else if (arg1.equalsIgnoreCase("loc")){
-                plg.tports.put(arg2, new RALoc (p.getLocation()));
+                plg.tports.put(arg2, new TpLoc (p.getLocation()));
                 plg.saveLocs();
                 u.printMSG(p, "cmd_addtpadded",arg2);
             } else u.printMSG(p, "cmd_unknownadd",'c');
         } else if (cmd.equalsIgnoreCase("copy")) {
-            if (plg.activators.copyAll(arg1, arg2)) u.printMSG(p, "msg_copyall",arg1,arg2);
-            else u.printMSG(p, "msg_copyallfailed",'c','4',arg1,arg2);
+            if (plg.activators.copyAll(arg1, arg2)) u.printMSG(s, "msg_copyall",arg1,arg2);
+            else u.printMSG(s, "msg_copyallfailed",'c','4',arg1,arg2);
         } else if (cmd.equalsIgnoreCase("info")){
             if (plg.activators.contains(arg1)){
-                printActInfo(p,arg1,arg2);
-            } else u.printMSG(p, "cmd_unknownbutton",arg1);
+                printActInfo(s,arg1,arg2);
+            } else u.printMSG(s, "cmd_unknownbutton",arg1);
         } else if (cmd.equalsIgnoreCase("list")) {
+            int lpp = 15;
+            if (p==null) lpp=1000;
             //   /ra list type <type> [pnum] 4 [5]
             if (arg1.equalsIgnoreCase("type")){
-                printActType(p, arg2, 1, 15);
+                printActType(p, arg2, 1, lpp);
             } else if (arg1.equalsIgnoreCase("group")){
-                printActGroup(p, arg2, 1, 15);
+                printActGroup(p, arg2, 1, lpp);
             } else if (arg1.equalsIgnoreCase("all")&&u.isIntegerGZ(arg2)){
-                this.printAct(p, Integer.parseInt(arg2), 15);
+                this.printAct(p, Integer.parseInt(arg2), lpp);
             } else if (arg1.equalsIgnoreCase("loc")&&u.isIntegerGZ(arg2)){
-                printLocList(p,Integer.parseInt(arg2),15);
+                printLocList(p,Integer.parseInt(arg2),lpp);
             }
         } else if (cmd.equalsIgnoreCase("remove")){
             if (arg1.equalsIgnoreCase("act")||
                     arg1.equalsIgnoreCase("activator")){
                 if (plg.activators.contains(arg2)){
                     plg.activators.removeActivator(arg2);
-                    u.printMSG(p, "msg_removebok",arg2);
+                    u.printMSG(s, "msg_removebok",arg2);
                     plg.activators.saveActivators();
-                } else u.printMSG(p, "msg_removebnf",arg2);
+                } else u.printMSG(s, "msg_removebnf",arg2);
             } else if (arg1.equalsIgnoreCase("loc")){
                 if (plg.tports.containsKey(arg2)){
                     plg.tports.remove(arg2);
-                    u.printMSG(p, "msg_removelocok",arg2);
+                    u.printMSG(s, "msg_removelocok",arg2);
                     plg.saveLocs();
-                } else u.printMSG(p, "msg_removelocnf",arg2);
+                } else u.printMSG(s, "msg_removelocnf",arg2);
             } 
         } else if (cmd.equalsIgnoreCase("clear")){
             if (plg.activators.contains(arg1)){
                 if (arg2.equalsIgnoreCase("f")) {
                     plg.activators.clearFlags(arg1);
                     plg.activators.saveActivators();
-                    u.printMSG(p, "msg_clearflag", arg1);
+                    u.printMSG(s, "msg_clearflag", arg1);
                 } else if (arg2.equalsIgnoreCase("a")) {
                     plg.activators.clearActions(arg1);
-                    u.printMSG(p, "msg_clearact", arg1);
+                    u.printMSG(s, "msg_clearact", arg1);
                     plg.activators.saveActivators();
                 } else if (arg2.equalsIgnoreCase("r")) {
                     plg.activators.clearReactions(arg1);
-                    u.printMSG(p, "msg_clearreact", arg1);
+                    u.printMSG(s, "msg_clearreact", arg1);
                     plg.activators.saveActivators();
                 }
                 plg.activators.saveActivators();
-            } else u.printMSG(p, "cmd_unknownbutton");
+            } else u.printMSG(s, "cmd_unknownbutton");
 
         } else if (cmd.equalsIgnoreCase("group")) {
             if (plg.activators.setGroup(arg1, arg2)) {
                 plg.activators.saveActivators();
-                u.printMSG(p, "msg_groupset",arg1, arg2);
+                u.printMSG(s, "msg_groupset",arg1, arg2);
             }
-            else u.printMSG(p, "msg_groupsetfailed",arg1, arg2);
+            else u.printMSG(s, "msg_groupsetfailed",arg1, arg2);
         } else	return false;
 
         return true;
@@ -280,7 +278,8 @@ public class RACmd implements CommandExecutor{
 
 
     public boolean addAction(String clicker, String flag, String param){
-        if (u.isWordInList(flag, Actions.atypes)){
+        //if (u.isWordInList(flag, Actions.atypes)){
+        if (Actions.isValid(flag)){    
             if ((flag.equalsIgnoreCase("loc")&&(!plg.tports.containsKey(param)))||
                     (flag.equals("dmg")&&(!(param.matches("[0-9]*")||param.isEmpty()))))
                 return false;
@@ -291,7 +290,8 @@ public class RACmd implements CommandExecutor{
     }
 
     public boolean addReAction(String clicker, String flag, String param){
-        if (u.isWordInList(flag, Actions.atypes)){
+        //if (u.isWordInList(flag, Actions.atypes)){
+        if (Actions.isValid(flag)){
             if ((flag.equalsIgnoreCase("tp")&&(!plg.tports.containsKey(param)))||
                     (flag.equals("dmg")&&(!(param.matches("[0-9]*")||param.isEmpty()))))
                 return false;
@@ -304,7 +304,8 @@ public class RACmd implements CommandExecutor{
     public boolean addFlag(String clicker, String fl, String param){
         String flag=fl.replaceFirst("!", "");
         boolean not = fl.startsWith("!");
-        if (u.isWordInList(flag, Flag.ftypes)){
+        //if (u.isWordInList(flag, Flag.ftypes)){
+        if (Flags.isValid(flag)){
             plg.activators.addFlag(clicker, flag, param, not); // все эти проверки вынести в соответствующие классы
             return true;
         }
@@ -314,53 +315,37 @@ public class RACmd implements CommandExecutor{
 
     //   /ra add     region        name wg
     //   /ra add      a|r          dmg/msg  value 	
-    public boolean ExecuteCmd (Player p, String cmd, String arg1, String arg2, String arg3){
+    public boolean ExecuteCmd (CommandSender s, String cmd, String arg1, String arg2, String arg3){
+        Player p = null;
+        if (s instanceof Player) p = (Player) s;
+
         if (cmd.equalsIgnoreCase("run")){
-            if (!p.hasPermission("reactions.run.player")) return false;
-            long delay = Util.timeToTicks(Util.parseTime(arg3));
-            Player targetPlayer = Bukkit.getPlayer(arg2);
-            if (targetPlayer != null){
-                Actions.execActivator(p, targetPlayer, arg1, delay);
-                u.printMSG(p, "cmd_rundelayplayer",arg1,targetPlayer.getName(),delay);
-            } else u.printMSG(p, "cmd_runplayerunknown",arg1,arg2); 
-        } else if (cmd.equalsIgnoreCase("add")){
-            if (arg1.equalsIgnoreCase("region")||arg1.equalsIgnoreCase("rg")){
-                if (!plg.worldguard_conected) u.printMSG(p, "cmd_wgnotfound",'c');
-                else {
-                    RegionActivator wga = new RegionActivator (arg2,arg3);
-                    plg.activators.addActivator(wga);
-                    plg.activators.saveActivators();
-                    u.printMSG(p, "cmd_addbadded",wga.toString());
-                }
-            } else if (arg1.equalsIgnoreCase("rgenter")||arg1.equalsIgnoreCase("rge")){
-                if (!plg.worldguard_conected) u.printMSG(p, "cmd_wgnotfound",'c');
-                else {
-                    RgEnterActivator wga = new RgEnterActivator (arg2,arg3);
-                    plg.activators.addActivator(wga);
-                    plg.activators.saveActivators();
-                    u.printMSG(p, "cmd_addbadded",wga.toString());
-                }
-            } else if (arg1.equalsIgnoreCase("rgleave")||arg1.equalsIgnoreCase("rgl")){
-                if (!plg.worldguard_conected) u.printMSG(p, "cmd_wgnotfound",'c');
-                else {
-                    RgLeaveActivator wga = new RgLeaveActivator (arg2,arg3);
-                    plg.activators.addActivator(wga);
-                    plg.activators.saveActivators();
-                    u.printMSG(p, "cmd_addbadded",wga.toString());
-                }
-                
-            } else if (arg1.equalsIgnoreCase("command")||arg1.equalsIgnoreCase("cmd")){
-                CommandActivator ca = new CommandActivator (arg2,arg3);
-                plg.activators.addActivator(ca);
-                plg.activators.saveActivators();
-                u.printMSG(p, "cmd_addbadded",ca.toString());
-            /*} else if (arg1.equalsIgnoreCase("loc")){
-                int radius = 0;
-                if (u.isInteger(arg3)) radius = Integer.parseInt(arg3);
-                plg.tports.put(arg2, new RALoc (p.getLocation(),radius));
-                plg.saveLocs();
-                u.printMSG(p, "cmd_addtpadded",arg2); */
+            if (p!=null){
+                if (!p.hasPermission("reactions.run.player")) return false;
             }
+            List<Player> targetPlayers = new ArrayList<Player>();
+            if (arg2.toLowerCase().startsWith("region:")){
+                targetPlayers = RAWorldGuard.playersInRegion(arg2.replace("region:", ""));
+            } else {
+                Player targetPlayer = Bukkit.getPlayerExact(arg2);
+                if (targetPlayer != null) targetPlayers.add(targetPlayer);
+            }
+            if (!targetPlayers.isEmpty()){
+                long delay = Util.timeToTicks(Util.parseTime(arg3));
+                String plrs = "";
+                for (Player targetPlayer : targetPlayers){
+                    Actions.execActivator(p, targetPlayer, arg1, delay);
+                    plrs = plrs.isEmpty() ? targetPlayer.getName() : plrs +", "+ targetPlayer.getName();
+                }
+                if (!plrs.isEmpty()) u.printMSG(p, "cmd_rundelayplayer",arg1,plrs,delay);
+                else u.printMSG(s, "cmd_runplayerfail",'c','6',arg1,arg2);
+            } else u.printMSG(p, "cmd_runplayerunknown",arg1,arg2);
+        } else if (cmd.equalsIgnoreCase("add")){
+            if (ActivatorType.isValid(arg1))  {
+                @SuppressWarnings("deprecation")
+                Block b = p.getTargetBlock(null, 100);
+                return addActivator(p, arg1, arg2, arg3, b);
+            } else return false;
         } else if (cmd.equalsIgnoreCase("remove")) {
             if (plg.activators.contains(arg1)){
                 Activator act = plg.activators.get(arg1);
@@ -422,10 +407,11 @@ public class RACmd implements CommandExecutor{
 
     //                                          add          a           <name>   <flag>    <param>
     //                                          add          <name>        a      <flag>    <param>
-    public boolean ExecuteCmd (Player p, String cmd, String arg1, String arg2, String arg3, String arg4){
+    public boolean ExecuteCmd (CommandSender s, String cmd, String arg1, String arg2, String arg3, String arg4){
+        Player p = null;
+        if (s instanceof Player) p = (Player) s;
         if (cmd.equalsIgnoreCase("add")&&plg.activators.contains(arg1)){
             String param = arg4;
-            
             if (!u.isWordInList(arg3, "msg,msgall,cmdsrv,cmdplr,cmdop")&&param.contains("here"))
                 param = param.replace("here", Util.locationToString(p.getLocation()));
             if (arg2.equalsIgnoreCase("a")){
@@ -440,9 +426,6 @@ public class RACmd implements CommandExecutor{
                     u.printMSG(p, "cmd_reactadded",arg3 + " ("+ param+")");	
                     return true;
                 } else u.printMSG(p, "cmd_reactnotadded",arg3 + " ("+ param+")");
-
-
-
             } else if (arg2.equalsIgnoreCase("f"))
                 if (addFlag (arg1, arg3, arg4)){
                     plg.activators.saveActivators();
@@ -564,5 +547,53 @@ public class RACmd implements CommandExecutor{
         u.printPage(p, lst, page, "msg_listloc", "", true);
     }
 
+    private boolean addActivator (Player p, String type, String name, String param, Block b){
+        ActivatorType at = ActivatorType.getByName(type);
+        if (at==null) return false;
+        Activator activator = null;
+
+        switch (at){
+        case BUTTON:
+            if (b == null) return false;
+            if ((b.getType()==Material.STONE_BUTTON)||(b.getType()==Material.WOOD_BUTTON)) {
+                activator = new ButtonActivator (name,b);
+            } else u.printMSG(p, "cmd_addbreqbut");
+            break;
+        case COMMAND:
+            activator = new CommandActivator (name,param);
+            break;
+        case EXEC:
+            activator = new ExecActivator (name);
+            break;
+        case PLATE:
+            if (b == null) return false;
+            if ((b.getType()==Material.STONE_PLATE)||(b.getType()==Material.WOOD_PLATE)) {
+                activator = new PlateActivator (name,b);
+            } else u.printMSG(p, "cmd_addbreqbut");
+            break;
+        case PVPDEATH:
+            activator = new PVPDeathActivator (name);
+            break;
+        case PVPKILL:
+            activator = new PVPKillActivator (name);
+            break;
+        case REGION:
+            activator = new RegionActivator (name,param);
+            break;
+        case RGENTER:
+            activator = new RgEnterActivator (name,param);
+            break;
+        case RGLEAVE:
+            activator = new RgLeaveActivator (name,param);
+            break;
+        }
+        if (activator == null) return false;
+        if (plg.activators.addActivator(activator)) {
+            plg.activators.saveActivators();
+            u.printMSG(p, "cmd_addbadded",activator.toString());
+        } else u.printMSG(p, "cmd_notaddbadded",activator.toString());
+
+        return true;
+    }
 
 }

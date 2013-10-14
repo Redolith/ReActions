@@ -1,7 +1,10 @@
-package me.fromgate.reactions;
+package me.fromgate.reactions.util;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import me.fromgate.reactions.ReActions;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -19,7 +22,7 @@ public class RAMobSpawn {
     public static void mobSpawn(Player p, Map<String,String> params) {
         String mob = Util.getParam(params, "type", "PIG");
         String locstr = Util.getParam(params, "loc", "");
-        Location loc = Actions.locToLocation(p,locstr);
+        Location loc = Util.locToLocation(p,locstr);
         String region = Util.getParam(params, "region", "");
         int radius = Util.getParam(params, "radius", 0);
         int num=Util.getMinMaxRandom(Util.getParam(params, "num", "1"));
@@ -42,36 +45,83 @@ public class RAMobSpawn {
         String cry = Util.getParam(params, "cry", "");
         String equip = Util.getParam(params, "equip", "");
         double dmg = Util.getParam(params, "dmg", 1.0D);
+
+        if (loc == null) loc = p.getLocation();
         List<Location> locs = null;
-        if (ReActions.instance.worldguard.isRegionExists(region)) locs = Util.getLocationsRegion(region, land);
+        
+        if (RAWorldGuard.isRegionExists(region)) locs = Util.getLocationsRegion(region, land);
         else if (radius>0) locs = Util.getLocationsRadius(loc, radius, land);
 
         for (int i = 0; i<num; i++){
-            if (loc == null) loc = p.getLocation();
+
             if ((locs!=null)&&(!locs.isEmpty()))
                 loc = Util.getRandomLocationList(locs);
-            Entity e = loc.getWorld().spawnEntity(loc, EntityType.fromName(mob));
-            if (e == null) break;
+
+
+            List<LivingEntity> mobs = spawnMob(loc,mob);
+
+
+            for (LivingEntity le : mobs){
+
+                setMobHealth (le,health);
+                setMobName (le,name);
+                potionEffect (le,poteff);
+                if (equip.isEmpty()) setMobEquipment(le,helm, chest, leg, boot,weapon);
+                else setMobEquipment(le,equip);
+                setMobDrop (le,drop);
+                setMobXP (le,xp);
+                setMobMoney (le,money);
+                setMobDmgMultiplier (le,dmg);
+                setMobGrowl(le,growl);
+                setMobCry(le,cry);
+                setDeathEffect (le,dtheffect);
+
+            }
+
+            playMobEffect (loc,playeffect);
+
+        }
+    }
+
+
+    @SuppressWarnings("deprecation")
+    private static List<LivingEntity> spawnMob(Location loc, String mobstr) {
+        List<LivingEntity> mobs = new ArrayList<LivingEntity>();
+        String [] ln = mobstr.split(":");
+        if (ln.length<1) return mobs;
+
+        for (int i = 0;i<Math.min(2, ln.length); i++){
+            String mbs =  ln[i];
+            String name = "";
+            if (mbs.contains("$")){
+                name = mbs.substring(0,mbs.indexOf("$"));
+                mbs = mbs.substring(name.length()+1);
+            }
+
+            
+            EntityType et = EntityType.fromName(mbs);
+            if (mbs.equalsIgnoreCase("horse")) et = EntityType.HORSE;
+            if (et == null){
+                ReActions.util.logOnce("mobspawnunknowntype_"+mobstr, "Unknown mob type "+mbs+" ("+mobstr+")");
+                continue;
+            }
+            Entity e = loc.getWorld().spawnEntity(loc, et);
+            if (e == null) {
+                ReActions.util.logOnce("mobspawnfail_"+mobstr, "Cannot spawn mob "+mbs+" ("+mobstr+")");
+                continue;
+            }
+        
             if (!(e instanceof LivingEntity)) {
                 e.remove();
-                break;
+                ReActions.util.logOnce("mobspawnnotmob_"+mobstr, "Cannot spawn mob "+mbs+" ("+mobstr+")");
+                continue;
             }
-            playMobEffect (loc,playeffect);
-            LivingEntity le = (LivingEntity)e;
-            setMobHealth (le,health);
-            setMobName (le,name);
-            potionEffect (le,poteff);
-            if (equip.isEmpty()) setMobEquipment(le,helm, chest, leg, boot,weapon);
-            else setMobEquipment(le,equip);
-            setMobDrop (le,drop);
-            setMobXP (le,xp);
-            setMobMoney (le,money);
-            setMobDmgMultiplier (le,dmg);
-            setMobGrowl(le,growl);
-            setMobCry(le,cry);
-            //String deatheffect = Util.getParam(params, "deatheffect", "");
-            setDeathEffect (le,dtheffect);
+            LivingEntity mob = (LivingEntity)e;
+            setMobName (mob, name);
+            mobs.add(mob);
         }
+        if (mobs.size()==2) mobs.get(1).setPassenger(mobs.get(0));
+        return mobs;
     }
 
 
@@ -84,6 +134,7 @@ public class RAMobSpawn {
 
     public static void setMobName (LivingEntity e, String name){
         if (name.isEmpty()) return;
+        if ((e.getCustomName()!=null)&&(!e.getCustomName().isEmpty())) return;
         e.setCustomName(ChatColor.translateAlternateColorCodes('&', name.replace("_", " ")));    
         e.setCustomNameVisible(true);
     }
@@ -106,7 +157,7 @@ public class RAMobSpawn {
         if (stack.isEmpty()) return;
         setMobDropStack (e,stack);
     }
-    
+
     private static void setMobDmgMultiplier(LivingEntity e, double dmg) {
         if (dmg<0) return;
         e.setMetadata("ReActions-dmg", new FixedMetadataValue(ReActions.instance, dmg));
@@ -186,7 +237,7 @@ public class RAMobSpawn {
             int level = 1;
             String [] ln = pot.split(":");
             pef = ln[0];
-            PotionEffectType pet = Actions.parsePotionEffect(pef);
+            PotionEffectType pet = Util.parsePotionEffect(pef);
             if (pet==null) continue;
             if ((ln.length == 2)&&ReActions.util.isInteger(ln[1])) level = Integer.parseInt(ln[1]);
             PotionEffect pe = new PotionEffect (pet, Integer.MAX_VALUE,level,true);

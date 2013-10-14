@@ -26,7 +26,7 @@ import java.text.DecimalFormat;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
-public class RALoc {
+public class TpLoc {
     String world;
     double x;
     double y;
@@ -35,7 +35,7 @@ public class RALoc {
     float pitch;
     //int radius;
 
-    public RALoc (Location loc){
+    public TpLoc (Location loc){
         this.world = loc.getWorld().getName();
         this.x = loc.getX();
         this.y = loc.getY();
@@ -55,7 +55,7 @@ public class RALoc {
         this.radius = radius;
     }*/
 
-    public RALoc (String world, double x, double y, double z, float yaw, float pitch){
+    public TpLoc (String world, double x, double y, double z, float yaw, float pitch){
         this.world = world;
         this.x = x;
         this.y = y;

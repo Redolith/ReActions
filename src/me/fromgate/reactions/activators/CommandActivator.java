@@ -1,6 +1,6 @@
 package me.fromgate.reactions.activators;
 
-import me.fromgate.reactions.Actions;
+import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.RACommandEvent;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;

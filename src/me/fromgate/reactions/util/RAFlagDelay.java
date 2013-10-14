@@ -20,7 +20,7 @@
  * 
  */
 
-package me.fromgate.reactions;
+package me.fromgate.reactions.util;
 
 import java.util.HashMap;
 

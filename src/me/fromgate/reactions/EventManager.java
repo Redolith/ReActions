@@ -26,16 +26,21 @@ import java.util.List;
 import me.fromgate.reactions.event.RAButtonEvent;
 import me.fromgate.reactions.event.RACommandEvent;
 import me.fromgate.reactions.event.RAExecEvent;
+import me.fromgate.reactions.event.RAPVPKillEvent;
 import me.fromgate.reactions.event.RAPlateEvent;
 import me.fromgate.reactions.event.RARegionEnterEvent;
 import me.fromgate.reactions.event.RARegionLeaveEvent;
 import me.fromgate.reactions.event.RARegionEvent;
+import me.fromgate.reactions.util.RAWorldGuard;
+import me.fromgate.reactions.util.Util;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.material.Button;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -48,6 +53,17 @@ public class EventManager {
     public static void init(ReActions plugin){
         plg = plugin;
     }
+    
+    // PVP Kill Event
+    
+    public static void raisePVPKillEvent (PlayerDeathEvent event){
+        Player deadplayer = event.getEntity();
+        Player killer = Util.getKiller(deadplayer.getLastDamageCause());
+        if (killer==null) return;
+        RAPVPKillEvent pe = new RAPVPKillEvent(killer, deadplayer);
+        Bukkit.getServer().getPluginManager().callEvent(pe);
+    }
+    
     // Button Event
     public static void raiseButtonEvent (PlayerInteractEvent event){
         if (!((event.getAction()==Action.RIGHT_CLICK_BLOCK)||(event.getAction()==Action.LEFT_CLICK_BLOCK))) return;
@@ -132,8 +148,8 @@ public class EventManager {
 
     // WorldGuard Event (based on PlayerMoveEvent and PlayerTeleportEvent)
     public static void raiseRegionEvent (Player player, Location to){
-        if (!plg.worldguard_conected) return; 
-        List<String> rgs = plg.worldguard.getRegions(to);
+        if (!RAWorldGuard.isConnected()) return;
+        List<String> rgs = RAWorldGuard.getRegions(to);
         if (rgs.isEmpty()) return;
         for (String rg : rgs){
             if (isTimeToRaiseEvent (player,rg)){
@@ -145,9 +161,9 @@ public class EventManager {
     }
 
     public static void raiseRgEnterEvent (Player player, Location from, Location to){
-        if (!plg.worldguard_conected) return; 
-        List<String> rgsto = plg.worldguard.getRegions(to);
-        List<String> rgsfrom = plg.worldguard.getRegions(from);
+        if (!RAWorldGuard.isConnected()) return; 
+        List<String> rgsto = RAWorldGuard.getRegions(to);
+        List<String> rgsfrom = RAWorldGuard.getRegions(from);
         if (rgsto.isEmpty()) return;
         for (String rg : rgsto)
             if (!rgsfrom.contains(rg)){
@@ -157,9 +173,9 @@ public class EventManager {
     }
 
     public static void raiseRgLeaveEvent (Player player, Location from, Location to){
-        if (!plg.worldguard_conected) return; 
-        List<String> rgsto = plg.worldguard.getRegions(to);
-        List<String> rgsfrom = plg.worldguard.getRegions(from);
+        if (!RAWorldGuard.isConnected()) return; 
+        List<String> rgsto = RAWorldGuard.getRegions(to);
+        List<String> rgsfrom = RAWorldGuard.getRegions(from);
         if (rgsfrom.isEmpty()) return;
         for (String rg : rgsfrom)
             if (!rgsto.contains(rg)){
@@ -176,8 +192,10 @@ public class EventManager {
             Bukkit.getScheduler().runTaskLater(plg, new Runnable(){
                 @Override
                 public void run() {
+                    if (!p.isOnline()) return;
+                    if (p.isDead()) return;
                     p.removeMetadata("reactions-wg-"+rg, plg);
-                    if (plg.worldguard.isPlayerInRegion(p, rg)){
+                    if (RAWorldGuard.isPlayerInRegion(p, rg)){
                         RARegionEvent wge = new RARegionEvent (p, rg);
                         Bukkit.getServer().getPluginManager().callEvent(wge);	
                         setFutureCheck (p,rg);

@@ -4,7 +4,7 @@ package me.fromgate.reactions.activators;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
-import me.fromgate.reactions.Actions;
+import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.RAExecEvent;
 
 public class ExecActivator extends Activator {

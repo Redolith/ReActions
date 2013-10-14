@@ -19,7 +19,7 @@
  *  along with ReActions.  If not, see <http://www.gnorg/licenses/>.
  * 
  */
-package me.fromgate.reactions;
+package me.fromgate.reactions.util;
 
 import static com.palmergames.bukkit.towny.object.TownyObservableType.TOWN_ADD_RESIDENT;
 import static com.palmergames.bukkit.towny.object.TownyObservableType.TOWN_REMOVE_RESIDENT;
@@ -37,31 +37,23 @@ import com.palmergames.bukkit.towny.object.TownyUniverse;
 
 public class RATowny {
 
-    //public boolean towny_conected = false;
-    
-    ReActions plg;
-    private Towny towny = null;
+    private static Towny towny = null;
+    private static boolean connected = false;
 
-    boolean connected = false;
-
-
-    public RATowny (ReActions plugin){
-        this.plg = plugin;
-        this.connected = connectToTowny();
+    public static boolean init(){
+        connected = connectToTowny();
+        return connected;
+    }
+    private static boolean connectToTowny(){
+        Plugin twn = Bukkit.getServer().getPluginManager().getPlugin("Towny");
+        if (twn == null) return false;
+        if (!(twn instanceof Towny)) return false;
+        towny = (Towny) twn;
+        return true;
     }
 
 
-    private boolean connectToTowny(){
-        Plugin twn = plg.getServer().getPluginManager().getPlugin("Towny");
-        if ((twn != null)&&(twn instanceof Towny)){
-            this.towny = (Towny) twn;
-            return true;
-        }
-        return false;
-    }
-
-
-    public void kickFromTown (Player p){
+    public static void kickFromTown (Player p){
         if (connected){
             Resident rsd = towny.getTownyUniverse().getResidentMap().get(p.getName());
 
@@ -78,7 +70,7 @@ public class RATowny {
     }
 
 
-    public void townRemoveResident (Town town, Resident resident) throws NotRegisteredException, EmptyTownException {
+    public static void townRemoveResident (Town town, Resident resident) throws NotRegisteredException, EmptyTownException {
         if (connected){
             town.removeResident(resident);
             towny.deleteCache(resident.getName());
@@ -90,7 +82,7 @@ public class RATowny {
     }
 
 
-    public void addToTown (Player p, String town){
+    public static void addToTown (Player p, String town){
         if (connected){
             Town newtown = towny.getTownyUniverse().getTownsMap().get(town.toLowerCase());
             if (newtown != null){
@@ -122,7 +114,7 @@ public class RATowny {
         }
     }
 
-    public boolean playerInTown(Player p, String townname){
+    public static boolean playerInTown(Player p, String townname){
         if (!connected) return false;
         Resident rsd = towny.getTownyUniverse().getResidentMap().get(p.getName());
         if (!rsd.hasTown()||townname.isEmpty()) return false;
@@ -134,7 +126,7 @@ public class RATowny {
     }
 
 
-    /*public boolean isConnected() {
-       return connected;
-    }*/
+    public static boolean isConnected() {
+        return connected;
+    }
 }

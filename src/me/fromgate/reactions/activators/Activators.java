@@ -33,7 +33,6 @@ import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator.ActVal;
 import me.fromgate.reactions.activators.Activator.FlagVal;
-import me.fromgate.reactions.event.*;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -47,38 +46,11 @@ public class Activators {
     ReActions plg;
     RAUtil u;
     static ReActions plugin;
-
     List<Activator> act;
     Map<String,YamlConfiguration> ymls;
 
-    Map<String,Class<?>> typesEvents = new HashMap<String,Class<?>>();
-    Map<String,Class<?>> typesActivators = new HashMap<String,Class<?>>();
-
-    private void initActivatorTypes(){
-        typesEvents.put("button", RAButtonEvent.class);
-        typesActivators.put("button", ButtonActivator.class);
-        
-        typesEvents.put("plate", RAPlateEvent.class);
-        typesActivators.put("plate", PlateActivator.class);
-        
-        typesEvents.put("region", RARegionEvent.class);
-        typesActivators.put("region", RegionActivator.class);
-        
-        typesEvents.put("rgenter", RARegionEnterEvent.class);
-        typesActivators.put("rgenter", RgEnterActivator.class);
-        
-        typesEvents.put("rgleave", RARegionLeaveEvent.class);
-        typesActivators.put("rgleave", RgLeaveActivator.class);
-        
-        typesEvents.put("exec", RAExecEvent.class);
-        typesActivators.put("exec", ExecActivator.class);
-        
-        typesEvents.put("command", RACommandEvent.class);
-        typesActivators.put("command", CommandActivator.class);
-    }
 
     public Activators (ReActions reactions){
-        this.initActivatorTypes();
         this.plg = reactions;
         plugin = reactions;
         this.act = new ArrayList<Activator>();
@@ -247,15 +219,15 @@ public class Activators {
         }
 
         for (String type : cfg.getKeys(false)){
-            if (!isValidActivatorType(type)) continue;
+            //if (!isValidActivatorType(type)) continue;
+            if (!ActivatorType.isValid(type)) continue;
             ConfigurationSection cs = cfg.getConfigurationSection(type);
             if (cs == null) continue;
             for (String name : cs.getKeys(false)){
-                if (typesActivators.containsKey(type)){
+                if (ActivatorType.isValid(type)){
                     Activator a = createActivator (type,name,group,cfg);
                     if (a==null) continue;
                     addActivator (a);
-                    
                 }
             }
         }
@@ -263,14 +235,14 @@ public class Activators {
 
     private Activator createActivator (String type, String name, String group, YamlConfiguration cfg){
         try{
-        Object a = typesActivators.get(type).getDeclaredConstructor(String.class,String.class,YamlConfiguration.class).newInstance(name,group,cfg);
-        return (Activator) a;
+            Object a = ActivatorType.valueOf(type.toUpperCase()).getActivatorClass().getDeclaredConstructor(String.class,String.class,YamlConfiguration.class).newInstance(name,group,cfg);
+            return (Activator) a;
         } catch (Exception e){
             u.logOnce("cannotcreate"+type, "Failed to create new activator. Type: "+type);
         }
         return null;
     }
-    
+
     public List<String> getActivatorsList(){
         List<String> lst = new ArrayList<String>();
         if (!act.isEmpty())
@@ -302,8 +274,9 @@ public class Activators {
         if (act.isEmpty()) return;
         for (int i = 0; i<act.size(); i++){
             Activator a = act.get(i);
-            if (isValidActivatorType(a.getType())&&
-                    typesEvents.get(a.getType()).isInstance(event)) a.activate(event);
+            if (!ActivatorType.isValid(a.getType())) continue;
+                if(ActivatorType.valueOf(a.getType().toUpperCase()).getEventClass().isInstance(event))
+                a.activate(event);
         }
     }
 
@@ -366,11 +339,5 @@ public class Activators {
         if (!contains(activator)) return "activator";
         return get (activator).getGroup();
     }
-    
-    public boolean isValidActivatorType(String type){
-        return this.typesActivators.containsKey(type.toLowerCase());
-    }
-
-
 
 }

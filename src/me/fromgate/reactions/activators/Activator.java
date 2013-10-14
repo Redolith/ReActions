@@ -24,7 +24,8 @@ package me.fromgate.reactions.activators;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import me.fromgate.reactions.actions.Actions;
+import me.fromgate.reactions.flags.Flags;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
@@ -38,6 +39,12 @@ public abstract class Activator {
         this.name = name;
         this.group = group;
     }
+    
+    
+    /*public Activator(String name, String group, String param, Block block){
+        this.name = name;
+        this.group = group;
+    }*/
 
     public Activator(String name, String group,YamlConfiguration cfg){
         this.name = name;
@@ -50,7 +57,7 @@ public abstract class Activator {
     private List<ActVal> reactions = new ArrayList<ActVal>();
 
     public void addFlag(String flag, String param, boolean not){
-        flags.add(new FlagVal(flag,param,not));
+        flags.add(new FlagVal(Flags.getValidName(flag),param,not));
     }
 
     public boolean removeFlag (int index){
@@ -63,7 +70,7 @@ public abstract class Activator {
     }
 
     public void addAction (String action, String param){
-        actions.add(new ActVal (action,param));
+        actions.add(new ActVal (Actions.getValidName(action),param));
     }
 
     public boolean removeAction (int index){
@@ -73,7 +80,7 @@ public abstract class Activator {
     }
 
     public void addReaction (String action, String param){
-        reactions.add(new ActVal (action,param));
+        reactions.add(new ActVal (Actions.getValidName(action),param));
     }
 
     public boolean removeReaction (int index){

@@ -1,11 +1,15 @@
-package me.fromgate.reactions;
+package me.fromgate.reactions.util;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
+import me.fromgate.reactions.RAUtil;
+import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.activators.Activator;
+import me.fromgate.reactions.activators.Activator.FlagVal;
+import me.fromgate.reactions.flags.Flags;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -16,18 +20,27 @@ import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.potion.PotionEffectType;
 
 public class Util {
 
-    private static ReActions plg;
-    static Random rnd = new Random();
-
-    public static void init(ReActions plugin){
-        plg = plugin;
-        rnd = plg.u.random;
+    private static ReActions plg(){
+        return ReActions.instance;
+    }
+    
+    
+    private static RAUtil u(){
+        return ReActions.util;
     }
 
     // world,x,y,z,[yaw,pitch]
@@ -76,13 +89,13 @@ public class Util {
     }
 
     public static List<Location> getLocationsRegion (String region, boolean land){
-        return ReActions.instance.worldguard.getRegionLocations(region, land);
+        return RAWorldGuard.getRegionLocations(region, land);
     }
 
 
     public static Location getRandomLocationList(List<Location> locs){
         if ((locs == null)||locs.isEmpty()) return null;
-        return locs.get(rnd.nextInt(locs.size()));
+        return locs.get(u().tryChance(locs.size()));
     }
 
     public static Location getRandomLocationInRadius(Location l, int radius, boolean land){
@@ -99,7 +112,7 @@ public class Util {
                         }
                     }*/
             if (!emptyloc.isEmpty()) {
-                loc = emptyloc.get(rnd.nextInt(emptyloc.size()));
+                loc = emptyloc.get(u().tryChance(emptyloc.size()));
                 loc.add(l.getX()-l.getBlockX(), l.getY()-l.getBlockY(), l.getZ()-l.getBlockZ());
                 loc.setYaw(l.getYaw());
                 loc.setPitch(l.getPitch());
@@ -140,6 +153,7 @@ public class Util {
     public static Map<String,String> parseActionParam(String param){
         Map<String,String> params = new HashMap<String,String>();
         if (!param.isEmpty()){
+            params.put("param-line", param);
             String[]ln = param.split(" ");
             if (ln.length>0)
                 for (int i = 0; i < ln.length; i++){
@@ -149,10 +163,11 @@ public class Util {
                         key = ln[i].substring(0,ln[i].indexOf(":"));
                         value = ln[i].substring(ln[i].indexOf(":")+1);
                     }
+                    
                     if (value.isEmpty()){
                         value = key;
                         key = "param";
-                    }
+                    } 
                     params.put(key, value);
                 }
         }
@@ -172,7 +187,7 @@ public class Util {
         if (strmin.matches("[1-9]+[0-9]*")) min = Integer.parseInt(strmin);
         max = min;
         if (strmax.matches("[1-9]+[0-9]*")) max = Integer.parseInt(strmax);
-        if (max>min) return min + Util.rnd.nextInt(1+max-min);
+        if (max>min) return min + u().tryChance(1+max-min);
         else return min;
     }
 
@@ -184,7 +199,8 @@ public class Util {
     public static int getParam(Map<String,String> params, String key, int defparam){
         if (!params.containsKey(key)) return defparam;
         String str = params.get(key);
-        if (!str.matches("[1-9]+[0-9]*")) return defparam;
+        //if (!str.matches("[1-9]+[0-9]*")) return defparam;
+        if (!u().isIntegerGZ(str)) return defparam;
         return Integer.parseInt(str);
     }
 
@@ -214,7 +230,7 @@ public class Util {
         if (str.isEmpty()) return new ItemStack (Material.AIR);
         String [] ln = str.split(",");
         if (ln.length==0) return new ItemStack (Material.AIR);
-        ItemStack item = plg.u.parseItemStack(ln[rnd.nextInt(ln.length)]);
+        ItemStack item = u().parseItemStack(ln[u().tryChance(ln.length)]);
         if (item == null) return new ItemStack (Material.AIR);
         item.setAmount(1);
         //item = colorizeRndLeather(item);
@@ -222,8 +238,8 @@ public class Util {
     }
 
 
-    public static void soundPlay (Location loc, Map<String,String> params){
-        if (params.isEmpty()) return;
+    public static String soundPlay (Location loc, Map<String,String> params){
+        if (params.isEmpty()) return "";
         String sndstr = "";
         String strvolume ="1";
         String strpitch = "1";
@@ -231,7 +247,7 @@ public class Util {
         float volume = 1;
         if (params.containsKey("param")){
             String param = Util.getParam(params, "param", "");
-            if (param.isEmpty()) return;
+            if (param.isEmpty()) return "";
             if (param.contains("/")){
                 String[] prm = param.split("/");
                 if (prm.length>1){
@@ -249,6 +265,7 @@ public class Util {
         }
         Sound sound = getSoundStr (sndstr);
         loc.getWorld().playSound(loc, sound, volume, pitch);
+        return sound.name();
     }
 
     public static void soundPlay (Location loc, String param){
@@ -342,6 +359,7 @@ public class Util {
      * Преобразует строку вида <id>:<data>[*<amount>]@color,enchantment:<lvl>,enchantment&<lvl> в ItemStack
      * 
      */
+    @SuppressWarnings("deprecation")
     public static ItemStack parseItemStack (String itemstr){
         if (!itemstr.isEmpty()){
             String enchant = "";
@@ -371,7 +389,7 @@ public class Util {
                     else {
                         Material m = Material.getMaterial(ti[0]);
                         if (m== null) {
-                            plg.u.logOnce("wrongitem"+ti[0], "Could not parse item material name (id) "+ti[0]);
+                            u().logOnce("wrongitem"+ti[0], "Could not parse item material name (id) "+ti[0]);
                             return null;
                         }
                         id=m.getId();
@@ -393,6 +411,7 @@ public class Util {
         return null;
     }
 
+    @SuppressWarnings("deprecation")
     public static ItemStack setEnchantments (ItemStack item, String enchants){
         ItemStack i = item.clone();
         if (enchants.isEmpty()) return i;
@@ -401,7 +420,7 @@ public class Util {
             if (ec.isEmpty()) continue;
             Color clr = colorByName (ec);
             if (clr != null){
-                if (plg.u.isIdInList(item.getTypeId(), "298,299,300,301")){
+                if (u().isIdInList(item.getTypeId(), "298,299,300,301")){
                     LeatherArmorMeta meta = (LeatherArmorMeta) i.getItemMeta();
                     meta.setColor(clr);
                     i.setItemMeta(meta);
@@ -474,7 +493,15 @@ public class Util {
         }
         return stacks;
     }
-
+    public static String itemToString (ItemStack item){
+        String str ="";
+        String n = item.getItemMeta().hasDisplayName() ? ChatColor.stripColor(item.getItemMeta().getDisplayName()) : item.getType().name();
+        String a = item.getAmount()>1 ? "*"+item.getAmount() : "";
+        str = n+a;
+        return str;
+        
+    }
+    
     public static String itemsToString (List<ItemStack> items){
         String str ="";
         for (ItemStack i : items){
@@ -510,7 +537,7 @@ public class Util {
         if (drops.isEmpty()) return "";
         int eqperc = (nochcount*100)/drops.size();
         maxchance = maxchance+eqperc*nochcount;
-        int rnd = ReActions.util.random.nextInt(maxchance);
+        int rnd = ReActions.util.tryChance(maxchance);
         int curchance = 0;
         for (String stack : drops.keySet()){
             curchance = curchance+ (drops.get(stack)<0 ? eqperc : drops.get(stack));
@@ -556,6 +583,163 @@ public class Util {
      */
 
 
+    @SuppressWarnings("deprecation")
+    public static Location locToLocation(Player p, String locstr){
+        Location loc = null;
+        if (locstr.equalsIgnoreCase("player")) loc = p.getLocation();
+        else if (locstr.equalsIgnoreCase("viewpoint")) loc = p.getTargetBlock(null, 100).getLocation(); 
+        else if (plg().containsTpLoc(locstr)) loc = plg().getTpLoc(locstr);
+        else loc = Util.parseLocation(locstr);
+        return loc;
+    }
 
+    public static String locToString(Player p, String locstr){
+        String loc = u().getMSGnc("loc_unknown");
+        Location tl = locToLocation (p, locstr);
+        if (tl!=null) loc = "["+tl.getWorld().getName()+"] ("+tl.getBlockX()+", "+tl.getBlockY()+", "+tl.getBlockZ()+")";
+        return loc;
+    }
+    
+    public static PotionEffectType parsePotionEffect (String name) {
+        PotionEffectType pef = null;
+        try{
+            pef = PotionEffectType.getByName(name);
+        } catch(Exception e){
+        }
+        return pef;
+    }
+    
+    public static String timeToString(long time) {
+        int hours = (int) ((time / 1000 + 8) % 24);
+        int minutes = (int) (60 * (time % 1000) / 1000);
+        return String.format("%02d:%02d", hours, minutes);
+    }
+   
+    
+    public static Map<String,String> replaceAllPlaceholders (Player p, Activator a, Map<String,String> params){
+        Map<String,String> newparams = new HashMap<String,String>();
+        for (String key : params.keySet())
+            newparams.put(key, replacePlaceholders(p,a,params.get(key)));
+        return newparams;
+    }
+    
+    public static String replacePlaceholders (Player p, Activator a, String param){
+        String rst = param;
+        String placeholders = "curtime,player,dplayer,health,deathpoint,"+Flags.getFtypes().toLowerCase();
+        String [] phs = placeholders.split(",");
+        for (String ph : phs){
+            String key = "%"+ph+"%";
+            rst = rst.replaceAll(key, getFlagParam(p,a,key));
+            rst = rst.replaceAll(key.toUpperCase(), getFlagParam(p,a,key));
+        }
+        return rst;
+    }
 
+    public static String getFlagParam (Player p, Activator a, String placeholder){
+        if (placeholder.startsWith("%")&&placeholder.endsWith("%")){
+            String flag = placeholder.substring(1, placeholder.length()-1);
+            if (placeholder.equalsIgnoreCase("%curtime%")) return Util.timeToString(p.getWorld().getTime());
+            else if (placeholder.equalsIgnoreCase("%player%")) return p.getName();
+            else if (placeholder.equalsIgnoreCase("%dplayer%")) return p.getDisplayName();
+            else if (placeholder.equalsIgnoreCase("%deathpoint%")) {
+                Location loc = RAPVPDeath.getLastDeathPoint(p);
+                if (loc == null) loc = p.getLocation();
+                return Util.locationToString(loc);
+            } else if (placeholder.equalsIgnoreCase("%health%")) {
+                String hlth = "0";
+                try {
+                    hlth = String.valueOf(p.getHealth());
+                } catch (Throwable ex){
+                    ReActions.util.logOnce("plr_health", "Failed to get Player health. This feature is not compatible with CB 1.5.2 (and older)...");
+                }
+                return hlth;
+            }
+            else for (FlagVal flg : a.getFlags())
+                if (flg.flag.equals(flag)) return formatFlagParam (flag, flg.value);
+        }
+        return placeholder;
+    }
+
+    private static String formatFlagParam(String flag, String value) {
+        String rst = value;
+        Flags f = Flags.getByName(flag);
+        switch (f){
+        case TIME:
+            if (!(value.equals("day")||value.equals("night"))){
+                String [] ln = value.split(",");
+                String r = "";
+                if (ln.length>0)
+                    for (int i = 0; i<ln.length;i++){
+                        if (!u().isInteger(ln[i])) continue;
+                        String tmp = String.format("%02d:00", Integer.parseInt(ln[i]));
+                        if (i == 0) r = tmp;
+                        else r = r+", "+tmp;
+                    }
+                if (!r.isEmpty()) rst = r;
+            }
+                break;
+            case CHANCE: 
+                rst = value +"%";
+                break;
+            case MONEY:
+                if (RAVault.isEconomyConected()&&u().isIntegerSigned(value))
+                    rst = RAVault.formatMoney(value);
+                break;
+            default:
+                break;
+            }
+        return rst; 
+
+    }
+    /*
+    @SuppressWarnings("deprecation")
+    public static Location locToLocation(Player p, String locstr){
+        Location loc = null;
+        if (locstr.equalsIgnoreCase("player")) loc = p.getLocation();
+        else if (locstr.equalsIgnoreCase("viewpoint")) loc = p.getTargetBlock(null, 100).getLocation(); 
+        else if (plg.tports.containsKey(locstr)) loc = plg.tports.get(locstr).getLocation();
+        else loc = Util.parseLocation(locstr);
+        return loc;
+    }
+
+    public static String locToString(Player p, String locstr){
+        String loc = u.getMSGnc("loc_unknown");
+        Location tl = locToLocation (p, locstr);
+        if (tl!=null) loc = "["+tl.getWorld().getName()+"] ("+tl.getBlockX()+", "+tl.getBlockY()+", "+tl.getBlockZ()+")";
+        return loc;
+    }    
+   
+*/
+    
+    public static Player getKiller(EntityDamageEvent event){
+        if (event instanceof EntityDamageByEntityEvent){
+            EntityDamageByEntityEvent evdmg = (EntityDamageByEntityEvent)event;
+            if (evdmg.getDamager().getType() == EntityType.PLAYER) return (Player) evdmg.getDamager();
+            if (evdmg.getCause() == DamageCause.PROJECTILE){
+                Projectile prj = (Projectile) evdmg.getDamager();    
+                if (prj.getShooter() instanceof Player) return (Player) prj.getShooter();    
+            }
+        }
+        return null;
+    }
+    
+    
+    public static LivingEntity getDamagerEntity(EntityDamageEvent event){
+        if (event instanceof EntityDamageByEntityEvent){
+            EntityDamageByEntityEvent evdmg = (EntityDamageByEntityEvent)event;
+            if (evdmg.getCause() == DamageCause.PROJECTILE){
+                Projectile prj = (Projectile) evdmg.getDamager();    
+                if (prj.getShooter() instanceof LivingEntity) return (LivingEntity) prj.getShooter();    
+            } else if (evdmg.getDamager() instanceof LivingEntity) return (LivingEntity) evdmg.getDamager();
+        }
+        return null;
+    }
+    
+    public static boolean isAnyParamExist (Map<String,String> params, String... param){
+        for (String key : params.keySet())
+            for (String prm : param){
+                if (key.equalsIgnoreCase(prm)) return true;
+            }
+        return false;
+    }
 }

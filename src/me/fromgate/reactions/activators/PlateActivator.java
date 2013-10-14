@@ -22,9 +22,8 @@
 
 package me.fromgate.reactions.activators;
 
-import me.fromgate.reactions.Actions;
+import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.RAPlateEvent;
-
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
