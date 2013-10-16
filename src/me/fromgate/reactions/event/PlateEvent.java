@@ -27,18 +27,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class RAButtonEvent extends Event {
+public class PlateEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
-    private Location button_loc = null;
+    private Location loc = null;
     private Player player;
 
-    public RAButtonEvent (Player p, Location loc) {
-        this.button_loc = loc;
+    public PlateEvent (Player p, Location loc) {
+        this.loc = loc;
         this.player = p;
     }
 
-    public Location getButtonLocation() {
-        return this.button_loc;
+    public Location getPlateLocation() {
+        return this.loc;
     }
 
     public Player getPlayer() {

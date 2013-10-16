@@ -5,15 +5,17 @@ import me.fromgate.reactions.event.*;
 
 public enum ActivatorType {
     // алиас, класс активатора, класс события
-    BUTTON ("b",ButtonActivator.class,RAButtonEvent.class),
-    PLATE ("plt",PlateActivator.class,RAPlateEvent.class),
-    REGION ("rg",RegionActivator.class,RARegionEvent.class),
-    RGENTER ("rge",RgEnterActivator.class,RARegionEnterEvent.class),
-    RGLEAVE ("rgl",RgLeaveActivator.class,RARegionLeaveEvent.class),
-    EXEC ("exe",ExecActivator.class,RAExecEvent.class),
-    COMMAND ("cmd",CommandActivator.class,RACommandEvent.class),
-    PVPKILL ("pvpk",PVPKillActivator.class, RAPVPKillEvent.class),
-    PVPDEATH("pvpd",PVPDeathActivator.class, RAPVPDeathEvent.class);
+    BUTTON ("b",ButtonActivator.class,ButtonEvent.class),
+    PLATE ("plt",PlateActivator.class,PlateEvent.class),
+    REGION ("rg",RegionActivator.class,RegionEvent.class),
+    RGENTER ("rge",RgEnterActivator.class,RegionEnterEvent.class),
+    RGLEAVE ("rgl",RgLeaveActivator.class,RegionLeaveEvent.class),
+    EXEC ("exe",ExecActivator.class,ExecEvent.class),
+    COMMAND ("cmd",CommandActivator.class,CommandEvent.class),
+    PVPKILL ("pvpk",PVPKillActivator.class, PVPKillEvent.class),
+    PVPDEATH("pvpd",PVPDeathActivator.class, PVPDeathEvent.class),
+    LEVER ("lvr",LeverActivator.class,LeverEvent.class),
+    DOOR ("door",DoorActivator.class,DoorEvent.class);
 
     private String alias;
     private Class<? extends Activator> aclass;

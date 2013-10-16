@@ -2,7 +2,7 @@ package me.fromgate.reactions.util;
 
 import java.util.HashMap;
 import java.util.Map;
-import me.fromgate.reactions.event.RAPVPDeathEvent;
+import me.fromgate.reactions.event.PVPDeathEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -37,7 +37,7 @@ public class RAPVPDeath {
         Player killer = getLastKiller(player);
         killers.remove(player.getName());
         if (killer == null) return;
-        Bukkit.getServer().getPluginManager().callEvent(new RAPVPDeathEvent(killer, player));
+        Bukkit.getServer().getPluginManager().callEvent(new PVPDeathEvent(killer, player));
     }
     
 }

@@ -5,7 +5,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class RACommandEvent extends Event implements Cancellable {
+public class CommandEvent extends Event implements Cancellable {
     //TODO Реализовать возможность отмены событий из активатора...
 
     private static final HandlerList handlers = new HandlerList();
@@ -13,7 +13,7 @@ public class RACommandEvent extends Event implements Cancellable {
     private String command;
     private Player player;
 
-    public RACommandEvent (Player p, String command) {
+    public CommandEvent (Player p, String command) {
         this.command = command;
         this.player = p;
     }

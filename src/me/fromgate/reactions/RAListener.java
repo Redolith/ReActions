@@ -25,15 +25,17 @@ package me.fromgate.reactions;
 
 import java.util.List;
 
-import me.fromgate.reactions.event.RAButtonEvent;
-import me.fromgate.reactions.event.RACommandEvent;
-import me.fromgate.reactions.event.RAExecEvent;
-import me.fromgate.reactions.event.RAPVPDeathEvent;
-import me.fromgate.reactions.event.RAPVPKillEvent;
-import me.fromgate.reactions.event.RAPlateEvent;
-import me.fromgate.reactions.event.RARegionEnterEvent;
-import me.fromgate.reactions.event.RARegionEvent;
-import me.fromgate.reactions.event.RARegionLeaveEvent;
+import me.fromgate.reactions.event.ButtonEvent;
+import me.fromgate.reactions.event.CommandEvent;
+import me.fromgate.reactions.event.DoorEvent;
+import me.fromgate.reactions.event.ExecEvent;
+import me.fromgate.reactions.event.LeverEvent;
+import me.fromgate.reactions.event.PVPDeathEvent;
+import me.fromgate.reactions.event.PVPKillEvent;
+import me.fromgate.reactions.event.PlateEvent;
+import me.fromgate.reactions.event.RegionEnterEvent;
+import me.fromgate.reactions.event.RegionEvent;
+import me.fromgate.reactions.event.RegionLeaveEvent;
 import me.fromgate.reactions.util.RADebug;
 import me.fromgate.reactions.util.RAMobSpawn;
 import me.fromgate.reactions.util.RAPVPDeath;
@@ -204,8 +206,10 @@ public class RAListener implements Listener{
 
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerInteract (PlayerInteractEvent event){
-        EventManager.raiseButtonEvent(event);
-        EventManager.raisePlateEvent(event);
+        if (EventManager.raiseButtonEvent(event)) return;
+        if (EventManager.raisePlateEvent(event)) return;
+        if (EventManager.raiseLeverEvent(event)) return;
+        EventManager.raiseDoorEvent(event);
     }
 
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
@@ -235,50 +239,60 @@ public class RAListener implements Listener{
      * ReActions' Events 
      */
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
-    public void onButton (RAButtonEvent event){
+    public void onButton (ButtonEvent event){
         plg.activators.activate(event);
     }
 
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
-    public void onButton (RAPlateEvent event){
+    public void onButton (PlateEvent event){
         plg.activators.activate(event);
     }
 
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
-    public void onRegion (RARegionEvent event){
+    public void onRegion (RegionEvent event){
         plg.activators.activate(event);
     }
 
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
-    public void onRegionEnter (RARegionEnterEvent event){
+    public void onRegionEnter (RegionEnterEvent event){
         plg.activators.activate(event);
     }
 
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
-    public void onRegionLeave (RARegionLeaveEvent event){
-        plg.activators.activate(event);
-    }
-
-    
-    @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
-    public void onRegionLeave (RAExecEvent event){
+    public void onRegionLeave (RegionLeaveEvent event){
         plg.activators.activate(event);
     }
 
     
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
-    public void onCommandActivator (RACommandEvent event){
+    public void onRegionLeave (ExecEvent event){
+        plg.activators.activate(event);
+    }
+
+    
+    @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
+    public void onCommandActivator (CommandEvent event){
         plg.activators.activate(event);
     }
     
     
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
-    public void onPVPKillActivator (RAPVPKillEvent event){
+    public void onPVPKillActivator (PVPKillEvent event){
         plg.activators.activate(event);
     }
     
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
-    public void onPVPDeathActivator (RAPVPDeathEvent event){
+    public void onPVPDeathActivator (PVPDeathEvent event){
+        plg.activators.activate(event);
+    }
+
+    @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
+    public void onLeverActivator (LeverEvent event){
+        plg.activators.activate(event);
+    }
+    
+    @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
+    public void onDoorActivator (DoorEvent event){
         plg.activators.activate(event);
     }
 

@@ -23,7 +23,7 @@
 package me.fromgate.reactions.activators;
 
 import me.fromgate.reactions.actions.Actions;
-import me.fromgate.reactions.event.RAButtonEvent;
+import me.fromgate.reactions.event.ButtonEvent;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -62,8 +62,8 @@ public class ButtonActivator extends Activator{
      */
     @Override
     public void activate(Event event) {
-        if (!(event instanceof RAButtonEvent)) return;
-        RAButtonEvent be = (RAButtonEvent) event;
+        if (!(event instanceof ButtonEvent)) return;
+        ButtonEvent be = (ButtonEvent) event;
         if (!isLocatedAt(be.getButtonLocation())) return;
         Actions.executeActivator(be.getPlayer(), this);
     }

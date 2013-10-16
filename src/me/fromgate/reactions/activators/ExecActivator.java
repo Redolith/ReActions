@@ -5,7 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
 import me.fromgate.reactions.actions.Actions;
-import me.fromgate.reactions.event.RAExecEvent;
+import me.fromgate.reactions.event.ExecEvent;
 
 public class ExecActivator extends Activator {
     
@@ -24,8 +24,8 @@ public class ExecActivator extends Activator {
     
     @Override
     public void activate(Event event) {
-        if (event instanceof RAExecEvent){
-            RAExecEvent ce  = (RAExecEvent) event;
+        if (event instanceof ExecEvent){
+            ExecEvent ce  = (ExecEvent) event;
             if (ce.getCommand().equalsIgnoreCase(this.getName())) Actions.executeActivator(ce.getTargetPlayer(), this);
         }
     }

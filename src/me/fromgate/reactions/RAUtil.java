@@ -61,6 +61,7 @@ public class RAUtil extends FGUtilCore {
         addMSG ("msg_listclicker", "List of activators:");
         addMSG ("msg_listloc", "List of store locations:");
         addMSG ("cmd_addbadded", "Activator %1% successfully defined");
+        addMSG ("cmd_notaddbadded", "Failed to create activator %1%");
         addMSG ("cmd_addbreqbut", "You need to look at button to create new button-activator");
         addMSG ("cmd_addtpadded", "Location %1% added");
         addMSG ("cmd_unknownadd", "Unknown type of activator");
@@ -84,7 +85,6 @@ public class RAUtil extends FGUtilCore {
         addMSG ("cmd_debugtrue", "Debug mode enabled (always - true)");
         addMSG ("cmd_debugfalse", "Debug mode enabled (always - false)");
         addMSG ("cmd_debugoff", "Debug mode disabled");
-        addMSG ("act_tp", "You was teleported to %1%");
         addMSG ("msg_listcount", "There's %1% configured activators and %2% stored locations");
         addMSG ("msg_removebnf", "Activator %1% not found and not removed");
         addMSG ("msg_removelocnf", "Stored location %1% not found and not removed");
@@ -134,40 +134,60 @@ public class RAUtil extends FGUtilCore {
         addMSG ("cmd_runplayerunknown", "Failed to run activator %1%. Player %2% is unknown");
         addMSG ("msg_mobbounty", "You received %1% for killing %2%");
              
-        /*
-		addMSG ("", "");
-		addMSG ("", "");
-         */
-        
+        addMSG ("act_tp", "You was teleported to %1%");
         addMSG ("act_tpfail", "Failed teleportation to %1% (wrong location?)");
         addMSG ("act_velocity", "Your movement direction was changed");
-        addMSG ("act_sound", "You hear strange sounds around you");
-        addMSG ("act_potion", "You have strange feeling. Maybe you're bewitched?");
-        addMSG ("act_rmvpot", "You have strange feeling. Potion effect was removed?");
-        addMSG ("act_grpadd", "You were added to group %1%");
-        addMSG ("act_grpaddfail", "Cannot add you in group %1%");
-        addMSG ("act_grprmv", "You were excluded from group %1%");
-        addMSG ("act_grprmvfail", "Cannot remove you from group %1%");
-        addMSG ("act_msg", "Personal message: %1%");
-        addMSG ("act_msgall", "Global message: %1%");
-        addMSG ("act_dmg", "You receive a damage. %1% hit points lost");
-        addMSG ("act_dmghurt", "You receive a slap! It hurts!");
-        addMSG ("act_townset", "You was added to town %1%");
-        addMSG ("act_townkick", "You was kicked from town!");
-        addMSG ("act_itemrmv", "You lost item: %1%");
-        addMSG ("act_itemgive", "You receive item(s): %1%");
-        addMSG ("act_itemgivefail", "Failed to give items");
-        addMSG ("act_cmdplr", "Command executed (by player): %1%");
-        addMSG ("act_cmdsrv", "Command executed (by console): %1%");
-        addMSG ("act_cmdop", "Command executed (as OP): %1%");
-        addMSG ("act_moneypay", "You paid %1%");
-        addMSG ("act_moneygive", "You credited by %1%");
+        addMSG ("act_velocityfail", "Failed to change your movement direction");
+        addMSG ("act_sound", "You hear strange sounds (%1%) around you");
+        addMSG ("act_soundfail", "Failed to play sound %1%");
+        addMSG ("act_potion", "You have strange feeling of %1%. Maybe you're bewitched?");
+        addMSG ("act_potionfail", "Failed to set potion effect %1%");
+        addMSG ("act_potion_remove", "Potion effect was removed: %1%");
+        addMSG ("act_potion_removefail", "There's no potion effect to remove");
+        addMSG ("act_group_add", "You were added to group %1%");
+        addMSG ("act_group_addfail", "Cannot add you in group %1%");
+        addMSG ("act_group_remove", "You were excluded from group %1%");
+        addMSG ("act_group_removefail", "Cannot remove you from group %1%");
+        addMSG ("act_message", "Message: %1%");
+        addMSG ("act_messagefail", "Failed to send message");
+        addMSG ("act_broadcast", "Broadcast message: %1%");
+        addMSG ("act_broadcastfail", "Failed to send global message");
+        addMSG ("act_damage", "You receive a damage. %1% hit points lost");
+        addMSG ("act_town_set", "You was added to town %1%");
+        addMSG ("act_town_setfail", "Failed to add you into town %1%");
+        addMSG ("act_town_kick", "You was kicked from town!");
+        addMSG ("act_town_kickfail", "Failed to kick you from town!");
+        addMSG ("act_item_remove", "You lost item: %1%");
+        addMSG ("act_item_removefail", "Failed to remove item: %1%");
+        addMSG ("act_item_remove_inventory", "You lost item from the inventory: %1%");
+        addMSG ("act_item_remove_inventoryfail", "Failed to remove item %1% from your inventory");
+        addMSG ("act_item_give", "You receive item(s): %1%");
+        addMSG ("act_item_givefail", "Failed to give item(s): %1%");
+        addMSG ("act_item_drop", "New item(s) spawned: %1%");
+        addMSG ("act_item_dropfail", "Failed to spawn item(s): %1%");
+        addMSG ("act_cmd", "Command executed (by player): %1%");
+        addMSG ("act_cmdfail", "Failed to execute command");
+        addMSG ("act_cmd_console", "Command executed (by console): %1%");
+        addMSG ("act_cmd_op", "Command executed (as OP): %1%");
+        addMSG ("act_cmd_opfail", "Failed to execute command as OP");
+        addMSG ("act_money_pay", "You paid %1%");
+        addMSG ("act_money_payfail", "Failed to remove %1% from your account");
+        addMSG ("act_money_give", "You credited by %1%");
+        addMSG ("act_money_givefail", "Failed to credit your account with %1%");
         addMSG ("act_delay", "You will wait some time to do it again!");
-        addMSG ("act_pdelay", "You will wait some time to do it again!");
+        addMSG ("act_delayfail", "Failed to setup activator delay");
+        addMSG ("act_delay_player", "You will wait some time to do it again!");
+        addMSG ("act_delay_playerfail", "Failed to setup activator delay");
         addMSG ("act_back", "You were pushed back!");
-        addMSG ("act_mob", "Ooops! Mobs was spawned!");
-        addMSG ("act_run", "Another activator started %1%");
-        addMSG ("act_rgclear", "Region %1% was cleared");
+        addMSG ("act_backfail", "Failed to push you back!");
+        addMSG ("act_mob_spawn", "Ooops! Mobs was spawned!");
+        addMSG ("act_effect", "You noticed interesting visual effect provided by plugin PlayEffect!");
+        addMSG ("act_execute", "Activator %1% started!");
+        addMSG ("act_executefail", "Failed to execute activator");
+        addMSG ("act_region_clear", "Region was cleared. %1% mobs was killed!");
+        addMSG ("act_region_clearfail", "Failed to clear region");
+        addMSG ("act_heal", "You was healed by %1%!");
+        addMSG ("act_healfailed", "Failed to perform healing...");
     }
     
     @Override

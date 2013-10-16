@@ -4,29 +4,24 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class RAExecEvent extends Event {
+public class PVPKillEvent extends Event{
     private static final HandlerList handlers = new HandlerList();
-
-    private String activator; //// ?????
     private Player player;
-    private Player targetPlayer;
+    private Player deadplayer;
 
-    public RAExecEvent (Player p, Player targetPlayer, String activator) {
-        this.player = p;
-        this.targetPlayer = targetPlayer;
-        this.activator = activator;
+
+    public PVPKillEvent (Player player, Player killedplayer){
+        this.player = player;
+        this.deadplayer = killedplayer;
     }
 
-    public String getCommand() {
-        return this.activator;
+
+    public Player getKilledPlayer() {
+        return this.deadplayer;
     }
 
     public Player getPlayer() {
         return this.player;
-    }
-    
-    public Player getTargetPlayer(){
-        return this.targetPlayer;
     }
 
     public HandlerList getHandlers() {
@@ -36,5 +31,4 @@ public class RAExecEvent extends Event {
     public static HandlerList getHandlerList() {
         return handlers;
     }
-
 }

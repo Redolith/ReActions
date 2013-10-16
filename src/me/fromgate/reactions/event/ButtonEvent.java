@@ -22,26 +22,27 @@
 
 package me.fromgate.reactions.event;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class RARegionEnterEvent extends Event {
-    private String region;
-    private Player player;
+public class ButtonEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
+    private Location button_loc = null;
+    private Player player;
 
-    public RARegionEnterEvent (Player player, String region){
-        this.region = region;
-        this.player = player;
+    public ButtonEvent (Player p, Location loc) {
+        this.button_loc = loc;
+        this.player = p;
     }
 
-    public Player getPlayer(){
+    public Location getButtonLocation() {
+        return this.button_loc;
+    }
+
+    public Player getPlayer() {
         return this.player;
-    }
-
-    public String getRegion(){
-        return this.region;
     }
 
     public HandlerList getHandlers() {
@@ -51,4 +52,5 @@ public class RARegionEnterEvent extends Event {
     public static HandlerList getHandlerList() {
         return handlers;
     }
+
 }

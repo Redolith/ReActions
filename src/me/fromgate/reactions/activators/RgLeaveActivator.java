@@ -25,7 +25,7 @@ package me.fromgate.reactions.activators;
 import java.util.List;
 
 import me.fromgate.reactions.actions.Actions;
-import me.fromgate.reactions.event.RARegionLeaveEvent;
+import me.fromgate.reactions.event.RegionLeaveEvent;
 import me.fromgate.reactions.util.RAWorldGuard;
 
 import org.bukkit.Location;
@@ -52,8 +52,8 @@ public class RgLeaveActivator extends Activator{
 
     @Override
     public void activate(Event event) {
-        if (!(event instanceof RARegionLeaveEvent)) return;
-        RARegionLeaveEvent be = (RARegionLeaveEvent) event;
+        if (!(event instanceof RegionLeaveEvent)) return;
+        RegionLeaveEvent be = (RegionLeaveEvent) event;
         if (be.getRegion().equals(this.region))	Actions.executeActivator(be.getPlayer(), this);
     }
 

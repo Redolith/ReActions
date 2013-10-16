@@ -1,7 +1,7 @@
 package me.fromgate.reactions.activators;
 
 import me.fromgate.reactions.actions.Actions;
-import me.fromgate.reactions.event.RAPVPDeathEvent;
+import me.fromgate.reactions.event.PVPDeathEvent;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
@@ -18,8 +18,8 @@ public class PVPDeathActivator extends Activator {
 
     @Override
     public void activate(Event event) {
-        if (!(event instanceof RAPVPDeathEvent)) return;
-        RAPVPDeathEvent pe = (RAPVPDeathEvent) event;
+        if (!(event instanceof PVPDeathEvent)) return;
+        PVPDeathEvent pe = (PVPDeathEvent) event;
         Actions.executeActivator(pe.getPlayer(), this);
     }
 

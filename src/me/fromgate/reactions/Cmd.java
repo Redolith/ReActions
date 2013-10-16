@@ -32,6 +32,8 @@ import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.ActivatorType;
 import me.fromgate.reactions.activators.ButtonActivator;
 import me.fromgate.reactions.activators.CommandActivator;
+import me.fromgate.reactions.activators.DoorActivator;
+import me.fromgate.reactions.activators.LeverActivator;
 import me.fromgate.reactions.activators.PVPDeathActivator;
 import me.fromgate.reactions.activators.PVPKillActivator;
 import me.fromgate.reactions.activators.PlateActivator;
@@ -586,6 +588,21 @@ public class Cmd implements CommandExecutor{
         case RGLEAVE:
             activator = new RgLeaveActivator (name,param);
             break;
+        case LEVER:
+            if (b == null) return false;
+            if (b.getType()==Material.LEVER) {
+                activator = new LeverActivator (name,param,b);
+            } else u.printMSG(p, "cmd_addbreqbut");
+            break;
+        case DOOR:
+            if (b == null) return false;
+            if (Util.isDoorBlock(b)){
+                activator = new DoorActivator (name,param,Util.getDoorBottomBlock(b));
+            } else u.printMSG(p, "cmd_addbreqbut");
+            break;
+        default:
+            break;
+     
         }
         if (activator == null) return false;
         if (plg.activators.addActivator(activator)) {

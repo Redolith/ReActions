@@ -1,7 +1,7 @@
 package me.fromgate.reactions.activators;
 
 import me.fromgate.reactions.actions.Actions;
-import me.fromgate.reactions.event.RACommandEvent;
+import me.fromgate.reactions.event.CommandEvent;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
@@ -26,8 +26,8 @@ public class CommandActivator extends Activator {
 
     @Override
     public void activate(Event event) {
-        if (!(event instanceof RACommandEvent)) return;
-        RACommandEvent ce = (RACommandEvent) event;
+        if (!(event instanceof CommandEvent)) return;
+        CommandEvent ce = (CommandEvent) event;
         if (!ce.getCommand().toLowerCase().startsWith(command.toLowerCase())) return;
         Actions.executeActivator(ce.getPlayer(), this);
     }

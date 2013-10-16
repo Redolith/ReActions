@@ -4,13 +4,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class RAPVPDeathEvent extends Event{
+public class PVPDeathEvent extends Event{
     private static final HandlerList handlers = new HandlerList();
     private Player player;
     private Player deadplayer;
 
 
-    public RAPVPDeathEvent (Player player, Player killedplayer){
+    public PVPDeathEvent (Player player, Player killedplayer){
         this.player = player;
         this.deadplayer = killedplayer;
     }

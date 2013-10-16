@@ -23,10 +23,15 @@ public class ActionClearRegion extends Action {
         List<Location> locs = RAWorldGuard.getRegionMinMaxLocations(region);
         if (locs.size()!=2) return false;
         List<Entity> en = Util.getEntities(locs.get(0), locs.get(1));
+        int count = 0;
         for (Entity e : en){
             if (e.getType()==EntityType.PLAYER) continue;
-            if (isEntityIsTypeOf (e, type)) e.remove();
+            if (isEntityIsTypeOf (e, type)) {
+                e.remove();
+                count++;
+            }
         }
+        setMessageParam(Integer.toString(count));
         return true;
     }
 

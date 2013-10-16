@@ -178,7 +178,7 @@ public class ReActions extends JavaPlugin {
 
     protected void loadCfg(){
         language= getConfig().getString("general.language","english");
-        version_check = getConfig().getBoolean("general.check-updates",false);
+        version_check = getConfig().getBoolean("general.check-updates",true);
         language_save = getConfig().getBoolean("general.language-save",false);
         tp_center_coors = getConfig().getBoolean("reactions.center-player-teleport",true);
         actionmsg= getConfig().getString("reactions.show-messages-for-actions","tp,grpadd,grprmv,townset,townkick,itemrmv,itemgive,moneypay,moneygive");

@@ -17,6 +17,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
@@ -30,6 +31,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.material.Openable;
 import org.bukkit.potion.PotionEffectType;
 
 public class Util {
@@ -364,18 +366,16 @@ public class Util {
         if (!itemstr.isEmpty()){
             String enchant = "";
             String name = "";
-            
-            String istr = itemstr;
-
             if (itemstr.contains("$")){
                 name =itemstr.substring(0,itemstr.indexOf("$"));
                 itemstr = itemstr.substring(name.length()+1);
             }
-            
+            String istr = itemstr;
             if (itemstr.contains("@")){
                 istr = itemstr.substring(0,itemstr.indexOf("@"));
                 enchant = itemstr.substring(istr.length()+1);
             }
+            
             int id = -1;
             int amount =1;
             short data =0;          
@@ -488,7 +488,7 @@ public class Util {
         List<ItemStack> stacks = new ArrayList<ItemStack>();
         String[] ln = items.split(";");
         for (String item : ln){
-            ItemStack stack = ReActions.util.parseItemStack(item);
+            ItemStack stack = parseItemStack(item);
             if (stack != null) stacks.add(stack);
         }
         return stacks;
@@ -742,4 +742,45 @@ public class Util {
             }
         return false;
     }
+    
+    public static boolean compareItemStr (ItemStack item, String str){
+        String itemstr = str;
+        String name ="";
+        if (itemstr.contains("$")){
+            name =str.substring(0,itemstr.indexOf("$"));
+            name = ChatColor.translateAlternateColorCodes('&', name.replace("_", " "));
+            itemstr = str.substring(name.length()+1);
+        }
+        
+        if (itemstr.isEmpty()) return false;
+        if (!name.isEmpty()){
+            String iname = item.hasItemMeta() ? item.getItemMeta().getDisplayName() : "";
+            if (!name.equals(iname)) return false;
+        }
+        return u().compareItemStr(item, itemstr);
+    }
+    
+    
+    public static boolean isOpen(Block b){
+        if (b.getState().getData() instanceof Openable){
+            Openable om = (Openable) b.getState().getData();
+            return om.isOpen();
+        }
+           return false; 
+    }
+    
+    public static Block getDoorBottomBlock(Block b){
+        if (b.getType()!=Material.WOODEN_DOOR) return b;
+        if (b.getRelative(BlockFace.DOWN).getType()==Material.WOODEN_DOOR)
+            return b.getRelative(BlockFace.DOWN);
+        return b;
+    }
+    
+    public static boolean isDoorBlock (Block b){
+        if (b.getType() == Material.WOODEN_DOOR) return true;
+        if (b.getType() == Material.TRAP_DOOR) return true;
+        if (b.getType() == Material.FENCE_GATE) return true;
+        return false;
+    }
+
 }

@@ -23,7 +23,7 @@
 package me.fromgate.reactions.activators;
 
 import me.fromgate.reactions.actions.Actions;
-import me.fromgate.reactions.event.RAPlateEvent;
+import me.fromgate.reactions.event.PlateEvent;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -61,8 +61,8 @@ public class PlateActivator extends Activator{
      */
     @Override
     public void activate(Event event) {
-        if (!(event instanceof RAPlateEvent)) return;
-        RAPlateEvent be = (RAPlateEvent) event;
+        if (!(event instanceof PlateEvent)) return;
+        PlateEvent be = (PlateEvent) event;
         if (!isLocatedAt(be.getPlateLocation())) return;
         Actions.executeActivator(be.getPlayer(), this);
     }

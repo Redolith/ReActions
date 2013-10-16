@@ -23,14 +23,16 @@
 package me.fromgate.reactions;
 
 import java.util.List;
-import me.fromgate.reactions.event.RAButtonEvent;
-import me.fromgate.reactions.event.RACommandEvent;
-import me.fromgate.reactions.event.RAExecEvent;
-import me.fromgate.reactions.event.RAPVPKillEvent;
-import me.fromgate.reactions.event.RAPlateEvent;
-import me.fromgate.reactions.event.RARegionEnterEvent;
-import me.fromgate.reactions.event.RARegionLeaveEvent;
-import me.fromgate.reactions.event.RARegionEvent;
+import me.fromgate.reactions.event.ButtonEvent;
+import me.fromgate.reactions.event.CommandEvent;
+import me.fromgate.reactions.event.DoorEvent;
+import me.fromgate.reactions.event.ExecEvent;
+import me.fromgate.reactions.event.LeverEvent;
+import me.fromgate.reactions.event.PVPKillEvent;
+import me.fromgate.reactions.event.PlateEvent;
+import me.fromgate.reactions.event.RegionEnterEvent;
+import me.fromgate.reactions.event.RegionLeaveEvent;
+import me.fromgate.reactions.event.RegionEvent;
 import me.fromgate.reactions.util.RAWorldGuard;
 import me.fromgate.reactions.util.Util;
 
@@ -54,27 +56,47 @@ public class EventManager {
         plg = plugin;
     }
     
-    // PVP Kill Event
     
+    public static boolean raiseDoorEvent(PlayerInteractEvent event){
+        if (!((event.getAction()==Action.RIGHT_CLICK_BLOCK)||(event.getAction()==Action.LEFT_CLICK_BLOCK))) return false;
+        if (!Util.isDoorBlock(event.getClickedBlock())) return false;
+        DoorEvent e = new DoorEvent (event.getPlayer(), Util.getDoorBottomBlock(event.getClickedBlock()));
+        Bukkit.getServer().getPluginManager().callEvent(e);
+        return true;
+    }
+    
+    
+
+    public static boolean raiseLeverEvent(PlayerInteractEvent event){
+        if (!((event.getAction()==Action.RIGHT_CLICK_BLOCK)||(event.getAction()==Action.LEFT_CLICK_BLOCK))) return false;
+        if (event.getClickedBlock().getType() != Material.LEVER) return false;
+        LeverEvent e = new LeverEvent (event.getPlayer(), event.getClickedBlock());
+        Bukkit.getServer().getPluginManager().callEvent(e);
+        return true;
+    }
+    
+    
+    // PVP Kill Event
     public static void raisePVPKillEvent (PlayerDeathEvent event){
         Player deadplayer = event.getEntity();
         Player killer = Util.getKiller(deadplayer.getLastDamageCause());
         if (killer==null) return;
-        RAPVPKillEvent pe = new RAPVPKillEvent(killer, deadplayer);
+        PVPKillEvent pe = new PVPKillEvent(killer, deadplayer);
         Bukkit.getServer().getPluginManager().callEvent(pe);
     }
     
     // Button Event
-    public static void raiseButtonEvent (PlayerInteractEvent event){
-        if (!((event.getAction()==Action.RIGHT_CLICK_BLOCK)||(event.getAction()==Action.LEFT_CLICK_BLOCK))) return;
-        if (!((event.getClickedBlock().getType()==Material.STONE_BUTTON)||(event.getClickedBlock().getType()==Material.WOOD_BUTTON))) return;
+    public static boolean raiseButtonEvent (PlayerInteractEvent event){
+        if (!((event.getAction()==Action.RIGHT_CLICK_BLOCK)||(event.getAction()==Action.LEFT_CLICK_BLOCK))) return false;
+        if (!((event.getClickedBlock().getType()==Material.STONE_BUTTON)||(event.getClickedBlock().getType()==Material.WOOD_BUTTON))) return false;
         BlockState state = event.getClickedBlock().getState();
         if (state.getData() instanceof Button){
             Button button = (Button) state.getData();
-            if (button.isPowered()) return;
+            if (button.isPowered()) return false;
         }
-        RAButtonEvent be = new RAButtonEvent (event.getPlayer(), event.getClickedBlock().getLocation());
+        ButtonEvent be = new ButtonEvent (event.getPlayer(), event.getClickedBlock().getLocation());
         Bukkit.getServer().getPluginManager().callEvent(be);
+        return true;
         /*
          *  // Пока не удалять - возможно этот баг с кнопкой снова вылезет...
 			BlockState state = event.getClickedBlock().getState();
@@ -92,7 +114,7 @@ public class EventManager {
     
     public static boolean raiseCommandEvent (Player p, String command){
         if (command.isEmpty()) return false;
-        RACommandEvent ce = new RACommandEvent (p,command);
+        CommandEvent ce = new CommandEvent (p,command);
         Bukkit.getServer().getPluginManager().callEvent(ce);
         if (ce.isCancelled()) return true;
         return false;
@@ -104,24 +126,25 @@ public class EventManager {
         if (!targetPlayer.isOnline()) return false;
         if (activator == null) return false;
         if (activator.isEmpty()) return false;
-        RAExecEvent ce = new RAExecEvent(player, targetPlayer, activator);
+        ExecEvent ce = new ExecEvent(player, targetPlayer, activator);
         Bukkit.getServer().getPluginManager().callEvent(ce);
         return true;
     }
 
     // Plate Event
-    public static void raisePlateEvent (PlayerInteractEvent event){
-        if (event.getAction() != Action.PHYSICAL) return;
-        if (!((event.getClickedBlock().getType()==Material.WOOD_PLATE)||(event.getClickedBlock().getType()==Material.STONE_PLATE))) return;
+    public static boolean raisePlateEvent (PlayerInteractEvent event){
+        if (event.getAction() != Action.PHYSICAL) return false;
+        if (!((event.getClickedBlock().getType()==Material.WOOD_PLATE)||(event.getClickedBlock().getType()==Material.STONE_PLATE))) return false;
         final Player p = event.getPlayer();
         final Location l = event.getClickedBlock().getLocation();
         Bukkit.getScheduler().runTaskLater(plg, new Runnable(){
             @Override
             public void run() {
-                RAPlateEvent pe = new RAPlateEvent (p, l);
+                PlateEvent pe = new PlateEvent (p, l);
                 Bukkit.getServer().getPluginManager().callEvent(pe);      
             }
-        }, 1);        
+        }, 1);
+        return true;
 
     }
 
@@ -153,7 +176,7 @@ public class EventManager {
         if (rgs.isEmpty()) return;
         for (String rg : rgs){
             if (isTimeToRaiseEvent (player,rg)){
-                RARegionEvent wge = new RARegionEvent (player, rg);
+                RegionEvent wge = new RegionEvent (player, rg);
                 Bukkit.getServer().getPluginManager().callEvent(wge);	
                 setFutureCheck(player,rg);
             }
@@ -167,7 +190,7 @@ public class EventManager {
         if (rgsto.isEmpty()) return;
         for (String rg : rgsto)
             if (!rgsfrom.contains(rg)){
-                RARegionEnterEvent wge = new RARegionEnterEvent (player, rg);
+                RegionEnterEvent wge = new RegionEnterEvent (player, rg);
                 Bukkit.getServer().getPluginManager().callEvent(wge);				
             }
     }
@@ -179,7 +202,7 @@ public class EventManager {
         if (rgsfrom.isEmpty()) return;
         for (String rg : rgsfrom)
             if (!rgsto.contains(rg)){
-                RARegionLeaveEvent wge = new RARegionLeaveEvent (player, rg);
+                RegionLeaveEvent wge = new RegionLeaveEvent (player, rg);
                 Bukkit.getServer().getPluginManager().callEvent(wge);				
             }
     }
@@ -196,7 +219,7 @@ public class EventManager {
                     if (p.isDead()) return;
                     p.removeMetadata("reactions-wg-"+rg, plg);
                     if (RAWorldGuard.isPlayerInRegion(p, rg)){
-                        RARegionEvent wge = new RARegionEvent (p, rg);
+                        RegionEvent wge = new RegionEvent (p, rg);
                         Bukkit.getServer().getPluginManager().callEvent(wge);	
                         setFutureCheck (p,rg);
                     }

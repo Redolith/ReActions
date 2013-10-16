@@ -26,12 +26,19 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class RARegionLeaveEvent extends Event {
+public class RegionEvent extends Event {
+
     private String region;
     private Player player;
     private static final HandlerList handlers = new HandlerList();
 
-    public RARegionLeaveEvent (Player player, String region){
+    /*
+     * player - топающий игрок
+     * wgregion - регион где он ходит (находится?)
+     *  
+     */
+
+    public RegionEvent (Player player, String region){
         this.region = region;
         this.player = player;
     }
@@ -39,6 +46,8 @@ public class RARegionLeaveEvent extends Event {
     public Player getPlayer(){
         return this.player;
     }
+
+
 
     public String getRegion(){
         return this.region;
@@ -51,4 +60,6 @@ public class RARegionLeaveEvent extends Event {
     public static HandlerList getHandlerList() {
         return handlers;
     }
+
+
 }

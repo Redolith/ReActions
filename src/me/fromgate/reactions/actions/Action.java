@@ -48,7 +48,6 @@ public abstract class Action {
         this.activator = a;
         if (!params.containsKey("param-line")) params.put("param-line", "");
         setMessageParam(params.get("param-line"));
-        //if (params.containsKey("param")) setMessageParam(params.get("param"));
         boolean activator_fail = (!execute (p,params)); 
         if (activator_fail) this.success = false;
         if ((p!=null)&&(printAction())) 
@@ -57,7 +56,7 @@ public abstract class Action {
     }
     
     private boolean printAction() {
-        return (u().isWordInList(this.type.name(), plg().getActionMsg()));
+        return (u().isWordInList(this.type.name(), plg().getActionMsg())||u().isWordInList(this.type.getAlias(), plg().getActionMsg()));
     }
 
     public abstract boolean execute(Player p, Map<String, String> params);

@@ -38,6 +38,7 @@ public class ActionExecute extends Action {
         if (id.isEmpty()) return false;
         if (targetPlayers.isEmpty()) return false;
         for (Player player : targetPlayers) execActivator (p,player,id, delay);
+        setMessageParam(id);
         return true;
     }
     
