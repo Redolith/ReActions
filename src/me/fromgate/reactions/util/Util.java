@@ -546,51 +546,45 @@ public class Util {
         return "";
     }
 
-
     /*
-     *         //id:data*amount,id:dat*amount@chance;id:data*amount;id:dat*amount@chance;id:data*amount;id:dat*amount@chance
-        if (drop.isEmpty()) return;
-        String [] loots = drop.split(";");
-        Map<String,Integer> drops = new HashMap<String,Integer>();
-        int maxchance = 0;
-        int nochcount = 0;
-        for (String loot: loots){
-            String [] ln = loot.split("@");
-            if (ln.length>0){
-                String stacks = ln[0];
-                if (stacks.isEmpty()) continue;
-                int chance =-1;
-                if ((ln.length==2)&&ReActions.util.isInteger(ln[1])) {
-                    chance = Integer.parseInt(ln[1]);
-                    maxchance += chance; 
-                } else nochcount++;
-                drops.put(stacks, chance);
-            }
-        }
-
-        if (drops.isEmpty()) return;
-        int eqperc = (nochcount*100)/drops.size();
-        maxchance = maxchance+eqperc*nochcount;
-        int rnd = ReActions.util.random.nextInt(maxchance);
-        int curchance = 0;
-        for (String stack : drops.keySet()){
-            curchance = curchance+ (drops.get(stack)<0 ? eqperc : drops.get(stack));
-            if (rnd<=curchance) {
-                setMobDropStack (e,stack);
-                return;
-            }
-        }
-     */
-
+    public static String processLocationInParam(Player p, String param){
+        String newparam = param.trim();
+        Location loc = Util.locToLocation(p, param);
+        newparam = (loc==null) ? param : Util.locationToString(loc);
+        return newparam;
+    } */
+    
 
     @SuppressWarnings("deprecation")
     public static Location locToLocation(Player p, String locstr){
         Location loc = null;
-        if (locstr.equalsIgnoreCase("player")) loc = p.getLocation();
-        else if (locstr.equalsIgnoreCase("viewpoint")) loc = p.getTargetBlock(null, 100).getLocation(); 
+        if (locstr.equalsIgnoreCase("player")||locstr.equalsIgnoreCase("here")) loc = p.getLocation();
+        else if (locstr.equalsIgnoreCase("eye")||locstr.equalsIgnoreCase("head")) loc = p.getEyeLocation();
+        else if (locstr.equalsIgnoreCase("sel")||locstr.equalsIgnoreCase("selection")) loc = Selector.getSelectedLocation(p);
+        else if (locstr.equalsIgnoreCase("view")||locstr.equalsIgnoreCase("viewpoint")) loc = p.getTargetBlock(null, 100).getLocation(); 
         else if (plg().containsTpLoc(locstr)) loc = plg().getTpLoc(locstr);
         else loc = Util.parseLocation(locstr);
         return loc;
+    }
+    
+    @SuppressWarnings("deprecation")
+    public static String replaceStandartLocations (Player p, String param){
+        if (p==null) return param;
+        Map<String,Location> locs = new HashMap<String,Location>();
+        locs.put("%here%", p.getLocation());
+        locs.put("%eye%", p.getEyeLocation());
+        locs.put("%head%", p.getEyeLocation());
+        locs.put("%viewpoint%", p.getTargetBlock(null, 100).getLocation());
+        locs.put("%view%", p.getTargetBlock(null, 100).getLocation());
+        locs.put("%selection%", Selector.getSelectedLocation(p));
+        locs.put("%sel%", Selector.getSelectedLocation(p));
+        String newparam = param;
+        for (String key : locs.keySet()){
+            Location l = locs.get(key);
+            if (l==null) continue;
+            newparam = newparam.replace(key, Util.locationToString(l));
+        }
+        return newparam;
     }
 
     public static String locToString(Player p, String locstr){

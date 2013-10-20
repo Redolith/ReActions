@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.ActivatorType;
@@ -44,8 +43,8 @@ import me.fromgate.reactions.activators.ExecActivator;
 import me.fromgate.reactions.flags.Flags;
 import me.fromgate.reactions.util.RADebug;
 import me.fromgate.reactions.util.RAWorldGuard;
+import me.fromgate.reactions.util.Selector;
 import me.fromgate.reactions.util.Util;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -95,6 +94,9 @@ public class Cmd implements CommandExecutor{
             int lpp = 10;
             if (p==null) lpp=1000;
             u.PrintHlpList(sender, 1, lpp);
+        } else if (cmd.equalsIgnoreCase("select")){
+            Selector.selectLocation(p, null);
+            u.printMSG(p, "cmd_selected", Util.locationToStringFormated(Selector.getSelectedLocation(p)));
         } else if (cmd.equalsIgnoreCase("debug")){
             if (p == null) return false;
             RADebug.offPlayerDebug(p);
@@ -251,21 +253,21 @@ public class Cmd implements CommandExecutor{
             } 
         } else if (cmd.equalsIgnoreCase("clear")){
             if (plg.activators.contains(arg1)){
-                if (arg2.equalsIgnoreCase("f")) {
+                if (arg2.equalsIgnoreCase("f")||arg2.equalsIgnoreCase("flag")) {
                     plg.activators.clearFlags(arg1);
                     plg.activators.saveActivators();
                     u.printMSG(s, "msg_clearflag", arg1);
-                } else if (arg2.equalsIgnoreCase("a")) {
+                } else if (arg2.equalsIgnoreCase("a")||arg2.equalsIgnoreCase("action")) {
                     plg.activators.clearActions(arg1);
                     u.printMSG(s, "msg_clearact", arg1);
                     plg.activators.saveActivators();
-                } else if (arg2.equalsIgnoreCase("r")) {
+                } else if (arg2.equalsIgnoreCase("r")||arg2.equalsIgnoreCase("reaction")) {
                     plg.activators.clearReactions(arg1);
                     u.printMSG(s, "msg_clearreact", arg1);
                     plg.activators.saveActivators();
                 }
                 plg.activators.saveActivators();
-            } else u.printMSG(s, "cmd_unknownbutton");
+            } else u.printMSG(s, "cmd_unknownbutton",arg1);
 
         } else if (cmd.equalsIgnoreCase("group")) {
             if (plg.activators.setGroup(arg1, arg2)) {
@@ -292,7 +294,6 @@ public class Cmd implements CommandExecutor{
     }
 
     public boolean addReAction(String clicker, String flag, String param){
-        //if (u.isWordInList(flag, Actions.atypes)){
         if (Actions.isValid(flag)){
             if ((flag.equalsIgnoreCase("tp")&&(!plg.tports.containsKey(param)))||
                     (flag.equals("dmg")&&(!(param.matches("[0-9]*")||param.isEmpty()))))
@@ -303,10 +304,10 @@ public class Cmd implements CommandExecutor{
         return false;
     }
 
-    public boolean addFlag(String clicker, String fl, String param){
+    public boolean addFlag(Player p, String clicker, String fl, String param){
         String flag=fl.replaceFirst("!", "");
         boolean not = fl.startsWith("!");
-        //if (u.isWordInList(flag, Flag.ftypes)){
+        param = Util.replaceStandartLocations(p, param); //Util.processLocationInParam(p,param);
         if (Flags.isValid(flag)){
             plg.activators.addFlag(clicker, flag, param, not); // все эти проверки вынести в соответствующие классы
             return true;
@@ -353,13 +354,13 @@ public class Cmd implements CommandExecutor{
                 Activator act = plg.activators.get(arg1);
                 if (u.isIntegerGZ(arg3)) {
                     int num = Integer.parseInt(arg3);
-                    if (arg2.equalsIgnoreCase("f")){
+                    if (arg2.equalsIgnoreCase("f")||arg2.equalsIgnoreCase("flag")){
                         if (act.removeFlag(num-1)) u.printMSG(p, "msg_flagremoved",act.getName(),num);
                         else u.printMSG(p, "msg_failedtoremoveflag",act.getName(),num);
-                    } else if (arg2.equalsIgnoreCase("a")){
+                    } else if (arg2.equalsIgnoreCase("a")||arg2.equalsIgnoreCase("action")){
                         if (act.removeAction(num-1)) u.printMSG(p, "msg_actionremoved",act.getName(),num);
                         else u.printMSG(p, "msg_failedtoremoveaction",act.getName(),num);
-                    } else if (arg2.equalsIgnoreCase("r")){
+                    } else if (arg2.equalsIgnoreCase("r")||arg2.equalsIgnoreCase("reaction")){
                         if (act.removeReaction(num-1)) u.printMSG(p, "msg_reactionremoved",act.getName(),num);
                         else u.printMSG(p, "msg_failedtoremovereaction",act.getName(),num);
                     } else return false;
@@ -413,27 +414,24 @@ public class Cmd implements CommandExecutor{
         Player p = null;
         if (s instanceof Player) p = (Player) s;
         if (cmd.equalsIgnoreCase("add")&&plg.activators.contains(arg1)){
-            String param = arg4;
-            if (!u.isWordInList(arg3, "msg,msgall,cmdsrv,cmdplr,cmdop")&&param.contains("here"))
-                param = param.replace("here", Util.locationToString(p.getLocation()));
-            if (arg2.equalsIgnoreCase("a")){
+            String param = Util.replaceStandartLocations(p, arg4);
+            if (arg2.equalsIgnoreCase("a")||arg2.equalsIgnoreCase("action")){
                 if (addAction (arg1, arg3, param)){
                     plg.activators.saveActivators();
                     u.printMSG(p, "cmd_actadded", arg3 + " ("+ param+")"); //TODO~
                     return true;
                 } else u.printMSG(p, "cmd_actnotadded",arg3 + " ("+ param+")");
-            } else if (arg2.equalsIgnoreCase("r")){
+            } else if (arg2.equalsIgnoreCase("r")||arg2.equalsIgnoreCase("reaction")){
                 if (addReAction (arg1, arg3, param)){
                     plg.activators.saveActivators();
                     u.printMSG(p, "cmd_reactadded",arg3 + " ("+ param+")");	
                     return true;
                 } else u.printMSG(p, "cmd_reactnotadded",arg3 + " ("+ param+")");
-            } else if (arg2.equalsIgnoreCase("f"))
-                if (addFlag (arg1, arg3, arg4)){
+            } else if (arg2.equalsIgnoreCase("f")||arg2.equalsIgnoreCase("flag"))
+                if (addFlag (p, arg1, arg3, arg4)){
                     plg.activators.saveActivators();
-                    u.printMSG(p, "cmd_flagadded",arg3 + " ("+ arg4+")");
+                    u.printMSG(p, "cmd_flagadded",arg3 + " ("+ Util.replaceStandartLocations(p, arg4)+")");
                     return true;					
-
                 } else u.printMSG(p, "cmd_flagnotadded",arg3 + " ("+ arg4+")");
             else u.printMSG(p, "cmd_unknownbutton",arg2);
             return true;

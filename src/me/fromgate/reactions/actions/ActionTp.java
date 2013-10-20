@@ -16,7 +16,7 @@ public class ActionTp extends Action{
         if (loc!=null) this.setMessageParam(Util.locationToStringFormated(loc));
         return (loc!=null);
     }
-    
+
     private Location teleportPlayer (Player p, Map<String,String> params){
         Location loc = null;
         int radius = 0;
@@ -36,7 +36,10 @@ public class ActionTp extends Action{
                 loc.setX(loc.getBlockX()+0.5);
                 loc.setZ(loc.getBlockZ()+0.5);
             }
-            while (!loc.getChunk().isLoaded()) loc.getChunk().load();
+            try{
+                while (!loc.getChunk().isLoaded()) loc.getChunk().load();
+            } catch (Exception e) {
+            }
             p.teleport(loc);
             String playeffect = Util.getParam(params, "effect", "");
             if (!playeffect.isEmpty()){

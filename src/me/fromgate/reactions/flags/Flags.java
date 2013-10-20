@@ -25,7 +25,8 @@ public enum Flags {
     GAMEMODE("gamemode",true,new FlagGameMode()),
     FOODLEVEL("food",true,new FlagFoodlevel()),
     XP("xp",true,new FlagXP()),
-    LEVEL("level",true,new FlagLevel());
+    LEVEL("level",true,new FlagLevel()),
+    POWER("powered",false,new FlagPowered());
     
     
     private String alias;

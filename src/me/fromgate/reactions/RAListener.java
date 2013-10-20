@@ -201,7 +201,7 @@ public class RAListener implements Listener{
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = false)
     public void onPlayerJoin (PlayerJoinEvent event){
         RADebug.offPlayerDebug(event.getPlayer());
-        plg.u.UpdateMsg(event.getPlayer());
+        plg.u.updateMsg(event.getPlayer());
     }
 
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)

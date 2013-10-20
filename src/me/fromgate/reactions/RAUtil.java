@@ -29,8 +29,8 @@ import org.bukkit.inventory.ItemStack;
 public class RAUtil extends FGUtilCore {
     ReActions plg;
 
-    public RAUtil(ReActions plugin, boolean vcheck, boolean savelng, String language, String devbukkitname, String version_name, String plgcmd, String px){
-        super (plugin, vcheck, savelng, language, devbukkitname, version_name, plgcmd, px);
+    public RAUtil(ReActions plugin, boolean savelng, String language, String plgcmd){
+        super (plugin, savelng, language, plgcmd);
         this.plg = plugin;
         FillMSG();
         InitCmd();
@@ -52,6 +52,7 @@ public class RAUtil extends FGUtilCore {
         addCmd("group", "config","cmd_group","&3/react group <activator> <groupname>",'b');
         addCmd("remove", "config","cmd_remove","&3/react remove [loc|activator] <id>",'b');
         addCmd("clear", "config","cmd_clear","&3/react clear <id> [f|a|r]",'b');
+        addCmd("select", "select","cmd_select","&3/react select",'b');
         addCmd("debug", "debug","cmd_debug","&3/react debug [true|false|off]",'b');
         addCmd("check", "config","cmd_check","&3/react check [radius]",'b');
         addCmd("reload", "config","cmd_reload","&3/react reload",'b',true);
@@ -85,6 +86,8 @@ public class RAUtil extends FGUtilCore {
         addMSG ("cmd_debugtrue", "Debug mode enabled (always - true)");
         addMSG ("cmd_debugfalse", "Debug mode enabled (always - false)");
         addMSG ("cmd_debugoff", "Debug mode disabled");
+        addMSG ("cmd_select", "%1% - selects block in your view point. You can use this selection as \"selection\" (or \"sel\") keyword when defining locations");
+        addMSG ("cmd_selected", "Location %1% selected!");
         addMSG ("msg_listcount", "There's %1% configured activators and %2% stored locations");
         addMSG ("msg_removebnf", "Activator %1% not found and not removed");
         addMSG ("msg_removelocnf", "Stored location %1% not found and not removed");

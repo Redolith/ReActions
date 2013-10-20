@@ -21,9 +21,12 @@
 
 package me.fromgate.reactions;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -31,8 +34,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.logging.Logger;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -49,21 +50,20 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 @SuppressWarnings("deprecation")
 public abstract class FGUtilCore {
     JavaPlugin plg;
     //конфигурация утилит
-    public String px = "";
+    private String px = "";
     private String permprefix="fgutilcore.";
-    private boolean version_check = false; // включить после заливки на девбукит
-    private String version_check_url = "";//"http://dev.bukkit.org/server-mods/skyfall/files.rss";
-    private String version_name = ""; // идентификатор на девбукките (всегда должен быть такой!!!)
-    private String version_info_perm = permprefix+"config"; // кого оповещать об обнволениях
+
+
+
+
     private String language="english";
     private String plgcmd = "<command>";
     // Сообщения+перевод
@@ -76,47 +76,129 @@ public abstract class FGUtilCore {
     protected String msglist ="";
     private boolean colorconsole = false;  // надо будет добавить методы для конфигурации "из вне"
     private Set<String> log_once = new HashSet<String>();
-
     protected HashMap<String,Cmd> cmds = new HashMap<String,Cmd>();
     protected String cmdlist ="";
-
     PluginDescriptionFile des;
-    private double version_current=0;
-    private double version_new=0;
-    private String version_new_str="unknown";
     private Logger log = Logger.getLogger("Minecraft");
     Random random = new Random ();
     BukkitTask chId;
 
+    //newupdate-checker
+    private boolean project_check_version = true;
+    private String project_id = ""; //66204 - PlayEffect
+    private String project_apikey = "";
+    private String project_name = "";
+    private String project_current_version = "";
+    private String project_last_version = "";
+    //private String project_file_url = "";
+    private String project_curse_url = "";
+    private String version_info_perm = permprefix+"config"; // кого оповещать об обнволениях
+    private String project_bukkitdev="";
 
 
-    public FGUtilCore(JavaPlugin plg, boolean vcheck, boolean savelng, String lng, String devbukkitname, String version_name, String plgcmd, String px){
+    public FGUtilCore(JavaPlugin plg, boolean savelng, String lng, String plgcmd){
         this.plg = plg;
         this.des = plg.getDescription();
-        this.version_current = Double.parseDouble(des.getVersion().replaceFirst("\\.", "").replace("/", ""));
-        this.version_name = version_name;
-        this.version_check=vcheck;
         this.language = lng;
         this.InitMsgFile();
         this.initStdMsg();
         this.fillLoadedMessages();
-        
         this.savelng = savelng;
-        // if (savelng) this.SaveMSG(); /// ммм... как бы это синхронизировать.... 
+        this.plgcmd = plgcmd;
+        this.px = ChatColor.translateAlternateColorCodes('&',"&3["+des.getName()+"]&f ");
+    }
 
-        if (devbukkitname.isEmpty()) this.version_check=false;
-        else {
-            this.version_check_url = "http://dev.bukkit.org/server-mods/"+devbukkitname+"/files.rss";
-            this.permprefix = devbukkitname+".";
-            UpdateMsg();
-            startUpdateTick();
+
+    public void initUpdateChecker(String plugin_name, String project_id, String apikey, String bukkit_dev_name, boolean enable){
+        this.project_id = project_id;
+        this.project_apikey = apikey;
+        this.project_curse_url = "https://api.curseforge.com/servermods/files?projectIds="+this.project_id;
+        this.project_name =plugin_name;
+        this.project_current_version = des.getVersion();
+        this.project_check_version =enable&&(!this.project_id.isEmpty()&&(!this.project_apikey.isEmpty()));
+        this.project_bukkitdev = "http://dev.bukkit.org/bukkit-plugins/"+bukkit_dev_name+"/";
+        
+        if (this.project_check_version){
+            updateMsg ();
+            Bukkit.getScheduler().runTaskTimerAsynchronously(plg,new Runnable(){
+                @Override
+                public void run() {
+                    updateLastVersion();
+                    if (isUpdateRequired()) logOnce(project_last_version, "Found new version of "+project_name+". You can download version "+project_last_version+" from "+project_bukkitdev);
+                }
+            }, (40+getRandomInt(20))*1200,60*1200);
         }
 
-        if (version_name.isEmpty()) this.version_name = des.getName();
-        else this.version_name = version_name;
-        this.px = px;
-        this.plgcmd = plgcmd;
     }
+
+    /* Вывод сообщения о выходе новой версии, вызывать из
+     * обработчика события PlayerJoinEvent
+     */
+    public void updateMsg (Player p){
+        if (isUpdateRequired()&&p.hasPermission(this.version_info_perm)){
+            printMSG(p, "msg_outdated",'e','6',"&6"+des.getName()+" v"+des.getVersion());
+            printMSG(p,"msg_pleasedownload",'e','6',this.project_current_version);
+            printMsg(p, "&3"+this.project_bukkitdev);
+        }
+    }
+
+    /* Вызывается автоматом при старте плагина,
+     * пишет сообщение о выходе новой версии в лог-файл
+     */
+    public void updateMsg (){
+        plg.getServer().getScheduler().runTaskAsynchronously(plg, new Runnable(){
+            public void run() {
+                updateLastVersion();
+                if (isUpdateRequired()) {
+                    log.info("["+des.getName()+"] "+des.getName()+" v"+des.getVersion()+" is outdated! Recommended version is v"+project_last_version);
+                    log.info("["+des.getName()+"] "+project_bukkitdev);                    
+                }
+            }
+        });
+    }
+
+    private void updateLastVersion(){
+        if (!this.project_check_version) return;
+        URL url = null;
+        try {
+            url = new URL(this.project_curse_url);
+        } catch (Exception e) {
+            this.log("Failed to create URL: "+this.project_curse_url);
+            return;
+        }
+
+        try {
+            URLConnection conn = url.openConnection();
+            conn.addRequestProperty("X-API-Key", this.project_apikey);
+            conn.addRequestProperty("User-Agent", this.project_name+" using FGUtilCore (by fromgate)");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String response = reader.readLine();
+            JSONArray array = (JSONArray) JSONValue.parse(response);
+            if (array.size() > 0) {
+                JSONObject latest = (JSONObject) array.get(array.size() - 1);
+                String plugin_name = (String) latest.get("name");
+                this.project_last_version = plugin_name.replace(this.project_name+" v", "").trim();
+                //String plugin_jar_url = (String) latest.get("downloadUrl");
+                //this.project_file_url = plugin_jar_url.replace("http://servermods.cursecdn.com/", "http://dev.bukkit.org/media/");
+            }
+        } catch (Exception e) {
+            this.log("Failed to check last version");
+        }
+    }
+
+
+
+    private boolean isUpdateRequired(){
+        if (!project_check_version) return false;
+        if (project_id.isEmpty()) return false;
+        if (project_apikey.isEmpty()) return false;
+        if (project_current_version.isEmpty()) return false;
+        if (project_current_version.equalsIgnoreCase(project_last_version)) return false;
+        double current_version = Double.parseDouble(project_current_version.replaceFirst("\\.", "").replace("/", ""));
+        double last_version = Double.parseDouble(project_last_version.replaceFirst("\\.", "").replace("/", ""));
+        return (last_version>current_version);
+    }
+
 
     /* 
      * Инициализация стандартных сообщений
@@ -156,88 +238,6 @@ public abstract class FGUtilCore {
     public boolean isConsoleColored(){
         return this.colorconsole;
     }
-
-    /* 
-     * Включение/выключение проверки версий. По идее не нужно ;)
-     */
-    public void SetVersionCheck (boolean vc){
-        this.version_check = vc;
-    }
-
-
-    /* Вывод сообщения о выходе новой версии, вызывать из
-     * обработчика события PlayerJoinEvent
-     */
-    public void UpdateMsg (Player p){
-        if ((version_check)&&(p.hasPermission(this.version_info_perm))&&(version_new>version_current)){
-            printMSG(p, "msg_outdated",'e','6',"&6"+des.getName()+" v"+des.getVersion());
-            printMSG(p,"msg_pleasedownload",'e','6',version_new_str);
-            printMsg(p, "&3"+version_check_url.replace("files.rss", ""));
-        }
-    }
-
-    /* Вызывается автоматом при старте плагина,
-     * пишет сообщение о выходе новой версии в лог-файл
-     */
-    public void UpdateMsg (){
-        plg.getServer().getScheduler().runTaskAsynchronously(plg, new Runnable(){
-            public void run() {
-                version_new = getNewVersion(version_current);
-                if (version_new>version_current){
-                    log.info("["+des.getName()+"] "+des.getName()+" v"+des.getVersion()+" is outdated! Recommended version is v"+version_new_str);
-                    log.info("["+des.getName()+"] "+version_check_url.replace("files.rss", ""));
-                }			
-            }
-        });
-    }
-
-    /* Проверяет вышла ли новая версия
-     * не рекомендуется вызывать из стандартных обработчиков событий (например, PlayerJoinEvent)
-     */
-
-    private double getNewVersion(double currentVersion){
-        if (version_check){
-            try {
-                URL url = new URL(version_check_url);
-                Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(url.openConnection().getInputStream());
-                doc.getDocumentElement().normalize();
-                NodeList nodes = doc.getElementsByTagName("item");
-                Node firstNode = nodes.item(0);
-                if (firstNode.getNodeType() == 1) {
-                    Element firstElement = (Element)firstNode;
-                    NodeList firstElementTagName = firstElement.getElementsByTagName("title");
-                    Element firstNameElement = (Element)firstElementTagName.item(0);
-                    NodeList firstNodes = firstNameElement.getChildNodes();
-                    version_new_str = firstNodes.item(0).getNodeValue().replace(version_name+" v", "").trim();
-                    return Double.parseDouble(version_new_str.replaceFirst("\\.", "").replace("/", ""));
-                }
-            }
-            catch (Exception e) {
-            }
-        }
-        return currentVersion;
-    }
-
-    /* Процесс проверяющий выход обновления каждые полчаса
-     * 
-     */
-    private void startUpdateTick(){
-        chId = plg.getServer().getScheduler().runTaskTimerAsynchronously(plg, new Runnable() {
-            public void run() {
-                version_new = getNewVersion (version_current);
-            }
-        }, (10+this.random.nextInt(50)) * 1200, 60 * 1200);
-    }
-
-
-    /*
-     * Процедуры для обработчика комманд
-     * 
-     */
-
-    /* Добавляет новую команду в список
-     * 
-     */
 
     public void addCmd (String cmd, String perm, String desc_id, String desc_key){
         addCmd (cmd, perm,desc_id,desc_key,this.c1, this.c2,false);
@@ -431,7 +431,7 @@ public abstract class FGUtilCore {
     }
 
 
- 
+
     public boolean compareItemStr (ItemStack item, String itemstr){
         return compareItemStr (item.getTypeId(), item.getDurability(), item.getAmount(), itemstr);
     }
@@ -441,7 +441,7 @@ public abstract class FGUtilCore {
     }
 
     // Надо использовать маску: id:data*amount, id:data, id*amount
- 
+
     public boolean compareItemStr (int item_id, int item_data, int item_amount, String itemstr){
         if (!itemstr.isEmpty()){
             int id = -1;
@@ -476,7 +476,7 @@ public abstract class FGUtilCore {
         }, 1);
     }
 
- 
+
     public int removeItemInInventory (Inventory inv, String itemstr){
         int left = 1;
         if (left<= 0) return -1;
@@ -513,7 +513,7 @@ public abstract class FGUtilCore {
         return left;
     }
 
- 
+
     public int countItemInInventory (Inventory inv, String itemstr){
         int count = 0;
         int id = -1;
@@ -540,7 +540,7 @@ public abstract class FGUtilCore {
 
 
 
- 
+
     public boolean removeItemInHand(Player p, String itemstr){
         if (!itemstr.isEmpty()){
             int id = -1;
@@ -561,7 +561,7 @@ public abstract class FGUtilCore {
         return false;
     }
 
- 
+
     public boolean removeItemInHand(Player p, int item_id, int item_data, int item_amount){
         if ((p.getItemInHand() != null)&&
                 (p.getItemInHand().getTypeId()==item_id)&&
@@ -666,14 +666,14 @@ public abstract class FGUtilCore {
             e.printStackTrace();
         }
     }
-    
+
     public void fillLoadedMessages(){
         if (lng == null) return;
         for (String key : lng.getKeys(true))
             addMSG(key, lng.getString(key));
     }
-    
-    
+
+
     /*
      * Добавлене сообщения в список
      * Убираются цвета.
@@ -758,7 +758,7 @@ public abstract class FGUtilCore {
      * Печать справки
      */
     public void PrintHLP (Player p){
-        printMsg(p, "&6&l"+version_name+" v"+des.getVersion()+" &r&6| "+getMSG("hlp_help",'6'));
+        printMsg(p, "&6&l"+this.project_name+" v"+des.getVersion()+" &r&6| "+getMSG("hlp_help",'6'));
         printMSG(p, "hlp_thishelp","/"+plgcmd+" help");
         printMSG(p, "hlp_execcmd","/"+plgcmd+" <"+getMSG("hlp_cmdparam_command",'2')+"> ["+getMSG("hlp_cmdparam_parameter",'2')+"]");
         printMSG(p, "hlp_typecmd","/"+plgcmd+" help <"+getMSG("hlp_cmdparam_command",'2')+">");
@@ -771,13 +771,13 @@ public abstract class FGUtilCore {
      */
     public void printHLP (Player p, String cmd){
         if (cmds.containsKey(cmd)){
-            printMsg(p, "&6&l"+version_name+" v"+des.getVersion()+" &r&6| "+getMSG("hlp_help",'6'));
+            printMsg(p, "&6&l"+this.project_name+" v"+des.getVersion()+" &r&6| "+getMSG("hlp_help",'6'));
             printMsg(p, cmds.get(cmd).desc);
         } else printMSG(p,"cmd_unknown",'c','e',cmd);
     }
 
     public void PrintHlpList (CommandSender p, int page, int lpp){
-        String title = "&6&l"+version_name+" v"+des.getVersion()+" &r&6| "+getMSG("hlp_help",'6');
+        String title = "&6&l"+this.project_name+" v"+des.getVersion()+" &r&6| "+getMSG("hlp_help",'6');
         List<String> hlp = new ArrayList<String>();
         hlp.add(getMSG("hlp_thishelp","/"+plgcmd+" help"));
         hlp.add(getMSG("hlp_execcmd","/"+plgcmd+" <"+getMSG("hlp_cmdparam_command",'2')+"> ["+getMSG("hlp_cmdparam_parameter",'2')+"]"));
@@ -838,7 +838,7 @@ public abstract class FGUtilCore {
      * Преобразует строку вида <id>:<data>[*<amount>] в ItemStack
      * Возвращает null если строка кривая
      */
- 
+
     public ItemStack parseItemStack (String itemstr){
         if (!itemstr.isEmpty()){
             //int id = -1;
@@ -901,12 +901,12 @@ public abstract class FGUtilCore {
     public boolean rollDiceChance (int chance){
         return (random.nextInt(100)<chance);
     }
-    
+
     public int tryChance (int chance){
         return random.nextInt(chance);
     }
-    
-    
+
+
 
     public int getRandomInt(int maxvalue){
         return random.nextInt(maxvalue);
@@ -964,7 +964,7 @@ public abstract class FGUtilCore {
                 if (usetranslation) str = getMSG ("cfgmsg_"+k.replaceAll("\\.", "_"),value); 
                 cfgprn.add(str);
             }
-        String title = "&6&l"+this.version_name+" v"+des.getVersion()+" &r&6| "+getMSG("msg_config",'6');
+        String title = "&6&l"+this.project_current_version+" v"+des.getVersion()+" &r&6| "+getMSG("msg_config",'6');
         printPage (p, cfgprn, page, title,"",false);
     }
 

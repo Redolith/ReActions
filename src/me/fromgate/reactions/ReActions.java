@@ -95,7 +95,8 @@ public class ReActions extends JavaPlugin {
     public void onEnable() {
         loadCfg();
         saveCfg();
-        u = new RAUtil (this, version_check, language_save, language, "reactions", "ReActions", "react", "&3[ReActions]&f ");
+        u = new RAUtil (this, language_save, language, "react");
+        u.initUpdateChecker("ReActions", "61726", "a2a7b26dd4dc9bc496c80de4b49e87cb42e34ae3", "reactions", this.version_check);
         if (!getDataFolder().exists()) getDataFolder().mkdirs();
         l = new RAListener (this);
         PluginManager pm = this.getServer().getPluginManager();
