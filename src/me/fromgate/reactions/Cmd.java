@@ -43,7 +43,7 @@ import me.fromgate.reactions.activators.ExecActivator;
 import me.fromgate.reactions.flags.Flags;
 import me.fromgate.reactions.util.RADebug;
 import me.fromgate.reactions.util.RAWorldGuard;
-import me.fromgate.reactions.util.Selector;
+import me.fromgate.reactions.util.Selector;    // Потерялся класс
 import me.fromgate.reactions.util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
