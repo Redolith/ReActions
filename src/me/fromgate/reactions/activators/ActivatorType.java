@@ -8,14 +8,17 @@ public enum ActivatorType {
     BUTTON ("b",ButtonActivator.class,ButtonEvent.class),
     PLATE ("plt",PlateActivator.class,PlateEvent.class),
     REGION ("rg",RegionActivator.class,RegionEvent.class),
-    RGENTER ("rge",RgEnterActivator.class,RegionEnterEvent.class),
-    RGLEAVE ("rgl",RgLeaveActivator.class,RegionLeaveEvent.class),
+    REGION_ENTER ("rgenter",RgEnterActivator.class,RegionEnterEvent.class),
+    REGION_LEAVE ("rgleave",RgLeaveActivator.class,RegionLeaveEvent.class),
     EXEC ("exe",ExecActivator.class,ExecEvent.class),
     COMMAND ("cmd",CommandActivator.class,CommandEvent.class),
-    PVPKILL ("pvpk",PVPKillActivator.class, PVPKillEvent.class),
-    PVPDEATH("pvpd",PVPDeathActivator.class, PVPDeathEvent.class),
+    PVP_KILL ("pvpkill",PVPKillActivator.class, PVPKillEvent.class),
+    PVP_DEATH ("pvpdeath",PVPDeathActivator.class, PVPDeathEvent.class),
+    PVP_RESPAWN("pvprespawn",PVPRespawnActivator.class, PVPRespawnEvent.class),
     LEVER ("lvr",LeverActivator.class,LeverEvent.class),
-    DOOR ("door",DoorActivator.class,DoorEvent.class);
+    DOOR ("door",DoorActivator.class,DoorEvent.class),
+    JOIN ("join",JoinActivator.class,JoinEvent.class),
+    MOBCLICK ("mobclick",MobClickActivator.class,MobClickEvent.class);
 
     private String alias;
     private Class<? extends Activator> aclass;
@@ -35,6 +38,11 @@ public enum ActivatorType {
         return eclass;
     }
     
+    
+    public String getAlias(){
+        return this.alias;
+    }
+    
     public static boolean isValid (String str){
         for (ActivatorType at : ActivatorType.values()) 
             if (at.name().equalsIgnoreCase(str)||at.alias.equalsIgnoreCase(str)) return true;
@@ -47,7 +55,7 @@ public enum ActivatorType {
     
     public static ActivatorType getByName(String name){
         for (ActivatorType at : ActivatorType.values())
-            if (at.name().equalsIgnoreCase(name)||at.alias.equalsIgnoreCase(name)) return at;
+            if (at.name().equalsIgnoreCase(name)||at.getAlias().equalsIgnoreCase(name)) return at;
         return null;
     }
     

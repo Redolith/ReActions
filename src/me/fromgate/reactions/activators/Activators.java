@@ -2,7 +2,7 @@
  *  ReActions, Minecraft bukkit plugin
  *  (c)2012-2013, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
- *   * 
+ *   
  *  This file is part of ReActions.
  *  
  *  ReActions is free software: you can redistribute it and/or modify
@@ -22,12 +22,16 @@
 
 package me.fromgate.reactions.activators;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
@@ -42,41 +46,105 @@ import org.bukkit.event.Event;
 
 
 public class Activators {
-
-    ReActions plg;
-    RAUtil u;
-    static ReActions plugin;
-    List<Activator> act;
-    Map<String,YamlConfiguration> ymls;
-
-
-    public Activators (ReActions reactions){
-        this.plg = reactions;
-        plugin = reactions;
-        this.act = new ArrayList<Activator>();
-        this.ymls = new HashMap<String,YamlConfiguration>();
-        this.u = plg.getUtils();
-        this.loadActivators();
+    private static ReActions plg(){
+        return ReActions.instance;
     }
 
+    private static RAUtil u(){
+        return ReActions.util;
+    }
 
-    public void loadActivators() {
+    private static List<Activator> act;
+
+    public static void init(){
+        act = new ArrayList<Activator>();
+        loadActivators();
+    }
+
+    public static void loadActivators() {
         List<String> groups = findGroupsInDir();
         if (!groups.isEmpty())
             for (String group : groups)
                 loadActivators(group);
     }
 
-    private List<String> findGroupsInDir(){
+    private static List<String> findGroupsInDir(){
         List<String> grps = new ArrayList<String>();
-        File dir = new File (plg.getDataFolder() + File.separator+"Activators"+File.separator);
+        File dir = new File (plg().getDataFolder() + File.separator+"Activators"+File.separator);
         if (!dir.exists()) dir.mkdirs();
         for (String fstr : dir.list())
-            if (fstr.endsWith(".yml")) grps.add(fstr.substring(0, fstr.length()-4));
+            if (fstr.endsWith(".yml")) {
+                updateFile(dir+File.separator+fstr);
+                grps.add(fstr.substring(0, fstr.length()-4));
+            }
+        plg().setUpdateFiles(false);
         return grps;
     }
+    
+    public static void updateFile(String filename){
+        if (!plg().needUpdateFiles()) return;
+        File f = new File(filename);
+        if (!f.exists()) return;
+        List<String> ln = new ArrayList<String>();
+        try {
+            BufferedReader bfr = new BufferedReader(new InputStreamReader (new FileInputStream (f)));
+            String line = null;
+            while ((line = bfr.readLine()) != null) {
+                if (!line.isEmpty()&&(!line.startsWith(" "))){
+                    String key = line.replace(":", "").trim();
+                    if (ActivatorType.isValid(key)) line = ActivatorType.getByName(key)+":";
+                }
+                ln.add(line);
+            }
+            bfr.close();
+        } catch (Exception e) {
+            return;
+        }
+        try {
+            f.delete();
+            f.createNewFile();
+            BufferedWriter bwr = new BufferedWriter (new OutputStreamWriter (new FileOutputStream (f)));
+            for (int i = 0; i<ln.size(); i++){
+                bwr.write(ln.get(i)+"\n");
+            }
+            bwr.close();
+        } catch (Exception e) {
+            u().log("Error while proccessing comments at file "+f.getAbsolutePath());
+        }
+    }
+    /*  public void reCommentFile(String grp){
+        File f = new File (getDataFolder()+File.separator+grp+".yml");
+        if (!f.exists()) return;
+        List<String> ln = new ArrayList<String>();
+        try {
+            BufferedReader bfr = new BufferedReader(new InputStreamReader (new FileInputStream (f)));
+            String line = null;
+            while ((line = bfr.readLine()) != null) {
+                if (line.contains("_description")) {
+                    line = line.substring(line.indexOf("_description"), line.length());
+                    line = line.replace("_description:", "#");
+                }
+                ln.add(line);
+            }
+            bfr.close();
+        } catch (Exception e) {
+            return;
+        }
+        try {
+            f.delete();
+            f.createNewFile();
+            BufferedWriter bwr = new BufferedWriter (new OutputStreamWriter (new FileOutputStream (f)));
+            for (int i = 0; i<ln.size(); i++){
+                bwr.write(ln.get(i)+"\n");
+            }
+            bwr.close();
+        } catch (Exception e) {
+            u.log("Error while proccessing comments at file "+f.getAbsolutePath());
+            e.printStackTrace();
+        }
+    }*/
 
-    public boolean contains(String name){
+    public static boolean contains(String name){
         boolean rst = false;
         for (Activator a : act){
             if (a.equals(name)) return true;
@@ -84,19 +152,19 @@ public class Activators {
         return rst;
     }
 
-    public int size(){
+    public static int size(){
         return act.size();
     }
 
-    public void clear(){
+    public static void clear(){
         act.clear();
     }
 
-    public List<Activator> getActivatorInLocation(World world, int x, int y, int z){
+    public static List<Activator> getActivatorInLocation(World world, int x, int y, int z){
         return getActivatorInLocation (new Location (world, x, y, z));
     }
 
-    public List<Activator> getActivatorInLocation(Location loc){
+    public static List<Activator> getActivatorInLocation(Location loc){
         List<Activator> found = new ArrayList<Activator> ();
         for (Activator a : act)	
             if (a.isLocatedAt(loc))
@@ -104,68 +172,68 @@ public class Activators {
         return found;
     }
 
-    public boolean addActivator (Activator a){
+    public static boolean addActivator (Activator a){
         if (contains(a.name)) return false;
         act.add(a);
         return true;
     }
 
-    public void removeActivator (String name){
+    public static void removeActivator (String name){
         if (act.isEmpty()) return;
         for (int i=act.size()-1; i>=0;i--)
             if (act.get(i).equals(name)) act.remove(i);
     }
 
-    public Activator get(String name){
+    public static Activator get(String name){
         for (Activator a : act)
             if (a.equals(name)) return a;
         return null;
     }
 
-    public boolean clearFlags(String name){
+    public static boolean clearFlags(String name){
         Activator a = get(name);
         if (a == null) return false;
         a.clearFlags();
         return true;
     }
 
-    public boolean clearActions(String name){
+    public static boolean clearActions(String name){
         Activator a = get(name);
         if (a == null) return false;
         a.clearActions();
         return true;
     }
 
-    public boolean clearReactions(String name){
+    public static boolean clearReactions(String name){
         Activator a = get(name);
         if (a == null) return false;
         a.clearReactions();
         return true;
     }
 
-    public boolean addFlag(String activator, String flag, String param,boolean not){
+    public static boolean addFlag(String activator, String flag, String param,boolean not){
         Activator a =  get(activator);
         if (a == null) return false;
         a.addFlag(flag, param, not);
         return true;
     }
 
-    public boolean addAction(String activator, String action, String param){
+    public static boolean addAction(String activator, String action, String param){
         Activator a =  get(activator);
         if (a == null) return false;
         a.addAction(action, param);
         return true;
     }
 
-    public boolean addReaction(String activator, String action, String param){
+    public static boolean addReaction(String activator, String action, String param){
         Activator a =  get(activator);
         if (a == null) return false;
         a.addReaction(action, param);
         return true;
     }
 
-    public void saveActivators(){
-        File dir = new File (plg.getDataFolder() + File.separator+"Activators"+File.separator);
+    public static void saveActivators(){
+        File dir = new File (plg().getDataFolder() + File.separator+"Activators"+File.separator);
         if (!dir.exists()) dir.mkdirs();
         for (File f : dir.listFiles())
             f.delete();
@@ -173,20 +241,20 @@ public class Activators {
             saveActivators(group);
     }
 
-    public Set<String> findGroupsFromActivators(){
+    public static Set<String> findGroupsFromActivators(){
         Set<String> grps = new HashSet<String>();
         for (Activator a : act)
             grps.add(a.getGroup());
         return grps;
     }
 
-    public void saveActivators(String group){
-        File f = new File (plg.getDataFolder()+File.separator+"Activators"+File.separator+group+".yml");
+    public static void saveActivators(String group){
+        File f = new File (plg().getDataFolder()+File.separator+"Activators"+File.separator+group+".yml");
         try {
             if (f.exists()) f.delete();
             f.createNewFile();	
         } catch (Exception e){
-            u.log("Failed to create configuration to file "+f.getAbsolutePath());
+            u().log("Failed to create configuration to file "+f.getAbsolutePath());
             e.printStackTrace();
             return;			
         }
@@ -195,55 +263,56 @@ public class Activators {
             if (a.group.equalsIgnoreCase(group)) a.saveActivator(cfg);
         }
 
-
         try {
             cfg.save(f);
         } catch (Exception e){
-            u.log("Failed to save configuration to file "+f.getAbsolutePath());
+            u().log("Failed to save configuration to file "+f.getAbsolutePath());
             e.printStackTrace();
             return;			
         }
     }
 
-
-    public void loadActivators(String group){
-        File f = new File (plg.getDataFolder()+File.separator+"Activators"+File.separatorChar+group+".yml");
+    public static void loadActivators(String group){
+        File f = new File (plg().getDataFolder()+File.separator+"Activators"+File.separatorChar+group+".yml");
         if (!f.exists()) return;
         YamlConfiguration cfg = new YamlConfiguration();
         try {
             cfg.load(f);
         } catch (Exception e) {
-            u.log("Failed to load configuration from file "+f.getAbsolutePath());
+            u().log("Failed to load configuration from file "+f.getAbsolutePath());
             e.printStackTrace();
             return;
         }
 
         for (String type : cfg.getKeys(false)){
-            //if (!isValidActivatorType(type)) continue;
             if (!ActivatorType.isValid(type)) continue;
             ConfigurationSection cs = cfg.getConfigurationSection(type);
             if (cs == null) continue;
             for (String name : cs.getKeys(false)){
-                if (ActivatorType.isValid(type)){
-                    Activator a = createActivator (type,name,group,cfg);
-                    if (a==null) continue;
-                    addActivator (a);
+                ActivatorType at = ActivatorType.getByName(type);
+                if (at == null){
+                    u().logOnce("cannotcreate"+type+name, "Failed to create new activator. Type: "+type + " Name: "+name);
+                    continue;
                 }
+                
+                Activator a = createActivator (at,name,group,cfg);
+                if (a==null) continue;
+                addActivator (a);
             }
         }
     }
 
-    private Activator createActivator (String type, String name, String group, YamlConfiguration cfg){
+    private static Activator createActivator (ActivatorType type, String name, String group, YamlConfiguration cfg){
         try{
-            Object a = ActivatorType.valueOf(type.toUpperCase()).getActivatorClass().getDeclaredConstructor(String.class,String.class,YamlConfiguration.class).newInstance(name,group,cfg);
-            return (Activator) a;
+            Activator a = type.getActivatorClass().getDeclaredConstructor(String.class,String.class,YamlConfiguration.class).newInstance(name,group,cfg);
+            return a;
         } catch (Exception e){
-            u.logOnce("cannotcreate"+type, "Failed to create new activator. Type: "+type);
+            u().logOnce("cannotcreate"+name, "Failed to create new activator. Name: "+name);
         }
         return null;
     }
 
-    public List<String> getActivatorsList(){
+    public static List<String> getActivatorsList(){
         List<String> lst = new ArrayList<String>();
         if (!act.isEmpty())
             for (int i = 0; i<act.size();i++)
@@ -251,16 +320,16 @@ public class Activators {
         return lst;
     }
 
-    public List<String> getActivatorsList(String type){
+    public static List<String> getActivatorsList(String type){
         List<String> lst = new ArrayList<String>();
         if (!act.isEmpty())
             for (int i = 0; i<act.size();i++)
-                if (act.get(i).getType().equalsIgnoreCase(type))
+                if (act.get(i).isTypeOf(type))
                     lst.add( "&a"+act.get(i).toString());
         return lst;	
     }
 
-    public List<String> getActivatorsListGroup(String group){
+    public static List<String> getActivatorsListGroup(String group){
         List<String> lst = new ArrayList<String>();
         if (!act.isEmpty())
             for (int i = 0; i<act.size();i++)
@@ -269,19 +338,18 @@ public class Activators {
         return lst;			
     }
 
-
-    public void activate (Event event){
+    public static void activate (Event event){
         if (act.isEmpty()) return;
         for (int i = 0; i<act.size(); i++){
             Activator a = act.get(i);
-            if (!ActivatorType.isValid(a.getType())) continue;
-                if(ActivatorType.valueOf(a.getType().toUpperCase()).getEventClass().isInstance(event))
-                a.activate(event);
+            if (a.getType().getEventClass().isInstance(event)){
+                a.executeActivator(event);
+            }
+                
         }
     }
 
-
-    public boolean copyAll (String actfrom, String actto){
+    public static boolean copyAll (String actfrom, String actto){
         if (!contains(actfrom)) return false;
         if (!contains(actto)) return false;
         copyActions (actfrom,actto);
@@ -290,7 +358,7 @@ public class Activators {
         return true;
     }
 
-    public boolean copyActions (String actfrom, String actto){
+    public static boolean copyActions (String actfrom, String actto){
         if (!contains(actfrom)) return false;
         if (!contains(actto)) return false;
         Activator afrom = get(actfrom);
@@ -303,7 +371,7 @@ public class Activators {
         return true;
     }
 
-    public boolean copyReactions (String actfrom, String actto){
+    public static boolean copyReactions (String actfrom, String actto){
         if (!contains(actfrom)) return false;
         if (!contains(actto)) return false;
         Activator afrom = get(actfrom);
@@ -316,7 +384,7 @@ public class Activators {
         return true;
     }
 
-    public boolean copyFlags (String actfrom, String actto){
+    public static boolean copyFlags (String actfrom, String actto){
         if (!contains(actfrom)) return false;
         if (!contains(actto)) return false;
         Activator afrom = get(actfrom);
@@ -329,17 +397,14 @@ public class Activators {
         return true;
     }
 
-    public boolean setGroup (String activator, String group){
+    public static boolean setGroup (String activator, String group){
         if (!contains(activator)) return false;
         get (activator).setGroup(group);
         return true;
     }
 
-    public String getGroup(String activator){
+    public static String getGroup(String activator){
         if (!contains(activator)) return "activator";
         return get (activator).getGroup();
     }
-    
-    
-
 }

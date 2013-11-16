@@ -8,8 +8,7 @@ public class FlagGroup extends Flag{
 
     @Override
     public boolean checkFlag(Player p, String param) {
-        RAVault.playerInGroup(p, param);
-        return false;
+        return RAVault.playerInGroup(p, param);
     }
 
 }

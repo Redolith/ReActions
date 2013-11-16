@@ -48,8 +48,8 @@ public class CommandActivator extends Activator {
     }
 
     @Override
-    public String getType() {
-        return "command";
+    public ActivatorType getType() {
+        return ActivatorType.COMMAND;
     }
     
 

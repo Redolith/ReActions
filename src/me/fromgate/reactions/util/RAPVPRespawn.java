@@ -2,23 +2,23 @@ package me.fromgate.reactions.util;
 
 import java.util.HashMap;
 import java.util.Map;
-import me.fromgate.reactions.event.PVPDeathEvent;
+import me.fromgate.reactions.event.PVPRespawnEvent;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
-public class RAPVPDeath {
+public class RAPVPRespawn {
     private static Map<String,String> killers = new HashMap<String,String>();
     private static Map<String,Location> deathpoints = new HashMap<String,Location>();
     
-    public static void addPVPDeath(PlayerDeathEvent event){
+    public static void addPVPRespawn(PlayerDeathEvent event){
         Player deadplayer = event.getEntity();
         deathpoints.put(deadplayer.getName(), deadplayer.getLocation());  // это может пригодиться и в других ситуациях
         Player killer = Util.getKiller(deadplayer.getLastDamageCause());
         if (killer==null) return;
         killers.put(deadplayer.getName(), killer.getName());
-        
     }
     
     public static Location getLastDeathPoint(Player player){
@@ -32,12 +32,12 @@ public class RAPVPDeath {
         return null;
     }
     
-    public static void raisePVPDeathEvent(Player player){
+    public static void raisePVPRespawnEvent(Player player){
         if (!killers.containsKey(player.getName())) return;
         Player killer = getLastKiller(player);
         killers.remove(player.getName());
         if (killer == null) return;
-        Bukkit.getServer().getPluginManager().callEvent(new PVPDeathEvent(killer, player));
+        Bukkit.getServer().getPluginManager().callEvent(new PVPRespawnEvent(killer, player));
     }
     
 }

@@ -9,7 +9,6 @@ import me.fromgate.reactions.event.ExecEvent;
 
 public class ExecActivator extends Activator {
     
-    
     ExecActivator(String name, String group, YamlConfiguration cfg) {
         super(name, group, cfg);
     }
@@ -26,7 +25,7 @@ public class ExecActivator extends Activator {
     public void activate(Event event) {
         if (event instanceof ExecEvent){
             ExecEvent ce  = (ExecEvent) event;
-            if (ce.getCommand().equalsIgnoreCase(this.getName())) Actions.executeActivator(ce.getTargetPlayer(), this);
+            if (ce.getActivatorId().equalsIgnoreCase(this.getName())) Actions.executeActivator(ce.getTargetPlayer(), this);
         }
     }
     
@@ -44,8 +43,8 @@ public class ExecActivator extends Activator {
     }
 
     @Override
-    public String getType() {
-        return "exec";
+    public ActivatorType getType() {
+        return ActivatorType.EXEC;
     }
 
 }

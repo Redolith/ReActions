@@ -2,6 +2,7 @@ package me.fromgate.reactions.actions;
 
 import java.util.Map;
 
+import me.fromgate.reactions.util.ParamUtil;
 import me.fromgate.reactions.util.Util;
 
 import org.bukkit.entity.Player;
@@ -11,7 +12,7 @@ public class ActionItemRemoveInv extends Action {
 
     @Override
     public boolean execute(Player p, Map<String, String> params) {
-        String istr = Util.getParam(params, "param-line", "");
+        String istr = ParamUtil.getParam(params, "param-line", "");
         if (istr.isEmpty()) return false; 
         u().removeItemInInventory(p, istr);
         ItemStack item = u().parseItemStack(istr);

@@ -53,7 +53,7 @@ public class RAEffects {
     }
     
     public static void playEffect (Location loc, String eff, String param){
-        Map<String,String> params = Util.parseActionParam(param);
+        Map<String,String> params = ParamUtil.parseParams(param);
         params.remove("param-line");
         playEffect(loc,eff,params);
     }
@@ -102,8 +102,8 @@ public class RAEffects {
     }
     
     public static void playEffect (Player p, Map<String,String> params){
-        String eff = Util.getParam(params, "eff", "");
-        if (eff.isEmpty()) eff =  Util.getParam(params, "type", "SMOKE"); // для совместимости со старыми версиями
+        String eff = ParamUtil.getParam(params, "eff", "");
+        if (eff.isEmpty()) eff =  ParamUtil.getParam(params, "type", "SMOKE"); // для совместимости со старыми версиями
         if (use_play_effects) {
             playPlayEffect(eff, params);    
         } else {
@@ -111,13 +111,13 @@ public class RAEffects {
             int modifier = 0;
             int radius = 0;
             
-            boolean land = Util.getParam(params, "land", "true").equalsIgnoreCase("false");
+            boolean land = ParamUtil.getParam(params, "land", "true").equalsIgnoreCase("false");
             if (!u().isWordInList(eff, efftypes)) return;
             
-            if (eff.equalsIgnoreCase("SMOKE")) modifier = parseSmokeDirection (Util.getParam(params, "dir", "random"));
-            else modifier = Util.getMinMaxRandom(Util.getParam(params, "data", "0"));
-            loc=Util.parseLocation(Util.getParam(params, "loc", Util.locationToString(p.getLocation())));
-            radius = Util.getParam(params, "radius", 0);
+            if (eff.equalsIgnoreCase("SMOKE")) modifier = parseSmokeDirection (ParamUtil.getParam(params, "dir", "random"));
+            else modifier = Util.getMinMaxRandom(ParamUtil.getParam(params, "data", "0"));
+            loc=Util.parseLocation(ParamUtil.getParam(params, "loc", Util.locationToString(p.getLocation())));
+            radius = ParamUtil.getParam(params, "radius", 0);
             if (radius>0) loc = Util.getRandomLocationInRadius(loc, radius,land);
             playStandartEffect (loc,eff,modifier);            
         }

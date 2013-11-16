@@ -7,11 +7,12 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
 
 public class PVPDeathActivator extends Activator {
-
-    public PVPDeathActivator(String name) {
-        super (name,"activators");
-    }
+    private String targetplayer;
     
+    public PVPDeathActivator(String name) {
+        super(name, "activators");
+    }
+
     public PVPDeathActivator(String name, String group, YamlConfiguration cfg) {
         super(name, group, cfg);
     }
@@ -19,8 +20,9 @@ public class PVPDeathActivator extends Activator {
     @Override
     public void activate(Event event) {
         if (!(event instanceof PVPDeathEvent)) return;
-        PVPDeathEvent pe = (PVPDeathEvent) event;
-        Actions.executeActivator(pe.getPlayer(), this);
+        PVPDeathEvent de = (PVPDeathEvent) event;
+        this.targetplayer = de.getKiller().getName();
+        Actions.executeActivator(de.getPlayer(), this);
     }
 
     @Override
@@ -37,8 +39,14 @@ public class PVPDeathActivator extends Activator {
     }
 
     @Override
-    public String getType() {
-        return "pvpdeath";
+    public ActivatorType getType() {
+        return ActivatorType.PVP_DEATH;
     }
 
+    @Override
+    public String getTargetPlayer(){
+        return targetplayer; 
+    }
+    
+    
 }

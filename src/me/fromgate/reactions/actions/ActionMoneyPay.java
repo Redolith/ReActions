@@ -2,6 +2,7 @@ package me.fromgate.reactions.actions;
 
 import java.util.Map;
 
+import me.fromgate.reactions.util.ParamUtil;
 import me.fromgate.reactions.util.RAVault;
 import me.fromgate.reactions.util.Util;
 
@@ -12,7 +13,7 @@ public class ActionMoneyPay extends Action {
     @Override
     public boolean execute(Player p, Map<String, String> params) {
         if (!RAVault.isEconomyConected()) return false;
-        setMessageParam(RAVault.formatMoney(Integer.toString(moneyPay (p,Util.getParam(params, "param-line", "")))));
+        setMessageParam(RAVault.formatMoney(Integer.toString(moneyPay (p,ParamUtil.getParam(params, "param-line", "")))));
         return true;
     }
     

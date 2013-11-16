@@ -77,8 +77,8 @@ public class RgEnterActivator extends Activator {
     }
 
     @Override
-    public String getType() {
-        return "rgenter";
+    public ActivatorType getType() {
+        return ActivatorType.REGION_ENTER;
     }
 
 

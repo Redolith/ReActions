@@ -3,6 +3,7 @@ package me.fromgate.reactions.actions;
 import java.util.List;
 import java.util.Map;
 
+import me.fromgate.reactions.util.ParamUtil;
 import me.fromgate.reactions.util.Util;
 
 import org.bukkit.Bukkit;
@@ -13,12 +14,11 @@ public class ActionItemGive extends Action {
 
     @Override
     public boolean execute(Player p, Map<String, String> params) {
-        List<ItemStack> items = giveItemPlayer(p,Util.getParam(params, "param-line", ""));
+        List<ItemStack> items = giveItemPlayer(p,ParamUtil.getParam(params, "param-line", ""));
         if (items.isEmpty()) return false;
         this.setMessageParam(Util.itemsToString(items));
         return true;
     }
-    
     
     private List<ItemStack> giveItemPlayer(final Player p, final String param) {
         final List<ItemStack> items = Util.parseRandomItems(param);

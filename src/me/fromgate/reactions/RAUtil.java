@@ -22,10 +22,6 @@
 
 package me.fromgate.reactions;
 
-import me.fromgate.reactions.util.Util;
-
-import org.bukkit.inventory.ItemStack;
-
 public class RAUtil extends FGUtilCore {
     ReActions plg;
 
@@ -36,9 +32,6 @@ public class RAUtil extends FGUtilCore {
         InitCmd();
         if (savelng) this.SaveMSG();
     }
-
-
-
 
     public void InitCmd(){
         cmds.clear();
@@ -56,6 +49,8 @@ public class RAUtil extends FGUtilCore {
         addCmd("debug", "debug","cmd_debug","&3/react debug [true|false|off]",'b');
         addCmd("check", "config","cmd_check","&3/react check [radius]",'b');
         addCmd("reload", "config","cmd_reload","&3/react reload",'b',true);
+        // Profiler enabling during development :)
+        // addCmd("profile", "config","cmd_profile","&3/react profile",'b',true);
     }
 
     public void FillMSG(){
@@ -131,12 +126,10 @@ public class RAUtil extends FGUtilCore {
         addMSG ("msg_reactionremoved", "Reaction No.%2% of activator %1% was removed!");
         addMSG ("msg_failedtoremovereaction", "Failed to remove reaction No.%2% of actiovator %1%");
         addMSG ("msg_wrongnumber", "Wrong number %1%!");
-        addMSG ("cmd_runplayer", "Activator %1% executed (for player %2%)");
-        addMSG ("cmd_runplayerfail", "Failed to run activator %1%");
-        addMSG ("cmd_rundelayplayer", "Execution of activator %1% for player %2% will start after %3% ticks");
-        addMSG ("cmd_runplayerunknown", "Failed to run activator %1%. Player %2% is unknown");
+        addMSG ("cmd_runplayer", "Activator execution started (parameters: %1%)");
+        addMSG ("cmd_runplayerfail", "Failed to execute activator (parameters: %1%)");
         addMSG ("msg_mobbounty", "You received %1% for killing %2%");
-             
+        addMSG ("msg_needregion", "You must define region for this activator");
         addMSG ("act_tp", "You was teleported to %1%");
         addMSG ("act_tpfail", "Failed teleportation to %1% (wrong location?)");
         addMSG ("act_velocity", "Your movement direction was changed");
@@ -191,11 +184,15 @@ public class RAUtil extends FGUtilCore {
         addMSG ("act_region_clearfail", "Failed to clear region");
         addMSG ("act_heal", "You was healed by %1%!");
         addMSG ("act_healfailed", "Failed to perform healing...");
+        addMSG ("act_block_set", "Block placed: %1%!");
+        addMSG ("act_block_setfailed", "Failed to place block: %1%");
+                
+        
     }
     
-    @Override
+    /*@Override
     public ItemStack parseItemStack (String itemstr){
         return Util.parseItemStack(itemstr);
-    }
+    }*/
     
 }

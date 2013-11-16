@@ -76,8 +76,8 @@ public class RgLeaveActivator extends Activator{
     }
 
     @Override
-    public String getType() {
-        return "rgleave";
+    public ActivatorType getType() {
+        return ActivatorType.REGION_LEAVE;
     }
 
 }

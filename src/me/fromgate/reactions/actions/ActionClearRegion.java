@@ -3,6 +3,7 @@ package me.fromgate.reactions.actions;
 import java.util.List;
 import java.util.Map;
 
+import me.fromgate.reactions.util.ParamUtil;
 import me.fromgate.reactions.util.RAWorldGuard;
 import me.fromgate.reactions.util.Util;
 
@@ -16,8 +17,8 @@ public class ActionClearRegion extends Action {
 
     @Override
     public boolean execute(Player p, Map<String, String> params) {
-        String region = Util.getParam(params, "region", "");
-        String type = Util.getParam(params, "type", "all");
+        String region = ParamUtil.getParam(params, "region", "");
+        String type = ParamUtil.getParam(params, "type", "all");
         if (region.isEmpty()) return false;
         if (!RAWorldGuard.isConnected()) return false;
         List<Location> locs = RAWorldGuard.getRegionMinMaxLocations(region);

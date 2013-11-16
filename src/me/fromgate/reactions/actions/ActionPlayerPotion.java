@@ -2,6 +2,7 @@ package me.fromgate.reactions.actions;
 
 import java.util.Map;
 
+import me.fromgate.reactions.util.ParamUtil;
 import me.fromgate.reactions.util.Util;
 
 import org.bukkit.entity.Player;
@@ -26,7 +27,7 @@ public class ActionPlayerPotion extends Action {
         int amplifier = 1;
         boolean ambient = false;
         if (params.containsKey("param")){
-            String param = Util.getParam(params, "param", "");
+            String param = ParamUtil.getParam(params, "param", "");
             if (param.isEmpty()) return "";
             if (param.contains("/")){
                 String[] prm = param.split("/");
@@ -37,10 +38,10 @@ public class ActionPlayerPotion extends Action {
                 }
             } else peffstr = param;            
         } else {
-            peffstr = Util.getParam(params, "type", "");
-            duration = Util.safeLongToInt(Util.timeToTicks(Util.parseTime(Util.getParam(params, "time", "3s")))); 
-            amplifier = Math.max(Util.getParam(params, "level", 1)-1, 0);
-            ambient = Util.getParam(params, "ambient", false);
+            peffstr = ParamUtil.getParam(params, "type", "");
+            duration = u().safeLongToInt(u().timeToTicks(u().parseTime(ParamUtil.getParam(params, "time", "3s")))); 
+            amplifier = Math.max(ParamUtil.getParam(params, "level", 1)-1, 0);
+            ambient = ParamUtil.getParam(params, "ambient", false);
         }
         PotionEffectType pef = Util.parsePotionEffect (peffstr.toUpperCase());
         if (pef == null) return "";

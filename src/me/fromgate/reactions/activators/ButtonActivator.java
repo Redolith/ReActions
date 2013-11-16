@@ -24,7 +24,6 @@ package me.fromgate.reactions.activators;
 
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.ButtonEvent;
-
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -71,7 +70,7 @@ public class ButtonActivator extends Activator{
     @Override
     public boolean isLocatedAt(Location l) {
         if (l == null) return false;
-        if (!world.equals(l.getWorld().getName())) return false;
+        if (!world.equalsIgnoreCase(l.getWorld().getName())) return false;
         if (x!=l.getBlockX()) return false;
         if (y!=l.getBlockY()) return false;
         return (z==l.getBlockZ());
@@ -91,11 +90,12 @@ public class ButtonActivator extends Activator{
         x = cfg.getInt(root+".x");
         y = cfg.getInt(root+".y");
         z = cfg.getInt(root+".z");
+        
     }
 
     @Override
-    public String getType() {
-        return "button";
+    public ActivatorType getType() {
+        return ActivatorType.BUTTON;
     }
 
 }

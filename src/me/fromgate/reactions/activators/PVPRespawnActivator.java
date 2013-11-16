@@ -1,27 +1,28 @@
 package me.fromgate.reactions.activators;
 
 import me.fromgate.reactions.actions.Actions;
-import me.fromgate.reactions.event.PVPKillEvent;
+import me.fromgate.reactions.event.PVPRespawnEvent;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
 
-public class PVPKillActivator extends Activator {
-    private String targetplayer;
+public class PVPRespawnActivator extends Activator {
     
-    public PVPKillActivator(String name) {
-        super(name, "activators");
-    }
+    private String targetplayer;
 
-    public PVPKillActivator(String name, String group, YamlConfiguration cfg) {
+    public PVPRespawnActivator(String name) {
+        super (name,"activators");
+    }
+    
+    public PVPRespawnActivator(String name, String group, YamlConfiguration cfg) {
         super(name, group, cfg);
     }
 
     @Override
     public void activate(Event event) {
-        if (!(event instanceof PVPKillEvent)) return;
-        PVPKillEvent pe = (PVPKillEvent) event;
-        this.targetplayer = pe.getKilledPlayer().getName();
+        if (!(event instanceof PVPRespawnEvent)) return;
+        PVPRespawnEvent pe = (PVPRespawnEvent) event;
+        targetplayer = pe.getKiller().getName();
         Actions.executeActivator(pe.getPlayer(), this);
     }
 
@@ -40,11 +41,11 @@ public class PVPKillActivator extends Activator {
 
     @Override
     public ActivatorType getType() {
-        return ActivatorType.PVP_KILL;
+        return ActivatorType.PVP_RESPAWN;
     }
 
     @Override
     public String getTargetPlayer(){
-        return targetplayer; 
+        return this.targetplayer;
     }
 }

@@ -20,31 +20,33 @@ import org.bukkit.potion.PotionEffectType;
 public class RAMobSpawn {
 
     public static void mobSpawn(Player p, Map<String,String> params) {
-        String mob = Util.getParam(params, "type", "PIG");
-        String locstr = Util.getParam(params, "loc", "");
+        String mob = ParamUtil.getParam(params, "type", "PIG");
+        String locstr = ParamUtil.getParam(params, "loc", "");
         Location loc = Util.locToLocation(p,locstr);
-        String region = Util.getParam(params, "region", "");
-        int radius = Util.getParam(params, "radius", 0);
-        int num=Util.getMinMaxRandom(Util.getParam(params, "num", "1"));
-        String hparam = Util.getParam(params, "health", "0");
+        String region = ParamUtil.getParam(params, "region", "");
+        int radius = ParamUtil.getParam(params, "radius", 0);
+        int num=Util.getMinMaxRandom(ParamUtil.getParam(params, "num", "1"));
+        String hparam = ParamUtil.getParam(params, "health", "0");
         double health = Util.getMinMaxRandom(hparam);
-        String playeffect = Util.getParam(params, "effect", "");
-        String dtheffect = Util.getParam(params, "dtheffect", "");
-        String chest = Util.getParam(params, "chest", "");
-        String leg = Util.getParam(params, "leg", "");
-        String helm = Util.getParam(params, "helm", "");
-        String boot = Util.getParam(params, "boot", "");
-        String weapon = Util.getParam(params, "weapon", "");
-        boolean land = Util.getParam(params, "land", true);
-        String poteff = Util.getParam(params, "potion", "");
-        String name = Util.getParam(params, "name", "");
-        String drop = Util.getParam(params, "drop", "");
-        String xp= Util.getParam(params, "xp", "");
-        String money = Util.getParam(params, "money", "");
-        String growl = Util.getParam(params, "growl", "");
-        String cry = Util.getParam(params, "cry", "");
-        String equip = Util.getParam(params, "equip", "");
-        double dmg = Util.getParam(params, "dmg", 1.0D);
+        String playeffect = ParamUtil.getParam(params, "effect", "");
+        String dtheffect = ParamUtil.getParam(params, "dtheffect", "");
+        String chest = ParamUtil.getParam(params, "chest", "");
+        String leg = ParamUtil.getParam(params, "leg", "");
+        String helm = ParamUtil.getParam(params, "helm", "");
+        String boot = ParamUtil.getParam(params, "boot", "");
+        String weapon = ParamUtil.getParam(params, "weapon", "");
+        boolean land = ParamUtil.getParam(params, "land", true);
+        String poteff = ParamUtil.getParam(params, "potion", "");
+        String name = ParamUtil.getParam(params, "name", "");
+        String drop = ParamUtil.getParam(params, "drop", "");
+        String xp= ParamUtil.getParam(params, "xp", "");
+        String money = ParamUtil.getParam(params, "money", "");
+        String growl = ParamUtil.getParam(params, "growl", "");
+        String cry = ParamUtil.getParam(params, "cry", "");
+        String equip = ParamUtil.getParam(params, "equip", "");
+        double dmg = ParamUtil.getParam(params, "dmg", 1.0D);
+        String exec = ParamUtil.getParam(params, "run", "");
+        String exec_delay = ParamUtil.getParam(params, "rundelay", "1t");
 
         if (loc == null) loc = p.getLocation();
         List<Location> locs = null;
@@ -71,6 +73,7 @@ public class RAMobSpawn {
                 setMobDrop (le,drop);
                 setMobXP (le,xp);
                 setMobMoney (le,money);
+                setMobExec (le,exec,exec_delay );
                 setMobDmgMultiplier (le,dmg);
                 setMobGrowl(le,growl);
                 setMobCry(le,cry);
@@ -101,6 +104,7 @@ public class RAMobSpawn {
             
             EntityType et = EntityType.fromName(mbs);
             if (mbs.equalsIgnoreCase("horse")) et = EntityType.HORSE;
+            
             if (et == null){
                 ReActions.util.logOnce("mobspawnunknowntype_"+mobstr, "Unknown mob type "+mbs+" ("+mobstr+")");
                 continue;
@@ -116,6 +120,9 @@ public class RAMobSpawn {
                 ReActions.util.logOnce("mobspawnnotmob_"+mobstr, "Cannot spawn mob "+mbs+" ("+mobstr+")");
                 continue;
             }
+            
+            
+            
             LivingEntity mob = (LivingEntity)e;
             setMobName (mob, name);
             mobs.add(mob);
@@ -148,7 +155,11 @@ public class RAMobSpawn {
         if (money.isEmpty()) return;  
         e.setMetadata("ReActions-money", new FixedMetadataValue(ReActions.instance, money));
     }
-
+    
+    public static void setMobExec (LivingEntity e, String exec_activator, String exec_delay){
+        if (exec_activator.isEmpty()) return;  
+        e.setMetadata("ReActions-activator", new FixedMetadataValue(ReActions.instance, "activator:"+exec_activator+(exec_delay.isEmpty() ? "" : " delay:"+exec_delay)));
+    }
 
     public static void setMobDrop(LivingEntity e, String drop){
         //id:data*amount,id:dat*amount%chance;id:data*amount;id:dat*amount%chance;id:data*amount;id:dat*amount%chance

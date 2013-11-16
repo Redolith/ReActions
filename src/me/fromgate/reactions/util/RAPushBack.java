@@ -85,6 +85,7 @@ public class RAPushBack {
     
     private static Location getPlayerPrevLoc1(Player p) {
         if (!p.hasMetadata("ra-pb-loc1-world")) return null;
+        if (p.getMetadata("ra-pb-loc1-world").isEmpty()) return null;
         if (!p.hasMetadata("ra-pb-loc1-x")) return null;
         if (!p.hasMetadata("ra-pb-loc1-y")) return null;
         if (!p.hasMetadata("ra-pb-loc1-z")) return null;
@@ -101,6 +102,7 @@ public class RAPushBack {
     
     private static Location getPlayerPrevLoc2(Player p) {
         if (!p.hasMetadata("ra-pb-loc2-world")) return null;
+        if (p.getMetadata("ra-pb-loc2-world").isEmpty()) return null;
         if (!p.hasMetadata("ra-pb-loc2-x")) return null;
         if (!p.hasMetadata("ra-pb-loc2-y")) return null;
         if (!p.hasMetadata("ra-pb-loc2-z")) return null;

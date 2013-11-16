@@ -20,7 +20,6 @@ public class LeverActivator extends Activator {
 
     public LeverActivator(String name, String group, YamlConfiguration cfg) {
         super(name, group, cfg);
-        // TODO Auto-generated constructor stub
     }
 
     public LeverActivator(String name, String param, Block b) {
@@ -74,8 +73,8 @@ public class LeverActivator extends Activator {
     }
 
     @Override
-    public String getType() {
-        return "lever";
+    public ActivatorType getType() {
+        return ActivatorType.LEVER;
     }
 
 }

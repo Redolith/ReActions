@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import me.fromgate.reactions.util.ParamUtil;
 import me.fromgate.reactions.util.RAVault;
 import me.fromgate.reactions.util.RAWorldGuard;
 import me.fromgate.reactions.util.Util;
@@ -25,26 +26,37 @@ public class ActionMessage extends Action {
     private void sendMessage(Player player, Map<String, String> params){
         String message = params.get("param-line"); 
         Set<Player> players = new HashSet<Player>(); 
-        if (Util.isAnyParamExist(params, "region","group","perm","world")){
-            String region = Util.getParam(params, "region", "");
-            String group = Util.getParam(params, "group", "");
-            String perm = Util.getParam(params, "perm", "");
-            String world = Util.getParam(params, "world", "");
-            if (!region.isEmpty()) players.addAll(RAWorldGuard.playersInRegion(region));
+        if (Util.isAnyParamExist(params, "region","group","perm","world","player")){
+            String region = ParamUtil.getParam(params, "region", "");
+            String group = ParamUtil.getParam(params, "group", "");
+            String perm = ParamUtil.getParam(params, "perm", "");
+            String world = ParamUtil.getParam(params, "world", "");
+            String targetPlayer = ParamUtil.getParam(params, "player", "");
+            if (!region.isEmpty()) {
+                players.addAll(RAWorldGuard.playersInRegion(region));
+                message = message.replace("region:"+region, "");
+            }
+            if (!targetPlayer.isEmpty()) {
+                message = message.replace("player:"+targetPlayer, "");
+                Player tp = Bukkit.getPlayer(targetPlayer);
+                if ((tp!=null)&&(tp.isOnline())) players.add(tp);
+            }
             if (!world.isEmpty()){
                 World w = Bukkit.getWorld(world);
                 if (w!=null)  for (Player pl : w.getPlayers()) players.add(pl);
+                message = message.replace("world:"+world, "");
             }
-            if ((!group.isEmpty())||(!perm.isEmpty()))
+            if ((!group.isEmpty())||(!perm.isEmpty())){
                 for (Player pl : Bukkit.getOnlinePlayers()){
                     if ((!group.isEmpty())&& RAVault.playerInGroup(pl, group)) players.add(pl);
                     if ((!perm.isEmpty())&&pl.hasPermission(perm)) players.add(pl);
-                }        
-            message = message.replace("region:"+region, "").replace("group:"+group, "").replace("perm:"+perm, "").replace("world:"+world, "");
+                }
+                if (!group.isEmpty()) message = message.replace("group:"+group, "");
+                if (!perm.isEmpty()) message = message.replace("perm:"+perm, "");
+            }
             message = message.replace("  ", " ");
             message = message.trim();
         } else if(player != null) players.add(player);
-        //if (players.isEmpty()&&(player != null)) players.add(player);
         for (Player p : players){
             String key = "reactions-msg-"+this.getActivatorName()+(this.isAction() ? "act" : "react");    
             boolean showmsg = false;
@@ -65,18 +77,4 @@ public class ActionMessage extends Action {
         }
     }
 
-    
-    /*
-     *  public static String replacePlaceholders (Player p, Activator a, String param){
-        String rst = param;
-        String placeholders = "curtime,player,dplayer,health,"+Flag.getFtypes();
-        String [] phs = placeholders.split(",");
-        for (String ph : phs){
-            String key = "%"+ph+"%";
-            rst = rst.replaceAll(key, getFlagParam(p,a,key));
-        }
-        return rst;
-    }
-     */
-    
 }

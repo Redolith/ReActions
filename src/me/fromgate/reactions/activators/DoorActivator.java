@@ -71,8 +71,8 @@ public class DoorActivator extends Activator {
     }
 
     @Override
-    public String getType() {
-        return "door";
+    public ActivatorType getType() {
+        return ActivatorType.DOOR;
     }
 
 }

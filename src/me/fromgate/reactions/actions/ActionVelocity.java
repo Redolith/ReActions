@@ -2,8 +2,7 @@ package me.fromgate.reactions.actions;
 
 import java.util.Map;
 
-import me.fromgate.reactions.util.Util;
-
+import me.fromgate.reactions.util.ParamUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -22,10 +21,10 @@ public class ActionVelocity extends Action{
         String velstr = "";
         boolean multiply = false;
         if (params.containsKey("param")){
-            velstr = Util.getParam(params, "param", "");
+            velstr = ParamUtil.getParam(params, "param", "");
         } else {
-            velstr = Util.getParam(params, "direction","");
-            multiply = Util.getParam(params, "multiply", false);
+            velstr = ParamUtil.getParam(params, "direction","");
+            multiply = ParamUtil.getParam(params, "multiply", false);
         }
 
         if (velstr.isEmpty()) return null;

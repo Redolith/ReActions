@@ -1,5 +1,6 @@
 package me.fromgate.reactions.flags;
 
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 public class FlagState extends Flag{
@@ -21,6 +22,18 @@ public class FlagState extends Flag{
             if (p.isInsideVehicle()) return false;
             return true;
         case OP: return p.isOp();
+        case VEHICLE_BOAT:
+            if (!p.isInsideVehicle()) return false;
+            return p.getVehicle().getType() == EntityType.BOAT;
+        case VEHICLE_HORSE:
+            if (!p.isInsideVehicle()) return false;
+            return p.getVehicle().getType() == EntityType.HORSE;
+        case VEHICLE_MINECART:
+            if (!p.isInsideVehicle()) return false;
+            return p.getVehicle().getType() == EntityType.MINECART;
+        case VEHICLE_PIG:
+            if (!p.isInsideVehicle()) return false;
+            return p.getVehicle().getType() == EntityType.PIG;
         }
         return false;
     }
@@ -30,6 +43,10 @@ public class FlagState extends Flag{
         SPRINT,
         STAND,
         VEHICLE,
+        VEHICLE_MINECART,
+        VEHICLE_BOAT,
+        VEHICLE_PIG,
+        VEHICLE_HORSE,
         FLY,
         OP;
 

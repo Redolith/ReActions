@@ -5,6 +5,9 @@ import java.util.Map;
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator;
+import me.fromgate.reactions.util.ProfEl;
+import me.fromgate.reactions.util.Profiler;
+
 import org.bukkit.entity.Player;
 
 
@@ -48,7 +51,9 @@ public abstract class Action {
         this.activator = a;
         if (!params.containsKey("param-line")) params.put("param-line", "");
         setMessageParam(params.get("param-line"));
-        boolean activator_fail = (!execute (p,params)); 
+        ProfEl pl = Profiler.startProfile(this.type.name());
+        boolean activator_fail = (!execute (p,params));
+        Profiler.stopProfile(pl,params.get("param-line"));
         if (activator_fail) this.success = false;
         if ((p!=null)&&(printAction())) 
             u().printMSG(p, activator_fail ? "act_"+type.name().toLowerCase()+"fail" : "act_"+type.name().toLowerCase(), message_param);

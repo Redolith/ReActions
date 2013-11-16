@@ -2,16 +2,15 @@ package me.fromgate.reactions.actions;
 
 import java.util.Map;
 
+import me.fromgate.reactions.util.ParamUtil;
 import me.fromgate.reactions.util.RAFlagDelay;
-import me.fromgate.reactions.util.Util;
-
 import org.bukkit.entity.Player;
 
 public class ActionDelay extends Action {
 
     @Override
     public boolean execute(Player p, Map<String, String> params) {
-        String str = setDelay (p, Util.getParam(params, "param-line", ""));
+        String str = setDelay (p, ParamUtil.getParam(params, "param-line", ""));
         if (str.isEmpty()) return false;
         setMessageParam(str);
         return true;
@@ -29,7 +28,7 @@ public class ActionDelay extends Action {
             }
         } else seconds = mstr;
         if (seconds.isEmpty()) return "";
-        Long sec = Util.parseTime(seconds);
+        Long sec = u().parseTime(seconds);
         if (sec == 0) return "";        
         RAFlagDelay.setDelay(varname, sec);
         return seconds;

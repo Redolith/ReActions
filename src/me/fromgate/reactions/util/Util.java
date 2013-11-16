@@ -7,19 +7,14 @@ import java.util.List;
 import java.util.Map;
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.activators.Activator;
-import me.fromgate.reactions.activators.Activator.FlagVal;
-import me.fromgate.reactions.flags.Flags;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -29,8 +24,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.material.Openable;
 import org.bukkit.potion.PotionEffectType;
 
@@ -39,8 +32,8 @@ public class Util {
     private static ReActions plg(){
         return ReActions.instance;
     }
-    
-    
+
+
     private static RAUtil u(){
         return ReActions.util;
     }
@@ -104,15 +97,6 @@ public class Util {
         Location loc = l;
         if (radius>0) {
             List<Location> emptyloc = getLocationsRadius(l,radius,land);
-            /*for (int x = l.getBlockX()-radius; x<=l.getBlockX()+radius; x++)
-                for (int y = l.getBlockY()-radius; y<=l.getBlockY()+radius; y++)
-                    for (int z = l.getBlockZ()-radius; z<=l.getBlockZ()+radius; z++){
-                        Location t = new Location (l.getWorld(),x,y,z,l.getYaw(),l.getPitch());
-                        if (t.getBlock().isEmpty()&&t.getBlock().getRelative(BlockFace.UP).isEmpty()){
-                            if (land&&t.getBlock().getRelative(BlockFace.DOWN).isEmpty()) continue;
-                            emptyloc.add(t);
-                        }
-                    }*/
             if (!emptyloc.isEmpty()) {
                 loc = emptyloc.get(u().tryChance(emptyloc.size()));
                 loc.add(l.getX()-l.getBlockX(), l.getY()-l.getBlockY(), l.getZ()-l.getBlockZ());
@@ -149,33 +133,6 @@ public class Util {
         return ((double)i)/1000;
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Парсер
-    // преобразуем строку вида <команда> <параметр=значение> <параметр=значение> <параметр=значение> в Map {команда="", параметр=значеие....}
-    public static Map<String,String> parseActionParam(String param){
-        Map<String,String> params = new HashMap<String,String>();
-        if (!param.isEmpty()){
-            params.put("param-line", param);
-            String[]ln = param.split(" ");
-            if (ln.length>0)
-                for (int i = 0; i < ln.length; i++){
-                    String key = ln[i];
-                    String value = "";
-                    if (ln[i].contains(":")){
-                        key = ln[i].substring(0,ln[i].indexOf(":"));
-                        value = ln[i].substring(ln[i].indexOf(":")+1);
-                    }
-                    
-                    if (value.isEmpty()){
-                        value = key;
-                        key = "param";
-                    } 
-                    params.put(key, value);
-                }
-        }
-        return params;
-    }
-
     public static int getMinMaxRandom(String minmaxstr){
         int min = 0;
         int max = 0;
@@ -193,39 +150,6 @@ public class Util {
         else return min;
     }
 
-    public static String getParam(Map<String,String> params, String key, String defparam){
-        if (!params.containsKey(key)) return defparam;
-        return params.get(key);
-    }
-
-    public static int getParam(Map<String,String> params, String key, int defparam){
-        if (!params.containsKey(key)) return defparam;
-        String str = params.get(key);
-        //if (!str.matches("[1-9]+[0-9]*")) return defparam;
-        if (!u().isIntegerGZ(str)) return defparam;
-        return Integer.parseInt(str);
-    }
-
-    public static float getParam(Map<String,String> params, String key, float defparam){
-        if (!params.containsKey(key)) return defparam;
-        String str = params.get(key);
-        if (!str.matches("[0-9]+\\.?[0-9]*")) return defparam;
-        return Float.parseFloat(str);
-    }
-
-    public static double getParam(Map<String,String> params, String key, double defparam){
-        if (!params.containsKey(key)) return defparam;
-        String str = params.get(key);
-        if (!str.matches("[0-9]+\\.?[0-9]*")) return defparam;
-        return Double.parseDouble(str);
-    }
-
-
-    public static boolean getParam(Map<String,String> params, String key, boolean defparam){
-        if (!params.containsKey(key)) return defparam;
-        String str = params.get(key);
-        return (str.equalsIgnoreCase("true")||str.equalsIgnoreCase("on")||str.equalsIgnoreCase("yes"));
-    }
 
 
     public static ItemStack getRndItem (String str){
@@ -239,7 +163,6 @@ public class Util {
         return item;
     }
 
-
     public static String soundPlay (Location loc, Map<String,String> params){
         if (params.isEmpty()) return "";
         String sndstr = "";
@@ -248,7 +171,7 @@ public class Util {
         float pitch = 1;
         float volume = 1;
         if (params.containsKey("param")){
-            String param = Util.getParam(params, "param", "");
+            String param = ParamUtil.getParam(params, "param", "");
             if (param.isEmpty()) return "";
             if (param.contains("/")){
                 String[] prm = param.split("/");
@@ -261,9 +184,9 @@ public class Util {
             if (strvolume.matches("[0-9]+-?\\.[0-9]*")) volume = Float.parseFloat(strvolume);
             if (strpitch.matches("[0-9]+-?\\.[0-9]*")) pitch = Float.parseFloat(strpitch);            
         } else {
-            sndstr = Util.getParam(params, "type", "");
-            pitch = Util.getParam(params, "pitch", 1.0f);
-            volume = Util.getParam(params, "volume", 1.0f);
+            sndstr = ParamUtil.getParam(params, "type", "");
+            pitch = ParamUtil.getParam(params, "pitch", 1.0f);
+            volume = ParamUtil.getParam(params, "volume", 1.0f);
         }
         Sound sound = getSoundStr (sndstr);
         loc.getWorld().playSound(loc, sound, volume, pitch);
@@ -288,69 +211,11 @@ public class Util {
         return snd;
     }
 
-    public static Long timeToTicks(Long time){
+    /*public static Long timeToTicks(Long time){
         //1000 ms = 20 ticks
         return Math.max(1, (time/50));
-    }
+    }*/
 
-    /* HH:MM:SS
-     * MM:SS
-     * Xms
-     * Xs
-     * Xm
-     * Xh
-     * Xt
-     */
-
-    public static Long parseTime(String time){
-        int hh = 0; // часы
-        int mm = 0; // минуты
-        int ss = 0; // секунды
-        int tt = 0; // тики
-        int ms = 0; // миллисекунды
-        if (ReActions.util.isInteger(time)){
-            ss = Integer.parseInt(time);
-        } else if (time.matches("^[0-5][0-9]:[0-5][0-9]$")){
-            String [] ln = time.split(":");
-            if (ReActions.util.isInteger(ln[0])) mm = Integer.parseInt(ln[0]);
-            if (ReActions.util.isInteger(ln[1])) ss = Integer.parseInt(ln[1]);
-        } else if (time.matches("^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$")){
-            String [] ln = time.split(":");
-            if (ReActions.util.isInteger(ln[0])) hh = Integer.parseInt(ln[0]);
-            if (ReActions.util.isInteger(ln[1])) mm = Integer.parseInt(ln[1]);
-            if (ReActions.util.isInteger(ln[2])) ss = Integer.parseInt(ln[2]);
-        } else if (time.endsWith("ms")) {
-            String s = time.replace("ms", "");
-            if (ReActions.util.isInteger(s)) ms = Integer.parseInt(s);
-        } else if (time.endsWith("h")) {
-            String s = time.replace("h", "");
-            if (ReActions.util.isInteger(s)) hh = Integer.parseInt(s);
-        } else if (time.endsWith("m")) {
-            String s = time.replace("m", "");
-            if (ReActions.util.isInteger(s)) mm = Integer.parseInt(s);
-        } else if (time.endsWith("s")) {
-            String s = time.replace("s", "");
-            if (ReActions.util.isInteger(s)) ss = Integer.parseInt(s);
-        } else if (time.endsWith("t")) {
-            String s = time.replace("t", "");
-            if (ReActions.util.isInteger(s)) tt = Integer.parseInt(s);
-        }
-
-        /*
-        ms = ms
-        ticks = tt*50
-        sec = ss*1000
-        min = mm*1000*60 = 60000
-        hour == hh*60*60*1000 =3600000
-         */
-        return (long) ((hh*3600000)+(mm*60000)+(ss*1000)+(tt*50)+ms);
-    }
-
-    public static int safeLongToInt(long l) {
-        if (l<Integer.MIN_VALUE) return Integer.MIN_VALUE;
-        if (l > Integer.MAX_VALUE) return Integer.MAX_VALUE;         
-        return (int) l;
-    }
 
 
     /* 
@@ -361,7 +226,7 @@ public class Util {
      * Преобразует строку вида <id>:<data>[*<amount>]@color,enchantment:<lvl>,enchantment&<lvl> в ItemStack
      * 
      */
-    @SuppressWarnings("deprecation")
+    /*@SuppressWarnings("deprecation")
     public static ItemStack parseItemStack (String itemstr){
         if (!itemstr.isEmpty()){
             String enchant = "";
@@ -375,7 +240,7 @@ public class Util {
                 istr = itemstr.substring(0,itemstr.indexOf("@"));
                 enchant = itemstr.substring(istr.length()+1);
             }
-            
+
             int id = -1;
             int amount =1;
             short data =0;          
@@ -410,7 +275,9 @@ public class Util {
         }
         return null;
     }
+    */
 
+    /*
     @SuppressWarnings("deprecation")
     public static ItemStack setEnchantments (ItemStack item, String enchants){
         ItemStack i = item.clone();
@@ -452,7 +319,7 @@ public class Util {
         for (int i = 0; i<clrs.length;i++)
             if (colorname.equalsIgnoreCase(clrs[i])) return clr[i];
         return null;
-    }
+    } */
 
     public static List<Entity> getEntities (Location l1, Location l2){
         List<Entity> entities = new ArrayList<Entity>();
@@ -488,20 +355,23 @@ public class Util {
         List<ItemStack> stacks = new ArrayList<ItemStack>();
         String[] ln = items.split(";");
         for (String item : ln){
-            ItemStack stack = parseItemStack(item);
+            ItemStack stack = u().parseItemStack(item);
             if (stack != null) stacks.add(stack);
         }
         return stacks;
     }
     public static String itemToString (ItemStack item){
         String str ="";
-        String n = item.getItemMeta().hasDisplayName() ? ChatColor.stripColor(item.getItemMeta().getDisplayName()) : item.getType().name();
+        String n = item.getType().name();
+        try {
+        if (item.getItemMeta().hasDisplayName()) n =ChatColor.stripColor(item.getItemMeta().getDisplayName());
+        } catch (Exception e){
+        }
         String a = item.getAmount()>1 ? "*"+item.getAmount() : "";
         str = n+a;
         return str;
-        
     }
-    
+
     public static String itemsToString (List<ItemStack> items){
         String str ="";
         for (ItemStack i : items){
@@ -546,14 +416,6 @@ public class Util {
         return "";
     }
 
-    /*
-    public static String processLocationInParam(Player p, String param){
-        String newparam = param.trim();
-        Location loc = Util.locToLocation(p, param);
-        newparam = (loc==null) ? param : Util.locationToString(loc);
-        return newparam;
-    } */
-    
 
     @SuppressWarnings("deprecation")
     public static Location locToLocation(Player p, String locstr){
@@ -566,7 +428,7 @@ public class Util {
         else loc = Util.parseLocation(locstr);
         return loc;
     }
-    
+
     @SuppressWarnings("deprecation")
     public static String replaceStandartLocations (Player p, String param){
         if (p==null) return param;
@@ -593,7 +455,7 @@ public class Util {
         if (tl!=null) loc = "["+tl.getWorld().getName()+"] ("+tl.getBlockX()+", "+tl.getBlockY()+", "+tl.getBlockZ()+")";
         return loc;
     }
-    
+
     public static PotionEffectType parsePotionEffect (String name) {
         PotionEffectType pef = null;
         try{
@@ -602,89 +464,14 @@ public class Util {
         }
         return pef;
     }
-    
+
     public static String timeToString(long time) {
         int hours = (int) ((time / 1000 + 8) % 24);
         int minutes = (int) (60 * (time % 1000) / 1000);
         return String.format("%02d:%02d", hours, minutes);
     }
-   
-    
-    public static Map<String,String> replaceAllPlaceholders (Player p, Activator a, Map<String,String> params){
-        Map<String,String> newparams = new HashMap<String,String>();
-        for (String key : params.keySet())
-            newparams.put(key, replacePlaceholders(p,a,params.get(key)));
-        return newparams;
-    }
-    
-    public static String replacePlaceholders (Player p, Activator a, String param){
-        String rst = param;
-        String placeholders = "curtime,player,dplayer,health,deathpoint,"+Flags.getFtypes().toLowerCase();
-        String [] phs = placeholders.split(",");
-        for (String ph : phs){
-            String key = "%"+ph+"%";
-            rst = rst.replaceAll(key, getFlagParam(p,a,key));
-            rst = rst.replaceAll(key.toUpperCase(), getFlagParam(p,a,key));
-        }
-        return rst;
-    }
 
-    public static String getFlagParam (Player p, Activator a, String placeholder){
-        if (placeholder.startsWith("%")&&placeholder.endsWith("%")){
-            String flag = placeholder.substring(1, placeholder.length()-1);
-            if (placeholder.equalsIgnoreCase("%curtime%")) return Util.timeToString(p.getWorld().getTime());
-            else if (placeholder.equalsIgnoreCase("%player%")) return p.getName();
-            else if (placeholder.equalsIgnoreCase("%dplayer%")) return p.getDisplayName();
-            else if (placeholder.equalsIgnoreCase("%deathpoint%")) {
-                Location loc = RAPVPDeath.getLastDeathPoint(p);
-                if (loc == null) loc = p.getLocation();
-                return Util.locationToString(loc);
-            } else if (placeholder.equalsIgnoreCase("%health%")) {
-                String hlth = "0";
-                try {
-                    hlth = String.valueOf(p.getHealth());
-                } catch (Throwable ex){
-                    ReActions.util.logOnce("plr_health", "Failed to get Player health. This feature is not compatible with CB 1.5.2 (and older)...");
-                }
-                return hlth;
-            }
-            else for (FlagVal flg : a.getFlags())
-                if (flg.flag.equals(flag)) return formatFlagParam (flag, flg.value);
-        }
-        return placeholder;
-    }
 
-    private static String formatFlagParam(String flag, String value) {
-        String rst = value;
-        Flags f = Flags.getByName(flag);
-        switch (f){
-        case TIME:
-            if (!(value.equals("day")||value.equals("night"))){
-                String [] ln = value.split(",");
-                String r = "";
-                if (ln.length>0)
-                    for (int i = 0; i<ln.length;i++){
-                        if (!u().isInteger(ln[i])) continue;
-                        String tmp = String.format("%02d:00", Integer.parseInt(ln[i]));
-                        if (i == 0) r = tmp;
-                        else r = r+", "+tmp;
-                    }
-                if (!r.isEmpty()) rst = r;
-            }
-                break;
-            case CHANCE: 
-                rst = value +"%";
-                break;
-            case MONEY:
-                if (RAVault.isEconomyConected()&&u().isIntegerSigned(value))
-                    rst = RAVault.formatMoney(value);
-                break;
-            default:
-                break;
-            }
-        return rst; 
-
-    }
     /*
     @SuppressWarnings("deprecation")
     public static Location locToLocation(Player p, String locstr){
@@ -702,9 +489,9 @@ public class Util {
         if (tl!=null) loc = "["+tl.getWorld().getName()+"] ("+tl.getBlockX()+", "+tl.getBlockY()+", "+tl.getBlockZ()+")";
         return loc;
     }    
-   
-*/
-    
+
+     */
+
     public static Player getKiller(EntityDamageEvent event){
         if (event instanceof EntityDamageByEntityEvent){
             EntityDamageByEntityEvent evdmg = (EntityDamageByEntityEvent)event;
@@ -716,8 +503,8 @@ public class Util {
         }
         return null;
     }
-    
-    
+
+
     public static LivingEntity getDamagerEntity(EntityDamageEvent event){
         if (event instanceof EntityDamageByEntityEvent){
             EntityDamageByEntityEvent evdmg = (EntityDamageByEntityEvent)event;
@@ -728,7 +515,7 @@ public class Util {
         }
         return null;
     }
-    
+
     public static boolean isAnyParamExist (Map<String,String> params, String... param){
         for (String key : params.keySet())
             for (String prm : param){
@@ -736,7 +523,7 @@ public class Util {
             }
         return false;
     }
-    
+
     public static boolean compareItemStr (ItemStack item, String str){
         String itemstr = str;
         String name ="";
@@ -745,7 +532,7 @@ public class Util {
             name = ChatColor.translateAlternateColorCodes('&', name.replace("_", " "));
             itemstr = str.substring(name.length()+1);
         }
-        
+
         if (itemstr.isEmpty()) return false;
         if (!name.isEmpty()){
             String iname = item.hasItemMeta() ? item.getItemMeta().getDisplayName() : "";
@@ -753,23 +540,23 @@ public class Util {
         }
         return u().compareItemStr(item, itemstr);
     }
-    
-    
+
+
     public static boolean isOpen(Block b){
         if (b.getState().getData() instanceof Openable){
             Openable om = (Openable) b.getState().getData();
             return om.isOpen();
         }
-           return false; 
+        return false; 
     }
-    
+
     public static Block getDoorBottomBlock(Block b){
         if (b.getType()!=Material.WOODEN_DOOR) return b;
         if (b.getRelative(BlockFace.DOWN).getType()==Material.WOODEN_DOOR)
             return b.getRelative(BlockFace.DOWN);
         return b;
     }
-    
+
     public static boolean isDoorBlock (Block b){
         if (b.getType() == Material.WOODEN_DOOR) return true;
         if (b.getType() == Material.TRAP_DOOR) return true;

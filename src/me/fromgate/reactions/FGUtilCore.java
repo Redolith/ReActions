@@ -1,7 +1,7 @@
 /*  
  *  FGUtilCore, Utilities class for Minecraft bukkit plugins
  *  
- *    (c)2012, fromgate, fromgate@gmail.com
+ *    (c)2012-2013, fromgate, fromgate@gmail.com
  *  
  *      
  *  FGUtilCore is free software: you can redistribute it and/or modify
@@ -36,6 +36,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -43,10 +44,13 @@ import org.bukkit.block.BlockState;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -117,7 +121,7 @@ public abstract class FGUtilCore {
         this.project_current_version = des.getVersion();
         this.project_check_version =enable&&(!this.project_id.isEmpty()&&(!this.project_apikey.isEmpty()));
         this.project_bukkitdev = "http://dev.bukkit.org/bukkit-plugins/"+bukkit_dev_name+"/";
-        
+
         if (this.project_check_version){
             updateMsg ();
             Bukkit.getScheduler().runTaskTimerAsynchronously(plg,new Runnable(){
@@ -192,6 +196,7 @@ public abstract class FGUtilCore {
         if (!project_check_version) return false;
         if (project_id.isEmpty()) return false;
         if (project_apikey.isEmpty()) return false;
+        if (project_last_version.isEmpty()) return false;
         if (project_current_version.isEmpty()) return false;
         if (project_current_version.equalsIgnoreCase(project_last_version)) return false;
         double current_version = Double.parseDouble(project_current_version.replaceFirst("\\.", "").replace("/", ""));
@@ -432,17 +437,35 @@ public abstract class FGUtilCore {
 
 
 
-    public boolean compareItemStr (ItemStack item, String itemstr){
+    /*public boolean compareItemStr (ItemStack item, String itemstr){
         return compareItemStr (item.getTypeId(), item.getDurability(), item.getAmount(), itemstr);
-    }
+    }*/
 
+    @Deprecated
     public boolean compareItemStr (int item_id, int item_data, String itemstr){
-        return compareItemStr (item_id,item_data,1,itemstr);
+        return compareItemStrIgnoreName (item_id,item_data,1,itemstr);
     }
 
     // Надо использовать маску: id:data*amount, id:data, id*amount
 
-    public boolean compareItemStr (int item_id, int item_data, int item_amount, String itemstr){
+    public boolean compareItemStr (ItemStack item, String str){
+        String itemstr = str;
+        String name ="";
+        if (itemstr.contains("$")){
+            name =str.substring(0,itemstr.indexOf("$"));
+            name = ChatColor.translateAlternateColorCodes('&', name.replace("_", " "));
+            itemstr = str.substring(name.length()+1);
+        }
+        if (itemstr.isEmpty()) return false;
+        if (!name.isEmpty()){
+            String iname = item.hasItemMeta() ? item.getItemMeta().getDisplayName() : "";
+            if (!name.equals(iname)) return false;
+        }
+        return compareItemStrIgnoreName (item.getTypeId(), item.getDurability(), item.getAmount(), itemstr); // ;compareItemStr(item, itemstr);
+    }
+
+
+    public boolean compareItemStrIgnoreName (int item_id, int item_data, int item_amount, String itemstr){
         if (!itemstr.isEmpty()){
             int id = -1;
             int amount =1;
@@ -453,13 +476,21 @@ public abstract class FGUtilCore {
                 String ti[] = si[0].split(":");
                 if (ti.length>0){
                     if (ti[0].matches("[0-9]*")) id=Integer.parseInt(ti[0]);
-                    else id=Material.getMaterial(ti[0]).getId();						
+                    else id=Material.getMaterial(ti[0].toUpperCase()).getId();						
                     if ((ti.length==2)&&(ti[1]).matches("[0-9]*")) data = Integer.parseInt(ti[1]);
                     return ((item_id==id)&&((data<0)||(item_data==data))&&(item_amount>=amount));
                 }
             }
         }									
         return false;
+    }
+
+
+    public boolean hasItemInInventory (Player p, String itemstr){
+        ItemStack item = parseItemStack(itemstr);
+        if (item == null) return false;
+        if (item.getType() == Material.AIR) return false;
+        return (countItemInInventory(p,itemstr)>=item.getAmount());
     }
 
 
@@ -477,25 +508,48 @@ public abstract class FGUtilCore {
     }
 
 
-    public int removeItemInInventory (Inventory inv, String itemstr){
+    private boolean itemHasName(ItemStack item){
+        if (!item.hasItemMeta()) return false;
+        return item.getItemMeta().hasDisplayName();
+    }
+
+    private boolean compareItemName (ItemStack item, String istrname){
+        if (istrname.isEmpty()&&(!itemHasName(item))) return true;
+        if ((!istrname.isEmpty())&&itemHasName(item)){
+            String name = ChatColor.translateAlternateColorCodes('&', istrname.replace("_", " "));
+            return item.getItemMeta().getDisplayName().equals(name);
+        }
+        return false;
+    }
+
+    public int removeItemInInventory (Inventory inv, String istr){
+        String itemstr = istr;
         int left = 1;
         if (left<= 0) return -1;
         int id = -1;
         int data =-1;
+        String name = "";
+
+        if (itemstr.contains("$")){
+            name =itemstr.substring(0,itemstr.indexOf("$"));
+            itemstr = itemstr.substring(name.length()+1);
+        }
+
         String [] si = itemstr.split("\\*");
-        if (si.length==0) return left;		
+        if (si.length==0) return left;      
         if ((si.length==2)&&si[1].matches("[1-9]+[0-9]*")) left = Integer.parseInt(si[1]);
         String ti[] = si[0].split(":");
 
         if (ti.length>0){
             if (ti[0].matches("[0-9]*")) id=Integer.parseInt(ti[0]);
-            else id=Material.getMaterial(ti[0]).getId();						
+            else id=Material.getMaterial(ti[0]).getId();                        
             if ((ti.length==2)&&(ti[1]).matches("[0-9]*")) data = Integer.parseInt(ti[1]);
         }
         if (id<=0) return left;
         for (int i = 0; i <inv.getContents().length; i++){
             ItemStack slot = inv.getItem(i);
             if (slot == null) continue;
+            if (!compareItemName(slot, name)) continue;
             if (id != slot.getTypeId()) continue;
             if ((data>0)&&(data!=slot.getDurability())) continue;
             int slotamount = slot.getAmount();
@@ -513,24 +567,37 @@ public abstract class FGUtilCore {
         return left;
     }
 
-
-    public int countItemInInventory (Inventory inv, String itemstr){
+    
+    public int countItemInInventory (Inventory inv, String istr){
+        String itemstr = istr;
         int count = 0;
         int id = -1;
         int data =-1;
+        String name = "";
+        if (itemstr.contains("$")){
+            name =itemstr.substring(0,itemstr.indexOf("$"));
+            itemstr = itemstr.substring(name.length()+1);
+        }
+
         String [] si = itemstr.split("\\*");
         if (si.length==0) return 0;
 
         String ti[] = si[0].split(":");
         if (ti.length>0){
+            try {
             if (ti[0].matches("[0-9]*")) id=Integer.parseInt(ti[0]);
-            else id=Material.getMaterial(ti[0]).getId();						
+            else id=Material.getMaterial(ti[0].toUpperCase()).getId();
+            } catch (Exception e){
+                logOnce(istr,"Wrong material type/id "+ti[0]+" at line "+istr);
+                return 0;
+            }
             if ((ti.length==2)&&(ti[1]).matches("[0-9]*")) data = Integer.parseInt(ti[1]);
         }
         if (id<=0) return 0;
 
         for (ItemStack slot : inv.getContents()){
             if (slot == null) continue;
+            if (!compareItemName(slot, name)) continue;
             if (id == slot.getTypeId()){
                 if ((data<0)||(data == slot.getDurability())) count += slot.getAmount();
             }
@@ -840,6 +907,97 @@ public abstract class FGUtilCore {
      */
 
     public ItemStack parseItemStack (String itemstr){
+        if (itemstr.isEmpty()) return null;
+
+        String istr = itemstr;
+        String enchant = "";
+        String name = "";
+        
+        if (istr.contains("$")){
+            name =istr.substring(0,istr.indexOf("$"));
+            istr = istr.substring(name.length()+1);
+        }
+        if (istr.contains("@")){
+            enchant = istr.substring(istr.indexOf("@")+1);
+            istr = istr.substring(0,istr.indexOf("@"));
+        }
+        int id = -1;
+        int amount =1;
+        short data =0;          
+        String [] si = istr.split("\\*");
+
+        if (si.length>0){
+            if (si.length==2) amount = Math.max(getMinMaxRandom (si[1]), 1);
+            String ti[] = si[0].split(":");
+            if (ti.length>0){
+                if (ti[0].matches("[0-9]*")) id=Integer.parseInt(ti[0]);
+                else {
+                    Material m = Material.getMaterial(ti[0].toUpperCase());
+                    if (m== null) {
+                        logOnce("wrongitem"+ti[0], "Could not parse item material name (id) "+ti[0]);
+                        return null;
+                    }
+                    id=m.getId();
+                }
+                if ((ti.length==2)&&(ti[1]).matches("[0-9]*")) data = Short.parseShort(ti[1]);
+                ItemStack item = new ItemStack (id,amount,data);
+                if (!enchant.isEmpty()){
+                    item = setEnchantments(item, enchant);
+                }
+                if (!name.isEmpty()) {
+                    ItemMeta im = item.getItemMeta();
+                    im.setDisplayName(ChatColor.translateAlternateColorCodes('&', name.replace("_", " ")));
+                    item.setItemMeta(im);
+                }
+                return item;
+            }
+        }
+        return null;
+    }
+
+    public ItemStack setEnchantments (ItemStack item, String enchants){
+        ItemStack i = item.clone();
+        if (enchants.isEmpty()) return i;
+        String [] ln = enchants.split(",");
+        for (String ec : ln){
+            if (ec.isEmpty()) continue;
+            Color clr = colorByName (ec);
+            if (clr != null){
+                if (isIdInList(item.getTypeId(), "298,299,300,301")){
+                    LeatherArmorMeta meta = (LeatherArmorMeta) i.getItemMeta();
+                    meta.setColor(clr);
+                    i.setItemMeta(meta);
+                }
+            } else {
+                String ench = ec;
+                int level = 1;
+                if (ec.contains(":")){
+                    ench = ec.substring(0,ec.indexOf(":"));
+                    level = Math.max(1, getMinMaxRandom (ec.substring(ench.length()+1)));
+                }
+                Enchantment e = Enchantment.getByName(ench.toUpperCase());
+                if (e == null) continue;
+                i.addUnsafeEnchantment(e, level);
+            }
+        }
+        return i;
+    }
+
+    public Color colorByName(String colorname){
+        Color [] clr = {Color.WHITE, Color.SILVER, Color.GRAY, Color.BLACK, 
+                Color.RED, Color.MAROON, Color.YELLOW, Color.OLIVE,
+                Color.LIME, Color.GREEN, Color.AQUA, Color.TEAL,
+                Color.BLUE,Color.NAVY,Color.FUCHSIA,Color.PURPLE};
+        String [] clrs = {"WHITE","SILVER", "GRAY", "BLACK", 
+                "RED", "MAROON", "YELLOW", "OLIVE",
+                "LIME", "GREEN", "AQUA", "TEAL",
+                "BLUE","NAVY","FUCHSIA","PURPLE"};
+        for (int i = 0; i<clrs.length;i++)
+            if (colorname.equalsIgnoreCase(clrs[i])) return clr[i];
+        return null;
+    }
+
+    /*public ItemStack parseItemStack (String itemstr){
         if (!itemstr.isEmpty()){
             //int id = -1;
             Material m = Material.AIR;
@@ -858,7 +1016,7 @@ public abstract class FGUtilCore {
             }
         }
         return null;
-    }
+    }*/
 
 
     /*
@@ -968,6 +1126,77 @@ public abstract class FGUtilCore {
         printPage (p, cfgprn, page, title,"",false);
     }
 
+    public int getMinMaxRandom(String minmaxstr){
+        int min = 0;
+        int max = 0;
+        String strmin = minmaxstr;
+        String strmax = minmaxstr;
+
+        if (minmaxstr.contains("-")){
+            strmin = minmaxstr.substring(0,minmaxstr.indexOf("-"));
+            strmax = minmaxstr.substring(minmaxstr.indexOf("-")+1);
+        }
+        if (strmin.matches("[1-9]+[0-9]*")) min = Integer.parseInt(strmin);
+        max = min;
+        if (strmax.matches("[1-9]+[0-9]*")) max = Integer.parseInt(strmax);
+        if (max>min) return min + tryChance(1+max-min);
+        else return min;
+    }
+
+    public Long timeToTicks(Long time){
+        //1000 ms = 20 ticks
+        return Math.max(1, (time/50));
+    }
+
+    public Long parseTime(String time){
+        int hh = 0; // часы
+        int mm = 0; // минуты
+        int ss = 0; // секунды
+        int tt = 0; // тики
+        int ms = 0; // миллисекунды
+        if (isInteger(time)){
+            ss = Integer.parseInt(time);
+        } else if (time.matches("^[0-5][0-9]:[0-5][0-9]$")){
+            String [] ln = time.split(":");
+            if (isInteger(ln[0])) mm = Integer.parseInt(ln[0]);
+            if (isInteger(ln[1])) ss = Integer.parseInt(ln[1]);
+        } else if (time.matches("^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$")){
+            String [] ln = time.split(":");
+            if (isInteger(ln[0])) hh = Integer.parseInt(ln[0]);
+            if (isInteger(ln[1])) mm = Integer.parseInt(ln[1]);
+            if (isInteger(ln[2])) ss = Integer.parseInt(ln[2]);
+        } else if (time.endsWith("ms")) {
+            String s = time.replace("ms", "");
+            if (isInteger(s)) ms = Integer.parseInt(s);
+        } else if (time.endsWith("h")) {
+            String s = time.replace("h", "");
+            if (isInteger(s)) hh = Integer.parseInt(s);
+        } else if (time.endsWith("m")) {
+            String s = time.replace("m", "");
+            if (isInteger(s)) mm = Integer.parseInt(s);
+        } else if (time.endsWith("s")) {
+            String s = time.replace("s", "");
+            if (isInteger(s)) ss = Integer.parseInt(s);
+        } else if (time.endsWith("t")) {
+            String s = time.replace("t", "");
+            if (isInteger(s)) tt = Integer.parseInt(s);
+        }
+        return (long) ((hh*3600000)+(mm*60000)+(ss*1000)+(tt*50)+ms);
+    }
+
+    public String itemToString (ItemStack item){
+        String str ="";
+        String n = item.getItemMeta().hasDisplayName() ? ChatColor.stripColor(item.getItemMeta().getDisplayName()) : item.getType().name();
+        String a = item.getAmount()>1 ? "*"+item.getAmount() : "";
+        str = n+a;
+        return str;
+    }
+
+    public int safeLongToInt(long l) {
+        if (l<Integer.MIN_VALUE) return Integer.MIN_VALUE;
+        if (l > Integer.MAX_VALUE) return Integer.MAX_VALUE;         
+        return (int) l;
+    }
 
 
 

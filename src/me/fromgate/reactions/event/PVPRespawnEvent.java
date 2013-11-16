@@ -4,15 +4,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class PVPDeathEvent extends Event {
-    
+public class PVPRespawnEvent extends Event{
     private static final HandlerList handlers = new HandlerList();
     private Player player;
     private Player deadplayer;
 
 
-    public PVPDeathEvent (Player killer, Player killedplayer){
-        this.player = killer;
+    public PVPRespawnEvent (Player player, Player killedplayer){
+        this.player = player;
         this.deadplayer = killedplayer;
     }
 
@@ -32,5 +31,4 @@ public class PVPDeathEvent extends Event {
     public static HandlerList getHandlerList() {
         return handlers;
     }
-
 }

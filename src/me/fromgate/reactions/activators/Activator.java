@@ -2,7 +2,7 @@
  *  ReActions, Minecraft bukkit plugin
  *  (c)2012-2013, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
- *   * 
+ *   
  *  This file is part of ReActions.
  *  
  *  ReActions is free software: you can redistribute it and/or modify
@@ -24,8 +24,11 @@ package me.fromgate.reactions.activators;
 
 import java.util.ArrayList;
 import java.util.List;
+import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.flags.Flags;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
@@ -40,12 +43,6 @@ public abstract class Activator {
         this.group = group;
     }
     
-    
-    /*public Activator(String name, String group, String param, Block block){
-        this.name = name;
-        this.group = group;
-    }*/
-
     public Activator(String name, String group,YamlConfiguration cfg){
         this.name = name;
         this.loadActivator(cfg);
@@ -153,10 +150,8 @@ public abstract class Activator {
         }
     }
 
-
     @Override
     public String toString(){
-        //return name+(group.isEmpty() ? "" : " ("+group+")")+ " F:"+this.flags.size()+" A:"+this.actions.size()+" R:"+this.reactions.size();
         return name+" ["+getType()+ "] F:"+this.flags.size()+" A:"+this.actions.size()+" R:"+this.reactions.size();
     }
 
@@ -192,8 +187,6 @@ public abstract class Activator {
         return true;
     }
 
-
-
     /*
      *  Группу по идее дублировать не надо... т.е. она должна выставляться "из вне"...
      */
@@ -220,7 +213,7 @@ public abstract class Activator {
     }
 
     public void loadActivator (YamlConfiguration cfg){
-        String key = getType()+"."+this.name;
+        String key = getType().name()+"."+this.name;
         load (key, cfg);
         List<String> flg = cfg.getStringList(key+".flags");
         for (String flgstr : flg){
@@ -260,8 +253,6 @@ public abstract class Activator {
             }
             addReaction(flag, param);
         }
-
-
     }
 
     public void setGroup (String group){
@@ -280,19 +271,31 @@ public abstract class Activator {
         return this.name;
     }
 
-    public boolean isTypeOf (String str){
+    /*public boolean isTypeOf (String str){
         return str.equalsIgnoreCase(getType());
+    }*/
+    
+    public void executeActivator(final Event event){
+        Bukkit.getScheduler().runTask(ReActions.instance, new Runnable(){
+            @Override
+            public void run() {
+                activate(event);
+            }
+        });
     }
 
     public abstract void activate(Event event); // Наверное всё-таки так
     public abstract boolean isLocatedAt (Location loc);
     public abstract void save(String root, YamlConfiguration cfg);
     public abstract void load(String root, YamlConfiguration cfg);
-    public abstract String getType();
+    //public abstract String getType();
+    public abstract ActivatorType getType();
+    public boolean isTypeOf(String str){
+        return ((getType().name().equalsIgnoreCase(str))||(getType().getAlias().equalsIgnoreCase(str))); 
+    }
 
-
-
-
-
+    public String getTargetPlayer() {
+        return "%targetplayer%";
+    }
 
 }

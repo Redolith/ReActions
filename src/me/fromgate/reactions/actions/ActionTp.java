@@ -2,6 +2,7 @@ package me.fromgate.reactions.actions;
 
 import java.util.Map;
 
+import me.fromgate.reactions.util.ParamUtil;
 import me.fromgate.reactions.util.RAEffects;
 import me.fromgate.reactions.util.Util;
 
@@ -22,13 +23,13 @@ public class ActionTp extends Action{
         int radius = 0;
         if (params.isEmpty()) return null;
         if (params.containsKey("param")) {
-            loc = Util.locToLocation (p, Util.getParam(params, "param", ""));
+            loc = Util.locToLocation (p, ParamUtil.getParam(params, "param", ""));
 
         } else { 
-            loc = Util.locToLocation (p, Util.getParam(params, "loc", ""));
-            radius = Util.getParam(params, "radius", 0);
+            loc = Util.locToLocation (p, ParamUtil.getParam(params, "loc", ""));
+            radius = ParamUtil.getParam(params, "radius", 0);
         }
-        boolean land = Util.getParam(params, "land", true);
+        boolean land = ParamUtil.getParam(params, "land", true);
 
         if (loc != null){
             if (radius>0) loc = Util.getRandomLocationInRadius(loc, radius,land);
@@ -41,7 +42,7 @@ public class ActionTp extends Action{
             } catch (Exception e) {
             }
             p.teleport(loc);
-            String playeffect = Util.getParam(params, "effect", "");
+            String playeffect = ParamUtil.getParam(params, "effect", "");
             if (!playeffect.isEmpty()){
                 if (playeffect.equalsIgnoreCase("smoke")&&(!params.containsKey("wind"))) params.put("wind", "all");
                 RAEffects.playEffect(loc, playeffect, params);

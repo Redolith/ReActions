@@ -26,8 +26,12 @@ public enum Flags {
     FOODLEVEL("food",true,new FlagFoodlevel()),
     XP("xp",true,new FlagXP()),
     LEVEL("level",true,new FlagLevel()),
-    POWER("powered",false,new FlagPowered());
-    
+    POWER("powered",false,new FlagPowered()),
+    WORLD("world",true, new FlagWorld()),
+    BIOME("biome",true, new FlagBiome()),
+    LIGHT_LEVEL("light",true, new FlagLightLevel()),
+    WALK_BLOCK("walk",true, new FlagWalkBlock()),
+    DIRECTION("dir",true, new FlagDirection());
     
     private String alias;
     private boolean require_player = true;

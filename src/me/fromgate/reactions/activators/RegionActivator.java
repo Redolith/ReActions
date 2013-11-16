@@ -77,8 +77,8 @@ public class RegionActivator extends Activator {
     }
 
     @Override
-    public String getType() {
-        return "region";
+    public ActivatorType getType() {
+        return ActivatorType.REGION;
     }
 
     @Override

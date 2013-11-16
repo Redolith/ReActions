@@ -25,24 +25,27 @@ package me.fromgate.reactions;
 
 import java.util.List;
 
+import me.fromgate.reactions.activators.Activators;
 import me.fromgate.reactions.event.ButtonEvent;
 import me.fromgate.reactions.event.CommandEvent;
 import me.fromgate.reactions.event.DoorEvent;
 import me.fromgate.reactions.event.ExecEvent;
+import me.fromgate.reactions.event.JoinEvent;
 import me.fromgate.reactions.event.LeverEvent;
+import me.fromgate.reactions.event.MobClickEvent;
 import me.fromgate.reactions.event.PVPDeathEvent;
 import me.fromgate.reactions.event.PVPKillEvent;
+import me.fromgate.reactions.event.PVPRespawnEvent;
 import me.fromgate.reactions.event.PlateEvent;
 import me.fromgate.reactions.event.RegionEnterEvent;
 import me.fromgate.reactions.event.RegionEvent;
 import me.fromgate.reactions.event.RegionLeaveEvent;
 import me.fromgate.reactions.util.RADebug;
 import me.fromgate.reactions.util.RAMobSpawn;
-import me.fromgate.reactions.util.RAPVPDeath;
+import me.fromgate.reactions.util.RAPVPRespawn;
 import me.fromgate.reactions.util.RAPushBack;
 import me.fromgate.reactions.util.RAVault;
 import me.fromgate.reactions.util.Util;
-
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -56,6 +59,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -73,23 +77,29 @@ public class RAListener implements Listener{
     
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerDeath(PlayerDeathEvent event){
-        RAPVPDeath.addPVPDeath(event);
+        RAPVPRespawn.addPVPRespawn(event);
         EventManager.raisePVPKillEvent(event);
+        EventManager.raisePVPDeathEvent(event);
     }
 
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
-    public void onPlayerRespawn(PlayerRespawnEvent event){
-        RAPVPDeath.raisePVPDeathEvent(event.getPlayer());
+    public void onPlayerClickMob(PlayerInteractEntityEvent event){
+        if (event.getRightClicked() == null) return;
+        if (!(event.getRightClicked() instanceof LivingEntity)) return;
+        EventManager.raiseMobClickEvent(event.getPlayer(), (LivingEntity) event.getRightClicked());
+    }
+    
+    @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
+    public void onPlayerRespawn(PlayerRespawnEvent event){  
+        RAPVPRespawn.raisePVPRespawnEvent(event.getPlayer());
     }
 
         
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onDropLoot(EntityDeathEvent event){
+        Player killer = Util.getKiller (event.getEntity().getLastDamageCause());
         if (event.getEntity().hasMetadata("ReActions-drop")) {
-            //List<ItemStack> stacks = RAMobSpawn.parseItemStacks(event.getEntity().getMetadata("ReActions-drop").get(0).asString());
             List<ItemStack> stacks = Util.parseItemStacks (event.getEntity().getMetadata("ReActions-drop").get(0).asString());
-                    
-            
             if (stacks != null) {
                 event.getDrops().clear();
                 event.getDrops().addAll(stacks);
@@ -102,12 +112,16 @@ public class RAListener implements Listener{
         
         if (event.getEntity().hasMetadata("ReActions-money")) {
             if (!RAVault.isEconomyConected()) return;
-            Player killer = Util.getKiller (event.getEntity().getLastDamageCause());
             if (killer != null){
                 int money = Util.getMinMaxRandom(event.getEntity().getMetadata("ReActions-money").get(0).asString());    
                 RAVault.depositPlayer(killer.getName(), money);
                 plg.u.printMSG(killer, "msg_mobbounty",'e','6',RAVault.formatMoney(Integer.toString(money)),event.getEntity().getType().name());
             }
+        }
+        
+        if (event.getEntity().hasMetadata("ReActions-activator")&&(killer!=null)) {
+            String exec = event.getEntity().getMetadata("ReActions-activator").get(0).asString();
+            EventManager.raiseExecEvent(killer, exec+" player:"+killer.getName());
         }
         
         if (event.getEntity().hasMetadata("ReActions-deatheffect")) {
@@ -202,6 +216,7 @@ public class RAListener implements Listener{
     public void onPlayerJoin (PlayerJoinEvent event){
         RADebug.offPlayerDebug(event.getPlayer());
         plg.u.updateMsg(event.getPlayer());
+        EventManager.raiseJoinEvent(event.getPlayer(), !event.getPlayer().hasPlayedBefore());
     }
 
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
@@ -240,66 +255,76 @@ public class RAListener implements Listener{
      */
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onButton (ButtonEvent event){
-        plg.activators.activate(event);
+        Activators.activate(event);
     }
 
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onButton (PlateEvent event){
-        plg.activators.activate(event);
+        Activators.activate(event);
     }
 
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onRegion (RegionEvent event){
-        plg.activators.activate(event);
+        Activators.activate(event);
     }
 
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onRegionEnter (RegionEnterEvent event){
-        plg.activators.activate(event);
+        Activators.activate(event);
     }
 
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onRegionLeave (RegionLeaveEvent event){
-        plg.activators.activate(event);
+        Activators.activate(event);
     }
 
     
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onRegionLeave (ExecEvent event){
-        plg.activators.activate(event);
+        Activators.activate(event);
     }
 
     
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onCommandActivator (CommandEvent event){
-        plg.activators.activate(event);
+        Activators.activate(event);
     }
-    
     
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onPVPKillActivator (PVPKillEvent event){
-        plg.activators.activate(event);
+        Activators.activate(event);
     }
     
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onPVPDeathActivator (PVPDeathEvent event){
-        plg.activators.activate(event);
+        Activators.activate(event);
     }
+    
+    @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
+    public void onPVPRespawnActivator (PVPRespawnEvent event){
+        Activators.activate(event);
+    }
+
 
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onLeverActivator (LeverEvent event){
-        plg.activators.activate(event);
+        Activators.activate(event);
     }
     
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onDoorActivator (DoorEvent event){
-        plg.activators.activate(event);
+        Activators.activate(event);
     }
 
+    @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
+    public void onJoinActivator (JoinEvent event){
+        Activators.activate(event);
+    }
 
-    
-        
-
+    @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
+    public void onMobClickActivator (MobClickEvent event){
+        Activators.activate(event);
+    }
 
 }
 

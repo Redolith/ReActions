@@ -17,7 +17,7 @@ public class ExecEvent extends Event {
         this.activator = activator;
     }
 
-    public String getCommand() {
+    public String getActivatorId() {
         return this.activator;
     }
 

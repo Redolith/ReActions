@@ -93,8 +93,8 @@ public class PlateActivator extends Activator{
     }
 
     @Override
-    public String getType() {
-        return "plate";
+    public ActivatorType getType() {
+        return ActivatorType.PLATE;
     }
 
 }

@@ -54,6 +54,8 @@ public class ReActions extends JavaPlugin {
     public int worlduard_recheck = 2;
     public int same_msg_delay = 10;
     public boolean horizontal_pushback = false;
+    boolean enable_profiler = true;
+    private boolean need_update;
     //public boolean play_hearts_heal = true;
 
 
@@ -83,12 +85,14 @@ public class ReActions extends JavaPlugin {
     //public RAVault vault;
 
 
-    Activators activators;
+    //Activators activators;
     HashMap<String,TpLoc> tports = new HashMap<String,TpLoc>();
     RADebug debug = new RADebug();
 
+
     public Activator getActivator(String id){
-        return  activators.get(id);
+        return Activators.get(id);
+        //return  activators.get(id);
     }
 
     @Override
@@ -104,10 +108,10 @@ public class ReActions extends JavaPlugin {
 
         cmd = new Cmd (this);
         getCommand("react").setExecutor(cmd);
-        activators = new Activators (this);
         instance = this;
         util = u;
-        EventManager.init(this);
+        Activators.init();
+        //EventManager.init(this);
         RAEffects.init();
         loadLocs();
         RAVault.init();
@@ -174,6 +178,7 @@ public class ReActions extends JavaPlugin {
         getConfig().set("reactions.center-player-teleport",tp_center_coors);
         getConfig().set("reactions.region-recheck-delay",worlduard_recheck);
         getConfig().set("reactions.horizontal-pushback-action",horizontal_pushback );
+        getConfig().set("reactions.need-file-update", need_update);
         saveConfig();
     }
 
@@ -185,6 +190,7 @@ public class ReActions extends JavaPlugin {
         actionmsg= getConfig().getString("reactions.show-messages-for-actions","tp,grpadd,grprmv,townset,townkick,itemrmv,itemgive,moneypay,moneygive");
         worlduard_recheck = getConfig().getInt("reactions.region-recheck-delay",2);
         horizontal_pushback = getConfig().getBoolean("reactions.horizontal-pushback-action", false);
+        need_update= getConfig().getBoolean("reactions.need-file-update", true);
     }
 
     private boolean checkTowny(){
@@ -211,5 +217,16 @@ public class ReActions extends JavaPlugin {
     public Location getTpLoc(String locstr){
         if (tports.containsKey(locstr)) return tports.get(locstr).getLocation();
         return null;
+    }
+
+    public boolean needUpdateFiles() {
+        return need_update;
+    }
+
+    public void setUpdateFiles (boolean update){
+        if (update!= need_update){
+            need_update = update;
+            saveCfg();
+        }
     }
 }

@@ -3,15 +3,13 @@ package me.fromgate.reactions.actions;
 import java.util.List;
 import java.util.Map;
 
-import me.fromgate.reactions.EventManager;
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.Activator.ActVal;
 import me.fromgate.reactions.flags.Flags;
-import me.fromgate.reactions.util.Util;
-
-import org.bukkit.Bukkit;
+import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.util.Placeholders;
 import org.bukkit.entity.Player;
 
 public enum Actions{
@@ -44,8 +42,8 @@ public enum Actions{
     EFFECT("effect",false,new ActionEffect()),
     EXECUTE ("run",false,new ActionExecute()),  /// ???? не уверен
     REGION_CLEAR("rgclear",false,new ActionClearRegion()),
-    HEAL("heal",true,new ActionHeal());
-
+    HEAL("heal",true,new ActionHeal()),
+    BLOCK_SET("block",false,new ActionBlockSet());
 
     private String alias;
     private boolean requireplayer;
@@ -95,7 +93,7 @@ public enum Actions{
         for (int i = 0; i<actions.size(); i++){
             if (!Actions.isValid(actions.get(i).flag)) continue;
             Actions at = Actions.getByName(actions.get(i).flag);
-            Map<String,String> params = Util.replaceAllPlaceholders(p, act, Util.parseActionParam(actions.get(i).value));
+            Map<String,String> params = Placeholders.replaceAllPlaceholders(p, act, ParamUtil.parseParams(actions.get(i).value));
             if (!at.performAction(p, act, action, params)) rst = false;
         }
         return rst;
@@ -115,7 +113,8 @@ public enum Actions{
         return false;
     }
 
-    
+
+    /*
     public static void execActivator(final Player p, final Player targetPlayer, final String id, long delay_ticks){
         Activator act = plg().getActivator(id);
         if (act == null) {
@@ -135,6 +134,7 @@ public enum Actions{
             }
         }, Math.max(1, delay_ticks));
     }
+     */
 
 
 }
