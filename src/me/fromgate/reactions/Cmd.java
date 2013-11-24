@@ -537,6 +537,7 @@ public class Cmd implements CommandExecutor{
             if (id.isEmpty()) return false;
             if (player.isEmpty()) Delayer.setDelay(id, time);
             else Delayer.setPersonalDelay(player, id, time);
+            u.printMSG(p, "cmd_delayset", player.isEmpty() ? id : player+"."+id, Util.timeToString(time));
         } else return false;
         return true;
     }

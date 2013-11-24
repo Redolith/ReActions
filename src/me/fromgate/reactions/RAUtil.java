@@ -58,6 +58,7 @@ public class RAUtil extends FGUtilCore {
         addMSG ("msg_listclicker", "List of activators:");
         addMSG ("msg_listloc", "List of store locations:");
         addMSG ("cmd_addbadded", "Activator %1% successfully defined");
+        addMSG ("cmd_delayset", "New delay value saved. Id: %1% Delay time: %2%");
         addMSG ("cmd_notaddbadded", "Failed to create activator %1%");
         addMSG ("cmd_addbreqbut", "You need to look at button to create new button-activator");
         addMSG ("cmd_addtpadded", "Location %1% added");
@@ -71,6 +72,7 @@ public class RAUtil extends FGUtilCore {
         addMSG ("cmd_unknownbutton", "Activator %1% was not found");
         addMSG ("loc_unknown", "Unknown location");
         addMSG ("cmd_add", "%1% - main command to add new activator, locations, add flags, actions and reactions to activator");
+        addMSG ("cmd_set", "%1% - set delay that could be checked with DELAY and DELAY_PLAYER flags");
         addMSG ("cmd_run", "%1% - Execute the <exec-activator> for a defined player after <delay>");
         addMSG ("cmd_list", "%1% - display list of activators (all, groupped by type or group name), list of stored locations");
         addMSG ("cmd_info", "%1% - display full info about activator (or display flags, actions and reactions of it)");
@@ -181,6 +183,11 @@ public class RAUtil extends FGUtilCore {
         addMSG ("act_effect", "You noticed interesting visual effect provided by plugin PlayEffect!");
         addMSG ("act_execute", "Activator %1% started!");
         addMSG ("act_executefail", "Failed to execute activator");
+        addMSG ("act_execute_stop", "Activator %1% stopped");
+        addMSG ("act_execute_unstop", "Activator %1% restored and could be executed next time");
+        addMSG ("act_execute_unstopfail", "Fail to restore activator %1%. Is it stopped?");
+        addMSG ("act_power_set", "Power state of block %1% was changed");
+        addMSG ("act_power_setfail", "Power state of block %1% was not changed");
         addMSG ("act_region_clear", "Region was cleared. %1% mobs was killed!");
         addMSG ("act_region_clearfail", "Failed to clear region");
         addMSG ("act_heal", "You was healed by %1%!");

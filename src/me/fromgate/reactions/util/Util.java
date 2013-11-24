@@ -277,7 +277,7 @@ public class Util {
         }
         return null;
     }
-    */
+     */
 
     /*
     @SuppressWarnings("deprecation")
@@ -366,7 +366,7 @@ public class Util {
         String str ="";
         String n = item.getType().name();
         try {
-        if (item.getItemMeta().hasDisplayName()) n =ChatColor.stripColor(item.getItemMeta().getDisplayName());
+            if (item.getItemMeta().hasDisplayName()) n =ChatColor.stripColor(item.getItemMeta().getDisplayName());
         } catch (Exception e){
         }
         String a = item.getAmount()>1 ? "*"+item.getAmount() : "";
@@ -468,9 +468,13 @@ public class Util {
     }
 
     public static String timeToString(long time) {
-        int hours = (int) ((time / 1000 + 8) % 24);
-        int minutes = (int) (60 * (time % 1000) / 1000);
-        return String.format("%02d:%02d", hours, minutes);
+        String timeStr = "";
+        if (time>=1000){
+            int hours = (int) ((time / 1000 + 8) % 24);
+            int minutes = (int) (60 * (time % 1000) / 1000);
+            timeStr = String.format("%02d:%02d", hours, minutes);
+        } else timeStr = Long.toString(time)+"ms";
+        return timeStr;
     }
 
 
@@ -552,7 +556,7 @@ public class Util {
         state.update();
         return true;
     }
-    
+
     public static boolean isOpen(Block b){
         if (b.getState().getData() instanceof Openable){
             Openable om = (Openable) b.getState().getData();
