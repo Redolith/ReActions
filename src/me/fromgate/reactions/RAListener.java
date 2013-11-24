@@ -30,6 +30,8 @@ import me.fromgate.reactions.event.ButtonEvent;
 import me.fromgate.reactions.event.CommandEvent;
 import me.fromgate.reactions.event.DoorEvent;
 import me.fromgate.reactions.event.ExecEvent;
+import me.fromgate.reactions.event.ItemClickEvent;
+import me.fromgate.reactions.event.ItemHoldEvent;
 import me.fromgate.reactions.event.JoinEvent;
 import me.fromgate.reactions.event.LeverEvent;
 import me.fromgate.reactions.event.MobClickEvent;
@@ -58,11 +60,14 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
@@ -74,6 +79,22 @@ public class RAListener implements Listener{
     public RAListener (ReActions plg){
         this.plg = plg;
     }
+
+    
+    @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
+    public void onPlayerItemHeldEvent (PlayerItemHeldEvent event){
+        EventManager.raiseItemHoldEvent(event.getPlayer());
+    }
+    
+    @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
+    public void onInventoryCloseEvent (InventoryCloseEvent event){
+        EventManager.raiseItemHoldEvent((Player) event.getPlayer());
+    }
+    
+    @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
+    public void onPlayerPickupItemEvent (PlayerPickupItemEvent event){
+        EventManager.raiseItemHoldEvent((Player) event.getPlayer());
+    }
     
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerDeath(PlayerDeathEvent event){
@@ -84,6 +105,7 @@ public class RAListener implements Listener{
 
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerClickMob(PlayerInteractEntityEvent event){
+        EventManager.raiseItemClickEvent(event);
         if (event.getRightClicked() == null) return;
         if (!(event.getRightClicked() instanceof LivingEntity)) return;
         EventManager.raiseMobClickEvent(event.getPlayer(), (LivingEntity) event.getRightClicked());
@@ -219,8 +241,9 @@ public class RAListener implements Listener{
         EventManager.raiseJoinEvent(event.getPlayer(), !event.getPlayer().hasPlayedBefore());
     }
 
-    @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
+    @EventHandler(priority=EventPriority.NORMAL)
     public void onPlayerInteract (PlayerInteractEvent event){
+        EventManager.raiseItemClickEvent(event);
         if (EventManager.raiseButtonEvent(event)) return;
         if (EventManager.raisePlateEvent(event)) return;
         if (EventManager.raiseLeverEvent(event)) return;
@@ -325,6 +348,18 @@ public class RAListener implements Listener{
     public void onMobClickActivator (MobClickEvent event){
         Activators.activate(event);
     }
+    
+    @EventHandler(priority=EventPriority.NORMAL)
+    public void onItemClickActivator (ItemClickEvent event){
+        Activators.activate(event);
+    }
+    
+    @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
+    public void onItemHold (ItemHoldEvent event){
+        Activators.activate(event);
+    }
+
+    
 
 }
 

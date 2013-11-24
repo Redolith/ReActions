@@ -22,6 +22,8 @@ public enum Flags {
     REGION("region",true,new FlagRegion()),
     STATE("pose",true,new FlagState()),
     REGION_PLAYERS("rgplayer",false,new FlagRegionPlayers()),
+    REGION_MEMBER("rgmember",false,new FlagRegionMember()),
+    REGION_OWNER("rgowner",false,new FlagRegionOwner()),
     GAMEMODE("gamemode",true,new FlagGameMode()),
     FOODLEVEL("food",true,new FlagFoodlevel()),
     XP("xp",true,new FlagXP()),
@@ -31,7 +33,9 @@ public enum Flags {
     BIOME("biome",true, new FlagBiome()),
     LIGHT_LEVEL("light",true, new FlagLightLevel()),
     WALK_BLOCK("walk",true, new FlagWalkBlock()),
-    DIRECTION("dir",true, new FlagDirection());
+    DIRECTION("dir",true, new FlagDirection()),
+    FLAG_SET ("flagset",false, new FlagFlagSet()),
+    EXECUTE_STOP ("stopped",false, new FlagExecStop());
     
     private String alias;
     private boolean require_player = true;

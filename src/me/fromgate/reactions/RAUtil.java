@@ -39,6 +39,7 @@ public class RAUtil extends FGUtilCore {
         addCmd("help", "config", "hlp_thishelp","&3/react help [command]",'b',true);
         addCmd("run", "run","cmd_run","&3/react run <exec-activator> [target player] [delay]",'b',true);
         addCmd("add", "config","cmd_add","&3/react add [b <id>|loc <id>|<id> f <flag> <param>|<id> r <action> <param>|<id> r <reaction> <param>",'b');
+        addCmd("set", "config","cmd_set","&3/react set delay player:<player> delay:<time> id:<id>",'b');
         addCmd("copy", "config","cmd_copy","&3/react copy [flag|actions|reactions] <source> <destination>",'b');
         addCmd("list", "config","cmd_list","&3/react list [loc|group|type] [page]",'b');
         addCmd("info", "config","cmd_info","&3/react info <activator> [f|a|r]",'b');
@@ -50,7 +51,7 @@ public class RAUtil extends FGUtilCore {
         addCmd("check", "config","cmd_check","&3/react check [radius]",'b');
         addCmd("reload", "config","cmd_reload","&3/react reload",'b',true);
         // Profiler enabling during development :)
-        // addCmd("profile", "config","cmd_profile","&3/react profile",'b',true);
+        addCmd("profile", "config","cmd_profile","&3/react profile",'b',true);
     }
 
     public void FillMSG(){

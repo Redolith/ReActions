@@ -3,7 +3,7 @@ package me.fromgate.reactions.actions;
 import java.util.Map;
 
 import me.fromgate.reactions.util.ParamUtil;
-import me.fromgate.reactions.util.RAFlagDelay;
+import me.fromgate.reactions.util.Delayer;
 import org.bukkit.entity.Player;
 
 public class ActionDelay extends Action {
@@ -30,7 +30,7 @@ public class ActionDelay extends Action {
         if (seconds.isEmpty()) return "";
         Long sec = u().parseTime(seconds);
         if (sec == 0) return "";        
-        RAFlagDelay.setDelay(varname, sec);
+        Delayer.setDelay(varname, sec);
         return seconds;
     }
 

@@ -25,6 +25,7 @@ package me.fromgate.reactions;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.activators.Activator;
@@ -33,6 +34,7 @@ import me.fromgate.reactions.activators.Activators;
 import me.fromgate.reactions.activators.ButtonActivator;
 import me.fromgate.reactions.activators.CommandActivator;
 import me.fromgate.reactions.activators.DoorActivator;
+import me.fromgate.reactions.activators.ItemClickActivator;
 import me.fromgate.reactions.activators.JoinActivator;
 import me.fromgate.reactions.activators.LeverActivator;
 import me.fromgate.reactions.activators.MobClickActivator;
@@ -45,6 +47,8 @@ import me.fromgate.reactions.activators.RgEnterActivator;
 import me.fromgate.reactions.activators.RgLeaveActivator;
 import me.fromgate.reactions.activators.ExecActivator;
 import me.fromgate.reactions.flags.Flags;
+import me.fromgate.reactions.util.Delayer;
+import me.fromgate.reactions.util.ParamUtil;
 import me.fromgate.reactions.util.Profiler;
 import me.fromgate.reactions.util.RADebug;
 import me.fromgate.reactions.util.Selector;
@@ -196,6 +200,8 @@ public class Cmd implements CommandExecutor{
         if (cmd.equalsIgnoreCase("run")){
             if (EventManager.raiseExecEvent(s, arg1+" "+arg2)) u.printMSG(s, "cmd_runplayer",arg1+" "+arg2);
             else u.printMSG(s, "cmd_runplayerfail",'c','6',arg1+" "+arg2);
+        } else if (cmd.equalsIgnoreCase("set")){
+            return this.setVariable(p, arg1, arg2);
         } else if (cmd.equalsIgnoreCase("add")){
             if (ActivatorType.isValid(arg1))  {
                 Block b = p.getTargetBlock(null, 100);
@@ -313,6 +319,8 @@ public class Cmd implements CommandExecutor{
         if (cmd.equalsIgnoreCase("run")){
             if (EventManager.raiseExecEvent(s, arg1+" "+arg2+" "+arg3)) u.printMSG(s, "cmd_runplayer",arg1+" "+arg2+" "+arg3);
             else u.printMSG(s, "cmd_runplayerfail",'c','6',arg1+" "+arg2+" "+arg3);
+        } else if (cmd.equalsIgnoreCase("set")){
+            return this.setVariable(p, arg1, arg2+" "+arg3);
         } else if (cmd.equalsIgnoreCase("add")){
             if (ActivatorType.isValid(arg1))  {
                 @SuppressWarnings("deprecation")
@@ -397,16 +405,18 @@ public class Cmd implements CommandExecutor{
                     u.printMSG(p, "cmd_reactadded",arg3 + " ("+ param+")");	
                     return true;
                 } else u.printMSG(p, "cmd_reactnotadded",arg3 + " ("+ param+")");
-            } else if (arg2.equalsIgnoreCase("f")||arg2.equalsIgnoreCase("flag"))
+            } else if (arg2.equalsIgnoreCase("f")||arg2.equalsIgnoreCase("flag")){
                 if (addFlag (p, arg1, arg3, arg4)){
                     Activators.saveActivators();
                     u.printMSG(p, "cmd_flagadded",arg3 + " ("+ Util.replaceStandartLocations(p, arg4)+")");
                     return true;					
                 } else u.printMSG(p, "cmd_flagnotadded",arg3 + " ("+ arg4+")");
-            else u.printMSG(p, "cmd_unknownbutton",arg2);
-            return true;
-        }
-        return false;
+            } else u.printMSG(p, "cmd_unknownbutton",arg2);
+        } else if (cmd.equalsIgnoreCase("set")){
+            return this.setVariable(p, arg1, arg2+" "+arg3+" "+arg4);
+        } else return false;            
+            
+    return true;
     }
 
 
@@ -517,6 +527,20 @@ public class Cmd implements CommandExecutor{
         u.printPage(p, lst, page, "msg_listloc", "", true);
     }
 
+    private boolean setVariable(Player p, String var, String param){
+        if (var.equalsIgnoreCase("delay")){
+            Map<String,String> params = ParamUtil.parseParams(param, "delay");
+            String player = ParamUtil.getParam(params, "player", "");
+            if (player.equalsIgnoreCase("%player%")&&(p!=null)) player = p.getName();
+            Long time = System.currentTimeMillis()+u.parseTime(ParamUtil.getParam(params,"delay","3s")); //дефолтная задержка три секунды
+            String id = ParamUtil.getParam(params, "id", "");
+            if (id.isEmpty()) return false;
+            if (player.isEmpty()) Delayer.setDelay(id, time);
+            else Delayer.setPersonalDelay(player, id, time);
+        } else return false;
+        return true;
+    }
+    
     private boolean addActivator (Player p, String type, String name, String param, Block b){
         ActivatorType at = ActivatorType.getByName(type);
         if (at==null) return false;
@@ -580,6 +604,12 @@ public class Cmd implements CommandExecutor{
         case MOBCLICK:    
             activator = new MobClickActivator (name, param);
             break;
+        case ITEM_CLICK:    
+            if (!param.isEmpty()) activator = new ItemClickActivator (name, param);
+            break;
+        case ITEM_HOLD:    
+            if (!param.isEmpty()) activator = new ItemClickActivator (name, param);
+            break;
         default:
             break;
      
@@ -591,6 +621,10 @@ public class Cmd implements CommandExecutor{
         } else u.printMSG(p, "cmd_notaddbadded",activator.toString());
 
         return true;
+        
     }
+    
+    
+    
 
 }

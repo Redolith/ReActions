@@ -41,6 +41,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
 
@@ -55,9 +56,12 @@ public class Activators {
     }
 
     private static List<Activator> act;
+    private static Set<String> stopexec;
+
 
     public static void init(){
         act = new ArrayList<Activator>();
+        stopexec = new HashSet<String>();
         loadActivators();
     }
 
@@ -80,7 +84,7 @@ public class Activators {
         plg().setUpdateFiles(false);
         return grps;
     }
-    
+
     public static void updateFile(String filename){
         if (!plg().needUpdateFiles()) return;
         File f = new File(filename);
@@ -294,7 +298,7 @@ public class Activators {
                     u().logOnce("cannotcreate"+type+name, "Failed to create new activator. Type: "+type + " Name: "+name);
                     continue;
                 }
-                
+
                 Activator a = createActivator (at,name,group,cfg);
                 if (a==null) continue;
                 addActivator (a);
@@ -345,7 +349,7 @@ public class Activators {
             if (a.getType().getEventClass().isInstance(event)){
                 a.executeActivator(event);
             }
-                
+
         }
     }
 
@@ -407,4 +411,36 @@ public class Activators {
         if (!contains(activator)) return "activator";
         return get (activator).getGroup();
     }
+
+    public static List<ItemHoldActivator> getItemHoldActivatos() {
+        List<ItemHoldActivator> ihold = new ArrayList<ItemHoldActivator>();
+        for (Activator a : act)
+            if (a.getType() == ActivatorType.ITEM_HOLD) ihold.add((ItemHoldActivator) a);
+        return ihold;
+    }
+
+    public static boolean stopExec (Player player, String actName){
+        return stopExec (player == null ? "" : player.getName(), actName);
+    }
+    
+    public static boolean stopExec (String pstr, String actName){
+        stopexec.add(pstr+"#"+actName);
+        return true;
+    }
+    
+    
+    public static boolean isStopped(Player player, String actName, boolean unstop){
+        return isStopped((player == null ? "" : player.getName()), actName, unstop);
+    }
+
+    public static boolean isStopped(String pstr, String actName, boolean unstop){
+        String id = pstr+"#"+actName;
+        if (!stopexec.contains(id)) return false;
+        if (unstop) stopexec.remove(id);
+        return true;
+    }
+
+    
+
+
 }

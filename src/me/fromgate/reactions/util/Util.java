@@ -15,6 +15,7 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -24,6 +25,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 import org.bukkit.material.Openable;
 import org.bukkit.potion.PotionEffectType;
 
@@ -541,7 +543,16 @@ public class Util {
         return u().compareItemStr(item, itemstr);
     }
 
-
+    public static boolean setOpen (Block b, boolean open){
+        BlockState state = b.getState();
+        if (!(state.getData() instanceof Openable)) return false;
+        Openable om = (Openable) state.getData();
+        om.setOpen(open);
+        state.setData((MaterialData) om);
+        state.update();
+        return true;
+    }
+    
     public static boolean isOpen(Block b){
         if (b.getState().getData() instanceof Openable){
             Openable om = (Openable) b.getState().getData();

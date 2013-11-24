@@ -145,6 +145,45 @@ public class RAWorldGuard {
         return locs;
     }
     
+    
+    public static boolean isPlayerIsMemberOrOwner (Player p, String region){
+        if (!connected) return false;
+        if (region.isEmpty()) return false;
+        ProtectedRegion rg = null;
+        for (World w : Bukkit.getWorlds()){
+            rg = worldguard.getRegionManager(w).getRegionExact(region);
+            if (rg!=null) break;
+        }
+        if (rg==null) return false;
+        return rg.isOwner(p.getName())||rg.isMember(p.getName());
+    }
+    
+    public static boolean isPlayerIsOwner (Player p, String region){
+        if (!connected) return false;
+        if (region.isEmpty()) return false;
+        ProtectedRegion rg = null;
+        for (World w : Bukkit.getWorlds()){
+            rg = worldguard.getRegionManager(w).getRegionExact(region);
+            if (rg!=null) break;
+        }
+        if (rg==null) return false;
+        return rg.isOwner(p.getName());
+    }
+    
+    public static boolean isPlayerIsMember (Player p, String region){
+        if (!connected) return false;
+        if (region.isEmpty()) return false;
+        ProtectedRegion rg = null;
+        for (World w : Bukkit.getWorlds()){
+            rg = worldguard.getRegionManager(w).getRegionExact(region);
+            if (rg!=null) break;
+        }
+        if (rg==null) return false;
+        return rg.isMember(p.getName());
+    }
+
+    
+    
     public static boolean isConnected(){
         return connected;
     }

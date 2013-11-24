@@ -46,6 +46,7 @@ public class ActionPlayerPotion extends Action {
         PotionEffectType pef = Util.parsePotionEffect (peffstr.toUpperCase());
         if (pef == null) return "";
         PotionEffect pe = new PotionEffect (pef, duration, amplifier,ambient);
+        if (p.hasPotionEffect(pef)) p.removePotionEffect(pef);
         p.addPotionEffect(pe);
         return pe.getType().getName()+":"+pe.getAmplifier();
     }

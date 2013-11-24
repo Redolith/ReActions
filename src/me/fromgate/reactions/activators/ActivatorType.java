@@ -18,7 +18,9 @@ public enum ActivatorType {
     LEVER ("lvr",LeverActivator.class,LeverEvent.class),
     DOOR ("door",DoorActivator.class,DoorEvent.class),
     JOIN ("join",JoinActivator.class,JoinEvent.class),
-    MOBCLICK ("mobclick",MobClickActivator.class,MobClickEvent.class);
+    MOBCLICK ("mobclick",MobClickActivator.class,MobClickEvent.class),
+    ITEM_CLICK ("itemclick",ItemClickActivator.class,ItemClickEvent.class),
+    ITEM_HOLD ("itemhold",ItemHoldActivator.class,ItemHoldEvent.class);
 
     private String alias;
     private Class<? extends Activator> aclass;

@@ -2,7 +2,6 @@ package me.fromgate.reactions.actions;
 
 import java.util.List;
 import java.util.Map;
-
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator;
@@ -41,9 +40,12 @@ public enum Actions{
     MOB_SPAWN ("mob",false,new ActionMobSpawn()),
     EFFECT("effect",false,new ActionEffect()),
     EXECUTE ("run",false,new ActionExecute()),  /// ???? не уверен
+    EXECUTE_STOP ("stop",false,new ActionExecStop()),  /// ???? не уверен
+    EXECUTE_UNSTOP ("unstop",false,new ActionExecUnstop()),  /// ???? не уверен
     REGION_CLEAR("rgclear",false,new ActionClearRegion()),
     HEAL("heal",true,new ActionHeal()),
-    BLOCK_SET("block",false,new ActionBlockSet());
+    BLOCK_SET("block",false,new ActionBlockSet()),
+    POWER_SET("power",false,new ActionPowerSet());
 
     private String alias;
     private boolean requireplayer;

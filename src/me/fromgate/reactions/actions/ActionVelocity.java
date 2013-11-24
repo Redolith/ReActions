@@ -19,12 +19,13 @@ public class ActionVelocity extends Action{
     
     private Vector setPlayerVelocity(Player p, Map<String,String> params) {
         String velstr = "";
-        boolean multiply = false;
+        boolean kick = false;
         if (params.containsKey("param")){
             velstr = ParamUtil.getParam(params, "param", "");
         } else {
-            velstr = ParamUtil.getParam(params, "direction","");
-            multiply = ParamUtil.getParam(params, "multiply", false);
+            velstr = ParamUtil.getParam(params, "vector","");
+            if (velstr.isEmpty()) velstr = ParamUtil.getParam(params, "direction","");
+            kick = ParamUtil.getParam(params, "kick", false);
         }
 
         if (velstr.isEmpty()) return null;
@@ -32,7 +33,7 @@ public class ActionVelocity extends Action{
         String [] ln = velstr.split(",");
         if ((ln.length == 1)&&(velstr.matches("-?(([0-9]+\\.[0-9]*)|([0-9]+))"))) {
             double power = Double.parseDouble(velstr);
-            v.setY(Math.min(10, multiply ? power*p.getVelocity().getY() : power));
+            v.setY(Math.min(10, kick ? power*p.getVelocity().getY() : power));
         } else if ((ln.length == 3)&&
                 ln[0].matches("-?(([0-9]+\\.[0-9]*)|([0-9]+))")&&
                 ln[1].matches("-?(([0-9]+\\.[0-9]*)|([0-9]+))")&&
@@ -40,13 +41,12 @@ public class ActionVelocity extends Action{
             double powerx = Double.parseDouble(ln[0]);
             double powery = Double.parseDouble(ln[1]);
             double powerz = Double.parseDouble(ln[2]);
-            if (multiply){
-                powerx = powerx*p.getVelocity().getX();
-                powery = powery*p.getVelocity().getY();
-                powerz = powerz*p.getVelocity().getZ();
-            }
-
-            v = new Vector (Math.min(10,powerx),Math.min(10,powery),Math.min(10,powerz));
+            if (kick){
+                v = p.getLocation().getDirection();
+                v=v.normalize();
+                v=v.multiply(new Vector (powerx, powery, powerz));
+                p.setFallDistance(0);
+            } else v = new Vector (Math.min(10,powerx),Math.min(10,powery),Math.min(10,powerz));
         }
         p.setVelocity(v);
         return v;

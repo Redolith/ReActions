@@ -52,6 +52,7 @@ public class ReActions extends JavaPlugin {
     boolean version_check=false;
     boolean tp_center_coors = true;
     public int worlduard_recheck = 2;
+    public int itemhold_recheck = 2;
     public int same_msg_delay = 10;
     public boolean horizontal_pushback = false;
     boolean enable_profiler = true;
