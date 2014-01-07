@@ -1,6 +1,6 @@
 package me.fromgate.reactions.flags;
 
-import me.fromgate.reactions.util.RATowny;
+import me.fromgate.reactions.externals.RATowny;
 
 import org.bukkit.entity.Player;
 

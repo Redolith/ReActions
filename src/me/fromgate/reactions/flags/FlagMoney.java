@@ -1,6 +1,6 @@
 package me.fromgate.reactions.flags;
 
-import me.fromgate.reactions.util.RAVault;
+import me.fromgate.reactions.externals.RAVault;
 
 import org.bukkit.entity.Player;
 

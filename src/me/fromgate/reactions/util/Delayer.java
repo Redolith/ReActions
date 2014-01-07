@@ -23,10 +23,15 @@
 package me.fromgate.reactions.util;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
-
+import java.util.List;
 import me.fromgate.reactions.ReActions;
-
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -41,8 +46,11 @@ public class Delayer {
             File f = new File (ReActions.instance.getDataFolder()+File.separator+"delay.yml");
             if (f.exists()) f.delete();
             f.createNewFile();
-            for (String key : delays.keySet())
-                cfg.set(key, delays.get(key));
+            for (String key : delays.keySet()){
+                long delaytime = delays.get(key);
+                if (delaytime>System.currentTimeMillis())
+                    cfg.set(key, delaytime);
+            }
             cfg.save(f);
         } catch (Exception e){
         }
@@ -57,7 +65,9 @@ public class Delayer {
             cfg.load(f);
             for (String key : cfg.getKeys(true)){
                 if (!key.contains(".")) continue;
-                setDelay(key, cfg.getLong(key),false);
+                long delaytime = cfg.getLong(key);
+                if (delaytime>System.currentTimeMillis())
+                    delays.put(key, delaytime);
             }
         } catch (Exception e){
         }
@@ -77,7 +87,7 @@ public class Delayer {
     public static void setDelay(String id, Long seconds){
         setDelay(id,seconds,true);
     }
-    
+
     public static void setDelay(String id, Long seconds, boolean save){
         delays.put(id.contains(".") ? id : "global."+id, System.currentTimeMillis()+seconds);
         if (save) save();
@@ -89,6 +99,25 @@ public class Delayer {
 
     public static void setPersonalDelay(String playerName, String id, Long seconds){
         setDelay (playerName+"."+id, seconds,true);
+    }
+
+    public static String longTimeToString(long time){
+        Date date = new Date(time);
+        DateFormat formatter = new SimpleDateFormat("dd-MM-YYYY HH:mm:ss");
+        return formatter.format(date);
+    }
+    
+    public static void printDelayList (CommandSender p, int page, int lpp) {
+        List<String> lst = new ArrayList<String>();
+        for (String key : delays.keySet()){
+            long delaytime = delays.get(key);
+            if (delaytime<System.currentTimeMillis()) continue;
+            String [] ln = key.split("\\.",2);
+            if (ln.length!=2) continue;
+            lst.add("["+ln[0] + "] "+ln[1]+": "+longTimeToString(delays.get(key)));
+        }
+        Collections.sort(lst);
+        ReActions.util.printPage(p, lst, page, "msg_listdelay", "", true,lpp);
     }
 
 

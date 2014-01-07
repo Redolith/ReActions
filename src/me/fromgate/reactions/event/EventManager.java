@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2013, fromgate, fromgate@gmail.com
+ *  (c)2012-2014, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *   * 
  *  This file is part of ReActions.
@@ -20,33 +20,24 @@
  * 
  */
 
-package me.fromgate.reactions;
+package me.fromgate.reactions.event;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import me.fromgate.reactions.RAUtil;
+import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.ActivatorType;
 import me.fromgate.reactions.activators.Activators;
 import me.fromgate.reactions.activators.ItemHoldActivator;
-import me.fromgate.reactions.event.ButtonEvent;
-import me.fromgate.reactions.event.CommandEvent;
-import me.fromgate.reactions.event.DoorEvent;
-import me.fromgate.reactions.event.ExecEvent;
-import me.fromgate.reactions.event.ItemClickEvent;
-import me.fromgate.reactions.event.ItemHoldEvent;
-import me.fromgate.reactions.event.JoinEvent;
-import me.fromgate.reactions.event.LeverEvent;
-import me.fromgate.reactions.event.MobClickEvent;
-import me.fromgate.reactions.event.PVPDeathEvent;
-import me.fromgate.reactions.event.PVPKillEvent;
-import me.fromgate.reactions.event.PlateEvent;
-import me.fromgate.reactions.event.RegionEnterEvent;
-import me.fromgate.reactions.event.RegionLeaveEvent;
-import me.fromgate.reactions.event.RegionEvent;
+import me.fromgate.reactions.activators.ItemWearActivator;
+import me.fromgate.reactions.externals.RAWorldGuard;
+import me.fromgate.reactions.util.ItemUtil;
 import me.fromgate.reactions.util.ParamUtil;
-import me.fromgate.reactions.util.RAWorldGuard;
 import me.fromgate.reactions.util.Util;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -58,6 +49,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Button;
 import org.bukkit.metadata.FixedMetadataValue;
 
@@ -71,7 +63,22 @@ public class EventManager {
     private static RAUtil u(){
         return ReActions.util;
     }
+    
+    
+	public static boolean raiseTimeServerEvent(Player p, Long currentTime) {
+        TimeServerEvent e = new TimeServerEvent(p,currentTime);
+        Bukkit.getServer().getPluginManager().callEvent(e); 
+		
+		return true;
+	}
 
+
+    public static boolean raiseTimeInGameEvent (Player p, String timeInGame){
+        TimeIngameEvent e = new TimeIngameEvent(p,timeInGame);
+        Bukkit.getServer().getPluginManager().callEvent(e);       
+        return true;
+    }
+    
     public static boolean raiseMobClickEvent (Player p, LivingEntity mob){
         if (mob == null) return false;
         MobClickEvent e = new MobClickEvent(p,mob);
@@ -170,7 +177,6 @@ public class EventManager {
     }
 
     public static boolean raiseExecEvent (CommandSender sender, Map<String,String> params){
-
         if (params.isEmpty()) return false;
         final Player senderPlayer = (sender instanceof Player) ? (Player) sender : null;
         final String id = ParamUtil.getParam(params, "activator", "").isEmpty() ? ParamUtil.getParam(params, "exec", "") : ParamUtil.getParam(params, "activator", "");
@@ -188,19 +194,9 @@ public class EventManager {
         long delay = u().timeToTicks(u().parseTime(ParamUtil.getParam(params, "delay", "1t")));
 
         final List<Player> target = new ArrayList<Player>();
-        if (params.containsKey("region")||params.containsKey("rgplayer")||params.containsKey("player")){
-            String region = ParamUtil.getParam(params, "region", "");
-            if (region.isEmpty()) region = ParamUtil.getParam(params, "rgplayer", "");
-            String player = ParamUtil.getParam(params, "player", "");
-
-            if (!region.isEmpty()) target.addAll(RAWorldGuard.playersInRegion(region));
-            if (!player.isEmpty()) {
-                Player targetPlayer = Bukkit.getPlayerExact(player);
-                if ((targetPlayer !=null)&&(targetPlayer.isOnline()))target.add(targetPlayer);
-            }            
-        } else if (senderPlayer !=null) target.add(senderPlayer);
-
-        if (target.isEmpty()) return false;
+        target.addAll(Util.getPlayerList(params)); // Получаем перечень игроков: player, world, region
+        if (target.isEmpty() &&(senderPlayer !=null)) target.add(senderPlayer); 
+        if (target.isEmpty()) target.add(null); // TODO запуск для пустого списка?!
         Bukkit.getScheduler().runTaskLater(plg(), new Runnable(){
             @Override
             public void run() {
@@ -228,22 +224,71 @@ public class EventManager {
             }
         }, 1);
         return true;
-
     }
 
-    // WorldGuard Event (based on PlayerMoveEvent and PlayerTeleportEvent)
     public static void raiseRegionEvent (Player player, Location to){
         if (!RAWorldGuard.isConnected()) return;
         List<String> rgs = RAWorldGuard.getRegions(to);
         if (rgs.isEmpty()) return;
         for (String rg : rgs){
-            if (isTimeToRaiseEvent (player,rg, plg().worlduard_recheck)){
+            if (isTimeToRaiseEvent (player,rg, plg().worlduardRecheck)){
                 RegionEvent wge = new RegionEvent (player, rg);
                 Bukkit.getServer().getPluginManager().callEvent(wge);	
                 setFutureRegionCheck(player,rg);
             }
         }
     }
+    public static void raiseItemWearEvent (final Player player){
+        Bukkit.getScheduler().runTaskLater(plg(), new Runnable(){
+            @Override
+            public void run() {
+                if (!player.isOnline()) return;
+                if (player.isDead()) return;
+                boolean hasArmour = false;
+                for (ItemStack is : player.getInventory().getArmorContents()){
+                    if (is!=null&&is.getType() != Material.AIR) hasArmour = true;
+                }
+                if (!hasArmour) return;
+                for (ItemWearActivator iw : Activators.getItemWearActivatos())
+                    raiseItemWearEvent (player, iw.getItemStr());
+            }
+        }, 1);
+    }
+
+    public static boolean raiseItemWearEvent (Player player, String itemStr){
+        if (!player.isOnline()) return false;
+        if (player.isDead()) return false;
+        //String id = "reactions-rchk-iw-"+itemStr;
+        if (!isTimeToRaiseEvent (player,"iw-"+itemStr, plg().itemWearRecheck)) return false;
+        player.removeMetadata("reactions-rchk-iw-"+itemStr, plg());
+        ItemWearEvent iwe = new ItemWearEvent (player);
+        if (!iwe.isItemWeared(itemStr)) return false;
+        Bukkit.getServer().getPluginManager().callEvent(iwe);   
+        setFutureItemWearCheck (player,itemStr);
+        return true;
+    }
+
+    private static void setFutureItemWearCheck(final Player p, final String itemStr){
+        final String id = "iw-"+itemStr;
+        if (isTimeToRaiseEvent(p, id,plg().itemHoldRecheck)){
+            p.setMetadata("reactions-rchk-"+id, new FixedMetadataValue (plg(), System.currentTimeMillis()));
+            Bukkit.getScheduler().runTaskLater(plg(), new Runnable(){
+                @Override
+                public void run() {
+                    if (!p.isOnline()) return;
+                    if (p.isDead()) return;
+                    p.removeMetadata("reactions-rchk-"+id, plg());
+                    ItemWearEvent iwe = new ItemWearEvent (p);
+                    if (iwe.isItemWeared(itemStr)){
+                        Bukkit.getServer().getPluginManager().callEvent(iwe);   
+                        setFutureItemWearCheck (p,itemStr);
+                    }
+                }
+            }, 20*plg().itemWearRecheck);
+        }
+    }
+
+
 
     public static void raiseItemHoldEvent (final Player player){
         Bukkit.getScheduler().runTaskLater(plg(), new Runnable(){
@@ -260,15 +305,16 @@ public class EventManager {
 
     }
 
+
     public static boolean raiseItemHoldEvent (Player player, String itemstr){
         if (!player.isOnline()) return false;
         if (player.isDead()) return false;
         if (player.getItemInHand()==null) return false;
         if (player.getItemInHand().getType() == Material.AIR) return false;
         String id = "reactions-rchk-ih-"+itemstr;
-        if (!isTimeToRaiseEvent (player,id, plg().itemhold_recheck)) return false;
+        if (!isTimeToRaiseEvent (player,id, plg().itemHoldRecheck)) return false;
         player.removeMetadata(id, plg());
-        if (!u().compareItemStr(player.getItemInHand(), itemstr)) return false;
+        if (!ItemUtil.compareItemStr(player.getItemInHand(), itemstr)) return false;
         ItemHoldEvent ihe = new ItemHoldEvent (player);
         Bukkit.getServer().getPluginManager().callEvent(ihe);   
         setFutureItemHoldCheck (player,itemstr);
@@ -302,9 +348,9 @@ public class EventManager {
 
     // Данная функция вызывает каждую секунду 
     // эвент, на тот случай, если игрок "застыл" и PlayerMoveEvent не отрабатывает
-    private static void setFutureRegionCheck(final Player p, String region){
+    private static void setFutureRegionCheck(final Player p, final String region){
         final String rg = "rg-"+region;
-        if (isTimeToRaiseEvent(p, rg,plg().worlduard_recheck)){
+        if (isTimeToRaiseEvent(p, rg,plg().worlduardRecheck)){
             p.setMetadata("reactions-rchk-"+rg, new FixedMetadataValue (plg(), System.currentTimeMillis()));
             Bukkit.getScheduler().runTaskLater(plg(), new Runnable(){
                 @Override
@@ -312,20 +358,19 @@ public class EventManager {
                     if (!p.isOnline()) return;
                     if (p.isDead()) return;
                     p.removeMetadata("reactions-rchk-"+rg, plg());
-                    if (RAWorldGuard.isPlayerInRegion(p, rg)){
-                        RegionEvent wge = new RegionEvent (p, rg);
+                    if (RAWorldGuard.isPlayerInRegion(p, region)){
+                        RegionEvent wge = new RegionEvent (p, region);
                         Bukkit.getServer().getPluginManager().callEvent(wge);	
-                        setFutureRegionCheck (p,rg);
+                        setFutureRegionCheck (p,region);
                     }
                 }
-            }, 20*plg().worlduard_recheck);
+            }, 20*plg().worlduardRecheck);
         }
     }
 
-
     private static void setFutureItemHoldCheck(final Player p, final String itemstr){
         final String id = "ih-"+itemstr;
-        if (isTimeToRaiseEvent(p, id,plg().itemhold_recheck)){
+        if (isTimeToRaiseEvent(p, id,plg().itemHoldRecheck)){
             p.setMetadata("reactions-rchk-"+id, new FixedMetadataValue (plg(), System.currentTimeMillis()));
             Bukkit.getScheduler().runTaskLater(plg(), new Runnable(){
                 @Override
@@ -335,16 +380,15 @@ public class EventManager {
                     if (p.getItemInHand()==null) return;
                     if (p.getItemInHand().getType() == Material.AIR) return;
                     p.removeMetadata("reactions-rchk-"+id, plg());
-                    if (u().compareItemStr(p.getItemInHand(), itemstr)){
+                    if (ItemUtil.compareItemStr(p.getItemInHand(), itemstr)){
                         ItemHoldEvent ihe = new ItemHoldEvent (p);
                         Bukkit.getServer().getPluginManager().callEvent(ihe);   
                         setFutureItemHoldCheck (p,itemstr);
                     }
                 }
-            }, 20*plg().worlduard_recheck);
+            }, 20*plg().itemHoldRecheck);
         }
     }
-
 
     public static boolean isTimeToRaiseEvent(Player p, String id, int seconds){
         if (!p.hasMetadata("reactions-rchk-"+id)) return true;
@@ -352,7 +396,6 @@ public class EventManager {
         Long prevtime = p.getMetadata("reactions-rchk-"+id).get(0).asLong();
         return ((curtime-prevtime)>(1000*seconds)); //plg().worlduard_recheck
     }
-
 
 
 

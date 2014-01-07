@@ -1,8 +1,10 @@
 package me.fromgate.reactions.actions;
 
 import java.util.Map;
-import me.fromgate.reactions.EventManager;
+
+import me.fromgate.reactions.event.EventManager;
 import me.fromgate.reactions.util.ParamUtil;
+
 import org.bukkit.entity.Player;
 
 public class ActionExecute extends Action {

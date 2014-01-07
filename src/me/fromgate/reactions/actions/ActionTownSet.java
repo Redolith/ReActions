@@ -2,8 +2,9 @@ package me.fromgate.reactions.actions;
 
 import java.util.Map;
 
+import me.fromgate.reactions.externals.RATowny;
 import me.fromgate.reactions.util.ParamUtil;
-import me.fromgate.reactions.util.RATowny;
+
 import org.bukkit.entity.Player;
 
 public class ActionTownSet extends Action {

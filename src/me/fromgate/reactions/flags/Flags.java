@@ -1,29 +1,34 @@
 package me.fromgate.reactions.flags;
 
+import java.util.ArrayList;
+import java.util.List;
+import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.Activator.FlagVal;
 import me.fromgate.reactions.util.RADebug;
 
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public enum Flags {
     GROUP ("group",true,new FlagGroup()),
     PERM ("perm",true,new FlagPerm()),
     TIME ("time",false,new FlagTime()),
-    ITEM ("item",true,new FlagItem()),
-    ITEM_INVENTORY ("invitem",true,new FlagItemInventory()),
+    ITEM ("item",true,new FlagItem(0)),
+    ITEM_INVENTORY ("invitem",true,new FlagItem(1)),
+    ITEM_WEAR ("invwear",true,new FlagItem(2)),
     TOWN ("town",true,new FlagTown()),
     MONEY ("money",true,new FlagMoney()),
     CHANCE("chance",false,new FlagChance()),
     PVP("pvp",true,new FlagPVP()),
     ONLINE("online",false,new FlagOnline()),
-    DELAY("delay",false,new FlagDelay()),
-    DELAY_PLAYER("pdelay",true,new FlagDelayPlayer()),
-    REGION("region",true,new FlagRegion()),
+    DELAY("delay",false,new FlagDelay(true)),
+    DELAY_PLAYER("pdelay",true,new FlagDelay(false)),
     STATE("pose",true,new FlagState()),
-    REGION_PLAYERS("rgplayer",false,new FlagRegionPlayers()),
-    REGION_MEMBER("rgmember",false,new FlagRegionMember()),
-    REGION_OWNER("rgowner",false,new FlagRegionOwner()),
+    REGION("region",true,new FlagRegion(0)),
+    REGION_PLAYERS("rgplayer",false,new FlagRegion(1)),
+    REGION_MEMBER("rgmember",false,new FlagRegion(2)),
+    REGION_OWNER("rgowner",false,new FlagRegion(3)),
     GAMEMODE("gamemode",true,new FlagGameMode()),
     FOODLEVEL("food",true,new FlagFoodlevel()),
     XP("xp",true,new FlagXP()),
@@ -35,25 +40,39 @@ public enum Flags {
     WALK_BLOCK("walk",true, new FlagWalkBlock()),
     DIRECTION("dir",true, new FlagDirection()),
     FLAG_SET ("flagset",false, new FlagFlagSet()),
-    EXECUTE_STOP ("stopped",false, new FlagExecStop());
+    EXECUTE_STOP ("stopped",false, new FlagExecStop()),
+    VAR_EXIST ("varexist",false, new FlagVar(0,false)),
+    VAR_PLAYER_EXIST ("varpexist",true, new FlagVar(0,true)),
+    VAR_COMPARE("varcmp",false, new FlagVar(1,false)),
+    VAR_PLAYER_COMPARE("varpcmp",true, new FlagVar(1,true)),
+    VAR_GREATER("vargrt",false, new FlagVar(2,false)),
+    VAR_PLAYER_GREATER("varpgrt",true, new FlagVar(2,true)),
+    VAR_LOWER("varlwr",false, new FlagVar(3,false)),
+    VAR_PLAYER_LOWER("varplwr",true, new FlagVar(3,true)),
+    RNC_RACE("rncrace",true, new FlagRacesAndClasses(true)),
+    RNC_CLASS("rncclass",true, new FlagRacesAndClasses(false)),
+    WEATHER("weather",true, new FlagWeather()),
+    TIMER_ACTIVE("timeract",false, new FlagTimerActive());
+
     
+
     private String alias;
     private boolean require_player = true;
     private Flag flag;
-    
-    
+
+
     Flags (String alias, boolean needplayer, Flag flag){
         this.alias = alias;
         this.require_player=needplayer;
         this.flag= flag;
     }
-    
+
     public boolean check(Player player, String param){
         if (this.require_player&&(player==null)) return false;
         return flag.checkFlag(player, param);
     }
-    
-    
+
+
     public static boolean isValid(String name){
         for (Flags ft : Flags.values()){
             if (ft.name().equalsIgnoreCase(name)) return true;
@@ -68,11 +87,11 @@ public enum Flags {
         }
         return null;
     }
-   
+
     public String getAlias(){
         return this.alias;
     }
-    
+
     public static boolean checkFlag (Player p, String flag, String param, boolean not){
         Flags ft = Flags.getByName(flag);
         if (ft == null) return false;
@@ -80,7 +99,7 @@ public enum Flags {
         if (not) return !check;
         return check;
     }
-    
+
     public static boolean checkFlags (Player p, Activator c){
         return RADebug.checkFlagAndDebug(p, checkAllFlags (p, c));
     }
@@ -93,7 +112,7 @@ public enum Flags {
             }
         return true;
     }
-    
+
     public static String getFtypes(){
         String str = "";
         for (Flags f : Flags.values()){
@@ -106,6 +125,19 @@ public enum Flags {
     public static String getValidName(String flag) {
         for (Flags f : Flags.values())
             if (f.getAlias().equalsIgnoreCase(flag)) return f.name();
-       return flag;
+        return flag;
     }
+    
+    public static void listFlags(CommandSender sender, int pageNum) {
+    	List<String> flagList = new ArrayList<String>();
+    	for (Flags flagType : Flags.values()){
+    		String flagName = flagType.name(); 
+    		String alias = flagType.getAlias().equalsIgnoreCase(flagName) ? " " : " ("+flagType.getAlias()+") ";
+    		String description = ReActions.util.getMSGnc("flag_"+flagName);
+    		flagList.add("&6"+flagName+"&e"+alias+"&3: &a"+description);
+    	}
+    	ReActions.util.printPage(sender, flagList, pageNum, "msg_flaglisttitle", "", false, sender instanceof Player ? 10 : 1000);
+    }
+    
+    
 }

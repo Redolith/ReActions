@@ -1,4 +1,4 @@
-package me.fromgate.reactions.util;
+package me.fromgate.reactions.externals;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

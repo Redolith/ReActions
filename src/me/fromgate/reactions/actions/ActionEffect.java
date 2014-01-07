@@ -2,7 +2,7 @@ package me.fromgate.reactions.actions;
 
 import java.util.Map;
 
-import me.fromgate.reactions.util.RAEffects;
+import me.fromgate.reactions.externals.RAEffects;
 
 import org.bukkit.entity.Player;
 

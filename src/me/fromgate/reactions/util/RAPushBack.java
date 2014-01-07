@@ -28,7 +28,7 @@ public class RAPushBack {
 
     private static double distance(Location loc1, Location loc2){
         if (!loc1.getWorld().equals(loc2.getWorld())) return 1000;
-        if (plg().horizontal_pushback){
+        if (plg().horizontalPushback){
             double dx = loc2.getX()-loc1.getX();
             double dy = loc2.getZ()-loc1.getZ();
             return Math.sqrt((dx*dx)+(dy*dy));    

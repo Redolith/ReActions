@@ -2,8 +2,8 @@ package me.fromgate.reactions.actions;
 
 import java.util.Map;
 
+import me.fromgate.reactions.externals.RAEffects;
 import me.fromgate.reactions.util.ParamUtil;
-import me.fromgate.reactions.util.RAEffects;
 import me.fromgate.reactions.util.Util;
 
 import org.bukkit.Location;

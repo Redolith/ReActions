@@ -19,7 +19,7 @@
  *  along with ReActions.  If not, see <http://www.gnorg/licenses/>.
  * 
  */
-package me.fromgate.reactions.util;
+package me.fromgate.reactions.externals;
 
 import static com.palmergames.bukkit.towny.object.TownyObservableType.TOWN_ADD_RESIDENT;
 import static com.palmergames.bukkit.towny.object.TownyObservableType.TOWN_REMOVE_RESIDENT;

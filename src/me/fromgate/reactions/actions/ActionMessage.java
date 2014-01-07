@@ -4,9 +4,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import me.fromgate.reactions.externals.RAVault;
+import me.fromgate.reactions.externals.RAWorldGuard;
 import me.fromgate.reactions.util.ParamUtil;
-import me.fromgate.reactions.util.RAVault;
-import me.fromgate.reactions.util.RAWorldGuard;
 import me.fromgate.reactions.util.Util;
 
 import org.bukkit.Bukkit;
@@ -67,7 +67,7 @@ public class ActionMessage extends Action {
                 } else {
                     Long before = p.getMetadata(key).get(0).asLong();
                     Long now = System.currentTimeMillis();
-                    if ((now-before)>(plg().same_msg_delay*1000)){
+                    if ((now-before)>(plg().sameMessagesDelay*1000)){
                         showmsg = true;
                         p.setMetadata(key, new FixedMetadataValue(plg(),now));
                     }

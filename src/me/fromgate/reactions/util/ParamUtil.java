@@ -101,6 +101,10 @@ public class ParamUtil {
         return str.isEmpty() ? "empty" : str;
     }
     
+    public static boolean isParamExists (Map<String,String> params, String key){
+        return params.containsKey(key);
+    }
+    
     
 
 }

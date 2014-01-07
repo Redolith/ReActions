@@ -33,10 +33,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator.ActVal;
 import me.fromgate.reactions.activators.Activator.FlagVal;
+import me.fromgate.reactions.timer.Timers;
+
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -70,6 +73,8 @@ public class Activators {
         if (!groups.isEmpty())
             for (String group : groups)
                 loadActivators(group);
+        Timers.updateIngameTimers();
+        //Timers.updateServerTimers();
     }
 
     private static List<String> findGroupsInDir(){
@@ -418,6 +423,29 @@ public class Activators {
             if (a.getType() == ActivatorType.ITEM_HOLD) ihold.add((ItemHoldActivator) a);
         return ihold;
     }
+    
+    public static List<ItemWearActivator> getItemWearActivatos() {
+        List<ItemWearActivator> iwear= new ArrayList<ItemWearActivator>();
+        for (Activator a : act)
+            if (a.getType() == ActivatorType.ITEM_WEAR) iwear.add((ItemWearActivator) a);
+        return iwear;
+    }
+    
+   /* public static List<TimeIngameActivator> getTimeIngameActivators() {
+        List<TimeIngameActivator> timeIngameAct= new ArrayList<TimeIngameActivator>();
+        for (Activator a : act)
+            if (a.getType() == ActivatorType.TIME_INGAME) timeIngameAct.add((TimeIngameActivator) a);
+        return timeIngameAct;
+    }
+    
+	public static List<TimeServerActivator> getTimeServerActivators() {
+		List<TimeServerActivator> timeServerAct= new ArrayList<TimeServerActivator>();
+        for (Activator a : act)
+            if (a.getType() == ActivatorType.TIME_SERVER) timeServerAct.add((TimeServerActivator) a);
+		return timeServerAct;
+	} */
+
+
 
     public static boolean stopExec (Player player, String actName){
         return stopExec (player == null ? "" : player.getName(), actName);

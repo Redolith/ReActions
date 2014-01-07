@@ -1,7 +1,9 @@
 package me.fromgate.reactions.actions;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator;
@@ -9,6 +11,8 @@ import me.fromgate.reactions.activators.Activator.ActVal;
 import me.fromgate.reactions.flags.Flags;
 import me.fromgate.reactions.util.ParamUtil;
 import me.fromgate.reactions.util.Placeholders;
+
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public enum Actions{
@@ -25,10 +29,11 @@ public enum Actions{
     DAMAGE ("dmg",true,new ActionDamage()),
     TOWN_SET ("townset",true,new ActionTownSet()),
     TOWN_KICK ("townkick",true,new ActionTownKick()),
-    ITEM_REMOVE ("itemrmv",true,new ActionItemRemove()),
-    ITEM_REMOVE_INVENTORY ("invitemrmv",true,new ActionItemRemoveInv()),
-    ITEM_GIVE ("itemgive",true,new ActionItemGive()),
-    ITEM_DROP ("itemdrop",true,new ActionItemDrop()),
+    ITEM_GIVE ("itemgive",true,new ActionItems(0)),
+    ITEM_REMOVE ("itemrmv",true,new ActionItems(1)),
+    ITEM_REMOVE_INVENTORY ("invitemrmv",true,new ActionItems(2)),
+    ITEM_DROP ("itemdrop",true,new ActionItems(3)),
+    ITEM_WEAR ("itemdrop",true,new ActionItems(4)),
     CMD ("cmdplr",true,new ActionCommand()),
     CMD_OP("cmdop",false,new ActionCommandOp()),
     CMD_CONSOLE ("cmdsrv",false,new ActionCommandConsole()),
@@ -45,7 +50,20 @@ public enum Actions{
     REGION_CLEAR("rgclear",false,new ActionClearRegion()),
     HEAL("heal",true,new ActionHeal()),
     BLOCK_SET("block",false,new ActionBlockSet()),
-    POWER_SET("power",false,new ActionPowerSet());
+    POWER_SET("power",false,new ActionPowerSet()),
+    SHOOT("shoot",true,new ActionShoot()),
+    VAR_SET("varset",true,new ActionVar(0,false)),
+    VAR_PLAYER_SET("varset",true,new ActionVar(0,true)),
+    VAR_CLEAR("varclr",true,new ActionVar(1,false)),
+    VAR_PLAYER_CLEAR("varclr",true,new ActionVar(1,true)),
+    VAR_INC("varinc",true,new ActionVar(2,false)),
+    VAR_PLAYER_INC("varinc",true,new ActionVar(2,true)),
+    VAR_DEC("vardec",true,new ActionVar(3,false)),
+    VAR_PLAYER_DEC("vardec",true,new ActionVar(3,true)),
+    RNC_SET_RACE("setrace",true,new ActionRacesAndClasses(true)),
+    RNC_SET_CLASS("setclass",true,new ActionRacesAndClasses(false)),
+    TIMER_STOP("timerstop",false,new ActionTimer(true)),
+    TIMER_RESUME("timerresume",false,new ActionTimer(false));
 
     private String alias;
     private boolean requireplayer;
@@ -101,7 +119,6 @@ public enum Actions{
         return rst;
     }
 
-
     public boolean performAction(Player p, Activator a, boolean action, Map<String,String> params){
         if ((p==null)&&this.requireplayer) return false;
         return this.action.executeAction(p, a, action, params);
@@ -115,28 +132,15 @@ public enum Actions{
         return false;
     }
 
-
-    /*
-    public static void execActivator(final Player p, final Player targetPlayer, final String id, long delay_ticks){
-        Activator act = plg().getActivator(id);
-        if (act == null) {
-            u().logOnce("wrongact_"+id, "Failed to run exec activator "+id+". Activator not found.");
-            return;
-        }
-
-        if (!act.getType().equalsIgnoreCase("exec")){
-            u().logOnce("wrongactype_"+id, "Failed to run exec activator "+id+". Wrong activator type.");
-            return;
-        }
-
-        Bukkit.getScheduler().runTaskLater(plg(), new Runnable(){
-            @Override
-            public void run() {
-                EventManager.raiseExecEvent(p, targetPlayer, id);
-            }
-        }, Math.max(1, delay_ticks));
+    public static void listActions (CommandSender sender, int pageNum) {
+    	List<String> actionList = new ArrayList<String>();
+    	for (Actions actionType : Actions.values()){
+    		String name = actionType.name(); 
+    		String alias = actionType.getAlias().equalsIgnoreCase(name) ? " " : " ("+actionType.getAlias()+") ";
+    		String description = ReActions.util.getMSGnc("action_"+name);
+    		actionList.add("&6"+name+"&e"+alias+"&3: &a"+description);
+    	}
+    	ReActions.util.printPage(sender, actionList, pageNum, "msg_actionlisttitle", "", false, sender instanceof Player ? 10 : 1000);
     }
-     */
-
 
 }

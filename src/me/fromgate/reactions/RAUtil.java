@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2013, fromgate, fromgate@gmail.com
+ *  (c)2012-2014, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *   * 
  *  This file is part of ReActions.
@@ -26,7 +26,7 @@ public class RAUtil extends FGUtilCore {
     ReActions plg;
 
     public RAUtil(ReActions plugin, boolean savelng, String language, String plgcmd){
-        super (plugin, savelng, language, plgcmd);
+        super (plugin, savelng, language, plgcmd, "reactions");
         this.plg = plugin;
         FillMSG();
         InitCmd();
@@ -51,12 +51,13 @@ public class RAUtil extends FGUtilCore {
         addCmd("check", "config","cmd_check","&3/react check [radius]",'b');
         addCmd("reload", "config","cmd_reload","&3/react reload",'b',true);
         // Profiler enabling during development :)
-        addCmd("profile", "config","cmd_profile","&3/react profile",'b',true);
+        //addCmd("profile", "config","cmd_profile","&3/react profile",'b',true);
     }
 
     public void FillMSG(){
         addMSG ("msg_listclicker", "List of activators:");
-        addMSG ("msg_listloc", "List of store locations:");
+        addMSG ("msg_listloc", "List of stored locations:");
+        addMSG ("msg_listdelay", "List of active delays:");
         addMSG ("cmd_addbadded", "Activator %1% successfully defined");
         addMSG ("cmd_delayset", "New delay value saved. Id: %1% Delay time: %2%");
         addMSG ("cmd_notaddbadded", "Failed to create activator %1%");
@@ -194,13 +195,149 @@ public class RAUtil extends FGUtilCore {
         addMSG ("act_healfailed", "Failed to perform healing...");
         addMSG ("act_block_set", "Block placed: %1%!");
         addMSG ("act_block_setfailed", "Failed to place block: %1%");
-                
+        addMSG ("msg_timerlist", "Timers");
+        addMSG ("msg_timerneedname", "You must define name for the timer");
+        addMSG ("msg_timerunknownname", "Could not find timer %1%");
+        addMSG ("msg_timerremoved", "Timer %1% removed");
+        addMSG ("msg_timerexist", "Timer with %1% name already exists");
+        addMSG ("msg_timerneedparams", "You need to define parameters (activator, time, timer-type)!");
+        addMSG ("msg_timerneedactivator", "You need to define activator (activator:<EXEC-activator)!");
+        addMSG ("msg_timerneedtype", "You need to define timer type (timer-type:<INGAME|SERVER>)!");
+        addMSG ("msg_timerneedtime", "You need to define execution time (time:<HH:MM,HH:MM|cron format: * * * * * *>!");
+        addMSG ("msg_timeradded", "New timer created: %1%");
         
+        
+        /*
+         *  Action description messages
+         */
+        addMSG ("msg_actionlisttitle","Actions");
+        addMSG ("action_TP","Teleport player to defined location. Parameters: loc:<location or location's name> radius:<radius> land:<true/false> effect:<effect type>");
+        addMSG ("action_VELOCITY","Set player's velocity (you can force player to jump or change movement direction). Parameters: vector:<x,y,z> kick:<true/false>");
+        addMSG ("action_SOUND","Play sound effect. Parameters: type:<sound> pitch:<pitch> volume:<volume>");
+        addMSG ("action_POTION","Add defined potion effect to player. Parameters: type:<potion type> level:<power> time:<duration time> ambient:<true/false>");
+        addMSG ("action_POTION_REMOVE","Remove potion effect. Parameters: <POTION1,POTION2,..>");
+        addMSG ("action_GROUP_ADD","Add player to group. Parameter: <group name>");
+        addMSG ("action_GROUP_REMOVE","Kick player from group. Parameter: <group name>");
+        addMSG ("action_MESSAGE","Display message to player. Parameters: region:<region> group:<group> perm:<permission> world:<world> player:<player>");
+        addMSG ("action_BROADCAST","Send message to every online player. Parameter - message.");
+        addMSG ("action_DAMAGE","Hit player. Parameter: <damage amount>");
+        addMSG ("action_TOWN_SET","Move player to Towny's town. Parameters: <town name>");
+        addMSG ("action_TOWN_KICK","Exclude player from the Towny's town. Parameters: <town name>");
+        addMSG ("action_ITEM_GIVE","Give item to player. Parameter: <item>");
+        addMSG ("action_ITEM_REMOVE","Remove item from the player's hand. Parameter: <item>");
+        addMSG ("action_ITEM_REMOVE_INVENTORY","Remove item from the player's inventory. Parameter: <item>");
+        addMSG ("action_ITEM_DROP","Drop items around defined location. Parameters: loc:<location> radius:<radius> scatter:<true/false> land:<true/false>");
+        addMSG ("action_ITEM_WEAR","Wear item. Parameters: item:<item> slot:<auto/chestplate/helmet/leggins/boots>");
+        addMSG ("action_CMD","Execute command as player. Parameter: <command>");
+        addMSG ("action_CMD_OP","Execute command as OP. Parameter: <command>");
+        addMSG ("action_CMD_CONSOLE","Execute command as server console. Parameter: <command>");
+        addMSG ("action_MONEY_PAY","Debit player's account (and credit target player if defined). Parameter: <amount>[/<target>]");
+        addMSG ("action_MONEY_GIVE","Credit player's account (and debit source player if defined). Parameter: <amount>[/<source>]");
+        addMSG ("action_DELAY","Set global delay variable. Parameter: <time>/<id>");
+        addMSG ("action_DELAY_PLAYER","Set personal delay variable. Parameter: <time>/<id>");
+        addMSG ("action_BACK","Pushback player to one or two of previously stored locations. Parameters: <1 or 2>");
+        addMSG ("action_MOB_SPAWN","Spawn mob. Parameter: type:<mob type> (read more about this action at dev.bukkit.org)");
+        addMSG ("action_EFFECT","Play visual effect. Parameter: eff:<effect> loc:<location>. PlayEffect plugin require for additional effects.");
+        addMSG ("action_EXECUTE","Execute a predefined EXEC-activator. Parameters: activator:<exec-activator> delay:<time> player:<all|null|player1,player2...> world:<world1,world2,..> region:<region1,region2,..>");
+        addMSG ("action_EXECUTE_STOP","Stop executing of delayed activator. Parameter: activator:<exec-activator> player:<player>");
+        addMSG ("action_EXECUTE_UNSTOP","Resume executing of stopped activator. Parameters: activator:<exec-activator> player:<player>");
+        addMSG ("action_REGION_CLEAR","Remove entities (mobs or items) in region. Paramters: region:<region id> type:<entity_type|all|mobs|items>");
+        addMSG ("action_HEAL","Heal player. Parameter: <hit points amount>");
+        addMSG ("action_BLOCK_SET","Place block in location. Parameters: loc:<location> block:<type[:data]>");
+        addMSG ("action_POWER_SET","Set redstone power of the block (supported levers and doors). Parameters: loc:<location> power:<on|off|toggle>");
+        addMSG ("action_SHOOT","Shoot (without projectile) in player view direction. Parameters: distance:<distance> singlehit:<true/false> damage:<damage amount>");
+        addMSG ("action_VAR_SET","Create global variable. Parameters: id:<id> value:<value>");
+        addMSG ("action_VAR_PLAYER_SET","Create personal variable. Parameters: id:<id> value:<value>");
+        addMSG ("action_VAR_CLEAR","Remove global varibale. Parameter: id:<id>");
+        addMSG ("action_VAR_PLAYER_CLEAR","Remove personal varibale. Parameter: id:<id>");
+        addMSG ("action_VAR_INC","Increase global variable value. Parameters: id:<id> value:<value>");
+        addMSG ("action_VAR_PLAYER_INC","Increase personal variable value. Parameters: id:<id> value:<value>");
+        addMSG ("action_VAR_DEC","Decrease global variable value. Parameters: id:<id> value:<value>");
+        addMSG ("action_VAR_PLAYER_DEC","Decrease personal variable value. Parameters: id:<id> value:<value>");
+        addMSG ("action_RNC_SET_RACE","Set player's race (RacesAndClass plugin required). Parameter: race:<race>");
+        addMSG ("action_RNC_SET_CLASS","Set player's class (RacesAndClass plugin required). Parameter: class:<class>");
+        addMSG ("action_TIMER_STOP","Stops execution of timer. Parameter: timer:<timer id>");
+        addMSG ("action_TIMER_RESUME","Resumes execution of stopped timer. Parameter: timer:<timer id>");
+        
+        /*
+         * Flag description messages
+         */
+        addMSG ("msg_flaglisttitle","Flags");
+        addMSG ("flag_GROUP","Check player's group. Parameter: <group>");
+        addMSG ("flag_PERM","Check player's permission. Parameter: <permission>");
+        addMSG ("flag_TIME","Check in-game time in player's world. Parameter: <time in hours>");
+        addMSG ("flag_ITEM","Check item in hand. Parameter: <item>");
+        addMSG ("flag_ITEM_INVENTORY","Finding item in inventory. Parameter: <item>");
+        addMSG ("flag_ITEM_WEAR","Finding item in armour slot. Parameter: <item>");
+        addMSG ("flag_TOWN","Check player's town. Parameter: <town>");
+        addMSG ("flag_MONEY","Check player account. Parameter: <money amount>");
+        addMSG ("flag_CHANCE","Roll dice with defined chance. Parameter:<chance>");
+        addMSG ("flag_PVP","Checks is player was in PVP-action during last <time in seconds> seconds. Parameter: <time>");
+        addMSG ("flag_ONLINE","Number of player online. Parameter: <required online>");
+        addMSG ("flag_DELAY","Check the countdown of delay variable. Parameter: <delay id>");
+        addMSG ("flag_DELAY_PLAYER","Check the countdown of personal delay variable. Parameter: <delay id>");
+        addMSG ("flag_STATE","Check player's state. Parameter: <STAND/SNEAK/SPRINT/VEHICLE/VEHICLE_MINECART/VEHICLE_BOAT/VEHICLE_PIG/VEHICLE_HORSE");
+        addMSG ("flag_REGION","Is player in region? Parameter: <region>");
+        addMSG ("flag_REGION_PLAYERS","This flag returns true when there <count> (or more) players located in region <region>. Parameter: <region>/<count>");
+        addMSG ("flag_REGION_MEMBER","Is player member of region? Parameter: <region>");
+        addMSG ("flag_REGION_OWNER","Is player owner of region? Parameter: <region>");
+        addMSG ("flag_GAMEMODE","Check gamemode. Parameter:  <survival/creative/adventure>");
+        addMSG ("flag_FOODLEVEL","Check food level. Parameter: <food level>");
+        addMSG ("flag_XP","Check player total experience. Parameter: <xp>");
+        addMSG ("flag_LEVEL","Check player experience level. Parameter: <level>");
+        addMSG ("flag_POWER","Check redstone power state of block. Parameter: <location>");
+        addMSG ("flag_WORLD","Player in world? Parameter: <world>");
+        addMSG ("flag_BIOME","Player in biome? Parameter: <biome>");
+        addMSG ("flag_LIGHT_LEVEL","Player is in dark place? Parameter: <light level, 1..20>");
+        addMSG ("flag_WALK_BLOCK","Player is walking on the defined block? Parameter: <block type>");
+        addMSG ("flag_DIRECTION","Player directed to...? Parameter: <NORTH/NORTHEAST/NORTHWEST/SOUTH/SOUTHEAST/SOUTHWEST/EAST/WEST>");
+        addMSG ("flag_FLAG_SET","Check all flags in the list and return true if any. Parameter: <[!]<flag1>=<value1> [!]<flag2>=<value2> ...>");
+        addMSG ("flag_EXECUTE_STOP","Check stopped-state of delayed EXEC activator. Parameter: <activator id>");
+        addMSG ("flag_VAR_EXIST","Is global variable exists? Parameter: <id>");
+        addMSG ("flag_VAR_PLAYER_EXIST","Is personal variable exists? Parameter: <id>");
+        addMSG ("flag_VAR_COMPARE","Compare global variable with value. Parameters: id:<id> value:<value>");
+        addMSG ("flag_VAR_PLAYER_COMPARE","Compare personal variable with value. Parameters: id:<id> value:<value>");
+        addMSG ("flag_VAR_GREATER","Is global variable greater than given value? Parameters: id:<id> value:<value>");
+        addMSG ("flag_VAR_PLAYER_GREATER","Is personal variable greater than given value? Parameters: id:<id> value:<value>");
+        addMSG ("flag_VAR_LOWER","Is global variable lower than given value? Parameters: id:<id> value:<value>");
+        addMSG ("flag_VAR_PLAYER_LOWER","Is personal variable lower than given value? Parameters: id:<id> value:<value>");
+        addMSG ("flag_RNC_RACE","Check player's race (Requires RacesAndClasses plugin). Parameter: <race>");
+        addMSG ("flag_RNC_CLASS","Check player's class (Requires RacesAndClasses plugin). Parameter: <class>");
+        addMSG ("flag_WEATHER","Check weather state around player. Parameter: <rain/clear>");
+        addMSG ("flag_TIMER_ACTIVE","Check active state of defined timer. Returns false if timer is paused. Parameter: <timer id>");
+        
+        
+
+        /*
+         *  Activators!
+         */
+        addMSG ("msg_activatorlisttitle","Activators");
+        addMSG ("activator_BUTTON","This activator is linked to stone or wooden button. Command to create:  /react add button <id>");
+        addMSG ("activator_PLATE","This activator is linked to stone or woode plate. Command to create: /react add plate <id>");
+        addMSG ("activator_REGION","This activator is linked to Worldguard region (activates while player is in region)."
+        		+ " Command: /react add region <id> <region id>");
+        addMSG ("activator_REGION_ENTER","This activator is linked to Worldguard region (activates when player move into region)."
+        		+ " Command: /react add region_enter <id> <region id>");
+        addMSG ("activator_REGION_LEAVE","This activator is linked to Worldguard region (activates when player move out from region)."
+        		+ " Command: /react add region_leave <id> <region id>");
+        addMSG ("activator_EXEC","This is standalone activator (it is not bounded to any item or event)."
+        		+ " EXEC activator could be executed by any other activator, built-in timer and command (/react run <activator> [parameters[)."
+        		+ " Command to create: /react add exec <id>");
+        addMSG ("activator_COMMAND","This activator is initiates when player typed a defined command. "
+        		+ "Command: /react add command <id> <command>");
+        addMSG ("activator_PVP_KILL","This activator is activating when one player is killing another player. Command: /react add pvp_death <id>");
+        addMSG ("activator_PVP_DEATH","This activator is activating after player death, if he was murdered by another player. Command: /react add pvp_death <id>");
+        addMSG ("activator_PVP_RESPAWN","This activator is activating after respawn of dead player if he was murdered by another player. Command: /react add pvp_respawn <id>");
+        addMSG ("activator_LEVER","This activator is linked to lever block and executing when player triggers this lever. It supports lever states - \"on\" and \"off\". Command: /react add lever <id> [ON/OFF/ANY]");
+        addMSG ("activator_DOOR","This activators could be linked to any kind of doors (wooden door, fence gates and trap doors). Command: /react add door <id> [OPEN/CLOSE/ANY]");
+        addMSG ("activator_JOIN","This activator is executing when player joins a server. Command: /react add join <id> [FIRST]");
+        addMSG ("activator_MOBCLICK","This activator is executing when player right-clicking mob. You can define mob type (name supported too) for this activators. Command: /react add mobclick <id> &6Mob_Name$MOB_TYPE");
+        addMSG ("activator_ITEM_CLICK","This activator is linked to right-clicking with defined item. /react add item_click <item (name supported)>");
+        addMSG ("activator_ITEM_HOLD","This activator is linked to defined item, while player hold it in hand. /react add item_hold <item (name supported)>");
+        addMSG ("activator_ITEM_WEAR","This activator is linked to defined item, while player wears an item. /react add item_wear <item (name supported)>");
+        
+        
+   
     }
-    
-    /*@Override
-    public ItemStack parseItemStack (String itemstr){
-        return Util.parseItemStack(itemstr);
-    }*/
-    
+            
 }

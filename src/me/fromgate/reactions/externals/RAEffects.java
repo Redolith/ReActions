@@ -1,10 +1,13 @@
-package me.fromgate.reactions.util;
+package me.fromgate.reactions.externals;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import me.fromgate.playeffect.PlayEffect;
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.util.Util;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;

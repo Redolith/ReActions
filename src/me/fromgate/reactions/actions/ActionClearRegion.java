@@ -3,8 +3,8 @@ package me.fromgate.reactions.actions;
 import java.util.List;
 import java.util.Map;
 
+import me.fromgate.reactions.externals.RAWorldGuard;
 import me.fromgate.reactions.util.ParamUtil;
-import me.fromgate.reactions.util.RAWorldGuard;
 import me.fromgate.reactions.util.Util;
 
 import org.bukkit.Location;

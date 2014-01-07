@@ -26,7 +26,7 @@ import java.util.List;
 
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.RegionLeaveEvent;
-import me.fromgate.reactions.util.RAWorldGuard;
+import me.fromgate.reactions.externals.RAWorldGuard;
 
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;

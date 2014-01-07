@@ -20,7 +20,7 @@
  * 
  */
 
-package me.fromgate.reactions.util;
+package me.fromgate.reactions.externals;
 
 import java.util.ArrayList;
 import java.util.List;

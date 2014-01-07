@@ -8,7 +8,7 @@ import org.bukkit.event.Event;
 
 public class JoinActivator extends Activator {
     
-    private boolean first_join;
+    private boolean firstJoin;
 
     JoinActivator(String name, String group, YamlConfiguration cfg) {
         super(name, group, cfg);
@@ -16,7 +16,7 @@ public class JoinActivator extends Activator {
 
     public JoinActivator(String name, String join){
         super (name,"activators");
-        this.first_join = join.equalsIgnoreCase("first")||join.equalsIgnoreCase("firstjoin");
+        this.firstJoin = join.equalsIgnoreCase("first")||join.equalsIgnoreCase("firstjoin");
     }
 
     @Override
@@ -28,7 +28,7 @@ public class JoinActivator extends Activator {
     }
 
     private boolean isJoinActivate(boolean join_first_time){
-        if (this.first_join) return join_first_time;
+        if (this.firstJoin) return join_first_time;
         return true;
     }
     
@@ -39,12 +39,12 @@ public class JoinActivator extends Activator {
 
     @Override
     public void save(String root, YamlConfiguration cfg) {
-        cfg.set(root+".join-state",(first_join ? "FIRST" : "ANY"));
+        cfg.set(root+".join-state",(firstJoin ? "FIRST" : "ANY"));
     }
 
     @Override
     public void load(String root, YamlConfiguration cfg) {
-        this.first_join = cfg.getString(root+".join-state","ANY").equalsIgnoreCase("first") ? true : false;
+        this.firstJoin = cfg.getString(root+".join-state","ANY").equalsIgnoreCase("first") ? true : false;
     }
 
     @Override

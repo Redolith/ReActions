@@ -37,7 +37,7 @@ public class RADebug {
     }
 
     public static boolean checkFlagAndDebug (Player p, boolean flag){
-        if (debug.containsKey(p.getName())) return (debug.get(p.getName()));
+        if ((p!=null)&&debug.containsKey(p.getName())) return (debug.get(p.getName()));
         return flag;
     }
 
