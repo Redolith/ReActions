@@ -35,7 +35,6 @@ public class RAEffects {
             u().log("If you need more effects please download PlayEffect from:");
             u().log("http://dev.bukkit.org/bukkit-plugins/playeffect/");
         }
-        
     }
     
     public static boolean isPlayEffectConnected(){

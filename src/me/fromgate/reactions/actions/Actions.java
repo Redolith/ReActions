@@ -63,7 +63,8 @@ public enum Actions{
     RNC_SET_RACE("setrace",true,new ActionRacesAndClasses(true)),
     RNC_SET_CLASS("setclass",true,new ActionRacesAndClasses(false)),
     TIMER_STOP("timerstop",false,new ActionTimer(true)),
-    TIMER_RESUME("timerresume",false,new ActionTimer(false));
+    TIMER_RESUME("timerresume",false,new ActionTimer(false)),
+    		CANCEL_EVENT ("cancel",false, new ActionCancelEvent());
 
     private String alias;
     private boolean requireplayer;
@@ -105,7 +106,7 @@ public enum Actions{
     /*
      *  не знаю ещё зачем..... 
      */
-    public static boolean executeActivator (Player p, Activator act){
+    /*public static boolean executeActivator (Player p, Activator act){
         boolean action = Flags.checkFlags(p, act);
         boolean rst = true;
         List<ActVal> actions = action ? act.getActions() : act.getReactions();
@@ -117,6 +118,19 @@ public enum Actions{
             if (!at.performAction(p, act, action, params)) rst = false;
         }
         return rst;
+    }*/
+    public static boolean executeActivator (Player p, Activator act){
+        boolean action = Flags.checkFlags(p, act);
+        List<ActVal> actions = action ? act.getActions() : act.getReactions();
+        if (actions.isEmpty()) return false;
+        boolean cancelParentEvent = false;
+        for (int i = 0; i<actions.size(); i++){
+            if (!Actions.isValid(actions.get(i).flag)) continue;
+            Actions at = Actions.getByName(actions.get(i).flag);
+            Map<String,String> params = Placeholders.replaceAllPlaceholders(p, act, ParamUtil.parseParams(actions.get(i).value));
+            if (at.performAction(p, act, action, params)) cancelParentEvent = true;
+        }
+        return cancelParentEvent;
     }
 
     public boolean performAction(Player p, Activator a, boolean action, Map<String,String> params){

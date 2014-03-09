@@ -54,6 +54,7 @@ import org.bukkit.material.Button;
 import org.bukkit.metadata.FixedMetadataValue;
 
 
+
 public class EventManager {
 
     private static ReActions plg(){
@@ -64,21 +65,18 @@ public class EventManager {
         return ReActions.util;
     }
     
-    
-	public static boolean raiseTimeServerEvent(Player p, Long currentTime) {
-        TimeServerEvent e = new TimeServerEvent(p,currentTime);
+	public static boolean raiseFactionEvent(Player p, String oldFaction, String newFaction) {
+		FactionEvent e = new FactionEvent (p,oldFaction, newFaction);
         Bukkit.getServer().getPluginManager().callEvent(e); 
-		
+		return true;
+	}
+	
+	public static boolean raiseFactionRelationEvent(String faction, String factionOther, String oldRelation, String newRelation) {
+		FactionRelationEvent e = new FactionRelationEvent(faction, factionOther, oldRelation, newRelation);
+		Bukkit.getServer().getPluginManager().callEvent(e);
 		return true;
 	}
 
-
-    public static boolean raiseTimeInGameEvent (Player p, String timeInGame){
-        TimeIngameEvent e = new TimeIngameEvent(p,timeInGame);
-        Bukkit.getServer().getPluginManager().callEvent(e);       
-        return true;
-    }
-    
     public static boolean raiseMobClickEvent (Player p, LivingEntity mob){
         if (mob == null) return false;
         MobClickEvent e = new MobClickEvent(p,mob);
@@ -97,7 +95,7 @@ public class EventManager {
         if (!Util.isDoorBlock(event.getClickedBlock())) return false;
         DoorEvent e = new DoorEvent (event.getPlayer(), Util.getDoorBottomBlock(event.getClickedBlock()));
         Bukkit.getServer().getPluginManager().callEvent(e);
-        return true;
+        return e.isCancelled();
     }
 
     public static boolean raiseItemClickEvent(PlayerInteractEntityEvent event){
@@ -123,7 +121,7 @@ public class EventManager {
         if (event.getClickedBlock().getType() != Material.LEVER) return false;
         LeverEvent e = new LeverEvent (event.getPlayer(), event.getClickedBlock());
         Bukkit.getServer().getPluginManager().callEvent(e);
-        return true;
+        return e.isCancelled();
     }
 
 
@@ -157,7 +155,7 @@ public class EventManager {
         }
         ButtonEvent be = new ButtonEvent (event.getPlayer(), event.getClickedBlock().getLocation());
         Bukkit.getServer().getPluginManager().callEvent(be);
-        return true;
+        return be.isCancelled();
     }
 
 
@@ -194,7 +192,7 @@ public class EventManager {
         long delay = u().timeToTicks(u().parseTime(ParamUtil.getParam(params, "delay", "1t")));
 
         final List<Player> target = new ArrayList<Player>();
-        target.addAll(Util.getPlayerList(params)); // Получаем перечень игроков: player, world, region
+        target.addAll(Util.getPlayerList(params,null)); // Получаем перечень игроков: player, world, region
         if (target.isEmpty() &&(senderPlayer !=null)) target.add(senderPlayer); 
         if (target.isEmpty()) target.add(null); // TODO запуск для пустого списка?!
         Bukkit.getScheduler().runTaskLater(plg(), new Runnable(){
@@ -223,7 +221,7 @@ public class EventManager {
                 Bukkit.getServer().getPluginManager().callEvent(pe);      
             }
         }, 1);
-        return true;
+        return false;
     }
 
     public static void raiseRegionEvent (Player player, Location to){

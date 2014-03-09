@@ -60,11 +60,11 @@ public class ButtonActivator extends Activator{
      * Очередная залипуха, надо будет потом переделать
      */
     @Override
-    public void activate(Event event) {
-        if (!(event instanceof ButtonEvent)) return;
+    public boolean activate(Event event) {
+        if (!(event instanceof ButtonEvent)) return false;
         ButtonEvent be = (ButtonEvent) event;
-        if (!isLocatedAt(be.getButtonLocation())) return;
-        Actions.executeActivator(be.getPlayer(), this);
+        if (!isLocatedAt(be.getButtonLocation())) return false;
+        return Actions.executeActivator(be.getPlayer(), this);
     }
 
     @Override

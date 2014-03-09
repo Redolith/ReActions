@@ -52,10 +52,11 @@ public class RgEnterActivator extends Activator {
 
 
     @Override
-    public void activate(Event event) {
-        if (!(event instanceof RegionEnterEvent)) return;
+    public boolean activate(Event event) {
+        if (!(event instanceof RegionEnterEvent)) return false;
         RegionEnterEvent be = (RegionEnterEvent) event;
-        if (be.getRegion().equals(this.region))	Actions.executeActivator(be.getPlayer(), this);
+        if (!be.getRegion().equals(this.region))	return false;
+        return Actions.executeActivator(be.getPlayer(), this);
     }
 
     @Override

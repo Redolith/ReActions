@@ -44,15 +44,12 @@ import me.fromgate.reactions.event.PlateEvent;
 import me.fromgate.reactions.event.RegionEnterEvent;
 import me.fromgate.reactions.event.RegionEvent;
 import me.fromgate.reactions.event.RegionLeaveEvent;
-import me.fromgate.reactions.event.TimeIngameEvent;
-import me.fromgate.reactions.event.TimeServerEvent;
 import me.fromgate.reactions.externals.RAVault;
 import me.fromgate.reactions.util.RADebug;
 import me.fromgate.reactions.util.RAMobSpawn;
 import me.fromgate.reactions.util.RAPVPRespawn;
-import me.fromgate.reactions.util.RAPushBack;
+import me.fromgate.reactions.util.PushBack;
 import me.fromgate.reactions.util.Util;
-
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -249,16 +246,17 @@ public class RAListener implements Listener{
 
     @EventHandler(priority=EventPriority.NORMAL)
     public void onPlayerInteract (PlayerInteractEvent event){
-        EventManager.raiseItemClickEvent(event);
-        if (EventManager.raiseButtonEvent(event)) return;
-        if (EventManager.raisePlateEvent(event)) return;
-        if (EventManager.raiseLeverEvent(event)) return;
-        EventManager.raiseDoorEvent(event);
+    	EventManager.raiseItemClickEvent(event);
+        if (EventManager.raiseButtonEvent(event)) event.setCancelled(true);
+        //if (EventManager.raisePlateEvent(event)) event.setCancelled(true);
+        EventManager.raisePlateEvent(event);
+        if (EventManager.raiseLeverEvent(event)) event.setCancelled(true);
+        if (EventManager.raiseDoorEvent(event)) event.setCancelled(true);
     }
 
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerMove (PlayerMoveEvent event){
-        RAPushBack.onPlayerMove(event.getPlayer(), event.getFrom(), event.getTo());
+        PushBack.rememberLocations(event.getPlayer(), event.getFrom(), event.getTo());
         EventManager.raiseRegionEvent(event.getPlayer(), event.getTo());
         EventManager.raiseRgEnterEvent(event.getPlayer(), event.getFrom(), event.getTo());
         EventManager.raiseRgLeaveEvent(event.getPlayer(), event.getFrom(), event.getTo());
@@ -287,102 +285,91 @@ public class RAListener implements Listener{
      */
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onButton (ButtonEvent event){
-        Activators.activate(event);
+    	event.setCancelled(Activators.activate(event));
     }
 
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onButton (PlateEvent event){
-        Activators.activate(event);
+    	event.setCancelled(Activators.activate(event));
     }
 
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onRegion (RegionEvent event){
-        Activators.activate(event);
+    	event.setCancelled(Activators.activate(event));
     }
 
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onRegionEnter (RegionEnterEvent event){
-        Activators.activate(event);
+    	event.setCancelled(Activators.activate(event));
     }
 
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onRegionLeave (RegionLeaveEvent event){
-        Activators.activate(event);
+    	event.setCancelled(Activators.activate(event));
     }
 
     
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onRegionLeave (ExecEvent event){
-        Activators.activate(event);
+    	event.setCancelled(Activators.activate(event));
     }
 
     
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onCommandActivator (CommandEvent event){
-        Activators.activate(event);
+    	event.setCancelled(Activators.activate(event));
     }
     
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onPVPKillActivator (PVPKillEvent event){
-        Activators.activate(event);
+    	event.setCancelled(Activators.activate(event));
     }
     
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onPVPDeathActivator (PVPDeathEvent event){
-        Activators.activate(event);
+    	event.setCancelled(Activators.activate(event));
     }
     
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onPVPRespawnActivator (PVPRespawnEvent event){
-        Activators.activate(event);
+    	event.setCancelled(Activators.activate(event));
     }
 
 
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onLeverActivator (LeverEvent event){
-        Activators.activate(event);
+    	event.setCancelled(Activators.activate(event));
     }
     
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onDoorActivator (DoorEvent event){
-        Activators.activate(event);
+    	event.setCancelled(Activators.activate(event));
     }
 
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onJoinActivator (JoinEvent event){
-        Activators.activate(event);
+    	event.setCancelled(Activators.activate(event));
     }
 
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onMobClickActivator (MobClickEvent event){
-        Activators.activate(event);
+    	event.setCancelled(Activators.activate(event));
     }
     
     @EventHandler(priority=EventPriority.NORMAL)
     public void onItemClickActivator (ItemClickEvent event){
-        Activators.activate(event);
+    	event.setCancelled(Activators.activate(event));
     }
     
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onItemHold (ItemHoldEvent event){
-        Activators.activate(event);
+    	event.setCancelled(Activators.activate(event));
     }
 
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
     public void onItemWear (ItemWearEvent event){
-        Activators.activate(event);
+    	event.setCancelled(Activators.activate(event));
     }
-
-    @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
-    public void onTimeIngameEvent (TimeIngameEvent event){
-        Activators.activate(event);
-    }
-
-    @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
-    public void onTimeServerEvent (TimeServerEvent event){
-        Activators.activate(event);
-    }
-    
     
 
 }

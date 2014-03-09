@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 
 
-public class RAPushBack {
+public class PushBack {
     
     private static ReActions plg(){
         return ReActions.instance;
@@ -35,7 +35,7 @@ public class RAPushBack {
         } else return loc1.distance(loc2);
     }
     
-    public static void onPlayerMove (Player p, Location from, Location to){
+    public static void rememberLocations (Player p, Location from, Location to){
         Location prev1 =  getPlayerPrevLoc1 (p);
         if (prev1==null) {
             setPlayerPrevLoc1(p,from);

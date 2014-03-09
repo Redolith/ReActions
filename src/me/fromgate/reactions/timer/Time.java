@@ -43,4 +43,9 @@ public class Time {
 		return ingameTimeToString(Bukkit.getWorlds().get(0).getTime());
 	}
 	
+    public Long timeToTicks(Long time){
+        //1000 ms = 20 ticks
+        return Math.max(1, (time/50));
+    }
+	
 }

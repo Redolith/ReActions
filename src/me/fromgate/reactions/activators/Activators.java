@@ -38,14 +38,13 @@ import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator.ActVal;
 import me.fromgate.reactions.activators.Activator.FlagVal;
+import me.fromgate.reactions.event.RAEvent;
 import me.fromgate.reactions.timer.Timers;
-
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 
 
 
@@ -347,15 +346,16 @@ public class Activators {
         return lst;			
     }
 
-    public static void activate (Event event){
-        if (act.isEmpty()) return;
+    public static boolean activate (RAEvent event){
+        if (act.isEmpty()) return false;
+        boolean cancelParentEvent = false;
         for (int i = 0; i<act.size(); i++){
             Activator a = act.get(i);
             if (a.getType().getEventClass().isInstance(event)){
-                a.executeActivator(event);
+                if (a.executeActivator(event)) cancelParentEvent = true;
             }
-
         }
+        return cancelParentEvent;
     }
 
     public static boolean copyAll (String actfrom, String actto){

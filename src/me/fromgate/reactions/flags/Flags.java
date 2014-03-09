@@ -52,7 +52,8 @@ public enum Flags {
     RNC_RACE("rncrace",true, new FlagRacesAndClasses(true)),
     RNC_CLASS("rncclass",true, new FlagRacesAndClasses(false)),
     WEATHER("weather",true, new FlagWeather()),
-    TIMER_ACTIVE("timeract",false, new FlagTimerActive());
+    TIMER_ACTIVE("timeract",false, new FlagTimerActive()),
+    FCT_PLAYER("playerfaction",false, new FlagFaction());
 
     
 

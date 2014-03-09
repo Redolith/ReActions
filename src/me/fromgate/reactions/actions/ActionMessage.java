@@ -1,16 +1,9 @@
 package me.fromgate.reactions.actions;
 
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import me.fromgate.reactions.externals.RAVault;
-import me.fromgate.reactions.externals.RAWorldGuard;
 import me.fromgate.reactions.util.ParamUtil;
 import me.fromgate.reactions.util.Util;
-
-import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 
@@ -24,39 +17,10 @@ public class ActionMessage extends Action {
     
     
     private void sendMessage(Player player, Map<String, String> params){
-        String message = params.get("param-line"); 
-        Set<Player> players = new HashSet<Player>(); 
-        if (Util.isAnyParamExist(params, "region","group","perm","world","player")){
-            String region = ParamUtil.getParam(params, "region", "");
-            String group = ParamUtil.getParam(params, "group", "");
-            String perm = ParamUtil.getParam(params, "perm", "");
-            String world = ParamUtil.getParam(params, "world", "");
-            String targetPlayer = ParamUtil.getParam(params, "player", "");
-            if (!region.isEmpty()) {
-                players.addAll(RAWorldGuard.playersInRegion(region));
-                message = message.replace("region:"+region, "");
-            }
-            if (!targetPlayer.isEmpty()) {
-                message = message.replace("player:"+targetPlayer, "");
-                Player tp = Bukkit.getPlayer(targetPlayer);
-                if ((tp!=null)&&(tp.isOnline())) players.add(tp);
-            }
-            if (!world.isEmpty()){
-                World w = Bukkit.getWorld(world);
-                if (w!=null)  for (Player pl : w.getPlayers()) players.add(pl);
-                message = message.replace("world:"+world, "");
-            }
-            if ((!group.isEmpty())||(!perm.isEmpty())){
-                for (Player pl : Bukkit.getOnlinePlayers()){
-                    if ((!group.isEmpty())&& RAVault.playerInGroup(pl, group)) players.add(pl);
-                    if ((!perm.isEmpty())&&pl.hasPermission(perm)) players.add(pl);
-                }
-                if (!group.isEmpty()) message = message.replace("group:"+group, "");
-                if (!perm.isEmpty()) message = message.replace("perm:"+perm, "");
-            }
-            message = message.replace("  ", " ");
-            message = message.trim();
-        } else if(player != null) players.add(player);
+        Set<Player> players = Util.getPlayerList(params,player);
+        String message = removeParams (params);
+        if (message.isEmpty()) return;
+        
         for (Player p : players){
             String key = "reactions-msg-"+this.getActivatorName()+(this.isAction() ? "act" : "react");    
             boolean showmsg = false;
@@ -76,5 +40,25 @@ public class ActionMessage extends Action {
             if (showmsg) u().printMsg(p, message);
         }
     }
+    
+	private String removeParams(Map<String, String> params){
+		String message = ParamUtil.getParam(params, "param-line", "");
+		if (message.isEmpty()) return message;
+		if (params.size()<=1) return message;
+		String [] msgArray = message.split(" ");
+		for (String key : params.keySet()){
+			for (int i = 0; i<msgArray.length; i++){
+				String msgPart = msgArray[i].toLowerCase();
+				if (msgPart.startsWith(key.toLowerCase()+":")) msgArray[i]="";
+			}
+		}
+		String newMessage = "";
+		for (int i = 0; i<msgArray.length; i++){
+			if (msgArray[i].isEmpty()) continue;
+			newMessage = newMessage.isEmpty() ? msgArray[i] : newMessage+" "+msgArray[i];
+		}
+		return newMessage;
+	}
+
 
 }

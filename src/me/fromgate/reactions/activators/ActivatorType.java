@@ -10,9 +10,11 @@ package me.fromgate.reactions.activators;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.event.*;
 
@@ -34,7 +36,9 @@ public enum ActivatorType {
     MOBCLICK ("mobclick",MobClickActivator.class,MobClickEvent.class),
     ITEM_CLICK ("itemclick",ItemClickActivator.class,ItemClickEvent.class),
     ITEM_HOLD ("itemhold",ItemHoldActivator.class,ItemHoldEvent.class),
-    ITEM_WEAR("itemwear",ItemWearActivator.class,ItemWearEvent.class);
+    ITEM_WEAR("itemwear",ItemWearActivator.class,ItemWearEvent.class),
+    FCT_CHANGE("faction",FactionActivator.class,FactionEvent.class),
+    FCT_RELATION("fctrelation",FactionRelationActivator.class,FactionRelationEvent.class);
     
     /*,
     TIME_INGAME("time",TimeIngameActivator.class,TimeIngameEvent.class),

@@ -24,33 +24,17 @@ package me.fromgate.reactions.event;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
 
-public class ButtonEvent extends Event {
-    private static final HandlerList handlers = new HandlerList();
+public class ButtonEvent extends RAEvent {
     private Location button_loc = null;
-    private Player player;
 
     public ButtonEvent (Player p, Location loc) {
+    	super (p);
         this.button_loc = loc;
-        this.player = p;
     }
 
     public Location getButtonLocation() {
         return this.button_loc;
-    }
-
-    public Player getPlayer() {
-        return this.player;
-    }
-
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
     }
 
 }

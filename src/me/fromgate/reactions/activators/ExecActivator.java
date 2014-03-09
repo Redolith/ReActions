@@ -22,11 +22,12 @@ public class ExecActivator extends Activator {
     }
     
     @Override
-    public void activate(Event event) {
+    public boolean activate(Event event) {
         if (event instanceof ExecEvent){
             ExecEvent ce  = (ExecEvent) event;
-            if (ce.getActivatorId().equalsIgnoreCase(this.getName())) Actions.executeActivator(ce.getTargetPlayer(), this);
+            if (ce.getActivatorId().equalsIgnoreCase(this.getName())) return Actions.executeActivator(ce.getTargetPlayer(), this);
         }
+        return false;
     }
     
     @Override

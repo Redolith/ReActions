@@ -31,14 +31,14 @@ public class DoorActivator extends Activator {
     }
 
     @Override
-    public void activate(Event event) {
-        if (!(event instanceof DoorEvent)) return;
+    public boolean activate(Event event) {
+        if (!(event instanceof DoorEvent)) return false;
         DoorEvent de = (DoorEvent) event;
-        if (de.getDoorBlock()==null) return;
-        if (!isLocatedAt(de.getDoorLocation())) return;
-        if (this.state.equalsIgnoreCase("open")&&de.isDoorOpened()) return;
-        if (this.state.equalsIgnoreCase("close")&&(!de.isDoorOpened())) return;
-        Actions.executeActivator(de.getPlayer(), this); 
+        if (de.getDoorBlock()==null) return false;
+        if (!isLocatedAt(de.getDoorLocation())) return false;
+        if (this.state.equalsIgnoreCase("open")&&de.isDoorOpened()) return false;
+        if (this.state.equalsIgnoreCase("close")&&(!de.isDoorOpened())) return false;
+        return Actions.executeActivator(de.getPlayer(), this);  
     }
 
     @Override

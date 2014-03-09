@@ -51,10 +51,11 @@ public class RgLeaveActivator extends Activator{
     }
 
     @Override
-    public void activate(Event event) {
-        if (!(event instanceof RegionLeaveEvent)) return;
+    public boolean activate(Event event) {
+        if (!(event instanceof RegionLeaveEvent)) return false;
         RegionLeaveEvent be = (RegionLeaveEvent) event;
-        if (be.getRegion().equals(this.region))	Actions.executeActivator(be.getPlayer(), this);
+        if (!be.getRegion().equals(this.region)) return false;
+        return Actions.executeActivator(be.getPlayer(), this);
     }
 
     @Override

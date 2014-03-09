@@ -20,11 +20,12 @@ public class JoinActivator extends Activator {
     }
 
     @Override
-    public void activate(Event event) {
+    public boolean activate(Event event) {
         if (event instanceof JoinEvent){
             JoinEvent ce  = (JoinEvent) event;
-            if (isJoinActivate(ce.isFirstJoin())) Actions.executeActivator(ce.getPlayer(), this);
+            if (isJoinActivate(ce.isFirstJoin())) return Actions.executeActivator(ce.getPlayer(), this);
         }
+        return false;
     }
 
     private boolean isJoinActivate(boolean join_first_time){

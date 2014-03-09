@@ -52,10 +52,11 @@ public class RegionActivator extends Activator {
 
 
     @Override
-    public void activate(Event event) {
-        if (!(event instanceof RegionEvent)) return;
+    public boolean activate(Event event) {
+        if (!(event instanceof RegionEvent)) return false;
         RegionEvent be = (RegionEvent) event;
-        if (be.getRegion().equals(this.region))	Actions.executeActivator(be.getPlayer(), this);
+        if (be.getRegion().equals(this.region))	return Actions.executeActivator(be.getPlayer(), this);
+        return false;
     }
 
     @Override

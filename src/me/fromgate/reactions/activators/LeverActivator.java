@@ -34,14 +34,14 @@ public class LeverActivator extends Activator {
     }
 
     @Override
-    public void activate(Event event) {
-        if (!(event instanceof LeverEvent)) return;
+    public boolean activate(Event event) {
+        if (!(event instanceof LeverEvent)) return false;
         LeverEvent le = (LeverEvent) event;
-        if (le.getLever() == null) return;
-        if (!isLocatedAt(le.getLeverLocation())) return;
-        if (this.state.equalsIgnoreCase("on")&&le.isLeverPowered()) return;
-        if (this.state.equalsIgnoreCase("off")&&(!le.isLeverPowered())) return;
-        Actions.executeActivator(le.getPlayer(), this);
+        if (le.getLever() == null) return false;
+        if (!isLocatedAt(le.getLeverLocation())) return false;
+        if (this.state.equalsIgnoreCase("on")&&le.isLeverPowered()) return false;
+        if (this.state.equalsIgnoreCase("off")&&(!le.isLeverPowered())) return false;
+        return Actions.executeActivator(le.getPlayer(), this);
     }
 
     @Override

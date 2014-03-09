@@ -19,11 +19,11 @@ public class PVPRespawnActivator extends Activator {
     }
 
     @Override
-    public void activate(Event event) {
-        if (!(event instanceof PVPRespawnEvent)) return;
+    public boolean activate(Event event) {
+        if (!(event instanceof PVPRespawnEvent)) return false;
         PVPRespawnEvent pe = (PVPRespawnEvent) event;
         targetplayer = pe.getKiller().getName();
-        Actions.executeActivator(pe.getPlayer(), this);
+        return Actions.executeActivator(pe.getPlayer(), this);
     }
 
     @Override

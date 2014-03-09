@@ -468,7 +468,13 @@ public abstract class FGUtilCore {
                 String ti[] = si[0].split(":");
                 if (ti.length>0){
                     if (ti[0].matches("[0-9]*")) id=Integer.parseInt(ti[0]);
-                    else id=Material.getMaterial(ti[0]).getId();						
+                    else {
+                    	try {
+                    		id=Material.getMaterial(ti[0]).getId();
+                    	} catch (Exception e){
+                    		logOnce("unknownitem"+ti[0],"Unknown item: "+ti[0]);
+                    	}
+                    }
                     if ((ti.length==2)&&(ti[1]).matches("[0-9]*")) data = Integer.parseInt(ti[1]);
                     return ((item_id==id)&&((data<0)||(item_data==data))&&(item_amount>=amount));
                 }

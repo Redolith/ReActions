@@ -23,17 +23,17 @@ public class ItemHoldActivator extends Activator {
     
 
     @Override
-    public void activate(Event event) {
+    public boolean activate(Event event) {
         if (item.isEmpty()||(ItemUtil.parseItemStack(item)==null)) {
             ReActions.util.logOnce(this.name+"activatorholdempty", "Failed to parse item of activator "+this.name);
-            return;
+            return false;
         }
         if (event instanceof ItemHoldEvent){
             ItemHoldEvent ie  = (ItemHoldEvent) event;
             if (ItemUtil.compareItemStr(ie.getItem(), this.item))
-                 Actions.executeActivator(ie.getPlayer(), this);
+                 return Actions.executeActivator(ie.getPlayer(), this);
         }
-        
+        return false;
     }
 
     @Override

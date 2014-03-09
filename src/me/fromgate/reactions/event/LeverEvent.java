@@ -4,19 +4,15 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
 import org.bukkit.material.Lever;
 
-public class LeverEvent extends Event{
-    private static final HandlerList handlers = new HandlerList();
+public class LeverEvent extends RAEvent{
     private Block lever_block;
-    private Player player;
     
     
     public LeverEvent (Player p, Block block) {
+    	super(p);
         this.lever_block = block;
-        this.player = p;
     }
 
     public Lever getLever(){
@@ -33,18 +29,5 @@ public class LeverEvent extends Event{
     public Location getLeverLocation() {
         return lever_block.getLocation();
     }
-
-    public Player getPlayer() {
-        return this.player;
-    }
-
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
-
 
 }

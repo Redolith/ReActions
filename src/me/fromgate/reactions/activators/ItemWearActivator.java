@@ -23,17 +23,17 @@ public class ItemWearActivator extends Activator {
     
 
     @Override
-    public void activate(Event event) {
+    public boolean activate(Event event) {
         if (item.isEmpty()||(ItemUtil.parseItemStack(item)==null)) {
             ReActions.util.logOnce(this.name+"activatorwearempty", "Failed to parse item of activator "+this.name);
-            return;
+            return false;
         }
         if (event instanceof ItemWearEvent){
             ItemWearEvent iw  = (ItemWearEvent) event;
             if (iw.isItemWeared(this.item))
-                Actions.executeActivator(iw.getPlayer(), this);
+                return Actions.executeActivator(iw.getPlayer(), this);
         }
-        
+        return false;
     }
 
     @Override

@@ -1,22 +1,16 @@
 package me.fromgate.reactions.event;
 
 import me.fromgate.reactions.util.Util;
-
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
 
-public class DoorEvent extends Event{
-    private static final HandlerList handlers = new HandlerList();
+public class DoorEvent extends RAEvent{
     private Block door_block;
-    private Player player;
-    
     
     public DoorEvent (Player p, Block block) {
+    	super(p);
         this.door_block = block;
-        this.player = p;
     }
 
     public Block getDoorBlock(){
@@ -30,18 +24,6 @@ public class DoorEvent extends Event{
     
     public Location getDoorLocation() {
         return door_block.getLocation();
-    }
-
-    public Player getPlayer() {
-        return this.player;
-    }
-
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
     }
 
 

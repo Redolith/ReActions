@@ -10,6 +10,8 @@ import java.util.Set;
 
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.externals.RAFactions;
+import me.fromgate.reactions.externals.RAVault;
 import me.fromgate.reactions.externals.RAWorldGuard;
 
 import org.bukkit.Bukkit;
@@ -59,8 +61,10 @@ public class Util {
 		if (!((ln.length==4)||(ln.length==6))) return null;
 		World w = Bukkit.getWorld(ln[0]);
 		if (w==null) return null;
-		for (int i = 1; i<ln.length; i++)
-			if (!(ln[i].matches("-?[0-9]+[0-9]*\\.[0-9]+")||ln[i].matches("-?[1-9]+[0-9]*"))) return null;
+		for (int i = 1; i<ln.length; i++){
+			if (!(u().isInteger(ln[i])||ln[i].matches("-?[0-9]+[0-9]*\\.[0-9]+")||ln[i].matches("-?[1-9]+[0-9]*"))) return null;
+		}
+
 		loc = new Location (w, Double.parseDouble(ln[1]),Double.parseDouble(ln[2]),Double.parseDouble(ln[3]));
 		if (ln.length==6){
 			loc.setYaw(Float.parseFloat(ln[4]));
@@ -259,24 +263,23 @@ public class Util {
 		return stacks;
 	}
 	public static String itemToString (ItemStack item){
-		String str ="";
-		String n = item.getType().name();
+		String itemStr ="";
+		if (item == null) return itemStr;
+		String itemName = item.getType().name();
 		try {
-			if (item.getItemMeta().hasDisplayName()) n =ChatColor.stripColor(item.getItemMeta().getDisplayName());
+			if (item.getItemMeta().hasDisplayName()) itemName =ChatColor.stripColor(item.getItemMeta().getDisplayName());
 		} catch (Exception e){
 		}
-		String a = item.getAmount()>1 ? "*"+item.getAmount() : "";
-		str = n+a;
-		return str;
+		String amount = item.getAmount()>1 ? "*"+item.getAmount() : "";
+		itemStr = itemName+amount;
+		return itemStr;
 	}
 
 	public static String itemsToString (List<ItemStack> items){
-		String str ="";
+		String str="";
 		for (ItemStack i : items){
-			String n = i.getItemMeta().hasDisplayName() ? ChatColor.stripColor(i.getItemMeta().getDisplayName()) : i.getType().name();
-			String a = i.getAmount()>1 ? "*"+i.getAmount() : "";
-			if (str.isEmpty()) str = n+a;
-			else str = str+", "+n+a;
+			String itemStr = itemToString(i);
+			if (!itemStr.isEmpty()) str = str.isEmpty() ? itemStr : ", " +itemStr;
 		}
 		return str;        
 	}
@@ -330,12 +333,17 @@ public class Util {
 	@SuppressWarnings("deprecation")
 	public static String replaceStandartLocations (Player p, String param){
 		if (p==null) return param;
+		Location targetBlock = null;
+		try{
+			targetBlock = p.getTargetBlock(null, 100).getLocation();
+		} catch(Exception e){
+		}
 		Map<String,Location> locs = new HashMap<String,Location>();
 		locs.put("%here%", p.getLocation());
 		locs.put("%eye%", p.getEyeLocation());
 		locs.put("%head%", p.getEyeLocation());
-		locs.put("%viewpoint%", p.getTargetBlock(null, 100).getLocation());
-		locs.put("%view%", p.getTargetBlock(null, 100).getLocation());
+		locs.put("%viewpoint%", targetBlock);
+		locs.put("%view%", targetBlock);
 		locs.put("%selection%", Selector.getSelectedLocation(p));
 		locs.put("%sel%", Selector.getSelectedLocation(p));
 		String newparam = param;
@@ -437,16 +445,27 @@ public class Util {
 		return false;
 	}
 
-	public static Set<Player> getPlayerList(Map<String,String> params){
+	public static Set<Player> getPlayerList(Map<String,String> params, Player singlePlayer){
 		Set<Player> players = new HashSet<Player>();
-		if (params.containsKey("region")||params.containsKey("rgplayer")||params.containsKey("player")||params.containsKey("world")){
+		if (params.containsKey("region")||params.containsKey("rgplayer")||params.containsKey("player")||params.containsKey("world")||
+				params.containsKey("faction")){
 
 			// Players in regions
-			String regionNames = ParamUtil.getParam(params, "region", "");
-			if (regionNames.isEmpty()) regionNames = ParamUtil.getParam(params, "rgplayer", "");
-			String[] arrRegion = regionNames.split(",");
-			for (String regionName: arrRegion)
-				players.addAll(RAWorldGuard.playersInRegion(regionName));
+			if (RAWorldGuard.isConnected()){
+				String regionNames = ParamUtil.getParam(params, "region", "");
+				if (regionNames.isEmpty()) regionNames = ParamUtil.getParam(params, "rgplayer", "");
+				String[] arrRegion = regionNames.split(",");
+				for (String regionName: arrRegion)
+					players.addAll(RAWorldGuard.playersInRegion(regionName));
+			}
+
+			// Players in faction
+			if (RAFactions.isFactionConnected()){
+				String factionNames = ParamUtil.getParam(params, "faction", "");
+				String [] arrFaction = factionNames.split(",");
+				for (String factionName : arrFaction)
+					players.addAll(RAFactions.playersInFaction(factionName));
+			}
 
 			// Players in worlds
 			String worldNames = ParamUtil.getParam(params, "world", "");
@@ -456,6 +475,17 @@ public class Util {
 				if (world ==null) continue;
 				for (Player p : world.getPlayers()) players.add(p);
 			}
+			
+			// Player by permission & group
+			String group = ParamUtil.getParam(params, "group", "");
+			String perm = ParamUtil.getParam(params, "perm", "");
+            if ((!group.isEmpty())||(!perm.isEmpty())){
+                for (Player pl : Bukkit.getOnlinePlayers()){
+                    if ((!group.isEmpty())&& RAVault.playerInGroup(pl, group)) players.add(pl);
+                    if ((!perm.isEmpty())&&pl.hasPermission(perm)) players.add(pl);
+                }
+            }
+			
 			// Players by name (all = all players, null - empty player)
 			String playerNames = ParamUtil.getParam(params, "player", "");
 			if (playerNames.equalsIgnoreCase("all")){
@@ -472,8 +502,9 @@ public class Util {
 					if ((targetPlayer !=null)&&(targetPlayer.isOnline()))players.add(targetPlayer);	
 				}
 			}
-		}
+		} else if (singlePlayer != null) players.add(singlePlayer);
 		return players;
 	}
+
 
 }

@@ -35,6 +35,8 @@ import me.fromgate.reactions.activators.Activators;
 import me.fromgate.reactions.activators.ButtonActivator;
 import me.fromgate.reactions.activators.CommandActivator;
 import me.fromgate.reactions.activators.DoorActivator;
+import me.fromgate.reactions.activators.FactionActivator;
+import me.fromgate.reactions.activators.FactionRelationActivator;
 import me.fromgate.reactions.activators.ItemClickActivator;
 import me.fromgate.reactions.activators.ItemHoldActivator;
 import me.fromgate.reactions.activators.ItemWearActivator;
@@ -659,6 +661,12 @@ public class Cmd implements CommandExecutor{
 			break;
 		case ITEM_WEAR:    
 			if (!param.isEmpty()) activator = new ItemWearActivator (name, param);
+			break;
+		case FCT_CHANGE:    
+			activator = new FactionActivator (name, param);
+			break;
+		case FCT_RELATION:    
+			activator = new FactionRelationActivator (name, param);
 			break;
 		default:
 			break;

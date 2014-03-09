@@ -24,278 +24,267 @@ package me.fromgate.reactions.activators;
 
 import java.util.ArrayList;
 import java.util.List;
-import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.flags.Flags;
-
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
 
 public abstract class Activator {
 
-    String name;
-    String group;
+	String name;
+	String group;
 
-    public Activator(String name, String group){
-        this.name = name;
-        this.group = group;
-    }
-    
-    public Activator(String name, String group,YamlConfiguration cfg){
-        this.name = name;
-        this.loadActivator(cfg);
-        this.group = group;
-    }
+	public Activator(String name, String group){
+		this.name = name;
+		this.group = group;
+	}
 
-    private List<FlagVal> flags = new ArrayList<FlagVal>();
-    private List<ActVal> actions = new ArrayList<ActVal>();
-    private List<ActVal> reactions = new ArrayList<ActVal>();
+	public Activator(String name, String group,YamlConfiguration cfg){
+		this.name = name;
+		this.loadActivator(cfg);
+		this.group = group;
+	}
 
-    public void addFlag(String flag, String param, boolean not){
-        flags.add(new FlagVal(Flags.getValidName(flag),param,not));
-    }
+	private List<FlagVal> flags = new ArrayList<FlagVal>();
+	private List<ActVal> actions = new ArrayList<ActVal>();
+	private List<ActVal> reactions = new ArrayList<ActVal>();
 
-    public boolean removeFlag (int index){
-        if (flags.size()<=index) return false;
-        flags.remove(index);
-        return true;
-    }
-    public List<FlagVal> getFlags(){
-        return flags;
-    }
+	public void addFlag(String flag, String param, boolean not){
+		flags.add(new FlagVal(Flags.getValidName(flag),param,not));
+	}
 
-    public void addAction (String action, String param){
-        actions.add(new ActVal (Actions.getValidName(action),param));
-    }
+	public boolean removeFlag (int index){
+		if (flags.size()<=index) return false;
+		flags.remove(index);
+		return true;
+	}
+	public List<FlagVal> getFlags(){
+		return flags;
+	}
 
-    public boolean removeAction (int index){
-        if (actions.size()<=index) return false;
-        actions.remove(index);
-        return true;
-    }
+	public void addAction (String action, String param){
+		actions.add(new ActVal (Actions.getValidName(action),param));
+	}
 
-    public void addReaction (String action, String param){
-        reactions.add(new ActVal (Actions.getValidName(action),param));
-    }
+	public boolean removeAction (int index){
+		if (actions.size()<=index) return false;
+		actions.remove(index);
+		return true;
+	}
 
-    public boolean removeReaction (int index){
-        if (reactions.size()<=index) return false;
-        reactions.remove(index);
-        return true;
-    }
+	public void addReaction (String action, String param){
+		reactions.add(new ActVal (Actions.getValidName(action),param));
+	}
 
-    public List<ActVal> getActions(){
-        return actions;
-    }
+	public boolean removeReaction (int index){
+		if (reactions.size()<=index) return false;
+		reactions.remove(index);
+		return true;
+	}
 
-    public List<ActVal> getReactions(){
-        return reactions;
-    }
+	public List<ActVal> getActions(){
+		return actions;
+	}
 
-
-    public void clearFlags(){
-        flags.clear();
-    }
-
-    public void clearActions(){
-        actions.clear();
-    }
-
-    public void clearReactions(){
-        reactions.clear();
-    }
+	public List<ActVal> getReactions(){
+		return reactions;
+	}
 
 
-    /*
-     * Надо будет вынести в отдельный файл
-     */
-    public class ActVal{
-        public String flag;
-        public String value;
-        public ActVal(String f, String v){
-            this.flag =f;
-            this.value = v;
-        }
-        public ActVal(String f){
-            this.flag =f;
-            this.value = "";
-        }
-        @Override
-        public String toString() {
-            return flag + "=" + value;
-        }
-    }
+	public void clearFlags(){
+		flags.clear();
+	}
 
-    /*
-     * Надо будет вынести в отдельный файл
-     */
-    public class FlagVal{
-        public String flag;
-        public String value;
-        public boolean not;
+	public void clearActions(){
+		actions.clear();
+	}
 
-        public FlagVal(String f, String v, boolean not){
-            this.flag =f;
-            this.value = v;
-            this.not = not;
-        }
+	public void clearReactions(){
+		reactions.clear();
+	}
 
-        @Override
-        public String toString() {
-            String str =flag + "=" + value;
-            if (this.not) str = "!"+str;
-            return str; 
-        }
-    }
 
-    @Override
-    public String toString(){
-        return name+" ["+getType()+ "] F:"+this.flags.size()+" A:"+this.actions.size()+" R:"+this.reactions.size();
-    }
+	/*
+	 * Надо будет вынести в отдельный файл
+	 */
+	 public class ActVal{
+		public String flag;
+		public String value;
+		public ActVal(String f, String v){
+			this.flag =f;
+			this.value = v;
+		}
+		public ActVal(String f){
+			this.flag =f;
+			this.value = "";
+		}
+		@Override
+		public String toString() {
+			return Actions.getValidName(flag) + "=" + value;
+		}
+	 }
 
-    @Override
-    public int hashCode() {
-        /* Надо будет переделать так чтобы получалась сортировка по алфавиту, хм.. и группировка по группам сразу...
-         */
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        return result;
-    }
-    public boolean equals(String name){
-        if (name == null) return false;
-        if (name.isEmpty()) return false;
-        return this.name.equalsIgnoreCase(name);
-    }
+	 /*
+	  * Надо будет вынести в отдельный файл
+	  */
+	 public class FlagVal{
+		 public String flag;
+		 public String value;
+		 public boolean not;
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (!(obj instanceof Activator))
-            return false;
-        Activator other = (Activator) obj;
-        if (name == null) {
-            if (other.name != null)
-                return false;
-        } else if (!this.name.equals(other.name))
-            return false;
-        return true;
-    }
+		 public FlagVal(String f, String v, boolean not){
+			 this.flag =f;
+			 this.value = v;
+			 this.not = not;
+		 }
 
-    /*
-     *  Группу по идее дублировать не надо... т.е. она должна выставляться "из вне"...
-     */
-    public void saveActivator(YamlConfiguration cfg){
-        String key = getType()+"."+this.name;
-        save (key, cfg);
-        List<String> flg = new ArrayList<String>();
-        if (!flags.isEmpty())
-            for (int i = 0; i<flags.size(); i++)
-                flg.add(flags.get(i).toString());
-        cfg.set(key+".flags", flg);
+		 @Override
+		 public String toString() {
+			 String str =  Flags.getValidName (flag) + "=" + value;
+			 if (this.not) str = "!"+str;
+			 return str; 
+		 }
+	 }
 
-        flg = new ArrayList<String>();
-        if (!actions.isEmpty())
-            for (int i = 0; i<actions.size(); i++)
-                flg.add(actions.get(i).toString());
-        cfg.set(key+".actions", flg);
+	 @Override
+	 public String toString(){
+		 return name+" ["+getType()+ "] F:"+this.flags.size()+" A:"+this.actions.size()+" R:"+this.reactions.size();
+	 }
 
-        flg = new ArrayList<String>();
-        if (!reactions.isEmpty())
-            for (int i = 0; i<reactions.size(); i++)
-                flg.add(reactions.get(i).toString());
-        cfg.set(key+".reactions", flg);
-    }
+	 @Override
+	 public int hashCode() {
+		 /* Надо будет переделать так чтобы получалась сортировка по алфавиту, хм.. и группировка по группам сразу...
+		  */
+		 final int prime = 31;
+		 int result = 1;
+		 result = prime * result + ((name == null) ? 0 : name.hashCode());
+		 return result;
+	 }
+	 public boolean equals(String name){
+		 if (name == null) return false;
+		 if (name.isEmpty()) return false;
+		 return this.name.equalsIgnoreCase(name);
+	 }
 
-    public void loadActivator (YamlConfiguration cfg){
-        String key = getType().name()+"."+this.name;
-        load (key, cfg);
-        List<String> flg = cfg.getStringList(key+".flags");
-        for (String flgstr : flg){
-            String flag = flgstr;
-            String param = "";
-            boolean not = false;
-            if (flgstr.contains("=")){
-                flag  = flgstr.substring(0, flgstr.indexOf("="));
-                if (flgstr.indexOf("=")<flgstr.length())
-                    param = flgstr.substring(flgstr.indexOf("=")+1,flgstr.length());
-            }
-            if (flag.startsWith("!")){
-                flag=flag.replaceFirst("!", "");
-                not = true;
-            }
-            addFlag(flag, param, not);
-        }
+	 @Override
+	 public boolean equals(Object obj) {
+		 if (this == obj)
+			 return true;
+		 if (obj == null)
+			 return false;
+		 if (!(obj instanceof Activator))
+			 return false;
+		 Activator other = (Activator) obj;
+		 if (name == null) {
+			 if (other.name != null)
+				 return false;
+		 } else if (!this.name.equals(other.name))
+			 return false;
+		 return true;
+	 }
 
-        flg = cfg.getStringList(key+".actions");
-        for (String flgstr : flg){
-            String flag = flgstr;
-            String param = "";
-            if (flgstr.contains("=")){
-                flag  = flgstr.substring(0, flgstr.indexOf("="));
-                param = flgstr.substring(flgstr.indexOf("=")+1,flgstr.length());
-            }
-            addAction(flag, param);
-        }
+	 /*
+	  *  Группу по идее дублировать не надо... т.е. она должна выставляться "из вне"...
+	  */
+	 public void saveActivator(YamlConfiguration cfg){
+		 String key = getType()+"."+this.name;
+		 save (key, cfg);
+		 List<String> flg = new ArrayList<String>();
+		 if (!flags.isEmpty())
+			 for (int i = 0; i<flags.size(); i++)
+				 flg.add(flags.get(i).toString());
+		 cfg.set(key+".flags", flg);
 
-        flg = cfg.getStringList(key+".reactions");
-        for (String flgstr : flg){
-            String flag = flgstr;
-            String param = "";
-            if (flgstr.contains("=")){
-                flag  = flgstr.substring(0, flgstr.indexOf("="));
-                param = flgstr.substring(flgstr.indexOf("=")+1,flgstr.length());
-            }
-            addReaction(flag, param);
-        }
-    }
+		 flg = new ArrayList<String>();
+		 if (!actions.isEmpty())
+			 for (int i = 0; i<actions.size(); i++)
+				 flg.add(actions.get(i).toString());
+		 cfg.set(key+".actions", flg);
 
-    public void setGroup (String group){
-        this.group = group;
-    }
+		 flg = new ArrayList<String>();
+		 if (!reactions.isEmpty())
+			 for (int i = 0; i<reactions.size(); i++)
+				 flg.add(reactions.get(i).toString());
+		 cfg.set(key+".reactions", flg);
+	 }
 
-    public String getGroup(){
-        return this.group;
-    }
+	 public void loadActivator (YamlConfiguration cfg){
+		 String key = getType().name()+"."+this.name;
+		 load (key, cfg);
+		 List<String> flg = cfg.getStringList(key+".flags");
+		 for (String flgstr : flg){
+			 String flag = flgstr;
+			 String param = "";
+			 boolean not = false;
+			 if (flgstr.contains("=")){
+				 flag  = flgstr.substring(0, flgstr.indexOf("="));
+				 if (flgstr.indexOf("=")<flgstr.length())
+					 param = flgstr.substring(flgstr.indexOf("=")+1,flgstr.length());
+			 }
+			 if (flag.startsWith("!")){
+				 flag=flag.replaceFirst("!", "");
+				 not = true;
+			 }
+			 addFlag(flag, param, not);
+		 }
 
-    public boolean isAnnoying(){
-        return false;
-    }
+		 flg = cfg.getStringList(key+".actions");
+		 for (String flgstr : flg){
+			 String flag = flgstr;
+			 String param = "";
+			 if (flgstr.contains("=")){
+				 flag  = flgstr.substring(0, flgstr.indexOf("="));
+				 param = flgstr.substring(flgstr.indexOf("=")+1,flgstr.length());
+			 }
+			 addAction(flag, param);
+		 }
 
-    public String getName(){
-        return this.name;
-    }
+		 flg = cfg.getStringList(key+".reactions");
+		 for (String flgstr : flg){
+			 String flag = flgstr;
+			 String param = "";
+			 if (flgstr.contains("=")){
+				 flag  = flgstr.substring(0, flgstr.indexOf("="));
+				 param = flgstr.substring(flgstr.indexOf("=")+1,flgstr.length());
+			 }
+			 addReaction(flag, param);
+		 }
+	 }
 
-    /*public boolean isTypeOf (String str){
-        return str.equalsIgnoreCase(getType());
-    }*/
-    
-    public void executeActivator(final Event event){
-        Bukkit.getScheduler().runTask(ReActions.instance, new Runnable(){
-            @Override
-            public void run() {
-                activate(event);
-            }
-        });
-    }
+	 public void setGroup (String group){
+		 this.group = group;
+	 }
 
-    public abstract void activate(Event event); // Наверное всё-таки так
-    public abstract boolean isLocatedAt (Location loc);
-    public abstract void save(String root, YamlConfiguration cfg);
-    public abstract void load(String root, YamlConfiguration cfg);
-    //public abstract String getType();
-    public abstract ActivatorType getType();
-    public boolean isTypeOf(String str){
-        return ((getType().name().equalsIgnoreCase(str))||(getType().getAlias().equalsIgnoreCase(str))); 
-    }
+	 public String getGroup(){
+		 return this.group;
+	 }
 
-    public String getTargetPlayer() {
-        return "%targetplayer%";
-    }
+	 public boolean isAnnoying(){
+		 return false;
+	 }
+
+	 public String getName(){
+		 return this.name;
+	 }
+
+
+	 public boolean executeActivator(Event event){
+		 return activate(event);
+	 }
+
+
+	 public abstract boolean activate(Event event); // Наверное всё-таки так
+	 public abstract boolean isLocatedAt (Location loc);
+	 public abstract void save(String root, YamlConfiguration cfg);
+	 public abstract void load(String root, YamlConfiguration cfg);
+	 public abstract ActivatorType getType();
+	 public boolean isTypeOf(String str){
+		 return ((getType().name().equalsIgnoreCase(str))||(getType().getAlias().equalsIgnoreCase(str))); 
+	 }
+
+	 public String getTargetPlayer() {
+		 return "%targetplayer%";
+	 }
 
 }

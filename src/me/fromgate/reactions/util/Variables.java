@@ -15,6 +15,7 @@ public class Variables {
     }
 
     private static HashMap<String,String> vars = new HashMap<String,String>();
+    private static HashMap<String,String> tempvars = new HashMap<String,String>();
 
     private static String varId(Player player, String var){
         return player == null ? "general."+var : player.getName()+"."+var;
@@ -40,20 +41,22 @@ public class Variables {
     public static boolean cmpVar (Player player, String var, String cmpvalue){
         String id = varId(player, var);
         if (!vars.containsKey(id)) return false;
-        return var.equalsIgnoreCase(cmpvalue);
+        String value = getVar(player,var,"");
+        if (u().isIntegerSigned(cmpvalue,value)) return (Integer.parseInt(cmpvalue)==Integer.parseInt(value));
+        return value.equalsIgnoreCase(cmpvalue);
     }
 
     public static boolean cmpGreaterVar (Player player, String var, String cmpvalue){
         String id = varId(player, var);
         if (!vars.containsKey(id)) return false;
-        if (!u().isInteger(vars.get(id),cmpvalue)) return false;
+        if (!u().isIntegerSigned(vars.get(id),cmpvalue)) return false;
         return Integer.parseInt(vars.get(id))>Integer.parseInt(cmpvalue);
     }
 
     public static boolean cmpLowerVar (Player player, String var, String cmpvalue){
         String id = varId(player, var);
         if (!vars.containsKey(id)) return false;
-        if (!u().isInteger(vars.get(id),cmpvalue)) return false;
+        if (!u().isIntegerSigned(vars.get(id),cmpvalue)) return false;
         return Integer.parseInt(vars.get(id))<Integer.parseInt(cmpvalue);
     }
 
@@ -73,12 +76,20 @@ public class Variables {
         String id = varId(player, var);
         if (!vars.containsKey(id)) setVar(player,var,"0");
         String valueStr = vars.get(id);
-        if (!u().isInteger(valueStr)) return false; 
+        if (!u().isIntegerSigned(valueStr)) return false; 
         setVar(player,var,String.valueOf(Integer.parseInt(valueStr)+addValue));
         return true;
     }
     public static boolean decVar (Player player, String var, int decValue){
         return incVar (player, var, decValue*(-1));
+    }
+    
+    public static boolean mergeVar(Player player, String var, String stringToMerge,boolean spaceDivider){
+    	String space = spaceDivider ? " " : "";
+        String id = varId(player, var);
+        if (!vars.containsKey(id)) setVar(player,var,"");
+        setVar(player,var,getVar(player,var,"")+space+stringToMerge);
+    	return false;
     }
 
 
@@ -125,5 +136,42 @@ public class Variables {
         }
         return newStr;
     }
+    
+    
+    
+    /*
+     *  Temporary variables - replacement for place holders
+     * 
+     */
+    
+    public static String replaceTempVars(String str){
+    	if (str.isEmpty()) return str;
+    	String newStr = str;
+    	for (String key : tempvars.keySet()){
+    		newStr = newStr.replaceAll("%"+key+"%", tempvars.get(key));
+    	}
+    	return newStr;
+    }
+
+    public static void setTempVar (String varId, String value){
+        vars.put(varId, value);
+    }
+
+    public static void clearTempVar (String varId){
+    	if (vars.containsKey(varId)) vars.remove(varId);
+    }
+    
+    public static void clearAllTempVar (String varId){
+    	tempvars.clear();
+    }
+    
+    public static String getTempVar (String varId){
+    	return getTempVar (varId,"");
+    }
+    public static String getTempVar (String varId, String defvar){
+    	if (tempvars.containsKey(varId)) return tempvars.get(varId);
+    	return defvar;
+    }
+
 
 }

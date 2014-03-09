@@ -60,11 +60,11 @@ public class PlateActivator extends Activator{
      * Очередная залипуха, надо будет потом переделать
      */
     @Override
-    public void activate(Event event) {
-        if (!(event instanceof PlateEvent)) return;
+    public boolean activate(Event event) {
+        if (!(event instanceof PlateEvent)) return false;
         PlateEvent be = (PlateEvent) event;
-        if (!isLocatedAt(be.getPlateLocation())) return;
-        Actions.executeActivator(be.getPlayer(), this);
+        if (!isLocatedAt(be.getPlateLocation())) return false;
+        return Actions.executeActivator(be.getPlayer(), this);
     }
 
     @Override

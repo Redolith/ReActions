@@ -23,43 +23,18 @@
 package me.fromgate.reactions.event;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
 
-public class RegionEvent extends Event {
+public class RegionEvent extends RAEvent {
 
     private String region;
-    private Player player;
-    private static final HandlerList handlers = new HandlerList();
-
-    /*
-     * player - топающий игрок
-     * wgregion - регион где он ходит (находится?)
-     *  
-     */
 
     public RegionEvent (Player player, String region){
+    	super (player);
         this.region = region;
-        this.player = player;
     }
-
-    public Player getPlayer(){
-        return this.player;
-    }
-
-
 
     public String getRegion(){
         return this.region;
     }
-
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
-
 
 }

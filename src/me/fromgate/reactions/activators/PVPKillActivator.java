@@ -18,11 +18,11 @@ public class PVPKillActivator extends Activator {
     }
 
     @Override
-    public void activate(Event event) {
-        if (!(event instanceof PVPKillEvent)) return;
+    public boolean activate(Event event) {
+        if (!(event instanceof PVPKillEvent)) return false;
         PVPKillEvent pe = (PVPKillEvent) event;
         this.targetplayer = pe.getKilledPlayer().getName();
-        Actions.executeActivator(pe.getPlayer(), this);
+        return Actions.executeActivator(pe.getPlayer(), this);
     }
 
     @Override
