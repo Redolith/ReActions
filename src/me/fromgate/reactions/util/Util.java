@@ -7,13 +7,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.externals.RAFactions;
 import me.fromgate.reactions.externals.RAVault;
 import me.fromgate.reactions.externals.RAWorldGuard;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -445,10 +443,14 @@ public class Util {
 		return false;
 	}
 
+	//region,rgplayer,player,world,faction,group,perm
 	public static Set<Player> getPlayerList(Map<String,String> params, Player singlePlayer){
 		Set<Player> players = new HashSet<Player>();
-		if (params.containsKey("region")||params.containsKey("rgplayer")||params.containsKey("player")||params.containsKey("world")||
-				params.containsKey("faction")){
+		if (params.containsKey("region")||params.containsKey("rgplayer")||params.containsKey("player")||
+				params.containsKey("world")||
+				params.containsKey("faction")||
+				params.containsKey("group")||
+				params.containsKey("perm")){
 
 			// Players in regions
 			if (RAWorldGuard.isConnected()){

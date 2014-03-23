@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.Activators;
+import me.fromgate.reactions.externals.RACraftConomy;
 import me.fromgate.reactions.externals.RAEffects;
 import me.fromgate.reactions.externals.RAFactions;
 import me.fromgate.reactions.externals.RARacesAndClasses;
@@ -113,6 +114,7 @@ public class ReActions extends JavaPlugin {
         Variables.load();
         loadLocs();
         RAVault.init();
+        RACraftConomy.init();
         RAWorldGuard.init();
         if (checkTowny()) towny_conected = RATowny.init();
         try {

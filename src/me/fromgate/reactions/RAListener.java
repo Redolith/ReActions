@@ -44,12 +44,14 @@ import me.fromgate.reactions.event.PlateEvent;
 import me.fromgate.reactions.event.RegionEnterEvent;
 import me.fromgate.reactions.event.RegionEvent;
 import me.fromgate.reactions.event.RegionLeaveEvent;
+import me.fromgate.reactions.externals.RAEconomics;
 import me.fromgate.reactions.externals.RAVault;
 import me.fromgate.reactions.util.RADebug;
 import me.fromgate.reactions.util.RAMobSpawn;
 import me.fromgate.reactions.util.RAPVPRespawn;
 import me.fromgate.reactions.util.PushBack;
 import me.fromgate.reactions.util.Util;
+
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -140,9 +142,9 @@ public class RAListener implements Listener{
         if (event.getEntity().hasMetadata("ReActions-money")) {
             if (!RAVault.isEconomyConected()) return;
             if (killer != null){
-                int money = Util.getMinMaxRandom(event.getEntity().getMetadata("ReActions-money").get(0).asString());    
-                RAVault.depositPlayer(killer.getName(), money);
-                plg.u.printMSG(killer, "msg_mobbounty",'e','6',RAVault.formatMoney(Integer.toString(money)),event.getEntity().getType().name());
+                int money = Util.getMinMaxRandom(event.getEntity().getMetadata("ReActions-money").get(0).asString());
+                RAEconomics.creditAccount(killer.getName(), "", Double.toString(money), "", "");
+                plg.u.printMSG(killer, "msg_mobbounty",'e','6',RAEconomics.format(money, "", ""),event.getEntity().getType().name());
             }
         }
         

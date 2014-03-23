@@ -7,9 +7,8 @@ import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.Activator.FlagVal;
-import me.fromgate.reactions.externals.RAVault;
+import me.fromgate.reactions.externals.RAEconomics;
 import me.fromgate.reactions.flags.Flags;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -77,8 +76,11 @@ public class Placeholders {
                     ReActions.util.logOnce("plr_health", "Failed to get Player health. This feature is not compatible with CB 1.5.2 (and older)...");
                 }
                 return hlth;
-            }
-            else for (FlagVal flg : a.getFlags())
+            } else if (p!=null&&placeholder.startsWith("%money")) {
+            	Map<String,String> params = RAEconomics.getBalances(p);
+            	String key = placeholder.replaceAll("%", "");
+            	if (params.containsKey(key)) return params.get(key);
+            } else for (FlagVal flg : a.getFlags())
                 if (flg.flag.equals(flag)) return formatFlagParam (flag, flg.value);
         }
         return placeholder;
@@ -105,10 +107,10 @@ public class Placeholders {
         case CHANCE: 
             rst = value +"%";
             break;
-        case MONEY:
+        /*case MONEY:
             if (RAVault.isEconomyConected()&&u().isIntegerSigned(value))
                 rst = RAVault.formatMoney(value);
-            break;
+            break;*/
         default:
             break;
         }

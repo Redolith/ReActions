@@ -23,9 +23,12 @@ package me.fromgate.reactions.externals;
 
 import static com.palmergames.bukkit.towny.object.TownyObservableType.TOWN_ADD_RESIDENT;
 import static com.palmergames.bukkit.towny.object.TownyObservableType.TOWN_REMOVE_RESIDENT;
+import me.fromgate.reactions.ReActions;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+
 import com.palmergames.bukkit.towny.Towny;
 import com.palmergames.bukkit.towny.event.TownAddResidentEvent;
 import com.palmergames.bukkit.towny.event.TownRemoveResidentEvent;
@@ -42,6 +45,7 @@ public class RATowny {
 
     public static boolean init(){
         connected = connectToTowny();
+        if (connected) ReActions.util.log("Towny found");
         return connected;
     }
     private static boolean connectToTowny(){

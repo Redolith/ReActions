@@ -15,6 +15,12 @@ public class ActionMessage extends Action {
         return true;
     }
     
+    private String [] keys = {"region","rgplayer","player","world","faction","group","perm"};
+    public boolean isKeyword(String key){
+    	for (String keyStr : keys)
+    		if (keyStr.equalsIgnoreCase(key)) return true;
+    	return false;
+    }
     
     private void sendMessage(Player player, Map<String, String> params){
         Set<Player> players = Util.getPlayerList(params,player);
@@ -47,6 +53,7 @@ public class ActionMessage extends Action {
 		if (params.size()<=1) return message;
 		String [] msgArray = message.split(" ");
 		for (String key : params.keySet()){
+			if (!isKeyword(key)) continue;			 
 			for (int i = 0; i<msgArray.length; i++){
 				String msgPart = msgArray[i].toLowerCase();
 				if (msgPart.startsWith(key.toLowerCase()+":")) msgArray[i]="";
@@ -55,10 +62,12 @@ public class ActionMessage extends Action {
 		String newMessage = "";
 		for (int i = 0; i<msgArray.length; i++){
 			if (msgArray[i].isEmpty()) continue;
-			newMessage = newMessage.isEmpty() ? msgArray[i] : newMessage+" "+msgArray[i];
+			newMessage = newMessage.isEmpty() ? msgArray[i] : newMessage+(msgArray[i].isEmpty() ? "" : " "+msgArray[i]);
 		}
 		return newMessage;
 	}
+	
+	
 
 
 }

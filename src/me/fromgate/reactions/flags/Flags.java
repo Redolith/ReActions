@@ -18,7 +18,7 @@ public enum Flags {
     ITEM_INVENTORY ("invitem",true,new FlagItem(1)),
     ITEM_WEAR ("invwear",true,new FlagItem(2)),
     TOWN ("town",true,new FlagTown()),
-    MONEY ("money",true,new FlagMoney()),
+    MONEY ("money",false,new FlagMoney()),
     CHANCE("chance",false,new FlagChance()),
     PVP("pvp",true,new FlagPVP()),
     ONLINE("online",false,new FlagOnline()),

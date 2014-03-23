@@ -24,12 +24,16 @@ package me.fromgate.reactions.externals;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import me.fromgate.reactions.ReActions;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -41,6 +45,7 @@ public class RAWorldGuard {
 
     public static boolean init(){
         connected = connectToWorldGuard();
+        if (connected) ReActions.util.log("WorldGuard found");
         return connected;
     }
 

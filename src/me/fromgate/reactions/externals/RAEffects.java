@@ -19,6 +19,7 @@ import org.bukkit.plugin.Plugin;
 
 
 public class RAEffects {
+	
     private static RAUtil u(){
         return ReActions.util;
     }
@@ -29,7 +30,7 @@ public class RAEffects {
     //ENDER_SIGNAL  POTION_BREAK MOBSPAWNER_FLAMES  SMOKE 
     public static void init(){
         use_play_effects= isPlayEffectInstalled();
-        if (use_play_effects) u().log("PlayEffect plugin is found!");  
+        if (use_play_effects) u().log("PlayEffect found");  
         else {
             u().log("PlayEffect plugin is not found at your system");
             u().log("If you need more effects please download PlayEffect from:");

@@ -1,9 +1,15 @@
 package me.fromgate.reactions.externals;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
+
+import me.fromgate.reactions.ReActions;
 import net.milkbowl.vault.Vault;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -13,16 +19,12 @@ public class RAVault {
     private static boolean vault_eco = false;
     private static Permission permission = null;
     private static Economy economy = null;
-    
-    public static String formatMoney(String value){
-        if (!isEconomyConected()) return value;
-        return economy.format(Double.parseDouble(value)); // Integer???
-    }
 
     public static void init() {
         if (checkVault()){
             vault_perm = setupPermissions();
             vault_eco = setupEconomy();
+            ReActions.util.log("Vault connected");
         }
     }
     
@@ -51,17 +53,20 @@ public class RAVault {
         return (economy != null);
     }
 
-    
+
+    @Deprecated
     public static double getBalance(String account){
         if (!isEconomyConected()) return 0;
         return economy.getBalance(account);
     }
     
+    @Deprecated
     public static void withdrawPlayer(String account, double amount){
         if (!isEconomyConected()) return;
         economy.withdrawPlayer(account, amount);
     }
     
+    @Deprecated
     public static void depositPlayer(String account, double amount){
         if (!isEconomyConected()) return;
         economy.depositPlayer(account, amount);
@@ -86,5 +91,74 @@ public class RAVault {
         Plugin vplg = Bukkit.getServer().getPluginManager().getPlugin("Vault");
         return  ((vplg != null)&&(vplg instanceof Vault));
     }
+
+    
+    private static void depositAccount (String account, String worldName, double amount){
+    	if (worldName.isEmpty()) economy.depositPlayer(account, amount);
+    	else economy.depositPlayer(account, worldName, amount);
+    }
+    
+    private static void withdrawAccount (String account, String worldName, double amount){
+    	if (worldName.isEmpty()) economy.withdrawPlayer(account, amount);
+    	else economy.withdrawPlayer(account, worldName, amount);
+    }
+    
+    
+    /*
+     * New method 
+     */
+    public static boolean hasMoney (String account, String worldName, double amount){
+    	if (!RAVault.isEconomyConected()) return false;
+    	if (worldName.isEmpty()) return economy.has(account, amount);
+    	if (Bukkit.getWorld(worldName)==null) return false;
+    	return economy.has(account, worldName, amount);
+    }
+
+    
+	public static boolean creditAccount(String target, String source,double amount, String worldName) {
+		if (!RAVault.isEconomyConected()) return false;
+		if (!source.isEmpty()){
+			if (hasMoney (source,worldName,amount)) return false;
+			withdrawAccount (source,worldName,amount);
+		}
+		depositAccount (target,worldName,amount);
+		return true;
+	}
+	
+	public static boolean debitAccount (String accountFrom, String accountTo, double amount, String worldName){
+		if (!RAVault.isEconomyConected()) return false;
+		if (!hasMoney (accountFrom,worldName,amount)) return false;
+		withdrawAccount (accountFrom,worldName,amount);
+		if (!accountTo.isEmpty()) depositAccount (accountTo,worldName,amount);
+		return true;
+	}
+
+	/*
+	 * worldName ignored. Vault is not supporting formatting for world's vau
+	 */
+	public static String format(double amount, String worldName) {
+		if (!isEconomyConected()) return Double.toString(amount);
+		if (worldName.equalsIgnoreCase(Bukkit.getWorlds().get(0).getName())) return Double.toString(amount);
+		return economy.format(amount);
+	}
+	
+    @Deprecated
+    public static String formatMoney(String value){
+        if (!isEconomyConected()) return value;
+        return economy.format(Double.parseDouble(value)); // Integer???
+    }
+
+	
+
+	public static Map<String, String> getAllBalances(String name) {
+		Map<String,String> bals = new HashMap<String,String>();
+		for (World world : Bukkit.getWorlds()){
+			String key = "money."+world.getName();
+			String amount = format (economy.getBalance(name,world.getName()),world.getName());
+			bals.put(key, amount);
+			if (Bukkit.getWorlds().equals(world)) bals.put("money", amount);
+		}
+		return bals;
+	}
 
 }

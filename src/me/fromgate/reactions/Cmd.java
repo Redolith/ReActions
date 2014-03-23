@@ -82,10 +82,10 @@ public class Cmd implements CommandExecutor{
 	public boolean onCommand(CommandSender sender, Command cmd, String cmdLabel, String[] args) {
 		if ((args.length>0)&&u.checkCmdPerm(sender, args[0])){
 			switch (args.length){
-			case 1: return ExecuteCmd (sender, args[0]);
-			case 2: return ExecuteCmd (sender, args[0],args[1]);
-			case 3: return ExecuteCmd (sender, args[0],args[1],args[2]);
-			case 4: return ExecuteCmd (sender, args[0],args[1],args[2],args[3]);
+			case 1: return executeCmd (sender, args[0]);
+			case 2: return executeCmd (sender, args[0],args[1]);
+			case 3: return executeCmd (sender, args[0],args[1],args[2]);
+			case 4: return executeCmd (sender, args[0],args[1],args[2],args[3]);
 			case 5: return ExecuteCmd (sender, args[0],args[1],args[2],args[3],args[4]);
 			default:
 				if (args.length>=5){
@@ -101,7 +101,7 @@ public class Cmd implements CommandExecutor{
 	}
 
 
-	public boolean ExecuteCmd (CommandSender sender, String cmd){
+	public boolean executeCmd (CommandSender sender, String cmd){
 		Player p = null;
 		if (sender instanceof Player) p = (Player) sender;
 		if (cmd.equalsIgnoreCase("help")){
@@ -139,7 +139,7 @@ public class Cmd implements CommandExecutor{
 		return true;
 	}
 
-	public boolean ExecuteCmd (CommandSender sender, String cmd, String arg){
+	public boolean executeCmd (CommandSender sender, String cmd, String arg){
 		Player p = null;
 		if (sender instanceof Player) p = (Player) sender;
 		if (cmd.equalsIgnoreCase("run")){
@@ -206,6 +206,8 @@ public class Cmd implements CommandExecutor{
 				Delayer.printDelayList(sender, 1, lpp);
 			} else if (arg.equalsIgnoreCase("loc")||arg.equalsIgnoreCase("location")){
 				printLocList(sender,1,lpp);
+			} else if (arg.equalsIgnoreCase("var")||arg.equalsIgnoreCase("variables")||arg.equalsIgnoreCase("variable")){
+				Variables.printList(sender,1,"");
 			} else {
 				u.printMSG(sender,"msg_listcount",Activators.size(),plg.tports.size());
 			}
@@ -217,7 +219,7 @@ public class Cmd implements CommandExecutor{
 	//rea add cmd <id>
 
 	@SuppressWarnings("deprecation")
-	public boolean ExecuteCmd (CommandSender sender, String cmd, String arg1, String arg2){
+	public boolean executeCmd (CommandSender sender, String cmd, String arg1, String arg2){
 		Player p = null;
 		if (sender instanceof Player) p = (Player) sender;
 		// /react run <player|region:<region name>> <activator>
@@ -245,8 +247,10 @@ public class Cmd implements CommandExecutor{
 				u.printMSG(p, "cmd_addtpadded",arg2);
 			} else u.printMSG(p, "cmd_unknownadd",'c');
 		} else if (cmd.equalsIgnoreCase("copy")) {
-			if (Activators.copyAll(arg1, arg2)) u.printMSG(sender, "msg_copyall",arg1,arg2);
-			else u.printMSG(sender, "msg_copyallfailed",'c','4',arg1,arg2);
+			if (Activators.copyAll(arg1, arg2)) {
+				u.printMSG(sender, "msg_copyall",arg1,arg2);
+				Activators.saveActivators();
+			} else u.printMSG(sender, "msg_copyallfailed",'c','4',arg1,arg2);
 		} else if (cmd.equalsIgnoreCase("info")){
 			if (Activators.contains(arg1)){
 				printActInfo(sender,arg1,arg2);
@@ -265,6 +269,12 @@ public class Cmd implements CommandExecutor{
 				Timers.listTimers(sender, Integer.parseInt(arg2));
 			} else if ((arg1.equalsIgnoreCase("delay")||arg1.equalsIgnoreCase("delays"))&&u.isIntegerGZ(arg2)){
 				Delayer.printDelayList(p, Integer.parseInt(arg2), lpp);
+			} else if (arg1.equalsIgnoreCase("var")||arg1.equalsIgnoreCase("variables")||arg1.equalsIgnoreCase("variable")){
+				int pageNum = 1;
+				String mask = "";
+				if (u.isIntegerGZ(arg2)) pageNum = Integer.parseInt(arg2);
+				else mask = arg2;
+				Variables.printList(sender, pageNum, mask);
 			} else if ((arg1.equalsIgnoreCase("loc")||arg1.equalsIgnoreCase("location"))&&u.isIntegerGZ(arg2)){
 				printLocList(p,Integer.parseInt(arg2),lpp);
 			}
@@ -284,6 +294,8 @@ public class Cmd implements CommandExecutor{
 				} else u.printMSG(sender, "msg_removelocnf",arg2);
 			} else if (arg1.equalsIgnoreCase("timer")||arg1.equalsIgnoreCase("tmr")){
 				Timers.removeTimer (sender,arg2);
+			} else if (arg1.equalsIgnoreCase("var")||arg1.equalsIgnoreCase("variable")||arg1.equalsIgnoreCase("variables")){
+				removeVariable(sender, arg2);
 			} 
 		} else if (cmd.equalsIgnoreCase("clear")){
 			if (Activators.contains(arg1)){
@@ -352,19 +364,19 @@ public class Cmd implements CommandExecutor{
 
 	//   /ra add     region        name wg
 	//   /ra add      a|r          dmg/msg  value 	
-	public boolean ExecuteCmd (CommandSender s, String cmd, String arg1, String arg2, String arg3){
-		Player p = null;
-		if (s instanceof Player) p = (Player) s;
+	public boolean executeCmd (CommandSender sender, String cmd, String arg1, String arg2, String arg3){
+		Player player = null;
+		if (sender instanceof Player) player = (Player) sender;
 		if (cmd.equalsIgnoreCase("run")){
-			if (EventManager.raiseExecEvent(s, arg1+" "+arg2+" "+arg3)) u.printMSG(s, "cmd_runplayer",arg1+" "+arg2+" "+arg3);
-			else u.printMSG(s, "cmd_runplayerfail",'c','6',arg1+" "+arg2+" "+arg3);
+			if (EventManager.raiseExecEvent(sender, arg1+" "+arg2+" "+arg3)) u.printMSG(sender, "cmd_runplayer",arg1+" "+arg2+" "+arg3);
+			else u.printMSG(sender, "cmd_runplayerfail",'c','6',arg1+" "+arg2+" "+arg3);
 		} else if (cmd.equalsIgnoreCase("set")){
-			return this.setVariable(p, arg1, arg2+" "+arg3);
+			return this.setVariable(player, arg1, arg2+" "+arg3);
 		} else if (cmd.equalsIgnoreCase("add")){
 			if (ActivatorType.isValid(arg1))  {
 				@SuppressWarnings("deprecation")
-				Block b = p.getTargetBlock(null, 100);
-				return addActivator(p, arg1, arg2, arg3, b);
+				Block b = player.getTargetBlock(null, 100);
+				return addActivator(player, arg1, arg2, arg3, b);
 			} else return false;
 		} else if (cmd.equalsIgnoreCase("remove")) {
 			if (Activators.contains(arg1)){
@@ -372,53 +384,56 @@ public class Cmd implements CommandExecutor{
 				if (u.isIntegerGZ(arg3)) {
 					int num = Integer.parseInt(arg3);
 					if (arg2.equalsIgnoreCase("f")||arg2.equalsIgnoreCase("flag")){
-						if (act.removeFlag(num-1)) u.printMSG(p, "msg_flagremoved",act.getName(),num);
-						else u.printMSG(p, "msg_failedtoremoveflag",act.getName(),num);
+						if (act.removeFlag(num-1)) u.printMSG(player, "msg_flagremoved",act.getName(),num);
+						else u.printMSG(player, "msg_failedtoremoveflag",act.getName(),num);
 					} else if (arg2.equalsIgnoreCase("a")||arg2.equalsIgnoreCase("action")){
-						if (act.removeAction(num-1)) u.printMSG(p, "msg_actionremoved",act.getName(),num);
-						else u.printMSG(p, "msg_failedtoremoveaction",act.getName(),num);
+						if (act.removeAction(num-1)) u.printMSG(player, "msg_actionremoved",act.getName(),num);
+						else u.printMSG(player, "msg_failedtoremoveaction",act.getName(),num);
 					} else if (arg2.equalsIgnoreCase("r")||arg2.equalsIgnoreCase("reaction")){
-						if (act.removeReaction(num-1)) u.printMSG(p, "msg_reactionremoved",act.getName(),num);
-						else u.printMSG(p, "msg_failedtoremovereaction",act.getName(),num);
+						if (act.removeReaction(num-1)) u.printMSG(player, "msg_reactionremoved",act.getName(),num);
+						else u.printMSG(player, "msg_failedtoremovereaction",act.getName(),num);
 					} else return false;
 					Activators.saveActivators();
-				} else u.printMSG(p, "msg_wrongnumber",arg3); 
-			} else u.printMSG(p, "cmd_unknownbutton",arg1);
+				} else u.printMSG(player, "msg_wrongnumber",arg3);
+			} else if (arg1.equalsIgnoreCase("var")||arg1.equalsIgnoreCase("variable")||arg1.equalsIgnoreCase("variables")){
+				this.removeVariable(sender, arg2+" "+arg3);
+			} else u.printMSG(player, "cmd_unknownbutton",arg1);
 		} else if (cmd.equalsIgnoreCase("copy")) {
 			if (arg1.equalsIgnoreCase("f")||arg1.equalsIgnoreCase("flag")){
-				if (Activators.copyFlags(arg2, arg3)) u.printMSG(p, "msg_copyflags",arg2,arg3);
-				else u.printMSG(p, "msg_copyflagsfailed",'c','4',arg2,arg3);
+				if (Activators.copyFlags(arg2, arg3)) u.printMSG(player, "msg_copyflags",arg2,arg3);
+				else u.printMSG(player, "msg_copyflagsfailed",'c','4',arg2,arg3);
 			} else if (arg1.equalsIgnoreCase("a")||arg1.equalsIgnoreCase("actions")){
-				if (Activators.copyActions(arg2, arg3)) u.printMSG(p, "msg_copyactions",arg2,arg3);
-				else u.printMSG(p, "msg_copyactionsfailed",'c','4',arg2,arg3);
+				if (Activators.copyActions(arg2, arg3)) u.printMSG(player, "msg_copyactions",arg2,arg3);
+				else u.printMSG(player, "msg_copyactionsfailed",'c','4',arg2,arg3);
 			} else if (arg1.equalsIgnoreCase("r")||arg1.equalsIgnoreCase("reactions")){
-				if (Activators.copyReactions(arg2, arg3)) u.printMSG(p, "msg_copyreactions",arg2,arg3);
-				else u.printMSG(p, "msg_copyreactionsfailed",'c','4',arg2,arg3);
+				if (Activators.copyReactions(arg2, arg3)) u.printMSG(player, "msg_copyreactions",arg2,arg3);
+				else u.printMSG(player, "msg_copyreactionsfailed",'c','4',arg2,arg3);
 			}
+			Activators.saveActivators();
 		} else if (cmd.equalsIgnoreCase("list")) {
 			if (arg1.equalsIgnoreCase("type")&&u.isIntegerGZ(arg3)){
-				printActType(p, arg2, Integer.parseInt(arg3), 15);
+				printActType(player, arg2, Integer.parseInt(arg3), 15);
 			} else if (arg1.equalsIgnoreCase("group")&&u.isIntegerGZ(arg3)){
-				printActGroup(p, arg2, Integer.parseInt(arg3), 15);
+				printActGroup(player, arg2, Integer.parseInt(arg3), 15);
 			}
 		} else if (Activators.contains(arg1)){
 			if (((arg2.equalsIgnoreCase("a"))||(arg2.equalsIgnoreCase("r")))&&
 					(arg3.equalsIgnoreCase("dmg")||arg3.equalsIgnoreCase("msg"))){
 				if (arg2.equalsIgnoreCase("a")) {
 					if (addAction(arg1, arg3, "")) {
-						u.printMSG(p, "cmd_actadded",cmd+" "+arg2+" "+arg1 +" "+arg3);
+						u.printMSG(player, "cmd_actadded",cmd+" "+arg2+" "+arg1 +" "+arg3);
 						Activators.saveActivators();
 						return true;
 					}
-					else u.printMSG(p, "cmd_actnotadded",cmd+" "+arg2+" "+arg1 +" "+arg3);
+					else u.printMSG(player, "cmd_actnotadded",cmd+" "+arg2+" "+arg1 +" "+arg3);
 				} 
 				else if (arg2.equalsIgnoreCase("r")) {
 					if (addReAction(arg1, arg3, "")) {
-						u.printMSG(p, "cmd_reactadded",cmd+" "+arg2+" "+arg1 +" "+arg3);
+						u.printMSG(player, "cmd_reactadded",cmd+" "+arg2+" "+arg1 +" "+arg3);
 						Activators.saveActivators();
 						return true;
 					}
-					else u.printMSG(p, "cmd_reactnotadded",cmd+" "+arg2+" "+arg1 +" "+arg3);
+					else u.printMSG(player, "cmd_reactnotadded",cmd+" "+arg2+" "+arg1 +" "+arg3);
 				}
 			}
 		} else return false;
@@ -575,17 +590,36 @@ public class Cmd implements CommandExecutor{
 		u.printPage(p, lst, page, "msg_listloc", "", true);
 	}
 
-	private boolean setVariable(Player p, String var, String param){
+	private boolean setVariable(CommandSender sender, String var, String param){
+		Player p = (sender instanceof Player) ? (Player) sender : null;
 		if (var.equalsIgnoreCase("delay")){
 			Map<String,String> params = ParamUtil.parseParams(param, "delay");
 			String player = ParamUtil.getParam(params, "player", "");
 			if (player.equalsIgnoreCase("%player%")&&(p!=null)) player = p.getName();
+			//if (player.equalsIgnoreCase("")) return false;
 			Long time = System.currentTimeMillis()+u.parseTime(ParamUtil.getParam(params,"delay","3s")); //дефолтная задержка три секунды
 			String id = ParamUtil.getParam(params, "id", "");
 			if (id.isEmpty()) return false;
 			if (player.isEmpty()) Delayer.setDelay(id, time);
 			else Delayer.setPersonalDelay(player, id, time);
 			u.printMSG(p, "cmd_delayset", player.isEmpty() ? id : player+"."+id, Util.timeToString(time,true));
+		} else if (var.equalsIgnoreCase("var")||var.equalsIgnoreCase("variable")){
+			Map<String,String> params = ParamUtil.parseParams(param);
+	        String variable;
+	        String value;
+	        String player = ParamUtil.getParam(params, "player", "");
+	        if (ParamUtil.isParamExists(params, "id")){
+	        	variable = ParamUtil.getParam(params, "id", "");
+	            if (var.isEmpty()) return false;
+	            value = ParamUtil.getParam(params, "value", "");
+	        } else {
+	            String [] ln = ParamUtil.getParam(params, "param-line", "").split("/",2);
+	            if (ln.length == 0) return false;
+	            variable = ln[0];
+	            value = (ln.length>1) ? ln[1] : "";
+	        }
+	        Variables.setVar(player, variable, value);
+	        u.printMSG(p, "cmd_varset", player.isEmpty() ? variable : player+"."+variable, Variables.getVar(player, variable, ""));
 		} else return false;
 		return true;
 	}
@@ -676,11 +710,20 @@ public class Cmd implements CommandExecutor{
 			Activators.saveActivators();
 			u.printMSG(p, "cmd_addbadded",activator.toString());
 		} else u.printMSG(p, "cmd_notaddbadded",activator.toString());
-
 		return true;
-
 	}
 
+	
+	public boolean removeVariable(CommandSender sender, String param){
+		Player p = (sender instanceof Player) ? (Player) sender :null;
+		Map<String,String> params = ParamUtil.parseParams(param);
+		String player = ParamUtil.getParam(params, "player", "");
+		if (player.equalsIgnoreCase("%player%")&&p!=null) player = p.getName();
+		String id = ParamUtil.getParam(params, "id", "");
+		if (id.isEmpty()) return u.returnMSG(true, sender, "msg_varneedid");
+		if (Variables.removeVar(player, id)) u.returnMSG(true, sender, "msg_varremoved");
+		return u.returnMSG(true, sender, "msg_varremovefail");
+	}
 
 
 

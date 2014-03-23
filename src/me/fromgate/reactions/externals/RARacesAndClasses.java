@@ -20,7 +20,7 @@ public class RARacesAndClasses {
 			enabled = isRacesAndClassesInstalled();
 		} catch (Exception e){
 		}
-		if (enabled) ReActions.util.log("RacesAndClasses plugin found");
+		if (enabled) ReActions.util.log("RacesAndClasses found");
 	}
 
 	private static boolean isRacesAndClassesInstalled(){
