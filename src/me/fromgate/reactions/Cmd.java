@@ -86,14 +86,14 @@ public class Cmd implements CommandExecutor{
 			case 2: return executeCmd (sender, args[0],args[1]);
 			case 3: return executeCmd (sender, args[0],args[1],args[2]);
 			case 4: return executeCmd (sender, args[0],args[1],args[2],args[3]);
-			case 5: return ExecuteCmd (sender, args[0],args[1],args[2],args[3],args[4]);
+			case 5: return executeCmd (sender, args[0],args[1],args[2],args[3],args[4]);
 			default:
 				if (args.length>=5){
 					String arg4 = "";
 					for (int i = 4; i<args.length;i++) 
 						arg4 = arg4+" "+args[i];
 					arg4 = arg4.trim();
-					return ExecuteCmd (sender, args[0],args[1],args[2],args[3],arg4);
+					return executeCmd (sender, args[0],args[1],args[2],args[3],arg4);
 				}
 			}
 		} else u.printMSG(sender, "cmd_cmdpermerr",'c');
@@ -442,7 +442,7 @@ public class Cmd implements CommandExecutor{
 
 	//                                          add          a           <name>   <flag>    <param>
 	//                                          add          <name>        a      <flag>    <param>
-	public boolean ExecuteCmd (CommandSender s, String cmd, String arg1, String arg2, String arg3, String arg4){
+	public boolean executeCmd (CommandSender s, String cmd, String arg1, String arg2, String arg3, String arg4){
 		Player p = null;
 		if (s instanceof Player) p = (Player) s;
 		if (cmd.equalsIgnoreCase("add")){
@@ -605,21 +605,21 @@ public class Cmd implements CommandExecutor{
 			u.printMSG(p, "cmd_delayset", player.isEmpty() ? id : player+"."+id, Util.timeToString(time,true));
 		} else if (var.equalsIgnoreCase("var")||var.equalsIgnoreCase("variable")){
 			Map<String,String> params = ParamUtil.parseParams(param);
-	        String variable;
-	        String value;
-	        String player = ParamUtil.getParam(params, "player", "");
-	        if (ParamUtil.isParamExists(params, "id")){
-	        	variable = ParamUtil.getParam(params, "id", "");
-	            if (var.isEmpty()) return false;
-	            value = ParamUtil.getParam(params, "value", "");
-	        } else {
-	            String [] ln = ParamUtil.getParam(params, "param-line", "").split("/",2);
-	            if (ln.length == 0) return false;
-	            variable = ln[0];
-	            value = (ln.length>1) ? ln[1] : "";
-	        }
-	        Variables.setVar(player, variable, value);
-	        u.printMSG(p, "cmd_varset", player.isEmpty() ? variable : player+"."+variable, Variables.getVar(player, variable, ""));
+			String variable;
+			String value;
+			String player = ParamUtil.getParam(params, "player", "");
+			if (ParamUtil.isParamExists(params, "id")){
+				variable = ParamUtil.getParam(params, "id", "");
+				if (var.isEmpty()) return false;
+				value = ParamUtil.getParam(params, "value", "");
+			} else {
+				String [] ln = ParamUtil.getParam(params, "param-line", "").split("/",2);
+				if (ln.length == 0) return false;
+				variable = ln[0];
+				value = (ln.length>1) ? ln[1] : "";
+			}
+			Variables.setVar(player, variable, value);
+			u.printMSG(p, "cmd_varset", player.isEmpty() ? variable : player+"."+variable, Variables.getVar(player, variable, ""));
 		} else return false;
 		return true;
 	}
@@ -713,7 +713,6 @@ public class Cmd implements CommandExecutor{
 		return true;
 	}
 
-	
 	public boolean removeVariable(CommandSender sender, String param){
 		Player p = (sender instanceof Player) ? (Player) sender :null;
 		Map<String,String> params = ParamUtil.parseParams(param);
@@ -721,7 +720,7 @@ public class Cmd implements CommandExecutor{
 		if (player.equalsIgnoreCase("%player%")&&p!=null) player = p.getName();
 		String id = ParamUtil.getParam(params, "id", "");
 		if (id.isEmpty()) return u.returnMSG(true, sender, "msg_varneedid");
-		if (Variables.removeVar(player, id)) u.returnMSG(true, sender, "msg_varremoved");
+		if (Variables.removeVar(player, id)) return u.returnMSG(true, sender, "msg_varremoved",id);
 		return u.returnMSG(true, sender, "msg_varremovefail");
 	}
 

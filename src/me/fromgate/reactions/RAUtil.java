@@ -87,6 +87,7 @@ public class RAUtil extends FGUtilCore {
         addMSG ("cmd_debugoff", "Debug mode disabled");
         addMSG ("cmd_select", "%1% - selects block in your view point. You can use this selection as \"selection\" (or \"sel\") keyword when defining locations");
         addMSG ("cmd_selected", "Location %1% selected!");
+        addMSG ("cmd_varset", "Variable %1% was set to %2%");
         addMSG ("msg_listcount", "There's %1% configured activators and %2% stored locations");
         addMSG ("msg_removebnf", "Activator %1% not found and not removed");
         addMSG ("msg_removelocnf", "Stored location %1% not found and not removed");
@@ -205,6 +206,10 @@ public class RAUtil extends FGUtilCore {
         addMSG ("msg_timerneedtype", "You need to define timer type (timer-type:<INGAME|SERVER>)!");
         addMSG ("msg_timerneedtime", "You need to define execution time (time:<HH:MM,HH:MM|cron format: * * * * * *>!");
         addMSG ("msg_timeradded", "New timer created: %1%");
+        addMSG ("msg_varneedid", "You need to define variable Id (and player name for personal variables)");
+        addMSG ("msg_varremoved", "Variable was removed");
+        addMSG ("msg_varremovefail", "Failed to remove variable");
+        addMSG ("msg_varlist", "Variables");
         
         
         /*
@@ -258,6 +263,8 @@ public class RAUtil extends FGUtilCore {
         addMSG ("action_RNC_SET_CLASS","Set player's class (RacesAndClass plugin required). Parameter: class:<class>");
         addMSG ("action_TIMER_STOP","Stops execution of timer. Parameter: timer:<timer id>");
         addMSG ("action_TIMER_RESUME","Resumes execution of stopped timer. Parameter: timer:<timer id>");
+        addMSG ("action_VELOCITY_JUMP","Jump to locations. Parameter: loc:<location>");
+        addMSG ("action_CANCEL_EVENT","Cancel bukkit event, that initiates current activator (not all activators could be cancelled). Parameter: TRUE");
         
         /*
          * Flag description messages
@@ -305,8 +312,7 @@ public class RAUtil extends FGUtilCore {
         addMSG ("flag_RNC_CLASS","Check player's class (Requires RacesAndClasses plugin). Parameter: <class>");
         addMSG ("flag_WEATHER","Check weather state around player. Parameter: <rain/clear>");
         addMSG ("flag_TIMER_ACTIVE","Check active state of defined timer. Returns false if timer is paused. Parameter: <timer id>");
-        
-        
+        addMSG ("flag_FCT_PLAYER","Check player's faction. Parameter: Faction's name");
 
         /*
          *  Activators!
@@ -335,9 +341,10 @@ public class RAUtil extends FGUtilCore {
         addMSG ("activator_ITEM_CLICK","This activator is linked to right-clicking with defined item. /react add item_click <item (name supported)>");
         addMSG ("activator_ITEM_HOLD","This activator is linked to defined item, while player hold it in hand. /react add item_hold <item (name supported)>");
         addMSG ("activator_ITEM_WEAR","This activator is linked to defined item, while player wears an item. /react add item_wear <item (name supported)>");
-        
-        
+        addMSG ("activator_FCT_CHANGE","This activator is initiates when player moved from one faction to another. /react add fct_change faction:<New faction|ANY> oldfaction:<Old faction|ANY>");
+        addMSG ("activator_FCT_RELATION","This activator is initiates when relationship between two factions is changed. /react add fct_relation faction1:<faction name|ANY> faction2:<faction name|ANY> newrealtion:<New relation|ANY> oldrealtion:<New relation|ANY>");
    
+        
     }
             
 }
