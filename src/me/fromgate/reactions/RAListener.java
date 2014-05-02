@@ -46,6 +46,7 @@ import me.fromgate.reactions.event.RegionEvent;
 import me.fromgate.reactions.event.RegionLeaveEvent;
 import me.fromgate.reactions.externals.RAEconomics;
 import me.fromgate.reactions.externals.RAVault;
+import me.fromgate.reactions.util.BukkitCompatibilityFix;
 import me.fromgate.reactions.util.RADebug;
 import me.fromgate.reactions.util.RAMobSpawn;
 import me.fromgate.reactions.util.RAPVPRespawn;
@@ -185,12 +186,15 @@ public class RAListener implements Listener{
         if (!damager.hasMetadata("ReActions-dmg")) return;
         double dmg = damager.getMetadata("ReActions-dmg").get(0).asDouble();
         if (dmg<0) return;
+        dmg = BukkitCompatibilityFix.getEventDamage(event)*dmg;        
+        BukkitCompatibilityFix.setEventDamage(event, dmg);
+        /*
         try {
             dmg = event.getDamage()*dmg;
             event.setDamage(dmg);    
         } catch (Throwable tw){
             plg.u.logOnce("sethealth", "Can't modify mob's health. This feature is supported only at craftbukkit 1.6.2 (and newer)!");
-        }
+        }*/
     }
     
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
@@ -207,7 +211,9 @@ public class RAListener implements Listener{
         EntityDamageByEntityEvent evdmg = (EntityDamageByEntityEvent)event;
         if (evdmg.getDamager() instanceof Projectile){
             Projectile prj = (Projectile) evdmg.getDamager();
-            if (!(prj.getShooter() instanceof Player)) return;
+            LivingEntity shooter = BukkitCompatibilityFix.getShooter(prj);
+            if (shooter == null) return;
+            if (!(shooter instanceof Player)) return;
         } else if (evdmg.getDamager().getType() != EntityType.PLAYER) return;
         Util.soundPlay(le.getLocation(), cry);        
     }
@@ -224,8 +230,10 @@ public class RAListener implements Listener{
             damager = (Player) evdmg.getDamager();
         } else if (evdmg.getDamager() instanceof Projectile){
             Projectile prj = (Projectile) evdmg.getDamager();
-            if (!(prj.getShooter() instanceof Player)) return;
-            damager = (Player) prj.getShooter();
+            LivingEntity shooter = BukkitCompatibilityFix.getShooter(prj);
+            if (shooter == null) return;
+            if (!(shooter instanceof Player)) return;
+            damager = (Player) shooter;
         } else return;
         if (damager==null) return;
         Long time = System.currentTimeMillis();

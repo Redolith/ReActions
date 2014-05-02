@@ -36,6 +36,7 @@ import me.fromgate.reactions.externals.RARacesAndClasses;
 import me.fromgate.reactions.externals.RATowny;
 import me.fromgate.reactions.externals.RAVault;
 import me.fromgate.reactions.externals.RAWorldGuard;
+import me.fromgate.reactions.sql.SQLManager;
 import me.fromgate.reactions.timer.Timers;
 import me.fromgate.reactions.util.Delayer;
 import me.fromgate.reactions.util.ItemUtil;
@@ -116,12 +117,14 @@ public class ReActions extends JavaPlugin {
         RAVault.init();
         RACraftConomy.init();
         RAWorldGuard.init();
+        SQLManager.init();
         if (checkTowny()) towny_conected = RATowny.init();
         try {
             MetricsLite metrics = new MetricsLite(this);
             metrics.start();
         } catch (IOException e) {
         }
+        
     }
 
     protected void saveLocs(){

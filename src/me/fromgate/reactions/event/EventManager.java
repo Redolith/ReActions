@@ -392,7 +392,7 @@ public class EventManager {
         if (!p.hasMetadata("reactions-rchk-"+id)) return true;
         Long curtime = System.currentTimeMillis();
         Long prevtime = p.getMetadata("reactions-rchk-"+id).get(0).asLong();
-        return ((curtime-prevtime)>(1000*seconds)); //plg().worlduard_recheck
+        return ((curtime-prevtime)>(1000*seconds)); 
     }
 
 

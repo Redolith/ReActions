@@ -7,11 +7,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.externals.RAFactions;
 import me.fromgate.reactions.externals.RAVault;
 import me.fromgate.reactions.externals.RAWorldGuard;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -384,8 +386,12 @@ public class Util {
 			EntityDamageByEntityEvent evdmg = (EntityDamageByEntityEvent)event;
 			if (evdmg.getDamager().getType() == EntityType.PLAYER) return (Player) evdmg.getDamager();
 			if (evdmg.getCause() == DamageCause.PROJECTILE){
-				Projectile prj = (Projectile) evdmg.getDamager();    
-				if (prj.getShooter() instanceof Player) return (Player) prj.getShooter();    
+				Projectile prj = (Projectile) evdmg.getDamager();
+				LivingEntity shooterEntity = BukkitCompatibilityFix.getShooter(prj);
+				if (shooterEntity == null) return null;
+				//if (prj.getShooter() == null) return null;
+				//if (prj.getShooter() instanceof Player) return (Player) prj.getShooter();
+				if (shooterEntity instanceof Player) return (Player) shooterEntity;
 			}
 		}
 		return null;
@@ -396,8 +402,20 @@ public class Util {
 		if (event instanceof EntityDamageByEntityEvent){
 			EntityDamageByEntityEvent evdmg = (EntityDamageByEntityEvent)event;
 			if (evdmg.getCause() == DamageCause.PROJECTILE){
-				Projectile prj = (Projectile) evdmg.getDamager();    
-				if (prj.getShooter() instanceof LivingEntity) return (LivingEntity) prj.getShooter();    
+				Projectile prj = (Projectile) evdmg.getDamager();
+				LivingEntity shooterEntity = BukkitCompatibilityFix.getShooter(prj);
+				if (shooterEntity == null) return null;
+				//if (prj.getShooter() == null) return null;
+				return shooterEntity;
+				/*try {
+					if (prj.getShooter() instanceof LivingEntity) return (LivingEntity) prj.getShooter();
+				} catch (Exception e){
+					u().log("Cause: "+evdmg.getCause().name());
+					u().log("Damager: "+evdmg.getDamage()==null? "null" : evdmg.getDamager().toString());
+					u().log("Projectile: "+ prj == null ? "null" : prj.toString());
+					u().log("Shooter: "+ ((prj!=null&&prj.getShooter()!=null) ? prj.getShooter().toString() : "null"));
+					e.printStackTrace();
+				}*/
 			} else if (evdmg.getDamager() instanceof LivingEntity) return (LivingEntity) evdmg.getDamager();
 		}
 		return null;
@@ -477,17 +495,17 @@ public class Util {
 				if (world ==null) continue;
 				for (Player p : world.getPlayers()) players.add(p);
 			}
-			
+
 			// Player by permission & group
 			String group = ParamUtil.getParam(params, "group", "");
 			String perm = ParamUtil.getParam(params, "perm", "");
-            if ((!group.isEmpty())||(!perm.isEmpty())){
-                for (Player pl : Bukkit.getOnlinePlayers()){
-                    if ((!group.isEmpty())&& RAVault.playerInGroup(pl, group)) players.add(pl);
-                    if ((!perm.isEmpty())&&pl.hasPermission(perm)) players.add(pl);
-                }
-            }
-			
+			if ((!group.isEmpty())||(!perm.isEmpty())){
+				for (Player pl : Bukkit.getOnlinePlayers()){
+					if ((!group.isEmpty())&& RAVault.playerInGroup(pl, group)) players.add(pl);
+					if ((!perm.isEmpty())&&pl.hasPermission(perm)) players.add(pl);
+				}
+			}
+
 			// Players by name (all = all players, null - empty player)
 			String playerNames = ParamUtil.getParam(params, "player", "");
 			if (playerNames.equalsIgnoreCase("all")){
@@ -500,6 +518,7 @@ public class Util {
 			} else {
 				String[] arrPlayers = playerNames.split(",");
 				for (String playerName: arrPlayers){
+					@SuppressWarnings("deprecation")
 					Player targetPlayer = Bukkit.getPlayerExact(playerName);
 					if ((targetPlayer !=null)&&(targetPlayer.isOnline()))players.add(targetPlayer);	
 				}

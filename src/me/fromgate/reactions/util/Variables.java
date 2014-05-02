@@ -7,7 +7,6 @@ import java.util.List;
 
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -27,7 +26,7 @@ public class Variables {
 	private static String varId(String player, String var){
 		return player.isEmpty() ? "general."+var : player+"."+var;
 	}
-
+	
 	public static void setVar (String player, String var, String value){
 		vars.put(varId (player,var), value);
 		save();

@@ -53,7 +53,9 @@ public enum Flags {
     RNC_CLASS("rncclass",true, new FlagRacesAndClasses(false)),
     WEATHER("weather",true, new FlagWeather()),
     TIMER_ACTIVE("timeract",false, new FlagTimerActive()),
-    FCT_PLAYER("playerfaction",false, new FlagFaction());
+    FCT_PLAYER("playerfaction",false, new FlagFaction()),
+    SQL_CHECK("sqlcheck",false, new FlagSQL(true)),
+    SQL_RESULT("sqlhasresult",false, new FlagSQL(false));
 
     
 

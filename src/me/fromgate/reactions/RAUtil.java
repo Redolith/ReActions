@@ -265,6 +265,9 @@ public class RAUtil extends FGUtilCore {
         addMSG ("action_TIMER_RESUME","Resumes execution of stopped timer. Parameter: timer:<timer id>");
         addMSG ("action_VELOCITY_JUMP","Jump to locations. Parameter: loc:<location>");
         addMSG ("action_CANCEL_EVENT","Cancel bukkit event, that initiates current activator (not all activators could be cancelled). Parameter: TRUE");
+        addMSG ("action_SQL_SELECT","Execute SQL query and store field located in first row (and defined column) at variable. Parameters: query:{SELECT... } variable:<variable id> player:<varibale owner> column:<column>");
+        addMSG ("action_SQL_UPDATE","Execute update-query (update field of table at MySQL database) Parameter: query:{UPDATE... }");
+        addMSG ("action_SQL_INSERT","Execute insert-query (insert new row in table at MySQL database) Parameter: query:{INSERT... }");
         
         /*
          * Flag description messages
@@ -313,6 +316,8 @@ public class RAUtil extends FGUtilCore {
         addMSG ("flag_WEATHER","Check weather state around player. Parameter: <rain/clear>");
         addMSG ("flag_TIMER_ACTIVE","Check active state of defined timer. Returns false if timer is paused. Parameter: <timer id>");
         addMSG ("flag_FCT_PLAYER","Check player's faction. Parameter: Faction's name");
+        addMSG ("flag_SQL_CHECK","Compares result of SQL-query with provided value. Parameters: query:{SELECT...} value:<value> column:<column>");
+        addMSG ("flag_SQL_RESULT","Check is result of SQL-query returns data. If result is empty flag will return false. Parameter: query:{SELECT...}");
 
         /*
          *  Activators!

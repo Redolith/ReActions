@@ -2,6 +2,7 @@ package me.fromgate.reactions.util;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import me.fromgate.reactions.event.PVPRespawnEvent;
 
 import org.bukkit.Bukkit;
@@ -26,7 +27,8 @@ public class RAPVPRespawn {
         return player.getLocation();
     }
     
-    public static Player getLastKiller (Player player){
+    @SuppressWarnings("deprecation")
+	public static Player getLastKiller (Player player){
         if (killers.containsKey(player.getName())) 
             return Bukkit.getPlayer(killers.get(player.getName()));
         return null;

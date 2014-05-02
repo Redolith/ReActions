@@ -69,13 +69,7 @@ public class Placeholders {
                 if (loc == null) loc = p.getLocation();
                 return Util.locationToString(loc);
             } else if (p!=null&&placeholder.equalsIgnoreCase("%health%")) {
-                String hlth = "0";
-                try {
-                    hlth = String.valueOf(p.getHealth());
-                } catch (Throwable ex){
-                    ReActions.util.logOnce("plr_health", "Failed to get Player health. This feature is not compatible with CB 1.5.2 (and older)...");
-                }
-                return hlth;
+                return Double.toString(BukkitCompatibilityFix.getEntityHealth(p));
             } else if (p!=null&&placeholder.startsWith("%money")) {
             	Map<String,String> params = RAEconomics.getBalances(p);
             	String key = placeholder.replaceAll("%", "");

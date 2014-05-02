@@ -5,16 +5,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import me.fromgate.reactions.ReActions;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityEvent;
 import org.bukkit.util.BlockIterator;
 
 public class Shoot {
@@ -88,11 +91,16 @@ public class Shoot {
         return false;
     }
 
-    public static boolean damageEntity (LivingEntity damager, LivingEntity e, double damage){
-        EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(damager, e, DamageCause.ENTITY_ATTACK, Math.max(damage, 0));
+    public static boolean damageEntity (LivingEntity damager, LivingEntity entity, double damage){
+        //EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(damager, entity, DamageCause.ENTITY_ATTACK, Math.max(damage, 0));
+    	EntityEvent event= BukkitCompatibilityFix.createEntityDamageEvent(damager, entity, DamageCause.ENTITY_ATTACK, damage);
+
+    	if (event == null) return false;
+    	
         Bukkit.getServer().getPluginManager().callEvent(event);
-        if (!event.isCancelled()) e.damage(event.getDamage(), event.getDamager());
-        return !event.isCancelled();
+        if (!((Cancellable) event).isCancelled()) //e.damage(event.getDamage(), event.getDamager());
+        	BukkitCompatibilityFix.damageEntity(entity, damage);
+        return !((Cancellable) event).isCancelled();
     }
     
 }

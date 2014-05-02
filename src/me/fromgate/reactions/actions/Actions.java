@@ -66,7 +66,10 @@ public enum Actions{
     RNC_SET_CLASS("setclass",true,new ActionRacesAndClasses(false)),
     TIMER_STOP("timerstop",false,new ActionTimer(true)),
     TIMER_RESUME("timerresume",false,new ActionTimer(false)),
-    CANCEL_EVENT ("cancel",false, new ActionCancelEvent());
+    CANCEL_EVENT ("cancel",false, new ActionCancelEvent()),
+    SQL_SELECT ("sqlselect",false, new ActionSQL(0)),
+    SQL_UPDATE("sqlupdate",false, new ActionSQL(2)),
+    SQL_INSERT("sqlinsert",false, new ActionSQL(1));
 
     private String alias;
     private boolean requireplayer;

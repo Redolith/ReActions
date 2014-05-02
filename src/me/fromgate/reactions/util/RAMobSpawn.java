@@ -199,12 +199,15 @@ public class RAMobSpawn {
 
     public static void setMobHealth (LivingEntity e, double health){
         if (health>0){
+        	BukkitCompatibilityFix.setEntityHealth(e, health);
+        	BukkitCompatibilityFix.setEntityMaxHealth(e, health);
+        	/*
             try {
                 e.setMaxHealth(health);
                 e.setHealth(health);
             } catch (Throwable ex){
                 ReActions.util.logOnce("mob_health", "Failed to set mob health. This feature is not compatible with CB 1.5.2 (and older)...");
-            }
+            } */
         }
     }
 
