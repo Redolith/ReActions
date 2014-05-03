@@ -1,12 +1,12 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2013, fromgate, fromgate@gmail.com
+ *  (c)2012-2014, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
- *   * 
+ *    
  *  This file is part of ReActions.
  *  
  *  ReActions is free software: you can redistribute it and/or modify
- *	it under the terms of the GNU General Public License as published by
+ *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
@@ -26,7 +26,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Logger;
-
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.Activators;
 import me.fromgate.reactions.externals.RACraftConomy;
@@ -43,7 +42,6 @@ import me.fromgate.reactions.util.ItemUtil;
 import me.fromgate.reactions.util.RADebug;
 import me.fromgate.reactions.util.Shoot;
 import me.fromgate.reactions.util.Variables;
-
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;

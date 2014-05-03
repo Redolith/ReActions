@@ -2,7 +2,7 @@
  *  ReActions, Minecraft bukkit plugin
  *  (c)2012-2014, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
- *   * 
+ *    
  *  This file is part of ReActions.
  *  
  *  ReActions is free software: you can redistribute it and/or modify
@@ -19,6 +19,7 @@
  *  along with ReActions.  If not, see <http://www.gnorg/licenses/>.
  * 
  */
+
 
 package me.fromgate.reactions;
 
@@ -56,6 +57,7 @@ import me.fromgate.reactions.flags.Flags;
 import me.fromgate.reactions.timer.Timers;
 import me.fromgate.reactions.util.Delayer;
 import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.util.Placeholders;
 import me.fromgate.reactions.util.Profiler;
 import me.fromgate.reactions.util.RADebug;
 import me.fromgate.reactions.util.Selector;
@@ -156,6 +158,8 @@ public class Cmd implements CommandExecutor{
 				Actions.listActions(sender, 1);
 			} else if (arg.equalsIgnoreCase("activator")||arg.equalsIgnoreCase("activators")){
 				ActivatorType.listActivators(sender, 1);
+			} else if (arg.equalsIgnoreCase("placeholder")||arg.equalsIgnoreCase("placeholders")){
+				Placeholders.listPlaceholders(sender, 1);
 			} else {
 				int lpp = 10;
 				int page = 1;
@@ -234,6 +238,8 @@ public class Cmd implements CommandExecutor{
 				Actions.listActions(sender, page);
 			} else if (arg1.equalsIgnoreCase("activator")||arg1.equalsIgnoreCase("activators")){
 				ActivatorType.listActivators(sender, page);
+			} else if (arg1.equalsIgnoreCase("placeholder")||arg1.equalsIgnoreCase("placeholders")){
+				Placeholders.listPlaceholders(sender, page);
 			} else return false;
 		} else if (cmd.equalsIgnoreCase("set")){
 			return this.setVariable(p, arg1, arg2);
@@ -258,7 +264,6 @@ public class Cmd implements CommandExecutor{
 		} else if (cmd.equalsIgnoreCase("list")) {
 			int lpp = 15;
 			if (p==null) lpp=1000;
-			//   /ra list type <type> [pnum] 4 [5]
 			if (arg1.equalsIgnoreCase("type")){
 				printActType(p, arg2, 1, lpp);
 			} else if (arg1.equalsIgnoreCase("group")){
@@ -328,7 +333,6 @@ public class Cmd implements CommandExecutor{
 
 
 	public boolean addAction(String clicker, String flag, String param){
-		//if (u.isWordInList(flag, Actions.atypes)){
 		if (Actions.isValid(flag)){    
 			if ((flag.equalsIgnoreCase("loc")&&(!plg.tports.containsKey(param)))||
 					(flag.equals("dmg")&&(!(param.matches("[0-9]*")||param.isEmpty()))))
@@ -361,9 +365,6 @@ public class Cmd implements CommandExecutor{
 		return false;
 	}
 
-
-	//   /ra add     region        name wg
-	//   /ra add      a|r          dmg/msg  value 	
 	public boolean executeCmd (CommandSender sender, String cmd, String arg1, String arg2, String arg3){
 		Player player = null;
 		if (sender instanceof Player) player = (Player) sender;
@@ -440,8 +441,6 @@ public class Cmd implements CommandExecutor{
 		return true;
 	}
 
-	//                                          add          a           <name>   <flag>    <param>
-	//                                          add          <name>        a      <flag>    <param>
 	public boolean executeCmd (CommandSender s, String cmd, String arg1, String arg2, String arg3, String arg4){
 		Player p = null;
 		if (s instanceof Player) p = (Player) s;
@@ -478,7 +477,6 @@ public class Cmd implements CommandExecutor{
 		} else if (cmd.equalsIgnoreCase("set")){
 			return this.setVariable(p, arg1, arg2+" "+arg3+" "+arg4);
 		} else return false;            
-
 		return true;
 	}
 
@@ -578,10 +576,8 @@ public class Cmd implements CommandExecutor{
 			}
 			u.printPage(p, flg, 1, "lst_reactions", "", true,100);
 		} 
-
 	}
 
-	//   /ra add button name
 	private void printLocList(CommandSender p, int page, int lpp) {
 		List<String> lst = new ArrayList<String>();
 		for (String loc : plg.tports.keySet()){
@@ -596,7 +592,6 @@ public class Cmd implements CommandExecutor{
 			Map<String,String> params = ParamUtil.parseParams(param, "delay");
 			String player = ParamUtil.getParam(params, "player", "");
 			if (player.equalsIgnoreCase("%player%")&&(p!=null)) player = p.getName();
-			//if (player.equalsIgnoreCase("")) return false;
 			Long time = System.currentTimeMillis()+u.parseTime(ParamUtil.getParam(params,"delay","3s")); //дефолтная задержка три секунды
 			String id = ParamUtil.getParam(params, "id", "");
 			if (id.isEmpty()) return false;

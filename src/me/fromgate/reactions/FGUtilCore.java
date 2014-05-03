@@ -1,23 +1,25 @@
 /*  
- *  FGUtilCore, Utilities class for Minecraft bukkit plugins
+ *  ReActions, Minecraft bukkit plugin
+ *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  http://dev.bukkit.org/server-mods/reactions/
+ *    
+ *  This file is part of ReActions.
  *  
- *    (c)2012-2013, fromgate, fromgate@gmail.com
- *  
- *      
- *  FGUtilCore is free software: you can redistribute it and/or modify
- *	it under the terms of the GNU General Public License as published by
+ *  ReActions is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  FGUtilCore is distributed in the hope that it will be useful,
+ *  ReActions is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with WeatherMan.  If not, see <http://www.gnu.org/licenses/>.
+ *  along with ReActions.  If not, see <http://www.gnorg/licenses/>.
  * 
  */
+
 
 package me.fromgate.reactions;
 
@@ -667,7 +669,7 @@ public abstract class FGUtilCore {
      */
     public void BC (String msg){
         plg.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', px+msg));
-    }
+    } 
 
     public void broadcastMSG(String perm, Object... s){
         for (Player p : Bukkit.getOnlinePlayers())

@@ -1,8 +1,8 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2013, fromgate, fromgate@gmail.com
+ *  (c)2012-2014, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
- *   * 
+ *    
  *  This file is part of ReActions.
  *  
  *  ReActions is free software: you can redistribute it and/or modify
@@ -19,6 +19,7 @@
  *  along with ReActions.  If not, see <http://www.gnorg/licenses/>.
  * 
  */
+
 
 package me.fromgate.reactions;
 
@@ -45,16 +46,6 @@ public class TpLoc {
         //this.radius = 0;
     }
 
-    /*public RALoc (Location loc,int radius){
-        this.world = loc.getWorld().getName();
-        this.x = loc.getX();
-        this.y = loc.getY();
-        this.z = loc.getZ();
-        this.yaw= loc.getYaw();
-        this.pitch = loc.getPitch();
-        this.radius = radius;
-    }*/
-
     public TpLoc (String world, double x, double y, double z, float yaw, float pitch){
         this.world = world;
         this.x = x;
@@ -62,32 +53,12 @@ public class TpLoc {
         this.z = z;
         this.yaw= yaw;
         this.pitch = pitch;
-       // this.radius = 0;
     }
-
-    /*public RALoc (String world, double x, double y, double z, float yaw, float pitch, int radius){
-        this.world = world;
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.yaw= yaw;
-        this.pitch = pitch;
-        this.radius = radius;
-    }*/
 
     public Location getLocation(){
         return new Location (Bukkit.getWorld(world),x,y,z,yaw,pitch);
     }
     
-    /*
-    public Location getCentralLocation(){
-        return new Location (Bukkit.getWorld(world),x,y,z,yaw,pitch);
-    }
-
-    public Location getLocation(){
-        return Util.getRandomLocationInRadius(new Location (Bukkit.getWorld(world),x,y,z,yaw,pitch), this.radius);
-    }*/
-
     public boolean equalToLoc(Location loc){
         return 	(loc.getWorld().getName().equalsIgnoreCase(this.world)&&
                 (Math.round(loc.getX())==Math.round(x))&&
@@ -98,7 +69,6 @@ public class TpLoc {
     @Override
     public String toString(){
         DecimalFormat fmt = new DecimalFormat("####0.##");
-        //return  "["+this.world+"] "+fmt.format(x)+", "+fmt.format(y)+", "+fmt.format(z)+((this.radius>0)?" @R"+this.radius : "");
         return  "["+this.world+"] "+fmt.format(x)+", "+fmt.format(y)+", "+fmt.format(z);
     }
 

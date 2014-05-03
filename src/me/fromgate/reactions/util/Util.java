@@ -348,8 +348,8 @@ public class Util {
 		else if (plg().containsTpLoc(locstr)) loc = plg().getTpLoc(locstr);
 		else loc = Util.parseLocation(locstr);
 		return loc;
-	}
-
+	} 
+ 
 	@SuppressWarnings("deprecation")
 	public static String replaceStandartLocations (Player p, String param){
 		if (p==null) return param;
@@ -373,8 +373,8 @@ public class Util {
 			newparam = newparam.replace(key, Util.locationToString(l));
 		}
 		return newparam;
-	}
-
+	} 
+ 
 	public static String locToString(Player p, String locstr){
 		String loc = u().getMSGnc("loc_unknown");
 		Location tl = locToLocation (p, locstr);
@@ -425,17 +425,7 @@ public class Util {
 				Projectile prj = (Projectile) evdmg.getDamager();
 				LivingEntity shooterEntity = BukkitCompatibilityFix.getShooter(prj);
 				if (shooterEntity == null) return null;
-				//if (prj.getShooter() == null) return null;
 				return shooterEntity;
-				/*try {
-					if (prj.getShooter() instanceof LivingEntity) return (LivingEntity) prj.getShooter();
-				} catch (Exception e){
-					u().log("Cause: "+evdmg.getCause().name());
-					u().log("Damager: "+evdmg.getDamage()==null? "null" : evdmg.getDamager().toString());
-					u().log("Projectile: "+ prj == null ? "null" : prj.toString());
-					u().log("Shooter: "+ ((prj!=null&&prj.getShooter()!=null) ? prj.getShooter().toString() : "null"));
-					e.printStackTrace();
-				}*/
 			} else if (evdmg.getDamager() instanceof LivingEntity) return (LivingEntity) evdmg.getDamager();
 		}
 		return null;

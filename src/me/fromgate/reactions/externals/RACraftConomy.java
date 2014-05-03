@@ -227,6 +227,7 @@ public class RACraftConomy {
 			String key = "money."+(balance.getWorld().equalsIgnoreCase(worldDef) ? "" : balance.getWorld()+".")+balance.getCurrency().getName();
 			String amount = craftconomy.format(balance.getWorld(), balance.getCurrency(), balance.getBalance()); 
 			balances.put(key, amount);
+			//ReActions.util.BC(worldDef + " ? "+ balance.getWorld());
 			if (balance.getWorld().equals(worldDef)&&balance.getCurrency().equals(craftconomy.getCurrencyManager().getDefaultCurrency()))
 					balances.put("money", amount);
 		}

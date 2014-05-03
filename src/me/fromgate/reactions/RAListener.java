@@ -1,8 +1,8 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2013, fromgate, fromgate@gmail.com
+ *  (c)2012-2014, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
- *   * 
+ *    
  *  This file is part of ReActions.
  *  
  *  ReActions is free software: you can redistribute it and/or modify
@@ -19,6 +19,7 @@
  *  along with ReActions.  If not, see <http://www.gnorg/licenses/>.
  * 
  */
+
 
 package me.fromgate.reactions;
 

@@ -176,7 +176,7 @@ public class RAVault {
 			String key = "money."+world.getName();
 			String amount = format (economy.getBalance(name,world.getName()),world.getName());
 			bals.put(key, amount);
-			if (Bukkit.getWorlds().equals(world)) bals.put("money", amount);
+			if (Bukkit.getWorlds().get(0).equals(world)) bals.put("money", amount);
 		}
 		return bals;
 	}
