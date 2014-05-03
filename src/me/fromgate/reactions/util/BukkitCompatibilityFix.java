@@ -28,16 +28,19 @@ import java.lang.reflect.Method;
 import me.fromgate.reactions.ReActions;
 
 import org.bukkit.entity.Damageable;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityEvent;
-import org.bukkit.entity.Entity;
 
 public class BukkitCompatibilityFix {
-	// Projectile.getShooter return ProjectileSource since 1.7.2
-	// it breaks compatibility with older version of bukkit
+	/* 
+	 * In latest version of Bukkit API getShooter() method returns Projectile source 
+	 * that not available in previous version of Bukkit API. 
+	 * This method is returns LivingEntity instead of ProjectileSource   
+	 */
 	public static LivingEntity getShooter (Projectile projectile){
 		if (projectile==null) return null;
 		try {
@@ -51,36 +54,68 @@ public class BukkitCompatibilityFix {
 		return null;
 	}
 
+	
+	/*
+	 *  Fix health (double/int) compatibility issue
+	 *  Works nice in 1.5.2
+	 */
 	public static double getEntityHealth(LivingEntity entity){
 		return getDoubleMethod ("getHealth", entity, Damageable.class);
 	}
 
+	/*
+	 *  Fix health (double/int) compatibility issue
+	 *  Works nice in 1.5.2
+	 */
 	public static double getEntityMaxHealth(LivingEntity entity){
 		return getDoubleMethod ("getMaxHealth", entity, Damageable.class);
 	}
 
 
+	/*
+	 *  Fix health (double/int) compatibility issue
+	 *  Works nice in 1.5.2
+	 */
 	public static void setEntityHealth(LivingEntity entity, double health){
 		executeMethodObjectDouble ("setHealth",entity,Damageable.class,health);
 	}
 
+	/*
+	 *  Fix health (double/int) compatibility issue
+	 *  Works nice in 1.5.2
+	 */
 	public static void setEntityMaxHealth(LivingEntity entity, double health){
 		executeMethodObjectDouble ("setMaxHealth",entity,Damageable.class,health);
 	}
 
+	/*
+	 *  Fix damage (double/int) compatibility issue
+	 *  Works nice in 1.5.2
+	 */
 	public static void damageEntity (LivingEntity entity, double damage){
 		executeMethodObjectDouble ("damage",entity,Damageable.class,damage);
 	}
 
+	/*
+	 *  Fix damage (double/int) compatibility issue
+	 *  Works nice in 1.5.2
+	 */
 	public static void setEventDamage (EntityDamageEvent event, double damage){
 		executeMethodObjectDouble ("damage",event,EntityDamageEvent.class,damage);
 	}
 
+	/*
+	 *  Fix damage (double/int) compatibility issue
+	 *  Works nice in 1.5.2
+	 */
 	public static double getEventDamage (EntityDamageEvent event){
 		return getDoubleMethod ("getDamage", event, EntityDamageEvent.class);
 	}
 
 
+	/*
+	 * Internal method, using reflections to access double or integer values
+	 */
 	private static double getDoubleMethod (String methodName, Object object, Class<?> clazz){
 		if (object == null) return 0;
 		try {
@@ -97,6 +132,9 @@ public class BukkitCompatibilityFix {
 		return 0;
 	}
 
+	/*
+	 * Internal method, using reflections to access double or integer values
+	 */
 	private static void executeMethodObjectDouble (String methodName, Object object, Class<?> clazz, double param){
 		if (object == null) return;
 		boolean useInt = false;
@@ -120,14 +158,14 @@ public class BukkitCompatibilityFix {
 			}
 		} else ReActions.util.logOnce("BCFix"+methodName, "Looks like this version of BukkitAPI totally incompatible with API 1.7.x. Method \""+methodName+"\" is not declared in "+object.getClass().getCanonicalName()+" or not working properly");
 	}
-	//EntityDamageByEntityEvent(damager, entity, DamageCause.ENTITY_ATTACK, Math.max(damage, 0));
-	//import org.bukkit.event.entity.EntityDamageByEntityEvent;
-	//import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+
 	
-	
-	// public EntityDamageByEntityEvent(Entity damager, Entity damagee, EntityDamageEvent.DamageCause cause, int damage)
-	
-	public static EntityEvent createEntityDamageEvent (Entity damager, Entity entity, DamageCause damageCause, double damage){
+	/*
+	 * Create EntityDamageByEntityEvent according to version of Bukkit
+	 * Overrides damage (double/int) compatibility issue
+	 * Works nice with 1.5.2
+	 */
+	public static EntityEvent createEntityDamageByEntityEvent (Entity damager, Entity entity, DamageCause damageCause, double damage){
 		Class<?> EntityDamageByEntityEvent = null;
 		try {
 			EntityDamageByEntityEvent = Class.forName("org.bukkit.event.entity.EntityDamageByEntityEvent");

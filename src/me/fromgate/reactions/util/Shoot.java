@@ -115,7 +115,7 @@ public class Shoot {
 
     public static boolean damageEntity (LivingEntity damager, LivingEntity entity, double damage){
         //EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(damager, entity, DamageCause.ENTITY_ATTACK, Math.max(damage, 0));
-    	EntityEvent event= BukkitCompatibilityFix.createEntityDamageEvent(damager, entity, DamageCause.ENTITY_ATTACK, damage);
+    	EntityEvent event= BukkitCompatibilityFix.createEntityDamageByEntityEvent(damager, entity, DamageCause.ENTITY_ATTACK, damage);
 
     	if (event == null) return false;
     	

@@ -96,12 +96,27 @@ public class Placeholders {
             	Map<String,String> params = RAEconomics.getBalances(p);
             	String key = placeholder.replaceAll("%", "");
             	if (params.containsKey(key)) return params.get(key);
+            	
+            } else if (placeholder.matches("%rnd:\\S%")) {
+            	String rndStr = placeholder.substring(4,placeholder.length()-1);
+            	return random(rndStr);
             } else for (FlagVal flg : a.getFlags())
                 if (flg.flag.equals(flag)) return formatFlagParam (flag, flg.value);
         }
         return placeholder;
     }
 
+    private static String random (String rndStr){
+    	if (rndStr.matches("\\d")) return Integer.toString(u().getRandomInt(Integer.parseInt(rndStr)));
+    	if (rndStr.matches("\\d-\\d")) return Integer.toString(Util.getMinMaxRandom(rndStr));
+    	if (rndStr.matches("[\\S,]*[\\S]")){
+    		String [] ln = rndStr.split(",");
+    		if (ln.length==0) return rndStr;
+    		return ln[u().getRandomInt(ln.length)];
+    	}
+    	return rndStr;
+    }
+    
     private static String formatFlagParam(String flag, String value) {
         String rst = value;
         Flags f = Flags.getByName(flag);
