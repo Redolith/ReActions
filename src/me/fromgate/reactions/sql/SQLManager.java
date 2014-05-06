@@ -142,6 +142,7 @@ public class SQLManager {
 		} catch (Exception e) {
 			ReActions.util.logOnce(query, "Failed to execute query: "+query);
 			if (e.getMessage()!=null) ReActions.util.logOnce(query+e.getMessage(), e.getMessage());
+			e.printStackTrace();
 		}
 		try{
 			if (statement!=null) statement.close();

@@ -72,8 +72,16 @@ public class ActionSQL extends Action {
 			}
 			SQLManager.executeUpdate(query);
 			break;
+		case 3: // DELETE
+			query = ParamUtil.getParam(params, "query", ParamUtil.getParam(params,"param-line","")).trim();
+			if (query.isEmpty()) return false;
+			if (!query.toLowerCase().startsWith("delete")) {
+				ReActions.util.logOnce("needdelete"+query, "You need to use only \"DELETE\" query in SQL_DELETE action. Query: "+query);
+				return false;
+			}
+			SQLManager.executeUpdate(query);
+			break;
 		}
-		// TODO Auto-generated method stub
 		return true;
 	}
 

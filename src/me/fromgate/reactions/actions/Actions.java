@@ -90,7 +90,8 @@ public enum Actions{
     CANCEL_EVENT ("cancel",false, new ActionCancelEvent()),
     SQL_SELECT ("sqlselect",false, new ActionSQL(0)),
     SQL_UPDATE("sqlupdate",false, new ActionSQL(2)),
-    SQL_INSERT("sqlinsert",false, new ActionSQL(1));
+    SQL_INSERT("sqlinsert",false, new ActionSQL(1)),
+    SQL_DELETE("sqldelete",false, new ActionSQL(3));
 
     private String alias;
     private boolean requireplayer;

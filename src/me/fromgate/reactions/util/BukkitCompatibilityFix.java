@@ -123,7 +123,7 @@ public class BukkitCompatibilityFix {
 			Object value = method.invoke(object);
 			double returnDouble =0;
 			if (method.getReturnType().equals(double.class)) returnDouble = ((Double)value).doubleValue();
-			else if (method.getReturnType().equals(double.class)) returnDouble = (double) ((Integer)value).intValue();
+			else if (method.getReturnType().equals(int.class)) returnDouble = (double) ((Integer)value).intValue();
 			return returnDouble; 
 		} catch (Exception e) {
 			ReActions.util.logOnce("BCF"+methodName, "Looks like this version of BukkitAPI totally incompatible with API 1.7.x. Method \""+methodName+"\" is not declared in "+object.getClass().getCanonicalName());

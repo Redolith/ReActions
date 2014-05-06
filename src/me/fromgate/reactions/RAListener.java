@@ -49,7 +49,7 @@ import me.fromgate.reactions.externals.RAEconomics;
 import me.fromgate.reactions.externals.RAVault;
 import me.fromgate.reactions.util.BukkitCompatibilityFix;
 import me.fromgate.reactions.util.RADebug;
-import me.fromgate.reactions.util.RAMobSpawn;
+import me.fromgate.reactions.util.MobSpawn;
 import me.fromgate.reactions.util.RAPVPRespawn;
 import me.fromgate.reactions.util.PushBack;
 import me.fromgate.reactions.util.Util;
@@ -156,7 +156,7 @@ public class RAListener implements Listener{
         }
         
         if (event.getEntity().hasMetadata("ReActions-deatheffect")) {
-            RAMobSpawn.playMobEffect(event.getEntity().getLocation(), event.getEntity().getMetadata("ReActions-deatheffect").get(0).asString());
+            MobSpawn.playMobEffect(event.getEntity().getLocation(), event.getEntity().getMetadata("ReActions-deatheffect").get(0).asString());
         }
     }
     

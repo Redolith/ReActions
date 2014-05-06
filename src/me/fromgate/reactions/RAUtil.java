@@ -268,6 +268,7 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("action_SQL_SELECT","Execute SQL query and store field located in first row (and defined column) at variable. Parameters: query:{SELECT... } variable:<variable id> player:<varibale owner> column:<column>");
 		addMSG ("action_SQL_UPDATE","Execute update-query (update field of table at MySQL database) Parameter: query:{UPDATE... }");
 		addMSG ("action_SQL_INSERT","Execute insert-query (insert new row in table at MySQL database) Parameter: query:{INSERT... }");
+		addMSG ("action_SQL_DELETE","Execute delete-query (delete record in MySQL database table) Parameter: query:{DELETE... }");
 
 		/*
 		 * Flag description messages

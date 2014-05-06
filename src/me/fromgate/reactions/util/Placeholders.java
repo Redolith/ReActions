@@ -28,16 +28,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.Activator.FlagVal;
 import me.fromgate.reactions.externals.RAEconomics;
 import me.fromgate.reactions.flags.Flags;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 public enum Placeholders {
@@ -111,7 +114,7 @@ public enum Placeholders {
     	if (placeholder != null){
     		switch (placeholder){
 			case HEALTH:
-				resultField = Double.toString(BukkitCompatibilityFix.getEntityHealth(player));
+				resultField = Double.toString(BukkitCompatibilityFix.getEntityHealth((LivingEntity) player));
 				break;
 			case MONEY:
             	Map<String,String> params = RAEconomics.getBalances(player);

@@ -22,6 +22,8 @@
 
 package me.fromgate.reactions.util;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -53,10 +55,16 @@ public class ItemUtil {
         String istr = itemstr;
         String enchant = "";
         String name = "";
+        String loreStr = "";
 
         if (istr.contains("$")){
             name =istr.substring(0,istr.indexOf("$"));
             istr = istr.substring(name.length()+1);
+            if (name.contains("@")){
+            	loreStr = name.substring(name.indexOf("@")+1);	
+            	name = name.substring(0,name.indexOf("@"));
+            }
+            
         }
         if (istr.contains("@")){
             enchant = istr.substring(istr.indexOf("@")+1);
@@ -89,6 +97,15 @@ public class ItemUtil {
                     ItemMeta im = item.getItemMeta();
                     im.setDisplayName(ChatColor.translateAlternateColorCodes('&', name.replace("_", " ")));
                     item.setItemMeta(im);
+                }
+                
+                if (!loreStr.isEmpty()){
+                	ItemMeta im = item.getItemMeta();
+                	String[] ln = loreStr.split("@");
+                	List<String> lore = new ArrayList<String>();
+                	for (String loreLine : ln) lore.add(ChatColor.translateAlternateColorCodes('&',loreLine.replace("_", " ")));
+                	im.setLore(lore);
+                	item.setItemMeta(im);
                 }
                 return item;
             }
@@ -148,6 +165,7 @@ public class ItemUtil {
         String name ="";
         if (itemstr.contains("$")){
             name =str.substring(0,itemstr.indexOf("$"));
+            if (name.contains("@")) name = name.substring(0,name.indexOf("@")); // ignore possible lore
             name = ChatColor.translateAlternateColorCodes('&', name.replace("_", " "));
             itemstr = str.substring(name.length()+1);
         }
@@ -257,6 +275,7 @@ public class ItemUtil {
 
         if (itemstr.contains("$")){
             name =itemstr.substring(0,itemstr.indexOf("$"));
+            if (name.contains("@")) name = name.substring(0,name.indexOf("@")); // ignore possible lore
             itemstr = itemstr.substring(name.length()+1);
         }
 

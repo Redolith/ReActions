@@ -41,7 +41,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class RAMobSpawn {
+public class MobSpawn {
 
     public static void mobSpawn(Player p, Map<String,String> params) {
         String mob = ParamUtil.getParam(params, "type", "PIG");
@@ -221,8 +221,8 @@ public class RAMobSpawn {
 
     public static void setMobHealth (LivingEntity e, double health){
         if (health>0){
+        	if (health>BukkitCompatibilityFix.getEntityHealth(e)) BukkitCompatibilityFix.setEntityMaxHealth(e, health);
         	BukkitCompatibilityFix.setEntityHealth(e, health);
-        	BukkitCompatibilityFix.setEntityMaxHealth(e, health);
         	/*
             try {
                 e.setMaxHealth(health);
