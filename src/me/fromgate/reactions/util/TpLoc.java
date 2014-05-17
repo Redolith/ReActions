@@ -21,20 +21,19 @@
  */
 
 
-package me.fromgate.reactions;
+package me.fromgate.reactions.util;
 
 import java.text.DecimalFormat;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 public class TpLoc {
-    String world;
-    double x;
-    double y;
-    double z;
-    float yaw;
-    float pitch;
-    //int radius;
+	public String world;
+    public double x;
+    public double y;
+    public double z;
+    public float yaw;
+    public float pitch;
 
     public TpLoc (Location loc){
         this.world = loc.getWorld().getName();
@@ -43,7 +42,6 @@ public class TpLoc {
         this.z = loc.getZ();
         this.yaw= loc.getYaw();
         this.pitch = loc.getPitch();
-        //this.radius = 0;
     }
 
     public TpLoc (String world, double x, double y, double z, float yaw, float pitch){

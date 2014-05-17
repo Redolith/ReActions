@@ -52,10 +52,13 @@ import me.fromgate.reactions.activators.RegionActivator;
 import me.fromgate.reactions.activators.RgEnterActivator;
 import me.fromgate.reactions.activators.RgLeaveActivator;
 import me.fromgate.reactions.activators.ExecActivator;
+import me.fromgate.reactions.activators.SignActivator;
 import me.fromgate.reactions.event.EventManager;
 import me.fromgate.reactions.flags.Flags;
+import me.fromgate.reactions.timer.Time;
 import me.fromgate.reactions.timer.Timers;
 import me.fromgate.reactions.util.Delayer;
+import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.ParamUtil;
 import me.fromgate.reactions.util.Placeholders;
 import me.fromgate.reactions.util.Profiler;
@@ -114,7 +117,7 @@ public class Cmd implements CommandExecutor{
 			Profiler.start((long) 20*30, sender);
 		} else if (cmd.equalsIgnoreCase("select")){
 			Selector.selectLocation(p, null);
-			u.printMSG(p, "cmd_selected", Util.locationToStringFormated(Selector.getSelectedLocation(p)));
+			u.printMSG(p, "cmd_selected", Locator.locationToStringFormated(Selector.getSelectedLocation(p)));
 		} else if (cmd.equalsIgnoreCase("debug")){
 			if (p == null) return false;
 			RADebug.offPlayerDebug(p);
@@ -126,14 +129,13 @@ public class Cmd implements CommandExecutor{
 		} else if (cmd.equalsIgnoreCase("reload")){
 			Activators.clear();
 			Activators.loadActivators();
-			plg.tports.clear();
-			plg.loadLocs();
+			Locator.loadLocs();
 			plg.reloadConfig();
 			plg.loadCfg();
 			Delayer.load();
 			Variables.load();
 			Timers.load();
-			u.printMSG(sender, "msg_cmdreload",Activators.size(),plg.tports.size());
+			u.printMSG(sender, "msg_cmdreload",Activators.size(),Locator.sizeTpLoc());
 		} else if (cmd.equalsIgnoreCase("check")){
 			if (p==null) return false;
 			printActivatorsAround(p, 8);
@@ -209,11 +211,11 @@ public class Cmd implements CommandExecutor{
 			} else if (arg.equalsIgnoreCase("delay")||arg.equalsIgnoreCase("delays")){
 				Delayer.printDelayList(sender, 1, lpp);
 			} else if (arg.equalsIgnoreCase("loc")||arg.equalsIgnoreCase("location")){
-				printLocList(sender,1,lpp);
+				Locator.printLocList(sender,1,lpp);
 			} else if (arg.equalsIgnoreCase("var")||arg.equalsIgnoreCase("variables")||arg.equalsIgnoreCase("variable")){
 				Variables.printList(sender,1,"");
 			} else {
-				u.printMSG(sender,"msg_listcount",Activators.size(),plg.tports.size());
+				u.printMSG(sender,"msg_listcount",Activators.size(),Locator.sizeTpLoc());
 			}
 		} else return false; 
 		return true;
@@ -248,8 +250,8 @@ public class Cmd implements CommandExecutor{
 				Block b = p.getTargetBlock(null, 100);
 				return addActivator(p, arg1, arg2, "", b);
 			} else if (arg1.equalsIgnoreCase("loc")){
-				plg.tports.put(arg2, new TpLoc (p.getLocation()));
-				plg.saveLocs();
+				Locator.addTpLoc(arg2, p.getLocation());
+				Locator.saveLocs();
 				u.printMSG(p, "cmd_addtpadded",arg2);
 			} else u.printMSG(p, "cmd_unknownadd",'c');
 		} else if (cmd.equalsIgnoreCase("copy")) {
@@ -281,7 +283,7 @@ public class Cmd implements CommandExecutor{
 				else mask = arg2;
 				Variables.printList(sender, pageNum, mask);
 			} else if ((arg1.equalsIgnoreCase("loc")||arg1.equalsIgnoreCase("location"))&&u.isIntegerGZ(arg2)){
-				printLocList(p,Integer.parseInt(arg2),lpp);
+				Locator.printLocList(p,Integer.parseInt(arg2),lpp);
 			}
 		} else if (cmd.equalsIgnoreCase("remove")){
 			if (arg1.equalsIgnoreCase("act")||
@@ -292,10 +294,9 @@ public class Cmd implements CommandExecutor{
 					Activators.saveActivators();
 				} else u.printMSG(sender, "msg_removebnf",arg2);
 			} else if (arg1.equalsIgnoreCase("loc")){
-				if (plg.tports.containsKey(arg2)){
-					plg.tports.remove(arg2);
+				if (Locator.removeTpLoc(arg2)){
 					u.printMSG(sender, "msg_removelocok",arg2);
-					plg.saveLocs();
+					Locator.saveLocs();
 				} else u.printMSG(sender, "msg_removelocnf",arg2);
 			} else if (arg1.equalsIgnoreCase("timer")||arg1.equalsIgnoreCase("tmr")){
 				Timers.removeTimer (sender,arg2);
@@ -332,11 +333,12 @@ public class Cmd implements CommandExecutor{
 	}
 
 
+	/*
+	 * TODO
+	 * нужно добавить проверку на синтаксис, чтобы не добавлялся мусор
+	 */
 	public boolean addAction(String clicker, String flag, String param){
 		if (Actions.isValid(flag)){    
-			if ((flag.equalsIgnoreCase("loc")&&(!plg.tports.containsKey(param)))||
-					(flag.equals("dmg")&&(!(param.matches("[0-9]*")||param.isEmpty()))))
-				return false;
 			Activators.addAction(clicker, flag, param);
 			return true;
 		}
@@ -345,9 +347,6 @@ public class Cmd implements CommandExecutor{
 
 	public boolean addReAction(String clicker, String flag, String param){
 		if (Actions.isValid(flag)){
-			if ((flag.equalsIgnoreCase("tp")&&(!plg.tports.containsKey(param)))||
-					(flag.equals("dmg")&&(!(param.matches("[0-9]*")||param.isEmpty()))))
-				return false;
 			Activators.addReaction(clicker, flag, param);
 			return true;
 		}
@@ -494,7 +493,7 @@ public class Cmd implements CommandExecutor{
 	public void printAct (CommandSender p, int page, int lpp){
 		List<String> ag = Activators.getActivatorsList();
 		u.printPage(p, ag, page, "msg_actlist", "", true);
-		u.printMSG(p,"msg_listcount",Activators.size(),plg.tports.size());
+		u.printMSG(p,"msg_listcount",Activators.size(),Locator.sizeTpLoc());
 	}
 
 
@@ -556,8 +555,8 @@ public class Cmd implements CommandExecutor{
 				String action = act.getActions().get(i).flag;
 				String param = act.getActions().get(i).value;
 				if (action.equalsIgnoreCase("tp")) {
-					Location loc = Util.parseLocation(param);
-					if (loc!=null) param = Util.locationToStringFormated(loc);
+					Location loc = Locator.parseCoordinates(param);//Util.parseLocation(param);
+					if (loc!=null) param = Locator.locationToStringFormated(loc);
 				}
 				flg.add("  &e" + action +" &3= &a"+param);
 			}
@@ -569,21 +568,13 @@ public class Cmd implements CommandExecutor{
 				String action = act.getReactions().get(i).flag;
 				String param = act.getReactions().get(i).value;
 				if (action.equalsIgnoreCase("tp")) {
-					Location loc = Util.parseLocation(param);
-					if (loc!=null) param = Util.locationToStringFormated(loc);
+					Location loc = Locator.parseCoordinates(param);
+					if (loc!=null) param = Locator.locationToStringFormated(loc);
 				}
 				flg.add("  &e" + action +" &3= &a"+param);
 			}
 			u.printPage(p, flg, 1, "lst_reactions", "", true,100);
 		} 
-	}
-
-	private void printLocList(CommandSender p, int page, int lpp) {
-		List<String> lst = new ArrayList<String>();
-		for (String loc : plg.tports.keySet()){
-			lst.add("&3"+loc+" &a"+plg.tports.get(loc).toString());
-		}
-		u.printPage(p, lst, page, "msg_listloc", "", true);
 	}
 
 	private boolean setVariable(CommandSender sender, String var, String param){
@@ -592,12 +583,12 @@ public class Cmd implements CommandExecutor{
 			Map<String,String> params = ParamUtil.parseParams(param, "delay");
 			String player = ParamUtil.getParam(params, "player", "");
 			if (player.equalsIgnoreCase("%player%")&&(p!=null)) player = p.getName();
-			Long time = System.currentTimeMillis()+u.parseTime(ParamUtil.getParam(params,"delay","3s")); //дефолтная задержка три секунды
+			Long time = /*System.currentTimeMillis()+*/u.parseTime(ParamUtil.getParam(params,"delay","3s")); //дефолтная задержка три секунды
 			String id = ParamUtil.getParam(params, "id", "");
 			if (id.isEmpty()) return false;
 			if (player.isEmpty()) Delayer.setDelay(id, time);
 			else Delayer.setPersonalDelay(player, id, time);
-			u.printMSG(p, "cmd_delayset", player.isEmpty() ? id : player+"."+id, Util.timeToString(time,true));
+			u.printMSG(p, "cmd_delayset", player.isEmpty() ? id : player+"."+id, Time.fullTimeToString(System.currentTimeMillis()+time));
 		} else if (var.equalsIgnoreCase("var")||var.equalsIgnoreCase("variable")){
 			Map<String,String> params = ParamUtil.parseParams(param);
 			String variable;
@@ -696,6 +687,9 @@ public class Cmd implements CommandExecutor{
 			break;
 		case FCT_RELATION:    
 			activator = new FactionRelationActivator (name, param);
+			break;
+		case SIGN:    
+			activator = new SignActivator (name, param);
 			break;
 		default:
 			break;

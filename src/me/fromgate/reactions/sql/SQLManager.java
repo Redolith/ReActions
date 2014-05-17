@@ -26,6 +26,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Properties;
 
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.util.Variables;
@@ -37,6 +38,7 @@ public class SQLManager {
 	private static String dataBase;
 	private static String userName;
 	private static String password;
+	private static String codepage="UTF-8";  
 
 
 	public static void init(){
@@ -53,12 +55,14 @@ public class SQLManager {
 		}
 	}
 
+
 	public static void loadCfg(){
 		serverAdress = ReActions.instance.getConfig().getString("MySQL.server","localhost");
 		port = ReActions.instance.getConfig().getString("MySQL.port","3306");
 		dataBase = ReActions.instance.getConfig().getString("MySQL.database","ReActions");
 		userName = ReActions.instance.getConfig().getString("MySQL.username","root");
 		password = ReActions.instance.getConfig().getString("MySQL.password","password");
+		codepage= ReActions.instance.getConfig().getString("MySQL.codepage","");
 	}
 
 	public static void saveCfg(){
@@ -67,6 +71,7 @@ public class SQLManager {
 		ReActions.instance.getConfig().set("MySQL.database",dataBase);
 		ReActions.instance.getConfig().set("MySQL.username",userName);
 		ReActions.instance.getConfig().set("MySQL.password",password);
+		ReActions.instance.getConfig().set("MySQL.codepage",codepage);
 		ReActions.instance.saveConfig();
 	}
 
@@ -96,13 +101,24 @@ public class SQLManager {
 		Statement selectStmt = null;
 		ResultSet result = null;
 		String resultStr = "";
+		Properties prop = new Properties();
+		if (!codepage.isEmpty()){
+			prop.setProperty("useUnicode", "true");
+			prop.setProperty("characterEncoding", codepage);
+		}
+		prop.setProperty("user",userName);
+		prop.setProperty("password",password);
+
 		String connectionLine = "jdbc:mysql://"+serverAdress+(port.isEmpty() ? "":":"+port)+"/"+dataBase;
+
 		try {
-			connection = DriverManager.getConnection(connectionLine, userName, password);
+			connection = DriverManager.getConnection(connectionLine, prop);
 		} catch (Exception e) {
 			ReActions.util.logOnce("sqlconnect", "Failed to connect to database: "+connectionLine +" user: "+userName);
 			return "";
 		}
+
+
 		try {
 			selectStmt = connection.createStatement();
 			result = selectStmt.executeQuery(query);
@@ -129,14 +145,24 @@ public class SQLManager {
 		Statement statement = null;
 		boolean ok = false;
 		String connectionLine = "jdbc:mysql://"+serverAdress+(port.isEmpty() ? "":":"+port)+"/"+dataBase;
+
+		Properties prop = new Properties();
+		if (!codepage.isEmpty()){
+			prop.setProperty("useUnicode", "true");
+			prop.setProperty("characterEncoding", codepage);
+		}
+		prop.setProperty("user",userName);
+		prop.setProperty("password",password);
+
 		try {
-			connection = DriverManager.getConnection(connectionLine, userName, password);
+			connection = DriverManager.getConnection(connectionLine, prop); 
 		} catch (Exception e) {
 			ReActions.util.logOnce("sqlconnect", "Failed to connect to database: "+connectionLine +" user: "+userName);
 			return false;
 		}
 		try {
 			statement = connection.createStatement();
+			//statement.execute("SET NAMES 'utf8'");
 			statement.executeUpdate(query);
 			ok = true;
 		} catch (Exception e) {
@@ -173,6 +199,7 @@ public class SQLManager {
 		}
 		try {
 			selectStmt = connection.createStatement();
+			//selectStmt.execute("SET NAMES 'utf8'");
 			result = selectStmt.executeQuery(query);
 			resultBool = result.next();
 		} catch (Exception e) {
@@ -187,9 +214,4 @@ public class SQLManager {
 		}
 		return resultBool;
 	}
-	
-	
-	
-
-
 }

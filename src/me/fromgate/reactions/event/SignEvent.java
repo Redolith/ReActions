@@ -20,15 +20,34 @@
  * 
  */
 
-package me.fromgate.reactions.flags;
 
+package me.fromgate.reactions.event;
+
+
+import me.fromgate.reactions.util.Locator;
+
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-public class FlagWeather extends Flag {
-	@Override
-	public boolean checkFlag(Player p, String param) {
-		if (param.equalsIgnoreCase("rain")) return p.getWorld().isThundering()||p.getWorld().hasStorm();
-		if (param.equalsIgnoreCase("thunder")) return p.getWorld().isThundering()||p.getWorld().hasStorm();
-		return !p.getWorld().hasStorm();
+public class SignEvent extends RAEvent {
+	
+	private String [] signLines;
+	private Location loc;
+	
+	public SignEvent(Player player, String [] signLines, Location loc) {
+		super(player);
+		this.signLines = signLines;
+		this.loc = loc;
 	}
+	
+	public String [] getSignLines(){
+		return this.signLines;
+	}
+
+	public String getSignLocation(){
+		return Locator.locationToString(this.loc);
+	}
+
+	
+	
 }

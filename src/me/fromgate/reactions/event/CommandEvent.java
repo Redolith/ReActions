@@ -26,14 +26,19 @@ import org.bukkit.entity.Player;
 
 public class CommandEvent extends RAEvent {
     private String command;
+    private String [] args;
 
-    public CommandEvent (Player p, String command) {
+    public CommandEvent (Player p, String command, String [] args) {
     	super(p);
         this.command = command;
+        this.args = args;
     }
 
     public String getCommand() {
         return this.command;
     }
     
+    public String[] getArgs(){
+    	return this.args;
+    }
 }

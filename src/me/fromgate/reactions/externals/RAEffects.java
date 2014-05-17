@@ -28,6 +28,7 @@ import java.util.Map;
 import me.fromgate.playeffect.PlayEffect;
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.ParamUtil;
 import me.fromgate.reactions.util.Util;
 
@@ -85,7 +86,7 @@ public class RAEffects {
     
     public static void playEffect (Location loc, String eff, Map<String,String> params){
         if (use_play_effects){
-            params.put("loc", Util.locationToString(loc));
+            params.put("loc", Locator.locationToString(loc));
             playPlayEffect(eff,params);
         } else {
             int data = 9;
@@ -97,7 +98,7 @@ public class RAEffects {
     public static void playEffect (Location loc, String eff, int data){
         if (use_play_effects){
             Map<String,String> params = new HashMap<String,String>();
-            params.put("loc", Util.locationToString(loc));
+            params.put("loc", Locator.locationToString(loc));
             playPlayEffect(eff,params);
         } else {
             playStandartEffect (loc,eff,data);
@@ -141,9 +142,14 @@ public class RAEffects {
             
             if (eff.equalsIgnoreCase("SMOKE")) modifier = parseSmokeDirection (ParamUtil.getParam(params, "dir", "random"));
             else modifier = Util.getMinMaxRandom(ParamUtil.getParam(params, "data", "0"));
-            loc=Util.parseLocation(ParamUtil.getParam(params, "loc", Util.locationToString(p.getLocation())));
+            
+            //loc=Util.parseLocation(ParamUtil.getParam(params, "loc", Util.locationToString(p.getLocation())));
+            
+            loc = Locator.parseLocation(ParamUtil.getParam(params, "loc", ""), p.getLocation());
+            
             radius = ParamUtil.getParam(params, "radius", 0);
-            if (radius>0) loc = Util.getRandomLocationInRadius(loc, radius,land);
+            if (radius>0) loc = Locator.getRadiusLocation(loc, radius, land); 
+            		//Util.getRandomLocationInRadius(loc, radius,land);
             playStandartEffect (loc,eff,modifier);            
         }
     }

@@ -25,6 +25,7 @@ package me.fromgate.reactions.actions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator;
@@ -32,6 +33,7 @@ import me.fromgate.reactions.activators.Activator.ActVal;
 import me.fromgate.reactions.flags.Flags;
 import me.fromgate.reactions.util.ParamUtil;
 import me.fromgate.reactions.util.Placeholders;
+import me.fromgate.reactions.util.Variables;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -73,16 +75,17 @@ public enum Actions{
     REGION_CLEAR("rgclear",false,new ActionClearRegion()),
     HEAL("heal",true,new ActionHeal()),
     BLOCK_SET("block",false,new ActionBlockSet()),
+    SIGN_SET_LINE("sign",false,new ActionSignSet()),
     POWER_SET("power",false,new ActionPowerSet()),
     SHOOT("shoot",true,new ActionShoot()),
     VAR_SET("varset",false,new ActionVar(0,false)),
-    VAR_PLAYER_SET("varset",true,new ActionVar(0,true)),
+    VAR_PLAYER_SET("varpset",true,new ActionVar(0,true)),
     VAR_CLEAR("varclr",false,new ActionVar(1,false)),
-    VAR_PLAYER_CLEAR("varclr",true,new ActionVar(1,true)),
+    VAR_PLAYER_CLEAR("varpclr",true,new ActionVar(1,true)),
     VAR_INC("varinc",false,new ActionVar(2,false)),
-    VAR_PLAYER_INC("varinc",true,new ActionVar(2,true)),
+    VAR_PLAYER_INC("varpinc",true,new ActionVar(2,true)),
     VAR_DEC("vardec",false,new ActionVar(3,false)),
-    VAR_PLAYER_DEC("vardec",true,new ActionVar(3,true)),
+    VAR_PLAYER_DEC("varpdec",true,new ActionVar(3,true)),
     RNC_SET_RACE("setrace",true,new ActionRacesAndClasses(true)),
     RNC_SET_CLASS("setclass",true,new ActionRacesAndClasses(false)),
     TIMER_STOP("timerstop",false,new ActionTimer(true)),
@@ -91,7 +94,8 @@ public enum Actions{
     SQL_SELECT ("sqlselect",false, new ActionSQL(0)),
     SQL_UPDATE("sqlupdate",false, new ActionSQL(2)),
     SQL_INSERT("sqlinsert",false, new ActionSQL(1)),
-    SQL_DELETE("sqldelete",false, new ActionSQL(3));
+    SQL_DELETE("sqldelete",false, new ActionSQL(3)),
+    ACTION_DELAYED ("actdelay",false, new ActionDelayed());
 
     private String alias;
     private boolean requireplayer;
@@ -146,7 +150,7 @@ public enum Actions{
         }
         return rst;
     }*/
-    public static boolean executeActivator (Player p, Activator act){
+    /*public static boolean executeActivator (Player p, Activator act){
         boolean action = Flags.checkFlags(p, act);
         List<ActVal> actions = action ? act.getActions() : act.getReactions();
         if (actions.isEmpty()) return false;
@@ -158,8 +162,23 @@ public enum Actions{
             if (at.performAction(p, act, action, params)) cancelParentEvent = true;
         }
         return cancelParentEvent;
+    }*/
+    
+    public static boolean executeActivator (Player p, Activator act){
+        boolean isAction = Flags.checkFlags(p, act);
+        List<ActVal> actions = isAction ? act.getActions() : act.getReactions();
+        if (actions.isEmpty()) return false;
+        boolean cancelParentEvent = false;
+        for (ActVal action : actions) {
+            if (!Actions.isValid(action.flag)) continue;
+            Actions at = Actions.getByName(action.flag);
+            Map<String,String> params = Placeholders.replaceAllPlaceholders(p, act, ParamUtil.parseParams(action.value));
+            if (at.performAction(p, act, isAction, params)) cancelParentEvent = true;
+        }
+        Variables.clearAllTempVar();
+        return cancelParentEvent;
     }
-
+    
     public boolean performAction(Player p, Activator a, boolean action, Map<String,String> params){
         if ((p==null)&&this.requireplayer) return false;
         return this.action.executeAction(p, a, action, params);

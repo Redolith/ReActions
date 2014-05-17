@@ -55,16 +55,9 @@ public class FlagVar extends Flag{
             var = ln[0];
             value = (ln.length>1) ? ln[1] : "";
         }
-
-        
-        /*String var = ParamUtil.getParam(params, "id", "");
-        if (var.isEmpty()) return false;
-        String value = ParamUtil.getParam(params, "value", "");*/
         
         if (!this.personalVar) p = null;
         else if (p == null) return false;
-        
-        
         switch (this.flagType){
         case 0: // VAR_EXIST
             return Variables.existVar(p, var);

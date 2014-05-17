@@ -23,6 +23,8 @@
 package me.fromgate.reactions.actions;
 
 import java.util.Map;
+
+import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.ParamUtil;
 import me.fromgate.reactions.util.Util;
 import org.bukkit.Location;
@@ -36,7 +38,7 @@ public class ActionPowerSet extends Action{
 
     @Override
     public boolean execute(Player p, Map<String, String> params) {
-        Location loc = Util.parseLocation(ParamUtil.getParam(params, "loc", ""));
+        Location loc = Locator.parseLocation(ParamUtil.getParam(params, "loc", ""),null);
         setMessageParam("UNKNOWN");
         if (loc == null) return false;
         Block b = loc.getBlock();

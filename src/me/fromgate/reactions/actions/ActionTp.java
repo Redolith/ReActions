@@ -25,9 +25,8 @@ package me.fromgate.reactions.actions;
 import java.util.Map;
 
 import me.fromgate.reactions.externals.RAEffects;
+import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.ParamUtil;
-import me.fromgate.reactions.util.Util;
-
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -36,7 +35,7 @@ public class ActionTp extends Action{
     @Override
     public boolean execute(Player p, Map<String, String> params) {
         Location loc = teleportPlayer (p,params);
-        if (loc!=null) this.setMessageParam(Util.locationToStringFormated(loc));
+        if (loc!=null) this.setMessageParam(Locator.locationToStringFormated(loc));
         return (loc!=null);
     }
 
@@ -45,16 +44,15 @@ public class ActionTp extends Action{
         int radius = 0;
         if (params.isEmpty()) return null;
         if (params.containsKey("param")) {
-            loc = Util.locToLocation (p, ParamUtil.getParam(params, "param", ""));
-
+            loc = Locator.parseLocation(ParamUtil.getParam(params, "param", ""), p.getLocation());
         } else { 
-            loc = Util.locToLocation (p, ParamUtil.getParam(params, "loc", ""));
+            loc = Locator.parseLocation(ParamUtil.getParam(params, "loc", ""), p.getLocation());
             radius = ParamUtil.getParam(params, "radius", 0);
         }
         boolean land = ParamUtil.getParam(params, "land", true);
 
         if (loc != null){
-            if (radius>0) loc = Util.getRandomLocationInRadius(loc, radius,land);
+            if (radius>0) loc = Locator.getRadiusLocation(loc, radius, land); 
             if (plg().isCenterTpLocation()) {
                 loc.setX(loc.getBlockX()+0.5);
                 loc.setZ(loc.getBlockZ()+0.5);

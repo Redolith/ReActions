@@ -210,7 +210,8 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("msg_varremoved", "Variable was removed");
 		addMSG ("msg_varremovefail", "Failed to remove variable");
 		addMSG ("msg_varlist", "Variables");
-
+		addMSG ("msg_signforbidden", "You're not permitted to set signs, that subscribed to activator %1%");
+		
 
 		/*
 		 *  Action description messages
@@ -269,6 +270,9 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("action_SQL_UPDATE","Execute update-query (update field of table at MySQL database) Parameter: query:{UPDATE... }");
 		addMSG ("action_SQL_INSERT","Execute insert-query (insert new row in table at MySQL database) Parameter: query:{INSERT... }");
 		addMSG ("action_SQL_DELETE","Execute delete-query (delete record in MySQL database table) Parameter: query:{DELETE... }");
+		addMSG ("action_SIGN_SET_LINE","Set (or clear) one or more line of sign. Parameters: loc:<location> line1:<text>...line4:<text> clear:<1,2..4>");
+		addMSG ("action_ACTION_DELAYED","Execute another action after delay. Parameters: time:<time> action:{<another action with parameters>}");
+
 
 		/*
 		 * Flag description messages
@@ -319,6 +323,9 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("flag_FCT_PLAYER","Check player's faction. Parameter: Faction's name");
 		addMSG ("flag_SQL_CHECK","Compares result of SQL-query with provided value. Parameters: query:{SELECT...} value:<value> column:<column>");
 		addMSG ("flag_SQL_RESULT","Check is result of SQL-query returns data. If result is empty flag will return false. Parameter: query:{SELECT...}");
+		addMSG ("flag_COMPARE","Compare provide parameter with list of variable. True if parameter is equal to one of the provided variables. Parameters: param:<parameter> value1:<vaule1> vaule2:<value2>...");
+
+		
 
 		/*
 		 *  Activators!
@@ -344,11 +351,14 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("activator_DOOR","This activators could be linked to any kind of doors (wooden door, fence gates and trap doors). Command: /react add door <id> [OPEN/CLOSE/ANY]");
 		addMSG ("activator_JOIN","This activator is executing when player joins a server. Command: /react add join <id> [FIRST]");
 		addMSG ("activator_MOBCLICK","This activator is executing when player right-clicking mob. You can define mob type (name supported too) for this activators. Command: /react add mobclick <id> &6Mob_Name$MOB_TYPE");
-		addMSG ("activator_ITEM_CLICK","This activator is linked to right-clicking with defined item. /react add item_click <item (name supported)>");
-		addMSG ("activator_ITEM_HOLD","This activator is linked to defined item, while player hold it in hand. /react add item_hold <item (name supported)>");
-		addMSG ("activator_ITEM_WEAR","This activator is linked to defined item, while player wears an item. /react add item_wear <item (name supported)>");
-		addMSG ("activator_FCT_CHANGE","This activator is initiates when player moved from one faction to another. /react add fct_change faction:<New faction|ANY> oldfaction:<Old faction|ANY>");
-		addMSG ("activator_FCT_RELATION","This activator is initiates when relationship between two factions is changed. /react add fct_relation faction1:<faction name|ANY> faction2:<faction name|ANY> newrealtion:<New relation|ANY> oldrealtion:<New relation|ANY>");
+		addMSG ("activator_ITEM_CLICK","This activator is linked to right-clicking with defined item. /react add item_click <id> <item (name supported)>");
+		addMSG ("activator_ITEM_HOLD","This activator is linked to defined item, while player hold it in hand. /react add <id> item_hold <item (name supported)>");
+		addMSG ("activator_ITEM_WEAR","This activator is linked to defined item, while player wears an item. /react add item_wear <id> <item (name supported)>");
+		addMSG ("activator_FCT_CHANGE","This activator is initiates when player moved from one faction to another. /react add fct_change <id> faction:<New faction|ANY> oldfaction:<Old faction|ANY>");
+		addMSG ("activator_FCT_RELATION","This activator is initiates when relationship between two factions is changed. /react add fct_relation <id>  faction1:<faction name|ANY> faction2:<faction name|ANY> newrealtion:<New relation|ANY> oldrealtion:<New relation|ANY>");
+		addMSG ("activator_SIGN","This activator is initiates player clicks (right-click) sign defined as activator./react add SIGN <id> line1:<text in line1>...line4:<text in line4>");
+		
+		
 		addMSG ("msg_placeholderlisttitle","Placeholders");
 		addMSG ("placeholder_TIME_SERVER","Server (system) time");
 		addMSG ("placeholder_TIME_INGAME","In-game time. If player is unknonw will show time in default world");
@@ -365,7 +375,10 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("placeholder_TIME","Flag-based placeholder. Returns time that defined in activator's flag.");
 		addMSG ("placeholder_CHANCE","Flag-based placeholder. Returns chance that defined in activator's flag.");
 		addMSG ("placeholder_VAR","Variable value. Use syntax %var:<id>% to get global variable value and %varp:<id>% to get personal variable value");
-
+		addMSG ("placeholder_CALC","Calculates the expression and provide it's result. For example: \"%CALC:1+2%\" will be replaced to \"3\"");
+		addMSG ("placeholder_SIGNAct","Activator-based placeholders. Provides SIGN activator locations and text-lines");
+		addMSG ("placeholder_COMMANDAct","Activator-based placeholders. Provides COMMAND activator parameters (arguments)");
+		
 	}
 
 }

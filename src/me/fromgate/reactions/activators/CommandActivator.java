@@ -7,6 +7,7 @@ import java.util.Set;
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.CommandEvent;
 import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.util.Variables;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -55,14 +56,20 @@ public class CommandActivator extends Activator {
 		}
 		return arguments.keySet().equals(keys);
 	}
-	
-	
+
+	private void setTempVars(String [] args){
+		if (args.length>0){
+			for (int i=0; i<args.length; i++)
+				Variables.setTempVar("arg"+Integer.toString(i), args[i]);
+		}
+	}
 	
 	@Override
 	public boolean activate(Event event) {
 		if (!(event instanceof CommandEvent)) return false;
 		CommandEvent ce = (CommandEvent) event;
 		if (!commandMaches(ce.getCommand())) return false;
+		setTempVars(ce.getArgs());
 		return Actions.executeActivator(ce.getPlayer(), this);
 	}
 

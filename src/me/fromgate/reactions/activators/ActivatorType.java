@@ -38,12 +38,9 @@ public enum ActivatorType {
     ITEM_HOLD ("itemhold",ItemHoldActivator.class,ItemHoldEvent.class),
     ITEM_WEAR("itemwear",ItemWearActivator.class,ItemWearEvent.class),
     FCT_CHANGE("faction",FactionActivator.class,FactionEvent.class),
-    FCT_RELATION("fctrelation",FactionRelationActivator.class,FactionRelationEvent.class);
+    FCT_RELATION("fctrelation",FactionRelationActivator.class,FactionRelationEvent.class),
+    SIGN("sign",SignActivator.class,SignEvent.class);
     
-    /*,
-    TIME_INGAME("time",TimeIngameActivator.class,TimeIngameEvent.class),
-    TIME_SERVER("timeserver",TimeServerActivator.class,TimeServerEvent.class);*/
-
     private String alias;
     private Class<? extends Activator> aclass;
     private Class<? extends Event> eclass;

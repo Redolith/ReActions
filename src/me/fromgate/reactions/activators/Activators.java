@@ -431,6 +431,13 @@ public class Activators {
         return iwear;
     }
     
+    public static List<Activator> getActivators (ActivatorType type){
+    	List<Activator> activators = new ArrayList<Activator>();
+    	for (Activator activator : act)
+    		if (activator.getType()==type) activators.add(activator);
+    	return activators;
+    }
+    
    /* public static List<TimeIngameActivator> getTimeIngameActivators() {
         List<TimeIngameActivator> timeIngameAct= new ArrayList<TimeIngameActivator>();
         for (Activator a : act)

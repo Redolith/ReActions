@@ -45,7 +45,7 @@ public class Selector {
     public static String getSelectedStrLoc(Player p){
         Location loc = getSelectedLocation(p);
         if (loc == null) return "";
-        return Util.locationToString(loc);
+        return Locator.locationToString(loc);
     }
 
 }

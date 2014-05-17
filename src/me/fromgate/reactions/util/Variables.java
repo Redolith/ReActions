@@ -71,6 +71,13 @@ public class Variables {
 		if (vars.containsKey(id)) vars.remove(id);
 		save();
 	}
+	
+	public static void clearVar (String player, String var){
+		String id = varId(player, var);
+		if (vars.containsKey(id)) vars.remove(id);
+		save();
+	}
+	
 
 	public static String getVar (String player, String var, String defvar){
 		String id = varId(player, var);
@@ -113,12 +120,30 @@ public class Variables {
 	public static boolean incVar (Player player, String var){
 		return incVar (player, var, 1);
 	}
+	
+	public static boolean incVar (String player, String var){
+		return incVar (player, var, 1);
+	}
 
 	public static boolean decVar (Player player, String var){
 		return incVar (player, var, -1);
 	}
+	
+	public static boolean decVar (String player, String var){
+		return incVar (player, var, -1);
+	}
 
 	public static boolean incVar (Player player, String var, int addValue){
+		return incVar (player == null ? "" : player.getName(), var, addValue);
+		/*String id = varId(player, var);
+		if (!vars.containsKey(id)) setVar(player,var,"0");
+		String valueStr = vars.get(id);
+		if (!u().isIntegerSigned(valueStr)) return false; 
+		setVar(player,var,String.valueOf(Integer.parseInt(valueStr)+addValue));
+		return true;*/
+	}
+	
+	public static boolean incVar (String player, String var, int addValue){
 		String id = varId(player, var);
 		if (!vars.containsKey(id)) setVar(player,var,"0");
 		String valueStr = vars.get(id);
@@ -126,6 +151,12 @@ public class Variables {
 		setVar(player,var,String.valueOf(Integer.parseInt(valueStr)+addValue));
 		return true;
 	}
+
+
+	public static boolean decVar (String player, String var, int decValue){
+		return incVar (player, var, decValue*(-1));
+	}
+
 	public static boolean decVar (Player player, String var, int decValue){
 		return incVar (player, var, decValue*(-1));
 	}
@@ -192,20 +223,21 @@ public class Variables {
 		if (str.isEmpty()) return str;
 		String newStr = str;
 		for (String key : tempvars.keySet()){
-			newStr = newStr.replaceAll("%"+key+"%", tempvars.get(key));
+			newStr = newStr.replaceAll("%"+key.toLowerCase()+"%", tempvars.get(key));
+			newStr = newStr.replaceAll("%"+key.toUpperCase()+"%", tempvars.get(key));
 		}
 		return newStr;
 	}
 
 	public static void setTempVar (String varId, String value){
-		vars.put(varId, value);
+		tempvars.put(varId.toLowerCase(), value);
 	}
 
 	public static void clearTempVar (String varId){
-		if (vars.containsKey(varId)) vars.remove(varId);
+		if (tempvars.containsKey(varId.toLowerCase())) vars.remove(varId.toLowerCase());
 	}
 
-	public static void clearAllTempVar (String varId){
+	public static void clearAllTempVar (){
 		tempvars.clear();
 	}
 
@@ -213,7 +245,7 @@ public class Variables {
 		return getTempVar (varId,"");
 	}
 	public static String getTempVar (String varId, String defvar){
-		if (tempvars.containsKey(varId)) return tempvars.get(varId);
+		if (tempvars.containsKey(varId.toLowerCase())) return tempvars.get(varId.toLowerCase());
 		return defvar;
 	}
 

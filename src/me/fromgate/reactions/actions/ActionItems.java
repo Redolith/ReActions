@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import me.fromgate.reactions.util.ItemUtil;
+import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.ParamUtil;
 import me.fromgate.reactions.util.Util;
 
@@ -169,17 +170,17 @@ public class ActionItems extends Action {
 
     public boolean dropItems(Player p, Map<String, String> params) {
         int radius = ParamUtil.getParam(params, "radius", 0);
-        Location loc = Util.parseLocation(ParamUtil.getParam(params, "loc", ""));
+        Location loc = Locator.parseLocation(ParamUtil.getParam(params, "loc", ""),p.getLocation());
         if (loc == null) loc = p.getLocation();
         boolean scatter = ParamUtil.getParam(params, "scatter", true);
         boolean land = ParamUtil.getParam(params, "land", true);
         List<ItemStack> items = Util.parseRandomItems(ParamUtil.getParam(params, "item", ""));
         if (items.isEmpty()) return false;
         if (radius==0) scatter = false;
-        Location l = Util.getRandomLocationInRadius(loc, radius, land);
+        Location l = Locator.getRadiusLocation(loc, radius, land);
         for (ItemStack i : items){
             loc.getWorld().dropItemNaturally(l, i);
-            if (scatter) l = Util.getRandomLocationInRadius(loc, radius, land);
+            if (scatter) l = Locator.getRadiusLocation(loc, radius, land);
         }
         this.setMessageParam(Util.itemsToString(items));
         return true;

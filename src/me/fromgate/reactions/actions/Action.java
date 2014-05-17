@@ -76,6 +76,7 @@ public abstract class Action {
 		if ((p!=null)&&(printAction())) 
 			u().printMSG(p, actionFailed ? "act_"+type.name().toLowerCase()+"fail" : "act_"+type.name().toLowerCase(), message_param);
 		//Залипухи, но похоже по другому - никак...
+		if (a==null) return true;
 		if ((a.getType() == ActivatorType.COMMAND)&&(!((CommandActivator) a).isCommandRegistered())) return true;
 		if ((this.type==Actions.CANCEL_EVENT)&&(!actionFailed)) return true;
 		return false;

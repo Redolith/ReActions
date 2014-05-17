@@ -23,8 +23,11 @@
 package me.fromgate.reactions.actions;
 
 import java.util.Map;
+
+import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.ParamUtil;
 import me.fromgate.reactions.util.Util;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -41,7 +44,7 @@ public class ActionBlockSet extends Action {
             u().logOnce("wrongblock"+istr, "Failed to execute action BLOCK_SET. Wrong block "+istr.toUpperCase());
             return false;
         }
-        Location loc = Util.parseLocation(ParamUtil.getParam(params, "loc", ""));
+        Location loc = Locator.parseLocation(ParamUtil.getParam(params, "loc", ""),null);
         if (loc == null) return false;
         loc.getBlock().setType(item.getType());
         loc.getBlock().setData(item.getData().getData());

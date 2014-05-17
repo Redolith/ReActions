@@ -20,15 +20,27 @@
  * 
  */
 
+
 package me.fromgate.reactions.flags;
 
+import java.util.Map;
+import me.fromgate.reactions.util.ParamUtil;
 import org.bukkit.entity.Player;
 
-public class FlagWeather extends Flag {
+public class FlagCompare extends Flag{
+
 	@Override
 	public boolean checkFlag(Player p, String param) {
-		if (param.equalsIgnoreCase("rain")) return p.getWorld().isThundering()||p.getWorld().hasStorm();
-		if (param.equalsIgnoreCase("thunder")) return p.getWorld().isThundering()||p.getWorld().hasStorm();
-		return !p.getWorld().hasStorm();
+		Map<String,String> params = ParamUtil.parseParams(param, "unknown");
+		String paramValue = ParamUtil.getParam(params, "param", "");
+		if (paramValue.isEmpty()) return false;
+		if (!ParamUtil.isParamExists(params, "value1")) return false;
+		for (String valueKey : params.keySet()){
+			if (!((valueKey.toLowerCase()).startsWith("value"))) continue;
+			String value = params.get(valueKey);
+			if (u().isIntegerSigned(value,paramValue)&&(Integer.parseInt(value)==Integer.parseInt(paramValue))) return true;
+			else if (paramValue.equalsIgnoreCase(value)) return true;
+		}
+		return false;
 	}
 }

@@ -22,7 +22,6 @@
 
 package me.fromgate.reactions.util;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -58,110 +57,8 @@ import org.bukkit.potion.PotionEffectType;
 
 public class Util {
 
-	private static ReActions plg(){
-		return ReActions.instance;
-	}
-
-
 	private static RAUtil u(){
 		return ReActions.util;
-	}
-
-	// world,x,y,z,[yaw,pitch]
-	// world,x,y,z,[yaw,pitch]@radius
-	public static Location parseLocation (String strloc){
-		// Радиус пока игнорируем....
-		Location loc = null;
-		if (strloc.isEmpty()) return null;
-		String [] lr = strloc.split("@");
-		String sloc = lr[0];
-		int radius = 0;
-		if ((lr.length==2)&&(lr[1].matches("[1-9]+[0-9]*"))) radius = Integer.parseInt(lr[1]);
-		String [] ln = sloc.split(",");
-		if (!((ln.length==4)||(ln.length==6))) return null;
-		World w = Bukkit.getWorld(ln[0]);
-		if (w==null) return null;
-		for (int i = 1; i<ln.length; i++){
-			if (!(u().isInteger(ln[i])||ln[i].matches("-?[0-9]+[0-9]*\\.[0-9]+")||ln[i].matches("-?[1-9]+[0-9]*"))) return null;
-		}
-
-		loc = new Location (w, Double.parseDouble(ln[1]),Double.parseDouble(ln[2]),Double.parseDouble(ln[3]));
-		if (ln.length==6){
-			loc.setYaw(Float.parseFloat(ln[4]));
-			loc.setPitch(Float.parseFloat(ln[5]));
-		}
-		if (radius >0) loc = getRandomLocationInRadius (loc, radius,true);
-		return loc;
-	}
-
-
-	public static List<Location> getLocationsRadius (Location center, int radius, boolean land){
-		List<Location> locs = new ArrayList<Location>();
-		if (radius>0){
-			for (int x = center.getBlockX()-radius; x<=center.getBlockX()+radius; x++)
-				for (int y = center.getBlockY()-radius; y<=center.getBlockY()+radius; y++)
-					for (int z = center.getBlockZ()-radius; z<=center.getBlockZ()+radius; z++){
-						Location t = new Location (center.getWorld(),x,y,z,center.getYaw(),center.getPitch());
-						if (t.getBlock().isEmpty()&&t.getBlock().getRelative(BlockFace.UP).isEmpty()){
-							if (land&&t.getBlock().getRelative(BlockFace.DOWN).isEmpty()) continue;
-							t.add(center.getX()-center.getBlockX(),center.getY()-center.getBlockY(),center.getZ()-center.getBlockZ());
-							t.setY(center.getY());
-							t.setPitch(center.getPitch());
-							locs.add(t);
-						}
-					}
-		} 
-		return locs;
-	}
-
-	public static List<Location> getLocationsRegion (String region, boolean land){
-		return RAWorldGuard.getRegionLocations(region, land);
-	}
-
-
-	public static Location getRandomLocationList(List<Location> locs){
-		if ((locs == null)||locs.isEmpty()) return null;
-		return locs.get(u().tryChance(locs.size()));
-	}
-
-	public static Location getRandomLocationInRadius(Location l, int radius, boolean land){
-		Location loc = l;
-		if (radius>0) {
-			List<Location> emptyloc = getLocationsRadius(l,radius,land);
-			if (!emptyloc.isEmpty()) {
-				loc = emptyloc.get(u().tryChance(emptyloc.size()));
-				loc.add(l.getX()-l.getBlockX(), l.getY()-l.getBlockY(), l.getZ()-l.getBlockZ());
-				loc.setYaw(l.getYaw());
-				loc.setPitch(l.getPitch());
-			}
-		}
-		return loc;
-	}
-
-	public static String locationToStringFormated(Location loc){
-		if (loc == null) return "";
-		DecimalFormat fmt = new DecimalFormat("####0.##");
-		String lstr = loc.toString();
-		try {
-			lstr = "["+loc.getWorld().getName()+"] "+fmt.format(loc.getX())+", "+fmt.format(loc.getY())+", "+fmt.format(loc.getZ());
-		} catch (Exception e){
-		}
-		return lstr;
-	}
-
-	public static String locationToString(Location loc){
-		if (loc == null) return "";
-		return loc.getWorld().getName()+","+
-		trimDouble(loc.getX())+","+
-		trimDouble(loc.getY())+","+
-		trimDouble(loc.getZ())+","+
-		(float)trimDouble(loc.getYaw())+","+
-		(float)trimDouble(loc.getPitch());
-	}
-
-	public static double trimDouble(double d){
-		int i = (int) (d*1000);
-		return ((double)i)/1000;
 	}
 
 	public static int getMinMaxRandom(String minmaxstr){
@@ -180,8 +77,6 @@ public class Util {
 		if (max>min) return min + u().tryChance(1+max-min);
 		else return min;
 	}
-
-
 
 	public static ItemStack getRndItem (String str){
 		if (str.isEmpty()) return new ItemStack (Material.AIR);
@@ -337,19 +232,6 @@ public class Util {
 		return "";
 	}
 
-
-	@SuppressWarnings("deprecation")
-	public static Location locToLocation(Player p, String locstr){
-		Location loc = null;
-		if (locstr.equalsIgnoreCase("player")||locstr.equalsIgnoreCase("here")) loc = p.getLocation();
-		else if (locstr.equalsIgnoreCase("eye")||locstr.equalsIgnoreCase("head")) loc = p.getEyeLocation();
-		else if (locstr.equalsIgnoreCase("sel")||locstr.equalsIgnoreCase("selection")) loc = Selector.getSelectedLocation(p);
-		else if (locstr.equalsIgnoreCase("view")||locstr.equalsIgnoreCase("viewpoint")) loc = p.getTargetBlock(null, 100).getLocation(); 
-		else if (plg().containsTpLoc(locstr)) loc = plg().getTpLoc(locstr);
-		else loc = Util.parseLocation(locstr);
-		return loc;
-	} 
- 
 	@SuppressWarnings("deprecation")
 	public static String replaceStandartLocations (Player p, String param){
 		if (p==null) return param;
@@ -365,23 +247,17 @@ public class Util {
 		locs.put("%viewpoint%", targetBlock);
 		locs.put("%view%", targetBlock);
 		locs.put("%selection%", Selector.getSelectedLocation(p));
+		locs.put("%select%", Selector.getSelectedLocation(p));
 		locs.put("%sel%", Selector.getSelectedLocation(p));
 		String newparam = param;
 		for (String key : locs.keySet()){
 			Location l = locs.get(key);
 			if (l==null) continue;
-			newparam = newparam.replace(key, Util.locationToString(l));
+			newparam = newparam.replace(key, Locator.locationToString(l));
 		}
 		return newparam;
 	} 
  
-	public static String locToString(Player p, String locstr){
-		String loc = u().getMSGnc("loc_unknown");
-		Location tl = locToLocation (p, locstr);
-		if (tl!=null) loc = "["+tl.getWorld().getName()+"] ("+tl.getBlockX()+", "+tl.getBlockY()+", "+tl.getBlockZ()+")";
-		return loc;
-	}
-
 	public static PotionEffectType parsePotionEffect (String name) {
 		PotionEffectType pef = null;
 		try{
@@ -391,16 +267,6 @@ public class Util {
 		return pef;
 	}
 
-	public static String timeToString(long time, boolean showms) {
-		String timeStr = "";
-		int hours = (int) ((time / 1000 + 8) % 24);
-		int minutes = (int) (60 * (time % 1000) / 1000);
-		timeStr = String.format("%02d:%02d", hours, minutes);
-		if (showms&&(time<1000))  timeStr = Long.toString(time)+"ms";
-		return timeStr;
-	}
-
-
 	public static Player getKiller(EntityDamageEvent event){
 		if (event instanceof EntityDamageByEntityEvent){
 			EntityDamageByEntityEvent evdmg = (EntityDamageByEntityEvent)event;
@@ -409,8 +275,6 @@ public class Util {
 				Projectile prj = (Projectile) evdmg.getDamager();
 				LivingEntity shooterEntity = BukkitCompatibilityFix.getShooter(prj);
 				if (shooterEntity == null) return null;
-				//if (prj.getShooter() == null) return null;
-				//if (prj.getShooter() instanceof Player) return (Player) prj.getShooter();
 				if (shooterEntity instanceof Player) return (Player) shooterEntity;
 			}
 		}

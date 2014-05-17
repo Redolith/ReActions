@@ -27,6 +27,7 @@ import java.util.List;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.Activator.FlagVal;
+import me.fromgate.reactions.util.Placeholders;
 import me.fromgate.reactions.util.RADebug;
 
 import org.bukkit.command.CommandSender;
@@ -71,6 +72,7 @@ public enum Flags {
     VAR_PLAYER_GREATER("varpgrt",true, new FlagVar(2,true)),
     VAR_LOWER("varlwr",false, new FlagVar(3,false)),
     VAR_PLAYER_LOWER("varplwr",true, new FlagVar(3,true)),
+    COMPARE("cmp",false, new FlagCompare()),
     RNC_RACE("rncrace",true, new FlagRacesAndClasses(true)),
     RNC_CLASS("rncclass",true, new FlagRacesAndClasses(false)),
     WEATHER("weather",true, new FlagWeather()),
@@ -126,6 +128,8 @@ public enum Flags {
     }
 
     public static boolean checkFlags (Player p, Activator c){
+    	
+    	
         return RADebug.checkFlagAndDebug(p, checkAllFlags (p, c));
     }
 
@@ -133,7 +137,7 @@ public enum Flags {
         if (c.getFlags().size()>0)
             for (int i = 0; i<c.getFlags().size();i++){
                 FlagVal f = c.getFlags().get(i);
-                if (!checkFlag (p, f.flag, f.value, f.not)) return false;
+                if (!checkFlag (p, f.flag, Placeholders.replacePlaceholders(p, c, f.value), f.not)) return false;
             }
         return true;
     }

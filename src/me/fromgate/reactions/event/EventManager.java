@@ -32,6 +32,7 @@ import me.fromgate.reactions.activators.ActivatorType;
 import me.fromgate.reactions.activators.Activators;
 import me.fromgate.reactions.activators.ItemHoldActivator;
 import me.fromgate.reactions.activators.ItemWearActivator;
+import me.fromgate.reactions.activators.SignActivator;
 import me.fromgate.reactions.externals.RAWorldGuard;
 import me.fromgate.reactions.util.ItemUtil;
 import me.fromgate.reactions.util.ParamUtil;
@@ -55,7 +56,6 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 
 public class EventManager {
-
     private static ReActions plg(){
         return ReActions.instance;
     }
@@ -159,9 +159,22 @@ public class EventManager {
 
 
 
+	public static boolean raiseSignEvent(Player player, String[] lines, Location loc) {
+		for (Activator act : Activators.getActivators(ActivatorType.SIGN)){
+			SignActivator sign = (SignActivator) act;
+			if (sign.checkMask(lines)){
+				SignEvent se = new SignEvent (player, lines,loc);
+				Bukkit.getServer().getPluginManager().callEvent(se);
+				return true;
+			}
+		}
+		return false;
+	}
+    
     public static boolean raiseCommandEvent (Player p, String command){
         if (command.isEmpty()) return false;
-        CommandEvent ce = new CommandEvent (p,command);
+        String [] args = command.split(" ");
+        CommandEvent ce = new CommandEvent (p,command,args);
         Bukkit.getServer().getPluginManager().callEvent(ce);
         if (ce.isCancelled()) return true;
         return false;
@@ -391,8 +404,10 @@ public class EventManager {
         if (!p.hasMetadata("reactions-rchk-"+id)) return true;
         Long curtime = System.currentTimeMillis();
         Long prevtime = p.getMetadata("reactions-rchk-"+id).get(0).asLong();
-        return ((curtime-prevtime)>(1000*seconds)); 
+        return ((curtime-prevtime)>=(1000*seconds)); 
     }
+
+
 
 
 

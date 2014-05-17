@@ -22,9 +22,7 @@
 
 package me.fromgate.reactions;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.logging.Logger;
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.Activators;
@@ -39,22 +37,18 @@ import me.fromgate.reactions.sql.SQLManager;
 import me.fromgate.reactions.timer.Timers;
 import me.fromgate.reactions.util.Delayer;
 import me.fromgate.reactions.util.ItemUtil;
+import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.RADebug;
 import me.fromgate.reactions.util.Shoot;
 import me.fromgate.reactions.util.Variables;
-import org.bukkit.Location;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-
 import com.palmergames.bukkit.towny.Towny;
 
 
 public class ReActions extends JavaPlugin {
     String actionMsg="tp,grpadd,grprmv,townset,townkick,itemrmv,invitemrmv,itemgive,moneypay,moneygive"; //отображать сообщения о выполнении действий
-    
-    
     String language="english";
     boolean languageSave=false;
     boolean checkUpdates=false;
@@ -81,8 +75,6 @@ public class ReActions extends JavaPlugin {
         return towny_conected;
     }
 
-    //Activators activators;
-    HashMap<String,TpLoc> tports = new HashMap<String,TpLoc>();
     RADebug debug = new RADebug();
 
     public Activator getActivator(String id){
@@ -111,7 +103,7 @@ public class ReActions extends JavaPlugin {
         RAFactions.init();
         Delayer.load();
         Variables.load();
-        loadLocs();
+        Locator.loadLocs();
         RAVault.init();
         RACraftConomy.init();
         RAWorldGuard.init();
@@ -125,48 +117,6 @@ public class ReActions extends JavaPlugin {
         
     }
 
-    protected void saveLocs(){
-        try {
-            File f = new File (this.getDataFolder()+File.separator+"locations.yml");
-            if (f.exists()) f.delete();
-            if (tports.size()>0){
-                f.createNewFile();
-                YamlConfiguration lcs = new YamlConfiguration();
-                for (String key : tports.keySet()){
-                    lcs.set(key+".world", tports.get(key).world);
-                    lcs.set(key+".x", tports.get(key).x);
-                    lcs.set(key+".y", tports.get(key).y);
-                    lcs.set(key+".z", tports.get(key).z);
-                    lcs.set(key+".yaw", tports.get(key).yaw);
-                    lcs.set(key+".pitch", tports.get(key).pitch);
-                }
-                lcs.save(f);
-            }
-        } catch (Exception e){
-            e.printStackTrace();
-        }	
-    }
-
-    protected void loadLocs(){
-        try {
-            File f = new File (this.getDataFolder()+File.separator+"locations.yml");
-            tports.clear();
-            if (f.exists()){
-                YamlConfiguration lcs = new YamlConfiguration();
-                lcs.load(f);
-                for (String key : lcs.getKeys(false))
-                    tports.put(key,new TpLoc (lcs.getString(key+".world"),
-                            lcs.getDouble(key+".x"),
-                            lcs.getDouble(key+".y"),
-                            lcs.getDouble(key+".z"),
-                            (float) lcs.getDouble(key+".yaw"),
-                            (float) lcs.getDouble(key+".pitch")));
-            }
-        } catch (Exception e){
-            e.printStackTrace();
-        }			
-
-    }
 
     protected void saveCfg(){
         getConfig().set("general.language",language);
@@ -213,15 +163,6 @@ public class ReActions extends JavaPlugin {
 
     public String getActionMsg(){
         return this.actionMsg;
-    }
-
-    public boolean containsTpLoc(String locstr){
-        return tports.containsKey(locstr);
-    }
-
-    public Location getTpLoc(String locstr){
-        if (tports.containsKey(locstr)) return tports.get(locstr).getLocation();
-        return null;
     }
 
     public boolean needUpdateFiles() {

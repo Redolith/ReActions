@@ -40,14 +40,16 @@ public class ActionVar extends Action  {
 
     @Override
     public boolean execute(Player p, Map<String, String> params) {
-        Player player = p;
+        String player = p == null ? "" : p.getName();
         String var;
         String value;
         
+        
         if (ParamUtil.isParamExists(params, "id")){
             var = ParamUtil.getParam(params, "id", "");
-            if (var.isEmpty()) return false;
             value = ParamUtil.getParam(params, "value", "");
+            player = ParamUtil.getParam(params, "player", player);
+            if (var.isEmpty()) return false;
         } else {
             String [] ln = ParamUtil.getParam(params, "param-line", "").split("/",2);
             if (ln.length == 0) return false;
@@ -55,9 +57,10 @@ public class ActionVar extends Action  {
             value = (ln.length>1) ? ln[1] : "";
         }
 
-        if (!this.personalVar) player = null;
-        else if (player == null) return false;
+        if (!this.personalVar) player = "";
+        else if (player.isEmpty()) return false;
 
+        
         switch (this.actType){
         case 0: //VAR_SET, VAR_PLAYER_SET
             Variables.setVar(player, var, value);

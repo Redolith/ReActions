@@ -1127,7 +1127,6 @@ public abstract class FGUtilCore {
         int max = 0;
         String strmin = minmaxstr;
         String strmax = minmaxstr;
-
         if (minmaxstr.contains("-")){
             strmin = minmaxstr.substring(0,minmaxstr.indexOf("-"));
             strmax = minmaxstr.substring(minmaxstr.indexOf("-")+1);

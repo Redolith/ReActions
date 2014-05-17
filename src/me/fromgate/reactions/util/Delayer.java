@@ -23,14 +23,12 @@
 package me.fromgate.reactions.util;
 
 import java.io.File;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.timer.Time;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -100,12 +98,6 @@ public class Delayer {
     public static void setPersonalDelay(String playerName, String id, Long seconds){
         setDelay (playerName+"."+id, seconds,true);
     }
-
-    public static String longTimeToString(long time){
-        Date date = new Date(time);
-        DateFormat formatter = new SimpleDateFormat("dd-MM-YYYY HH:mm:ss");
-        return formatter.format(date);
-    }
     
     public static void printDelayList (CommandSender p, int page, int lpp) {
         List<String> lst = new ArrayList<String>();
@@ -114,7 +106,7 @@ public class Delayer {
             if (delaytime<System.currentTimeMillis()) continue;
             String [] ln = key.split("\\.",2);
             if (ln.length!=2) continue;
-            lst.add("["+ln[0] + "] "+ln[1]+": "+longTimeToString(delays.get(key)));
+            lst.add("["+ln[0] + "] "+ln[1]+": "+Time.fullTimeToString(delays.get(key)));
         }
         Collections.sort(lst);
         ReActions.util.printPage(p, lst, page, "msg_listdelay", "", true,lpp);

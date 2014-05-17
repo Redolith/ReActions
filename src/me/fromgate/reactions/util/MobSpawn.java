@@ -46,7 +46,7 @@ public class MobSpawn {
     public static void mobSpawn(Player p, Map<String,String> params) {
         String mob = ParamUtil.getParam(params, "type", "PIG");
         String locstr = ParamUtil.getParam(params, "loc", "");
-        Location loc = Util.locToLocation(p,locstr);
+        Location loc = Locator.parseLocation(locstr, p.getLocation());  //Util.locToLocation(p,locstr);
         String region = ParamUtil.getParam(params, "region", "");
         int radius = ParamUtil.getParam(params, "radius", 0);
         int num=Util.getMinMaxRandom(ParamUtil.getParam(params, "num", "1"));
@@ -71,24 +71,14 @@ public class MobSpawn {
         double dmg = ParamUtil.getParam(params, "dmg", 1.0D);
         String exec = ParamUtil.getParam(params, "run", "");
         String exec_delay = ParamUtil.getParam(params, "rundelay", "1t");
-
-        if (loc == null) loc = p.getLocation();
-        List<Location> locs = null;
         
-        if (RAWorldGuard.isRegionExists(region)) locs = Util.getLocationsRegion(region, land);
-        else if (radius>0) locs = Util.getLocationsRadius(loc, radius, land);
-
+        if (RAWorldGuard.isRegionExists(region)) loc = Locator.getRegionLocation(region, land);
+        else if (radius>0) loc = Locator.getRadiusLocation(loc, radius, land); 
+        if (loc == null) loc = p.getLocation();
+        
         for (int i = 0; i<num; i++){
-
-            if ((locs!=null)&&(!locs.isEmpty()))
-                loc = Util.getRandomLocationList(locs);
-
-
             List<LivingEntity> mobs = spawnMob(loc,mob);
-
-
             for (LivingEntity le : mobs){
-
                 setMobHealth (le,health);
                 setMobName (le,name);
                 potionEffect (le,poteff);
@@ -102,11 +92,8 @@ public class MobSpawn {
                 setMobGrowl(le,growl);
                 setMobCry(le,cry);
                 setDeathEffect (le,dtheffect);
-
             }
-
             playMobEffect (loc,playeffect);
-
         }
     }
 

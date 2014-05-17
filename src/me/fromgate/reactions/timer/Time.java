@@ -22,6 +22,10 @@
 
 package me.fromgate.reactions.timer;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.bukkit.Bukkit;
 
 public class Time {
@@ -31,14 +35,6 @@ public class Time {
 		return Bukkit.getWorlds().get(0).getTime();
 	}
 	
-	public static String ingameTimeToString(long ingameTime){
-        String timeStr = "";
-        int hours = (int) ((ingameTime / 1000 + 8) % 24);
-        int minutes = (int) (60 * (ingameTime % 1000) / 1000);
-        timeStr = String.format("%02d:%02d", hours, minutes);
-        return timeStr;
-	}
-
 	public static String currentIngameTime(){
 		return ingameTimeToString(Bukkit.getWorlds().get(0).getTime());
 	}
@@ -47,5 +43,25 @@ public class Time {
         //1000 ms = 20 ticks
         return Math.max(1, (time/50));
     }
+    
+	public static String ingameTimeToString(long ingameTime){
+		return ingameTimeToString(ingameTime, false);
+	}
+    
+	public static String ingameTimeToString(long time, boolean showms) {
+		String timeStr = "";
+		int hours = (int) ((time / 1000 + 8) % 24);
+		int minutes = (int) (60 * (time % 1000) / 1000);
+		timeStr = String.format("%02d:%02d", hours, minutes);
+		if (showms&&(time<1000))  timeStr = Long.toString(time)+"ms";
+		return timeStr;
+	}
 	
+    public static String fullTimeToString(long time){
+        Date date = new Date(time);
+        DateFormat formatter = new SimpleDateFormat("dd-MM-YYYY HH:mm:ss");
+        return formatter.format(date);
+    }
+
+    
 }
