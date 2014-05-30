@@ -2,13 +2,13 @@ package me.fromgate.reactions.activators;
 
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.PVPKillEvent;
+import me.fromgate.reactions.util.Variables;
+
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
 
 public class PVPKillActivator extends Activator {
-    private String targetplayer;
-    
     public PVPKillActivator(String name) {
         super(name, "activators");
     }
@@ -21,7 +21,7 @@ public class PVPKillActivator extends Activator {
     public boolean activate(Event event) {
         if (!(event instanceof PVPKillEvent)) return false;
         PVPKillEvent pe = (PVPKillEvent) event;
-        this.targetplayer = pe.getKilledPlayer().getName();
+        Variables.setTempVar("targetplayer", pe.getKilledPlayer().getName());
         return Actions.executeActivator(pe.getPlayer(), this);
     }
 
@@ -43,8 +43,9 @@ public class PVPKillActivator extends Activator {
         return ActivatorType.PVP_KILL;
     }
 
+    /*
     @Override
     public String getTargetPlayer(){
         return targetplayer; 
-    }
+    }*/
 }

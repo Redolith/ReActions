@@ -2,12 +2,13 @@ package me.fromgate.reactions.activators;
 
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.PVPDeathEvent;
+import me.fromgate.reactions.util.Variables;
+
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
 
 public class PVPDeathActivator extends Activator {
-    private String targetplayer;
     
     public PVPDeathActivator(String name) {
         super(name, "activators");
@@ -21,7 +22,7 @@ public class PVPDeathActivator extends Activator {
     public boolean activate(Event event) {
         if (!(event instanceof PVPDeathEvent)) return false;
         PVPDeathEvent de = (PVPDeathEvent) event;
-        this.targetplayer = de.getKiller().getName();
+        Variables.setTempVar("targetplayer", de.getKiller().getName());
         return Actions.executeActivator(de.getPlayer(), this);
     }
 
@@ -41,11 +42,6 @@ public class PVPDeathActivator extends Activator {
     @Override
     public ActivatorType getType() {
         return ActivatorType.PVP_DEATH;
-    }
-
-    @Override
-    public String getTargetPlayer(){
-        return targetplayer; 
     }
     
     

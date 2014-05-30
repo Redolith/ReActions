@@ -284,8 +284,9 @@ public abstract class Activator {
 		 return ((getType().name().equalsIgnoreCase(str))||(getType().getAlias().equalsIgnoreCase(str))); 
 	 }
 
+	 /*
 	 public String getTargetPlayer() {
 		 return "%targetplayer%";
-	 }
+	 }*/
 
 }

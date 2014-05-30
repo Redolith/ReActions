@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator.ActVal;
@@ -304,7 +303,10 @@ public class Activators {
                 }
 
                 Activator a = createActivator (at,name,group,cfg);
-                if (a==null) continue;
+                if (a==null) {
+                	u().logOnce("cannotcreate2"+type+name, "Failed to create new activator. Type: "+type + " Name: "+name);
+                	continue;
+                }
                 addActivator (a);
             }
         }
@@ -316,6 +318,7 @@ public class Activators {
             return a;
         } catch (Exception e){
             u().logOnce("cannotcreate"+name, "Failed to create new activator. Name: "+name);
+            e.printStackTrace();
         }
         return null;
     }
@@ -351,6 +354,8 @@ public class Activators {
         boolean cancelParentEvent = false;
         for (int i = 0; i<act.size(); i++){
             Activator a = act.get(i);
+        	/*if (event instanceof FactionRelationEvent)
+        		ReActions.util.BC("activate 3 "+event.getClass().getName()+" "+a.getType().name()+" "+a.getType().getEventClass().getName());*/
             if (a.getType().getEventClass().isInstance(event)){
                 if (a.executeActivator(event)) cancelParentEvent = true;
             }

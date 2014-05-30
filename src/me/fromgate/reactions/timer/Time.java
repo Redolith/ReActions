@@ -57,10 +57,17 @@ public class Time {
 		return timeStr;
 	}
 	
-    public static String fullTimeToString(long time){
+	public static String fullTimeToString(long time, String fromat){
         Date date = new Date(time);
+        DateFormat formatter = new SimpleDateFormat(fromat);		
+		return formatter.format(date);
+	}
+	
+    public static String fullTimeToString(long time){
+    	return fullTimeToString (time, "dd-MM-YYYY HH:mm:ss");
+        /*Date date = new Date(time);
         DateFormat formatter = new SimpleDateFormat("dd-MM-YYYY HH:mm:ss");
-        return formatter.format(date);
+        return formatter.format(date);*/
     }
 
     

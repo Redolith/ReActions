@@ -42,6 +42,8 @@ public class ActionSignSet extends Action{
 		if (locStr.isEmpty()) return false;
 		Location loc = Util.parseLocation(locStr);
 		if (loc==null) return false;
+		boolean chunkLoad = ParamUtil.getParam(params, "loadchunk", false);
+		if (!chunkLoad&&!loc.getChunk().isLoaded()) return false;
 		Block block = loc.getBlock();
 		if (block.getType()!=Material.SIGN_POST&&block.getType()!=Material.WALL_SIGN) return false;
 		Sign sign = (Sign) block.getState();

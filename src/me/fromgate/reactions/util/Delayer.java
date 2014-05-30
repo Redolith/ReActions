@@ -82,21 +82,21 @@ public class Delayer {
         return checkDelay (p.getName()+"."+id);
     }
 
-    public static void setDelay(String id, Long seconds){
-        setDelay(id,seconds,true);
+    public static void setDelay(String id, Long delayTime){
+        setDelay(id,delayTime,true);
     }
 
-    public static void setDelay(String id, Long seconds, boolean save){
-        delays.put(id.contains(".") ? id : "global."+id, System.currentTimeMillis()+seconds);
+    public static void setDelay(String id, Long delayTime, boolean save){
+        delays.put(id.contains(".") ? id : "global."+id, System.currentTimeMillis()+delayTime);
         if (save) save();
     }
 
-    public static void setPersonalDelay(Player p, String id, Long seconds){
-        setDelay (p.getName()+"."+id, seconds,true);
+    public static void setPersonalDelay(Player p, String id, Long delayTime){
+        setDelay (p.getName()+"."+id, delayTime,true);
     }
 
-    public static void setPersonalDelay(String playerName, String id, Long seconds){
-        setDelay (playerName+"."+id, seconds,true);
+    public static void setPersonalDelay(String playerName, String id, Long delayTime){
+        setDelay (playerName+"."+id, delayTime,true);
     }
     
     public static void printDelayList (CommandSender p, int page, int lpp) {

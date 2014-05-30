@@ -35,6 +35,8 @@ import me.fromgate.reactions.event.CommandEvent;
 import me.fromgate.reactions.event.DoorEvent;
 import me.fromgate.reactions.event.EventManager;
 import me.fromgate.reactions.event.ExecEvent;
+import me.fromgate.reactions.event.FactionEvent;
+import me.fromgate.reactions.event.FactionRelationEvent;
 import me.fromgate.reactions.event.ItemClickEvent;
 import me.fromgate.reactions.event.ItemHoldEvent;
 import me.fromgate.reactions.event.ItemWearEvent;
@@ -370,7 +372,7 @@ public class RAListener implements Listener{
 	public void onPVPRespawnActivator (PVPRespawnEvent event){
 		event.setCancelled(Activators.activate(event));
 	}
-
+	
 
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
 	public void onLeverActivator (LeverEvent event){
@@ -411,7 +413,18 @@ public class RAListener implements Listener{
 	public void onSignClick (SignEvent event){
 		event.setCancelled(Activators.activate(event));
 	}
-
+	
+	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
+	public void onFactionEvent (FactionEvent event){
+		event.setCancelled(Activators.activate(event));
+	}
+	
+	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
+	public void onFactionRelationEvent (FactionRelationEvent event){
+		event.setCancelled(Activators.activate(event));
+	}
+	
+	
 }
 
 

@@ -23,37 +23,46 @@
 package me.fromgate.reactions.actions;
 
 import java.util.Map;
-
 import me.fromgate.reactions.util.ParamUtil;
 import me.fromgate.reactions.util.Delayer;
 import org.bukkit.entity.Player;
 
 public class ActionDelay extends Action {
+	
+	boolean personal;
+	
+	public ActionDelay (boolean personalDelay){
+		this.personal = personalDelay;
+	}
 
     @Override
     public boolean execute(Player p, Map<String, String> params) {
-        String str = setDelay (p, ParamUtil.getParam(params, "param-line", ""));
-        if (str.isEmpty()) return false;
-        setMessageParam(str);
+    	String timeStr = "";
+    	String variableId = p.getName();
+    	
+    	if (ParamUtil.isParamExists(params, "id","delay")){
+    		variableId = ParamUtil.getParam(params, "id", "");
+    		timeStr = ParamUtil.getParam(params, "delay", "");
+    	} else {
+    		String oldFormat = ParamUtil.getParam(params, "param-line", "");
+            if (oldFormat.contains("/")){
+                String[] m = oldFormat.split("/");
+                if (m.length>=2){
+                    timeStr = m[0];
+                    variableId = m[1];
+                }
+            } else timeStr = oldFormat;
+    	}
+    	if (timeStr.isEmpty()) return false;
+    	if (variableId.isEmpty()) return false;
+    	setDelay(p,variableId,u().parseTime(timeStr));
+        setMessageParam(timeStr);
         return true;
     }
     
-    private String setDelay(Player p, String mstr){
-        String seconds = "";
-        String varname = p.getName();
-        if (mstr.isEmpty()) return "";
-        if (mstr.contains("/")){
-            String[] m = mstr.split("/");
-            if (m.length>=2){
-                seconds = m[0];
-                varname = m[1];
-            }
-        } else seconds = mstr;
-        if (seconds.isEmpty()) return "";
-        Long sec = u().parseTime(seconds);
-        if (sec == 0) return "";        
-        Delayer.setDelay(varname, sec);
-        return seconds;
+    private void setDelay(Player p, String variableId, long delayTime){
+        if (!this.personal) Delayer.setDelay(variableId, delayTime);
+        else if (p!=null) Delayer.setPersonalDelay(p, variableId, delayTime);
     }
 
 }

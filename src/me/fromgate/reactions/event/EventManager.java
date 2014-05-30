@@ -37,7 +37,6 @@ import me.fromgate.reactions.externals.RAWorldGuard;
 import me.fromgate.reactions.util.ItemUtil;
 import me.fromgate.reactions.util.ParamUtil;
 import me.fromgate.reactions.util.Util;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -52,8 +51,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Button;
 import org.bukkit.metadata.FixedMetadataValue;
-
-
 
 public class EventManager {
     private static ReActions plg(){

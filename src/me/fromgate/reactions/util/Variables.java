@@ -29,6 +29,7 @@ import java.util.List;
 
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -95,22 +96,22 @@ public class Variables {
 		String id = varId(player, var);
 		if (!vars.containsKey(id)) return false;
 		String value = getVar(player,var,"");
-		if (u().isIntegerSigned(cmpvalue,value)) return (Integer.parseInt(cmpvalue)==Integer.parseInt(value));
+		if (isNumber(cmpvalue,value)) return (Double.parseDouble(cmpvalue)==Double.parseDouble(value));
 		return value.equalsIgnoreCase(cmpvalue);
 	}
 
 	public static boolean cmpGreaterVar (Player player, String var, String cmpvalue){
 		String id = varId(player, var);
 		if (!vars.containsKey(id)) return false;
-		if (!u().isIntegerSigned(vars.get(id),cmpvalue)) return false;
-		return Integer.parseInt(vars.get(id))>Integer.parseInt(cmpvalue);
+		if (!isNumber(vars.get(id),cmpvalue)) return false;
+		return Double.parseDouble(vars.get(id))>Double.parseDouble(cmpvalue);
 	}
 
 	public static boolean cmpLowerVar (Player player, String var, String cmpvalue){
 		String id = varId(player, var);
 		if (!vars.containsKey(id)) return false;
-		if (!u().isIntegerSigned(vars.get(id),cmpvalue)) return false;
-		return Integer.parseInt(vars.get(id))<Integer.parseInt(cmpvalue);
+		if (!isNumber(vars.get(id),cmpvalue)) return false;
+		return Double.parseDouble(vars.get(id))<Double.parseDouble(cmpvalue);
 	}
 
 	public static boolean existVar(Player player, String var){
@@ -133,31 +134,25 @@ public class Variables {
 		return incVar (player, var, -1);
 	}
 
-	public static boolean incVar (Player player, String var, int addValue){
+	public static boolean incVar (Player player, String var, double addValue){
 		return incVar (player == null ? "" : player.getName(), var, addValue);
-		/*String id = varId(player, var);
-		if (!vars.containsKey(id)) setVar(player,var,"0");
-		String valueStr = vars.get(id);
-		if (!u().isIntegerSigned(valueStr)) return false; 
-		setVar(player,var,String.valueOf(Integer.parseInt(valueStr)+addValue));
-		return true;*/
 	}
 	
-	public static boolean incVar (String player, String var, int addValue){
+	public static boolean incVar (String player, String var, double addValue){
 		String id = varId(player, var);
 		if (!vars.containsKey(id)) setVar(player,var,"0");
 		String valueStr = vars.get(id);
-		if (!u().isIntegerSigned(valueStr)) return false; 
-		setVar(player,var,String.valueOf(Integer.parseInt(valueStr)+addValue));
+		if (!isNumber(valueStr)) return false; 
+		setVar(player,var,String.valueOf(Double.parseDouble(valueStr)+addValue));
 		return true;
 	}
 
 
-	public static boolean decVar (String player, String var, int decValue){
+	public static boolean decVar (String player, String var, double decValue){
 		return incVar (player, var, decValue*(-1));
 	}
 
-	public static boolean decVar (Player player, String var, int decValue){
+	public static boolean decVar (Player player, String var, double decValue){
 		return incVar (player, var, decValue*(-1));
 	}
 
@@ -259,6 +254,13 @@ public class Variables {
 	}
 
 
+    public static boolean isNumber (String... str){
+        if (str.length==0) return false;
+        for (String s : str)
+            if (!s.matches("-?[0-9]+(.[0-9]+)?")) return false;
+        return true;
+    }
+	
 
 
 }

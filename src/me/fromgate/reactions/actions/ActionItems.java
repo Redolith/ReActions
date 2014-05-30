@@ -24,12 +24,10 @@ package me.fromgate.reactions.actions;
 
 import java.util.List;
 import java.util.Map;
-
 import me.fromgate.reactions.util.ItemUtil;
 import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.ParamUtil;
 import me.fromgate.reactions.util.Util;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;

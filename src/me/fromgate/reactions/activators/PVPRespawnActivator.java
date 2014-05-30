@@ -2,13 +2,15 @@ package me.fromgate.reactions.activators;
 
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.PVPRespawnEvent;
+import me.fromgate.reactions.util.Variables;
+
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
 
 public class PVPRespawnActivator extends Activator {
     
-    private String targetplayer;
+    //private String targetplayer;
 
     public PVPRespawnActivator(String name) {
         super (name,"activators");
@@ -22,7 +24,7 @@ public class PVPRespawnActivator extends Activator {
     public boolean activate(Event event) {
         if (!(event instanceof PVPRespawnEvent)) return false;
         PVPRespawnEvent pe = (PVPRespawnEvent) event;
-        targetplayer = pe.getKiller().getName();
+        Variables.setTempVar("targetplayer", pe.getKiller().getName());
         return Actions.executeActivator(pe.getPlayer(), this);
     }
 
@@ -44,8 +46,9 @@ public class PVPRespawnActivator extends Activator {
         return ActivatorType.PVP_RESPAWN;
     }
 
+    /*
     @Override
     public String getTargetPlayer(){
         return this.targetplayer;
-    }
+    } */
 }

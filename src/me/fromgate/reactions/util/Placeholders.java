@@ -112,6 +112,8 @@ public enum Placeholders {
 	public static String replacePlaceholder(Player player, Activator activator, String field, String string){
 		String resultField = field;
 		String key = (field.replaceFirst("%", "")).replaceAll("(:\\S+%$)|(%$)","");
+		String value = field.replaceFirst("(%\\w+:)", "").replaceAll("%$", "");
+		
 		Placeholders placeholder = Placeholders.getByName(player, key);
 		if (placeholder != null){
 			switch (placeholder){
@@ -144,26 +146,25 @@ public enum Placeholders {
 				resultField = player.getName();
 				break;
 			case RANDOM:
-				String value = field.replaceFirst("(%\\w+:)", "").replaceAll("%$", "");
 				resultField = random(value);
 				break;
 			case CALC:
 				String expression = field.replaceFirst("(%\\w+:)", "").replaceAll("%$", "");
+				expression = replaceVariablesInExpression(expression);
 				MathEval math = new MathEval();
 				try{
 					double result = math.evaluate(expression);
 					resultField = (result == (int)result) ? Integer.toString((int)result) : Double.toString(result);
 				} catch (Exception ignore){
+					u().logOnce(expression, "Failed to calculate expression: "+expression);
 				}
-				break;
-			case TARGET_PLAYER:
-				resultField = activator.getTargetPlayer();
 				break;
 			case TIME_INGAME:
 				resultField = Time.ingameTimeToString((player==null ? Bukkit.getWorlds().get(0).getTime() : player.getWorld().getTime()),false);
 				break;
 			case TIME_SERVER:
-				resultField = Time.fullTimeToString(System.currentTimeMillis());
+				String timeFormat = field.matches("%\\w+:\\S+%$") ? value :"dd-MM-YYYY HH:mm:ss"; 
+				resultField = Time.fullTimeToString(System.currentTimeMillis(), timeFormat); 
 				break;
 			default:
 				break;
@@ -178,6 +179,19 @@ public enum Placeholders {
 		if (!resultField.equalsIgnoreCase(field)) return string.replace(field, resultField);
 		return string;
 	}
+	
+	
+	public static String replaceVariablesInExpression (String expression){
+		String result = expression;
+		Pattern pattern = Pattern.compile("(\\w+");
+		Matcher matcher = pattern.matcher(expression);
+		while (matcher.find()){
+			String var = matcher.group();
+			result = result.replace(var, Variables.getVar("", var, var));
+		}
+		return result;
+	}
+
 
 	@SuppressWarnings("deprecation")
 	private static Location getViewLocation (Player p){

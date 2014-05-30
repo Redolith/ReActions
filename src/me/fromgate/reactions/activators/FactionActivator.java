@@ -14,7 +14,10 @@ public class FactionActivator extends Activator {
 	
 	private String newFaction;
 	private String oldFaction;
-
+	
+	public FactionActivator(String name, String group, YamlConfiguration cfg){
+        super (name, group, cfg);
+    }
 	public FactionActivator(String name, String param) {
 		 super (name,"activators");
 		 Map<String,String> params = ParamUtil.parseParams(param, "newfaction");

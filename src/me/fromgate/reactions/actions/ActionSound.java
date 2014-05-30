@@ -23,9 +23,7 @@
 package me.fromgate.reactions.actions;
 
 import java.util.Map;
-
 import me.fromgate.reactions.util.Util;
-
 import org.bukkit.entity.Player;
 
 public class ActionSound extends Action {

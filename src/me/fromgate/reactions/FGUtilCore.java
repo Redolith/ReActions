@@ -36,6 +36,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -1144,6 +1147,7 @@ public abstract class FGUtilCore {
     }
 
     public Long parseTime(String time){
+    	int dd = 0; // дни
         int hh = 0; // часы
         int mm = 0; // минуты
         int ss = 0; // секунды
@@ -1160,23 +1164,27 @@ public abstract class FGUtilCore {
             if (isInteger(ln[0])) hh = Integer.parseInt(ln[0]);
             if (isInteger(ln[1])) mm = Integer.parseInt(ln[1]);
             if (isInteger(ln[2])) ss = Integer.parseInt(ln[2]);
-        } else if (time.endsWith("ms")) {
-            String s = time.replace("ms", "");
-            if (isInteger(s)) ms = Integer.parseInt(s);
-        } else if (time.endsWith("h")) {
-            String s = time.replace("h", "");
-            if (isInteger(s)) hh = Integer.parseInt(s);
-        } else if (time.endsWith("m")) {
-            String s = time.replace("m", "");
-            if (isInteger(s)) mm = Integer.parseInt(s);
-        } else if (time.endsWith("s")) {
-            String s = time.replace("s", "");
-            if (isInteger(s)) ss = Integer.parseInt(s);
-        } else if (time.endsWith("t")) {
-            String s = time.replace("t", "");
-            if (isInteger(s)) tt = Integer.parseInt(s);
+        } else {
+        	Pattern pattern = Pattern.compile("\\d+(ms|d|h|m|s)");
+        	Matcher matcher = pattern.matcher(time);
+        	while (matcher.find()){
+        		String foundTime = matcher.group();
+        		if (foundTime.matches("^\\d+ms")) {
+                	ms = Integer.parseInt(time.replace("ms", ""));
+                } else if (foundTime.matches("^\\d+d")) {
+                	dd = Integer.parseInt(time.replace("d", ""));
+                } else if (foundTime.matches("^\\d+h")) {
+                	hh = Integer.parseInt(time.replace("h", ""));
+                } else if (foundTime.matches("^\\d+m$")) {
+                	mm = Integer.parseInt(time.replace("m", ""));
+                } else if (foundTime.matches("^\\d+s$")) {
+                	ss = Integer.parseInt(time.replace("s", ""));
+                } else if (foundTime.matches("^\\d+t$")) {
+                	tt = Integer.parseInt(time.replace("t", ""));
+                }
+            }
         }
-        return (long) ((hh*3600000)+(mm*60000)+(ss*1000)+(tt*50)+ms);
+        return (dd*86400000L)+(hh*3600000L)+(mm*60000L)+(ss*1000L)+(tt*50L)+ms;
     }
 
     public String itemToString (ItemStack item){

@@ -26,11 +26,9 @@ import java.util.Map;
 
 import me.fromgate.reactions.externals.RARacesAndClasses;
 import me.fromgate.reactions.util.ParamUtil;
-
 import org.bukkit.entity.Player;
 
 public class ActionRacesAndClasses extends Action {
-	
 	private boolean setRace;
 	
 	public ActionRacesAndClasses (boolean setRace){

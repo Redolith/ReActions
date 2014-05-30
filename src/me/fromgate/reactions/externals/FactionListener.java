@@ -23,10 +23,10 @@
 package me.fromgate.reactions.externals;
 
 import me.fromgate.reactions.event.EventManager;
-
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+
 import com.massivecraft.factions.event.FactionsEventMembershipChange;
 import com.massivecraft.factions.event.FactionsEventRelationChange;
 
