@@ -52,7 +52,7 @@ public class FlagSQL extends Flag {
 			query = "SELECT "+select+" FROM "+from+(where.isEmpty() ? "" : " WHERE "+where);
 		}
 		int column = ParamUtil.getParam(params, "column", 1);
-		if (check) return SQLManager.compareSelect(value, query, column);
+		if (check) return SQLManager.compareSelect(value, query, column,params);
 		else return SQLManager.isSelectResultEmpty(query);
 	}
 

@@ -52,7 +52,7 @@ public class ActionSQL extends Action {
 				return false;
 			}
 			if (varName.isEmpty()) return false;
-			Variables.setVar(playerName, varName, SQLManager.executeSelect(query, column));
+			Variables.setVar(playerName, varName, SQLManager.executeSelect(query, column,params));
 			break;
 		case 1: // INSERT
 			query = ParamUtil.getParam(params, "query", ParamUtil.getParam(params,"param-line","")).trim();
@@ -61,7 +61,7 @@ public class ActionSQL extends Action {
 				ReActions.util.logOnce("needupdate"+query, "You need to use only \"INSERT\" query in SQL_INSERT action. Query: "+query);
 				return false;
 			}
-			SQLManager.executeUpdate(query);
+			SQLManager.executeUpdate(query,params);
 			break;
 		case 2: // UPDATE
 			query = ParamUtil.getParam(params, "query", ParamUtil.getParam(params,"param-line","")).trim();
@@ -70,7 +70,7 @@ public class ActionSQL extends Action {
 				ReActions.util.logOnce("needupdate"+query, "You need to use only \"UPDATE\" query in SQL_UPDATE action. Query: "+query);
 				return false;
 			}
-			SQLManager.executeUpdate(query);
+			SQLManager.executeUpdate(query,params);
 			break;
 		case 3: // DELETE
 			query = ParamUtil.getParam(params, "query", ParamUtil.getParam(params,"param-line","")).trim();
@@ -79,7 +79,7 @@ public class ActionSQL extends Action {
 				ReActions.util.logOnce("needdelete"+query, "You need to use only \"DELETE\" query in SQL_DELETE action. Query: "+query);
 				return false;
 			}
-			SQLManager.executeUpdate(query);
+			SQLManager.executeUpdate(query,params);
 			break;
 		}
 		return true;

@@ -26,9 +26,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.util.ParamUtil;
 import me.fromgate.reactions.util.Variables;
 
 public class SQLManager {
@@ -77,48 +80,60 @@ public class SQLManager {
 
 
 
-	public static void setQueryToVar (String player, String var, String query, int column){
+	public static void setQueryToVar (String player, String var, String query, int column, Map<String,String> params){
 		if (!enabled) return;
-		String result = SQLManager.executeSelect(query, column);
+		String result = SQLManager.executeSelect(query, column,params);
 		Variables.setVar (player, var, result);
 	}
 
 
-	public static String executeSelect (String query){
-		return executeSelect(query,-1);
+	public static String executeSelect (String query,Map<String,String> params){
+		return executeSelect(query,-1,params);
 	}
 
-	public static boolean compareSelect (String value, String query, int column){
-		String result = executeSelect(query,column);
+	public static boolean compareSelect (String value, String query, int column, Map<String,String> params){
+		String result = executeSelect(query,column, params);
 		if (ReActions.util.isInteger(result,value)) return (Integer.parseInt(result)==Integer.parseInt(value));
 		return result.equalsIgnoreCase(value);
 	}
 
-
-	public static String executeSelect (String query, int column){
-		if (!enabled) return "";
-		Connection connection =null;
-		Statement selectStmt = null;
-		ResultSet result = null;
-		String resultStr = "";
+	public static Connection connectToMySQL(){
+		return connectToMySQL (new HashMap<String,String>());
+	}
+	// server port db user password codepage
+	public static Connection connectToMySQL(Map<String,String> params){
+		String сAddress = ParamUtil.getParam(params, "server", serverAdress);
+		String cPort = ParamUtil.getParam(params, "port", port);
+		String cDataBase = ParamUtil.getParam(params, "db", dataBase);
+		String cUser = ParamUtil.getParam(params, "user", userName);
+		String cPassword = ParamUtil.getParam(params, "password", password);
+		String cCodepage = ParamUtil.getParam(params, "codepage", codepage);
 		Properties prop = new Properties();
-		if (!codepage.isEmpty()){
+		if (!cCodepage.isEmpty()){
 			prop.setProperty("useUnicode", "true");
-			prop.setProperty("characterEncoding", codepage);
+			prop.setProperty("characterEncoding", cCodepage);
 		}
-		prop.setProperty("user",userName);
-		prop.setProperty("password",password);
-
-		String connectionLine = "jdbc:mysql://"+serverAdress+(port.isEmpty() ? "":":"+port)+"/"+dataBase;
-
+		prop.setProperty("user",cUser);
+		prop.setProperty("password",cPassword);
+		Connection connection = null;
+		String connectionLine = "jdbc:mysql://"+сAddress+(cPort.isEmpty() ? "":":"+cPort)+"/"+cDataBase;
 		try {
 			connection = DriverManager.getConnection(connectionLine, prop);
 		} catch (Exception e) {
 			ReActions.util.logOnce("sqlconnect", "Failed to connect to database: "+connectionLine +" user: "+userName);
-			return "";
 		}
+		return connection;
+	}
+	
 
-
+	public static String executeSelect (String query, int column, Map<String,String> params){
+		if (!enabled) return "";
+		
+		Statement selectStmt = null;
+		ResultSet result = null;
+		String resultStr = "";
+		Connection connection = connectToMySQL(params);
+		
 		try {
 			selectStmt = connection.createStatement();
 			result = selectStmt.executeQuery(query);
@@ -139,27 +154,12 @@ public class SQLManager {
 	}
 
 
-	public static boolean executeUpdate (String query) {
+	public static boolean executeUpdate (String query, Map<String,String> params) {
 		if (!enabled) return false;
-		Connection connection =null;
+		Connection connection = connectToMySQL(params);
+		if (connection == null) return false;
 		Statement statement = null;
 		boolean ok = false;
-		String connectionLine = "jdbc:mysql://"+serverAdress+(port.isEmpty() ? "":":"+port)+"/"+dataBase;
-
-		Properties prop = new Properties();
-		if (!codepage.isEmpty()){
-			prop.setProperty("useUnicode", "true");
-			prop.setProperty("characterEncoding", codepage);
-		}
-		prop.setProperty("user",userName);
-		prop.setProperty("password",password);
-
-		try {
-			connection = DriverManager.getConnection(connectionLine, prop); 
-		} catch (Exception e) {
-			ReActions.util.logOnce("sqlconnect", "Failed to connect to database: "+connectionLine +" user: "+userName);
-			return false;
-		}
 		try {
 			statement = connection.createStatement();
 			//statement.execute("SET NAMES 'utf8'");
@@ -186,20 +186,15 @@ public class SQLManager {
 
 	public static boolean isSelectResultEmpty(String query) {
 		if (!enabled) return false;
-		Connection connection =null;
+		Connection connection = connectToMySQL();
+		if (connection == null) return false;
+		
 		Statement selectStmt = null;
 		ResultSet result = null;
 		boolean resultBool = false;
-		String connectionLine = "jdbc:mysql://"+serverAdress+(port.isEmpty() ? "":":"+port)+"/"+dataBase;
-		try {
-			connection = DriverManager.getConnection(connectionLine, userName, password);
-		} catch (Exception e) {
-			ReActions.util.logOnce("sqlconnect", "Failed to connect to database: "+connectionLine +" user: "+userName);
-			return false;
-		}
+		
 		try {
 			selectStmt = connection.createStatement();
-			//selectStmt.execute("SET NAMES 'utf8'");
 			result = selectStmt.executeQuery(query);
 			resultBool = result.next();
 		} catch (Exception e) {
