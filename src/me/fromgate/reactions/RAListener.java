@@ -35,6 +35,8 @@ import me.fromgate.reactions.event.CommandEvent;
 import me.fromgate.reactions.event.DoorEvent;
 import me.fromgate.reactions.event.EventManager;
 import me.fromgate.reactions.event.ExecEvent;
+import me.fromgate.reactions.event.FactionCreateEvent;
+import me.fromgate.reactions.event.FactionDisbandEvent;
 import me.fromgate.reactions.event.FactionEvent;
 import me.fromgate.reactions.event.FactionRelationEvent;
 import me.fromgate.reactions.event.ItemClickEvent;
@@ -59,6 +61,7 @@ import me.fromgate.reactions.util.MobSpawn;
 import me.fromgate.reactions.util.RAPVPRespawn;
 import me.fromgate.reactions.util.PushBack;
 import me.fromgate.reactions.util.Util;
+
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.EntityType;
@@ -424,6 +427,17 @@ public class RAListener implements Listener{
 		event.setCancelled(Activators.activate(event));
 	}
 	
+	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
+	public void onFactionCreateEvent (FactionCreateEvent event){
+		event.setCancelled(Activators.activate(event));
+	}
+	
+	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
+	public void onFactionDisbandEvent (FactionDisbandEvent event){
+		event.setCancelled(Activators.activate(event));
+	}
+
+
 	
 }
 

@@ -335,7 +335,7 @@ public class Activators {
         List<String> lst = new ArrayList<String>();
         if (!act.isEmpty())
             for (int i = 0; i<act.size();i++)
-                if (act.get(i).isTypeOf(type))
+                if (type.isEmpty()||act.get(i).isTypeOf(type))
                     lst.add( "&a"+act.get(i).toString());
         return lst;	
     }
@@ -344,7 +344,7 @@ public class Activators {
         List<String> lst = new ArrayList<String>();
         if (!act.isEmpty())
             for (int i = 0; i<act.size();i++)
-                if (act.get(i).getGroup().equalsIgnoreCase(group))
+                if (group.isEmpty()||act.get(i).getGroup().equalsIgnoreCase(group))
                     lst.add( "&a"+act.get(i).toString());
         return lst;			
     }
@@ -354,8 +354,6 @@ public class Activators {
         boolean cancelParentEvent = false;
         for (int i = 0; i<act.size(); i++){
             Activator a = act.get(i);
-        	/*if (event instanceof FactionRelationEvent)
-        		ReActions.util.BC("activate 3 "+event.getClass().getName()+" "+a.getType().name()+" "+a.getType().getEventClass().getName());*/
             if (a.getType().getEventClass().isInstance(event)){
                 if (a.executeActivator(event)) cancelParentEvent = true;
             }

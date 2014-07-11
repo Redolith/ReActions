@@ -39,6 +39,8 @@ public enum ActivatorType {
     ITEM_WEAR("itemwear",ItemWearActivator.class,ItemWearEvent.class),
     FCT_CHANGE("faction",FactionActivator.class,FactionEvent.class),
     FCT_RELATION("fctrelation",FactionRelationActivator.class,FactionRelationEvent.class),
+    FCT_CREATE("fctcreate",FactionCreateActivator.class,FactionCreateEvent.class),
+    FCT_DISBAND("fctdisband",FactionDisbandActivator.class,FactionDisbandEvent.class),
     SIGN("sign",SignActivator.class,SignEvent.class);
     
     private String alias;

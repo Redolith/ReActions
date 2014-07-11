@@ -25,6 +25,7 @@ package me.fromgate.reactions.event;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator;
@@ -37,6 +38,7 @@ import me.fromgate.reactions.externals.RAWorldGuard;
 import me.fromgate.reactions.util.ItemUtil;
 import me.fromgate.reactions.util.ParamUtil;
 import me.fromgate.reactions.util.Util;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -66,6 +68,21 @@ public class EventManager {
         Bukkit.getServer().getPluginManager().callEvent(e); 
 		return true;
 	}
+	
+	
+	public static boolean raiseFactionCreateEvent(String factionName, Player player) {
+		FactionCreateEvent e = new FactionCreateEvent (factionName, player);
+        Bukkit.getServer().getPluginManager().callEvent(e); 
+		return true;		
+	}
+	
+	public static boolean raiseFactionDisbandEvent(String factionName, Player player) {
+		FactionDisbandEvent e = new FactionDisbandEvent (factionName, player);
+        Bukkit.getServer().getPluginManager().callEvent(e); 
+		return true;		
+	}
+
+
 	
 	public static boolean raiseFactionRelationEvent(String faction, String factionOther, String oldRelation, String newRelation) {
 		FactionRelationEvent e = new FactionRelationEvent(faction, factionOther, oldRelation, newRelation);
@@ -403,7 +420,6 @@ public class EventManager {
         Long prevtime = p.getMetadata("reactions-rchk-"+id).get(0).asLong();
         return ((curtime-prevtime)>=(1000*seconds)); 
     }
-
 
 
 

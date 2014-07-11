@@ -63,6 +63,16 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("cmd_notaddbadded", "Failed to create activator %1%");
 		addMSG ("cmd_addbreqbut", "You need to look at button to create new button-activator");
 		addMSG ("cmd_addtpadded", "Location %1% added");
+		addMSG ("cmd_addmenuadded", "New inventory menu created: %1%");
+		addMSG ("cmd_addmenuaddfail", "Failed to create new inventory-menu %1%");
+		addMSG ("msg_removemenu", "Inventory-menu remove: %1%");
+		addMSG ("msg_removemenufail", "Failed to remove inventory-menu %1%");
+		addMSG ("msg_menuparamset", "Parameters of inventory-menu %1% changed!");
+		addMSG ("msg_menusetfail", "Failed to change parameters of inventory-menu %1%");
+		addMSG ("msg_menulist", "Inventory-menu list");
+		addMSG ("msg_menuidfail", "There's no inventory-menu %1% defined!");
+		addMSG ("msg_menuinfotitle", "Menu: %1% (size: %2%) Title: %3%");
+		addMSG ("msg_menuinfoslot", "slot%1% : Activator: %2% Item: %3%");
 		addMSG ("cmd_unknownadd", "Unknown type of activator");
 		addMSG ("cmd_actadded", "Action was added: %1%");
 		addMSG ("cmd_actnotadded", "Action was not added: %1%");
@@ -196,6 +206,7 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("act_healfailed", "Failed to perform healing...");
 		addMSG ("act_block_set", "Block placed: %1%!");
 		addMSG ("act_block_setfailed", "Failed to place block: %1%");
+		
 		addMSG ("msg_timerlist", "Timers");
 		addMSG ("msg_timerneedname", "You must define name for the timer");
 		addMSG ("msg_timerunknownname", "Could not find timer %1%");
@@ -212,6 +223,8 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("msg_varlist", "Variables");
 		addMSG ("msg_signforbidden", "You're not permitted to set signs, that subscribed to activator %1%");
 		
+		
+
 
 		/*
 		 *  Action description messages
@@ -357,6 +370,8 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("activator_FCT_CHANGE","This activator is initiates when player moved from one faction to another. /react add fct_change <id> faction:<New faction|ANY> oldfaction:<Old faction|ANY>");
 		addMSG ("activator_FCT_RELATION","This activator is initiates when relationship between two factions is changed. /react add fct_relation <id>  faction1:<faction name|ANY> faction2:<faction name|ANY> newrealtion:<New relation|ANY> oldrealtion:<New relation|ANY>");
 		addMSG ("activator_SIGN","This activator is initiates player clicks (right-click) sign defined as activator./react add SIGN <id> line1:<text in line1>...line4:<text in line4>");
+		addMSG ("activator_FCT_CREATE","This activator is initiates when someone creates a new faction /react add fct_create <id>");
+		addMSG ("activator_FCT_DISBAND","This activator is initiates when faction is disbanded /react add fct_disband <id>");
 		
 		
 		addMSG ("msg_placeholderlisttitle","Placeholders");

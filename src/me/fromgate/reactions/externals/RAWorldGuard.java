@@ -61,7 +61,13 @@ public class RAWorldGuard {
         List<String> rgs = new ArrayList<String>();
         if (loc == null) return rgs;
         if (!connected) return rgs; //Empty!!!
-        ApplicableRegionSet rset = worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc);
+        ApplicableRegionSet rset =null;
+        try {
+        rset = worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc);
+        } catch (Exception e){
+        	ReActions.util.log("Failed to get region list!");
+        	e.printStackTrace();
+        }
         if ((rset == null)||(rset.size()==0)) return rgs; //Empty!!!
         for (ProtectedRegion rg : rset ) rgs.add(rg.getId());
         return rgs; 

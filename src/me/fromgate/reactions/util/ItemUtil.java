@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import me.fromgate.reactions.ReActions;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -83,7 +85,7 @@ public class ItemUtil {
                 else {
                     Material m = Material.getMaterial(ti[0].toUpperCase());
                     if (m== null) {
-                        //logOnce("wrongitem"+ti[0], "Could not parse item material name (id) "+ti[0]);
+                    	ReActions.util.logOnce("wrongitem"+ti[0], "Could not parse item material name (id) "+ti[0]);
                         return null;
                     }
                     id=m.getId();
@@ -103,7 +105,7 @@ public class ItemUtil {
                 	ItemMeta im = item.getItemMeta();
                 	String[] ln = loreStr.split("@");
                 	List<String> lore = new ArrayList<String>();
-                	for (String loreLine : ln) lore.add(ChatColor.translateAlternateColorCodes('&',loreLine.replace("_", " ")));
+                	for (String loreLine : ln) lore.add(loreLine.replace("_", " "));
                 	im.setLore(lore);
                 	item.setItemMeta(im);
                 }
@@ -194,7 +196,7 @@ public class ItemUtil {
                 String ti[] = si[0].split(":");
                 if (ti.length>0){
                     if (ti[0].matches("[0-9]*")) id=Integer.parseInt(ti[0]);
-                    else id=Material.getMaterial(ti[0]).getId();                        
+                    else id=Material.getMaterial(ti[0].toUpperCase()).getId();                        
                     if ((ti.length==2)&&(ti[1]).matches("[0-9]*")) data = Integer.parseInt(ti[1]);
                     return ((item_id==id)&&((data<0)||(item_data==data))&&(item_amount>=amount));
                 }
@@ -297,6 +299,7 @@ public class ItemUtil {
         if (slotamount<amount) return false;
         if (slotamount == amount) slot.setType(Material.AIR);
         else slot.setAmount(slotamount - amount);
+        player.setItemInHand(slot);
         return true;
     }
 
@@ -455,6 +458,8 @@ public class ItemUtil {
         if (strmax.matches("[1-9]+[0-9]*")) max = Integer.parseInt(strmax);
         if (max>min) return min + random.nextInt(1+max-min);
         else return min;
-    }    
+    }
+    
+    
 
 }

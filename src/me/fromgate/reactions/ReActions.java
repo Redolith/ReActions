@@ -24,6 +24,7 @@ package me.fromgate.reactions;
 
 import java.io.IOException;
 import java.util.logging.Logger;
+
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.Activators;
 import me.fromgate.reactions.externals.RACraftConomy;
@@ -33,6 +34,7 @@ import me.fromgate.reactions.externals.RARacesAndClasses;
 import me.fromgate.reactions.externals.RATowny;
 import me.fromgate.reactions.externals.RAVault;
 import me.fromgate.reactions.externals.RAWorldGuard;
+import me.fromgate.reactions.menu.InventoryMenu;
 import me.fromgate.reactions.sql.SQLManager;
 import me.fromgate.reactions.timer.Timers;
 import me.fromgate.reactions.util.Delayer;
@@ -41,9 +43,11 @@ import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.RADebug;
 import me.fromgate.reactions.util.Shoot;
 import me.fromgate.reactions.util.Variables;
+
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+
 import com.palmergames.bukkit.towny.Towny;
 
 
@@ -91,6 +95,7 @@ public class ReActions extends JavaPlugin {
         l = new RAListener (this);
         PluginManager pm = this.getServer().getPluginManager();
         pm.registerEvents(l, this);
+        pm.registerEvents(new InventoryMenu(), this);
         cmd = new Cmd (this);
         getCommand("react").setExecutor(cmd);
         instance = this;
@@ -108,6 +113,7 @@ public class ReActions extends JavaPlugin {
         RACraftConomy.init();
         RAWorldGuard.init();
         SQLManager.init();
+        InventoryMenu.init();
         if (checkTowny()) towny_conected = RATowny.init();
         try {
             MetricsLite metrics = new MetricsLite(this);

@@ -24,14 +24,12 @@ package me.fromgate.reactions.externals;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import me.fromgate.playeffect.PlayEffect;
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.ParamUtil;
 import me.fromgate.reactions.util.Util;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -47,7 +45,6 @@ public class RAEffects {
         return ReActions.util;
     }
     private static String efftypes = "smoke,flame,ender,potion";
-    
     private static boolean use_play_effects = false;
     
     //ENDER_SIGNAL  POTION_BREAK MOBSPAWNER_FLAMES  SMOKE 

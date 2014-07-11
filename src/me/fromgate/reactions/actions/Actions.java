@@ -96,7 +96,8 @@ public enum Actions{
     SQL_UPDATE("sqlupdate",false, new ActionSQL(2)),
     SQL_INSERT("sqlinsert",false, new ActionSQL(1)),
     SQL_DELETE("sqldelete",false, new ActionSQL(3)),
-    ACTION_DELAYED ("actdelay",false, new ActionDelayed());
+    ACTION_DELAYED ("actdelay",false, new ActionDelayed()),
+    MENU_ITEM ("itemmenu",true, new ActionMenuItem());
 
     private String alias;
     private boolean requireplayer;

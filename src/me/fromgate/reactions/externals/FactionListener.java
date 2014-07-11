@@ -23,13 +23,15 @@
 package me.fromgate.reactions.externals;
 
 import me.fromgate.reactions.event.EventManager;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-
+import com.massivecraft.factions.event.FactionsEventCreate;
+import com.massivecraft.factions.event.FactionsEventDisband;
 import com.massivecraft.factions.event.FactionsEventMembershipChange;
 import com.massivecraft.factions.event.FactionsEventRelationChange;
-
+	
 public class FactionListener implements Listener {
 
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
@@ -39,6 +41,19 @@ public class FactionListener implements Listener {
 						event.getNewFaction().isDefault() ? "default" : event.getNewFaction().getName());
 	}
     
+    
+    @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
+    public void onFactionCreate (FactionsEventCreate event){
+    	EventManager.raiseFactionCreateEvent (event.getFactionName(), 
+    			(event.getSender()!=null&&event.getSender() instanceof Player) ? (Player)event.getSender() : null);
+    }
+    
+    @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
+    public void onFactionDisband (FactionsEventDisband event){
+    	EventManager.raiseFactionDisbandEvent (event.getFaction().getName(), 
+    			(event.getSender()!=null&&event.getSender() instanceof Player) ? (Player)event.getSender() : null);
+    }
+
     
     @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
 	public void onRelationChange (FactionsEventRelationChange event){
