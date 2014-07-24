@@ -65,7 +65,7 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("cmd_addtpadded", "Location %1% added");
 		addMSG ("cmd_addmenuadded", "New inventory menu created: %1%");
 		addMSG ("cmd_addmenuaddfail", "Failed to create new inventory-menu %1%");
-		addMSG ("msg_removemenu", "Inventory-menu remove: %1%");
+		addMSG ("msg_removemenu", "Inventory-menu removed: %1%");
 		addMSG ("msg_removemenufail", "Failed to remove inventory-menu %1%");
 		addMSG ("msg_menuparamset", "Parameters of inventory-menu %1% changed!");
 		addMSG ("msg_menusetfail", "Failed to change parameters of inventory-menu %1%");

@@ -5,14 +5,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.event.EventManager;
 import me.fromgate.reactions.util.ItemUtil;
 import me.fromgate.reactions.util.ParamUtil;
-import me.fromgate.reactions.util.Util;
-
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -175,7 +174,8 @@ public class InventoryMenu implements Listener{
 		if (activators.size()>clickedSlot){
 			String activator = activators.get(clickedSlot);
 			if (!activator.isEmpty())
-				EventManager.raiseExecEvent(player, "activator:"+activator);
+				//EventManager.raiseExecEvent(player, "activator:"+activator);
+				EventManager.raiseExecEvent(player, ParamUtil.parseParams(activator, "activator"));
 		}
 		event.setCancelled(true);
 		InventoryMenu.removeInventory(event.getInventory());
@@ -195,12 +195,12 @@ public class InventoryMenu implements Listener{
 	public static void printMenu (CommandSender sender, String id){
 		if (menu.containsKey(id)) {
 			VirtualInventory vi = menu.get(id);
-			ReActions.util.printMSG(sender, "msg_menuinfotitle",id,vi.size,vi.title);
+			ReActions.util.printMSG(sender, "msg_menuinfotitle",'e','6',id,vi.size,vi.title);
 			for (int i = 0; i<vi.size;i++){
 				String exec = vi.execs.get(i);
 				String slot = vi.slots.get(i); 
 				if (exec.isEmpty()&&slot.isEmpty()) continue;
-				slot = Util.itemToString(ItemUtil.parseItemStack(slot));
+				slot = itemToString(slot);
 				ReActions.util.printMSG(sender, "msg_menuinfoslot",i+1,exec.isEmpty() ? "N/A" : exec, slot.isEmpty() ? "AIR" : slot);
 			}
 		} else ReActions.util.printMSG (sender, "msg_menuidfail",id);
@@ -213,6 +213,15 @@ public class InventoryMenu implements Listener{
 			if (mask.isEmpty()||id.toLowerCase().contains(mask.toLowerCase()))
 				menuList.add(id+" : "+menu.get(id).title);
 		ReActions.util.printPage(sender, menuList, page, "msg_menulist", "", false, maxPage);
+	}
+	
+	public static String itemToString (String itemStr){
+		if (itemStr.isEmpty()) return "AIR";
+		ItemStack item = ItemUtil.parseItemStack(itemStr);
+		if (item == null||item.getType()==Material.AIR) return "AIR";
+		String returnStr = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : "";
+		String itemTypeData = item.getType().name()+(item.getDurability() == 0 ? "" : ":"+item.getDurability())+(item.getAmount()==1 ? "" : "*"+item.getAmount());
+		return ChatColor.stripColor(returnStr.isEmpty() ? itemTypeData : returnStr+"["+itemTypeData+"]");
 	}
 
 }

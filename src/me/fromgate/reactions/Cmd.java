@@ -382,7 +382,6 @@ public class Cmd implements CommandExecutor{
 		Player player = (sender instanceof Player) ? (Player) sender : null;
 		String arg1 = args[1];
 		String arg2 = args.length >=3 ? args[2] : "";
-		//String arg3 = args.length >=4 ? args[3] : "";
 		if (args.length>4){
 			for (int i = 3; i<args.length;i++) 
 				arg2 = arg2+" "+args[i];
