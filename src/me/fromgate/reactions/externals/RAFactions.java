@@ -22,18 +22,20 @@
 
 package me.fromgate.reactions.externals;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.Bukkit;
-import org.bukkit.World;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
+import com.massivecraft.factions.entity.BoardColls;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.FactionColls;
 import com.massivecraft.factions.entity.UPlayer;
-
+import com.massivecraft.mcore.ps.PS;
 import me.fromgate.reactions.ReActions;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RAFactions {
 
@@ -86,8 +88,6 @@ public class RAFactions {
 		return players;
 	}
 
-
-
 	public static Faction getFactionByName(String factionName){
 		for (World world : Bukkit.getWorlds()){
 			for (Faction faction : FactionColls.get().getForWorld(world.getName()).getAll()){
@@ -97,8 +97,13 @@ public class RAFactions {
 		}
 		return null;
 	}
-
-
-
-
+    
+    public static String getFactionAt(Location loc) {
+        return BoardColls.get().getFactionAt(PS.valueOf(loc)).getName();
+    }
+    
+    public static String getRelationWith(Player player, String withFactionStr) {
+        UPlayer uplayer = UPlayer.get(player);
+        return uplayer.getRelationTo(getFactionByName(withFactionStr)).toString();
+    }
 }
