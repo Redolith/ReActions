@@ -27,6 +27,8 @@ import java.util.Map;
 import me.fromgate.reactions.externals.RAEffects;
 import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.util.Teleporter;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -61,7 +63,7 @@ public class ActionTp extends Action{
                 while (!loc.getChunk().isLoaded()) loc.getChunk().load();
             } catch (Exception e) {
             }
-            p.teleport(loc);
+            Teleporter.teleport(p, loc);
             String playeffect = ParamUtil.getParam(params, "effect", "");
             if (!playeffect.isEmpty()){
                 if (playeffect.equalsIgnoreCase("smoke")&&(!params.containsKey("wind"))) params.put("wind", "all");
@@ -70,6 +72,5 @@ public class ActionTp extends Action{
         }
         return loc;
     }
-
 
 }

@@ -24,9 +24,11 @@
 package me.fromgate.reactions.actions;
 
 import java.util.Map;
-import me.fromgate.playeffect.Util;
+
+import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.ParamUtil;
 import me.fromgate.reactions.util.Variables;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -40,7 +42,7 @@ public class ActionSignSet extends Action{
 		// loc:world,x,y,z line1:text line2:text line3:text line4:text clear:1,2,3,4
 		String locStr = ParamUtil.getParam(params, "loc", Variables.getTempVar("sign_loc"));
 		if (locStr.isEmpty()) return false;
-		Location loc = Util.parseLocation(locStr);
+		Location loc = Locator.parseCoordinates(locStr);
 		if (loc==null) return false;
 		boolean chunkLoad = ParamUtil.getParam(params, "loadchunk", false);
 		if (!chunkLoad&&!loc.getChunk().isLoaded()) return false;

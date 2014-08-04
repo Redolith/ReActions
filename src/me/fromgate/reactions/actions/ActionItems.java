@@ -24,10 +24,13 @@ package me.fromgate.reactions.actions;
 
 import java.util.List;
 import java.util.Map;
+
 import me.fromgate.reactions.util.ItemUtil;
 import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.ParamUtil;
 import me.fromgate.reactions.util.Util;
+import me.fromgate.reactions.util.Variables;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -139,7 +142,9 @@ public class ActionItems extends Action {
         if (istr.isEmpty()) return false; 
         if (!ItemUtil.removeItemInHand(p, istr)) return false;
         ItemStack item = ItemUtil.parseItemStack(istr);
-        setMessageParam(Util.itemToString(item));
+    	String actionItems = Util.itemToString(item);
+        setMessageParam(actionItems);
+        Variables.setTempVar("action_items", actionItems);
         return true;
     }
     private boolean removeItemInInventory(Player p, Map<String,String>params){
@@ -147,14 +152,18 @@ public class ActionItems extends Action {
         if (istr.isEmpty()) return false; 
         ItemUtil.removeItemInInventory(p, istr);
         ItemStack item = ItemUtil.parseItemStack(istr);
-        setMessageParam(Util.itemToString(item));
+    	String actionItems = Util.itemToString(item);
+        setMessageParam(actionItems);
+        Variables.setTempVar("action_items", actionItems);
         return true;
     }
 
     private boolean giveItemPlayer(final Player p, final String param) {
         final List<ItemStack> items = Util.parseRandomItems(param);
         if (!items.isEmpty()){
-            this.setMessageParam(Util.itemsToString(items));
+        	String actionItems = Util.itemsToString(items);
+            setMessageParam(actionItems);
+            Variables.setTempVar("action_items", actionItems);
             Bukkit.getScheduler().scheduleSyncDelayedTask(plg(), new Runnable(){
                 public void run(){
                     for (ItemStack i : items)
@@ -180,7 +189,9 @@ public class ActionItems extends Action {
             loc.getWorld().dropItemNaturally(l, i);
             if (scatter) l = Locator.getRadiusLocation(loc, radius, land);
         }
-        this.setMessageParam(Util.itemsToString(items));
+    	String actionItems = Util.itemsToString(items);
+        setMessageParam(actionItems);
+        Variables.setTempVar("action_items", actionItems);
         return true;
     }
 

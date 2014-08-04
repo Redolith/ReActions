@@ -27,6 +27,8 @@ import java.util.logging.Logger;
 
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.Activators;
+import me.fromgate.reactions.externals.LogHandler;
+import me.fromgate.reactions.externals.RAProtocolLib;
 import me.fromgate.reactions.externals.RACraftConomy;
 import me.fromgate.reactions.externals.RAEffects;
 import me.fromgate.reactions.externals.RAFactions;
@@ -44,6 +46,7 @@ import me.fromgate.reactions.util.RADebug;
 import me.fromgate.reactions.util.Shoot;
 import me.fromgate.reactions.util.Variables;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -115,6 +118,9 @@ public class ReActions extends JavaPlugin {
         SQLManager.init();
         InventoryMenu.init();
         if (checkTowny()) towny_conected = RATowny.init();
+        Bukkit.getLogger().addHandler(new LogHandler());
+		if (Bukkit.getPluginManager().getPlugin("ProtocolLib")!=null)
+			RAProtocolLib.connectProtocolLib();
         try {
             MetricsLite metrics = new MetricsLite(this);
             metrics.start();

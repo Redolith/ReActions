@@ -61,16 +61,7 @@ public class FactionListener implements Listener {
     			event.getOtherFaction().getName(),
     			event.getFaction().getRelationWish(event.getOtherFaction()).name(),
     			event.getNewRelation().name());
-    	
-    	/*
-    	Rel.ALLY;
-    	Rel.ENEMY;
-    	Rel.LEADER;
-    	Rel.MEMBER;
-    	Rel.NEUTRAL;
-    	Rel.OFFICER;
-    	Rel.RECRUIT;
-    	Rel.TRUCE;*/
+
     }
 
 }

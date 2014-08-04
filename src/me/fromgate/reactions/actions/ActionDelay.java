@@ -40,9 +40,9 @@ public class ActionDelay extends Action {
     	String timeStr = "";
     	String variableId = p.getName();
     	
-    	if (ParamUtil.isParamExists(params, "id","delay")){
+    	if (ParamUtil.isParamExists(params, "id","delay")||ParamUtil.isParamExists(params, "id","time")){
     		variableId = ParamUtil.getParam(params, "id", "");
-    		timeStr = ParamUtil.getParam(params, "delay", "");
+    		timeStr = ParamUtil.getParam(params, "delay", ParamUtil.getParam(params, "time", ""));
     	} else {
     		String oldFormat = ParamUtil.getParam(params, "param-line", "");
             if (oldFormat.contains("/")){

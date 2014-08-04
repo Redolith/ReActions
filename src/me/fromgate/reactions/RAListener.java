@@ -30,6 +30,7 @@ import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.ActivatorType;
 import me.fromgate.reactions.activators.Activators;
 import me.fromgate.reactions.activators.SignActivator;
+import me.fromgate.reactions.activators.MessageActivator.Source;
 import me.fromgate.reactions.event.ButtonEvent;
 import me.fromgate.reactions.event.CommandEvent;
 import me.fromgate.reactions.event.DoorEvent;
@@ -44,6 +45,7 @@ import me.fromgate.reactions.event.ItemHoldEvent;
 import me.fromgate.reactions.event.ItemWearEvent;
 import me.fromgate.reactions.event.JoinEvent;
 import me.fromgate.reactions.event.LeverEvent;
+import me.fromgate.reactions.event.MessageEvent;
 import me.fromgate.reactions.event.MobClickEvent;
 import me.fromgate.reactions.event.PVPDeathEvent;
 import me.fromgate.reactions.event.PVPKillEvent;
@@ -53,6 +55,7 @@ import me.fromgate.reactions.event.RegionEnterEvent;
 import me.fromgate.reactions.event.RegionEvent;
 import me.fromgate.reactions.event.RegionLeaveEvent;
 import me.fromgate.reactions.event.SignEvent;
+import me.fromgate.reactions.event.VariableEvent;
 import me.fromgate.reactions.externals.RAEconomics;
 import me.fromgate.reactions.externals.RAVault;
 import me.fromgate.reactions.util.BukkitCompatibilityFix;
@@ -60,8 +63,9 @@ import me.fromgate.reactions.util.RADebug;
 import me.fromgate.reactions.util.MobSpawn;
 import me.fromgate.reactions.util.RAPVPRespawn;
 import me.fromgate.reactions.util.PushBack;
+import me.fromgate.reactions.util.Teleporter;
 import me.fromgate.reactions.util.Util;
-
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.EntityType;
@@ -79,6 +83,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -88,6 +93,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 
@@ -96,6 +102,19 @@ public class RAListener implements Listener{
 
 	public RAListener (ReActions plg){
 		this.plg = plg;
+	}
+
+
+	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
+	public void onChatCommand(AsyncPlayerChatEvent event){
+		if (!event.getPlayer().hasPermission("chatcommander")) return;
+		EventManager.raiseMessageEvent(event.getPlayer(), Source.CHAT_INPUT, event.getMessage());
+
+	}
+
+	@EventHandler(priority=EventPriority.NORMAL)
+	public void onServerCommandEvent(ServerCommandEvent event) {
+		EventManager.raiseMessageEvent(Bukkit.getConsoleSender(), Source.CONSOLE_INPUT, event.getCommand());
 	}
 
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
@@ -305,9 +324,11 @@ public class RAListener implements Listener{
 
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerTeleport(PlayerTeleportEvent event){
+		Teleporter.startTeleport(event);
 		EventManager.raiseRegionEvent(event.getPlayer(), event.getTo());
 		EventManager.raiseRgEnterEvent(event.getPlayer(), event.getFrom(), event.getTo());
 		EventManager.raiseRgLeaveEvent(event.getPlayer(), event.getFrom(), event.getTo());
+		Teleporter.stopTeleport(event.getPlayer());
 	}
 
 
@@ -375,7 +396,7 @@ public class RAListener implements Listener{
 	public void onPVPRespawnActivator (PVPRespawnEvent event){
 		event.setCancelled(Activators.activate(event));
 	}
-	
+
 
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
 	public void onLeverActivator (LeverEvent event){
@@ -416,29 +437,38 @@ public class RAListener implements Listener{
 	public void onSignClick (SignEvent event){
 		event.setCancelled(Activators.activate(event));
 	}
-	
+
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
 	public void onFactionEvent (FactionEvent event){
 		event.setCancelled(Activators.activate(event));
 	}
-	
+
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
 	public void onFactionRelationEvent (FactionRelationEvent event){
 		event.setCancelled(Activators.activate(event));
 	}
-	
+
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
 	public void onFactionCreateEvent (FactionCreateEvent event){
 		event.setCancelled(Activators.activate(event));
 	}
-	
+
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
 	public void onFactionDisbandEvent (FactionDisbandEvent event){
 		event.setCancelled(Activators.activate(event));
 	}
 
+	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
+	public void onMessageEvent (MessageEvent event){
+		event.setCancelled(Activators.activate(event));
+	}
 
-	
+	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
+	public void onVariableEvent (VariableEvent event){
+		event.setCancelled(Activators.activate(event));
+	}
+
+
 }
 
 

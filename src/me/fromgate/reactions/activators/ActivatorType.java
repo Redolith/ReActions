@@ -27,6 +27,7 @@ public enum ActivatorType {
     REGION_LEAVE ("rgleave",RgLeaveActivator.class,RegionLeaveEvent.class),
     EXEC ("exe",ExecActivator.class,ExecEvent.class),
     COMMAND ("cmd",CommandActivator.class,CommandEvent.class),
+    MESSAGE ("msg",MessageActivator.class,MessageEvent.class),
     PVP_KILL ("pvpkill",PVPKillActivator.class, PVPKillEvent.class),
     PVP_DEATH ("pvpdeath",PVPDeathActivator.class, PVPDeathEvent.class),
     PVP_RESPAWN("pvprespawn",PVPRespawnActivator.class, PVPRespawnEvent.class),
@@ -41,7 +42,8 @@ public enum ActivatorType {
     FCT_RELATION("fctrelation",FactionRelationActivator.class,FactionRelationEvent.class),
     FCT_CREATE("fctcreate",FactionCreateActivator.class,FactionCreateEvent.class),
     FCT_DISBAND("fctdisband",FactionDisbandActivator.class,FactionDisbandEvent.class),
-    SIGN("sign",SignActivator.class,SignEvent.class);
+    SIGN("sign",SignActivator.class,SignEvent.class),
+    VARIABLE("var",VariableActivator.class,VariableEvent.class);
     
     private String alias;
     private Class<? extends Activator> aclass;

@@ -44,6 +44,7 @@ import me.fromgate.reactions.activators.ItemHoldActivator;
 import me.fromgate.reactions.activators.ItemWearActivator;
 import me.fromgate.reactions.activators.JoinActivator;
 import me.fromgate.reactions.activators.LeverActivator;
+import me.fromgate.reactions.activators.MessageActivator;
 import me.fromgate.reactions.activators.MobClickActivator;
 import me.fromgate.reactions.activators.PVPDeathActivator;
 import me.fromgate.reactions.activators.PVPRespawnActivator;
@@ -54,6 +55,7 @@ import me.fromgate.reactions.activators.RgEnterActivator;
 import me.fromgate.reactions.activators.RgLeaveActivator;
 import me.fromgate.reactions.activators.ExecActivator;
 import me.fromgate.reactions.activators.SignActivator;
+import me.fromgate.reactions.activators.VariableActivator;
 import me.fromgate.reactions.event.EventManager;
 import me.fromgate.reactions.flags.Flags;
 import me.fromgate.reactions.menu.InventoryMenu;
@@ -67,6 +69,7 @@ import me.fromgate.reactions.util.RADebug;
 import me.fromgate.reactions.util.Selector;
 import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.Variables;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -613,6 +616,9 @@ public class Cmd implements CommandExecutor{
 		case COMMAND:
 			activator = new CommandActivator (name,param);
 			break;
+		case MESSAGE:
+			activator = new MessageActivator (name,param);
+			break;
 		case EXEC:
 			activator = new ExecActivator (name);
 			break;
@@ -685,6 +691,10 @@ public class Cmd implements CommandExecutor{
 		case SIGN:    
 			activator = new SignActivator (name, param);
 			break;
+		case VARIABLE:    
+			activator = new VariableActivator (name, param);
+			break;
+
 		default:
 			break;
 		}
@@ -703,7 +713,9 @@ public class Cmd implements CommandExecutor{
 		if (player.equalsIgnoreCase("%player%")&&p!=null) player = p.getName();
 		String id = ParamUtil.getParam(params, "id", "");
 		if (id.isEmpty()) return u.returnMSG(true, sender, "msg_varneedid");
-		if (Variables.removeVar(player, id)) return u.returnMSG(true, sender, "msg_varremoved",id);
+		if (Variables.clearVar(player, id)) return u.returnMSG(true, sender, "msg_varremoved",id);
+		//if (Variables.removeVar(player, id)) return u.returnMSG(true, sender, "msg_varremoved",id);
+		
 		return u.returnMSG(true, sender, "msg_varremovefail");
 	}
 

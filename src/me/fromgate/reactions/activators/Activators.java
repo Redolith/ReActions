@@ -72,7 +72,6 @@ public class Activators {
             for (String group : groups)
                 loadActivators(group);
         Timers.updateIngameTimers();
-        //Timers.updateServerTimers();
     }
 
     private static List<String> findGroupsInDir(){
@@ -426,6 +425,16 @@ public class Activators {
             if (a.getType() == ActivatorType.ITEM_HOLD) ihold.add((ItemHoldActivator) a);
         return ihold;
     }
+    
+	public static List<MessageActivator> getMessageActivators() {
+		List<MessageActivator> list = new ArrayList<MessageActivator>();
+		for (Activator a : act)
+			if (a.getType() == ActivatorType.MESSAGE) list.add((MessageActivator)a);
+		return list;
+	}
+	
+	
+    
     
     public static List<ItemWearActivator> getItemWearActivatos() {
         List<ItemWearActivator> iwear= new ArrayList<ItemWearActivator>();

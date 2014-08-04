@@ -33,7 +33,9 @@ import me.fromgate.reactions.activators.ActivatorType;
 import me.fromgate.reactions.activators.Activators;
 import me.fromgate.reactions.activators.ItemHoldActivator;
 import me.fromgate.reactions.activators.ItemWearActivator;
+import me.fromgate.reactions.activators.MessageActivator;
 import me.fromgate.reactions.activators.SignActivator;
+import me.fromgate.reactions.activators.MessageActivator.Source;
 import me.fromgate.reactions.externals.RAWorldGuard;
 import me.fromgate.reactions.util.ItemUtil;
 import me.fromgate.reactions.util.ParamUtil;
@@ -348,11 +350,11 @@ public class EventManager {
 
     public static void raiseRgEnterEvent (Player player, Location from, Location to){
         if (!RAWorldGuard.isConnected()) return; 
-        List<String> rgsto = RAWorldGuard.getRegions(to);
-        List<String> rgsfrom = RAWorldGuard.getRegions(from);
-        if (rgsto.isEmpty()) return;
-        for (String rg : rgsto)
-            if (!rgsfrom.contains(rg)){
+        List<String> regionTo = RAWorldGuard.getRegions(to);
+        List<String> regionFrom = RAWorldGuard.getRegions(from);
+        if (regionTo.isEmpty()) return;
+        for (String rg : regionTo)
+            if (!regionFrom.contains(rg)){
                 RegionEnterEvent wge = new RegionEnterEvent (player, rg);
                 Bukkit.getServer().getPluginManager().callEvent(wge);				
             }
@@ -360,11 +362,11 @@ public class EventManager {
 
     public static void raiseRgLeaveEvent (Player player, Location from, Location to){
         if (!RAWorldGuard.isConnected()) return; 
-        List<String> rgsto = RAWorldGuard.getRegions(to);
+        List<String> regionTo = RAWorldGuard.getRegions(to);
         List<String> rgsfrom = RAWorldGuard.getRegions(from);
         if (rgsfrom.isEmpty()) return;
         for (String rg : rgsfrom)
-            if (!rgsto.contains(rg)){
+            if (!regionTo.contains(rg)){
                 RegionLeaveEvent wge = new RegionLeaveEvent (player, rg);
                 Bukkit.getServer().getPluginManager().callEvent(wge);				
             }
@@ -420,6 +422,27 @@ public class EventManager {
         Long prevtime = p.getMetadata("reactions-rchk-"+id).get(0).asLong();
         return ((curtime-prevtime)>=(1000*seconds)); 
     }
+
+	public static boolean raiseMessageEvent(CommandSender sender, Source source, String message) {
+		Player player = sender!=null&&(sender instanceof Player) ? (Player) sender : null;
+ 		for (MessageActivator a : Activators.getMessageActivators()){
+			if (a.filterMessage(source, message)) {
+                MessageEvent me = new MessageEvent (player, a, message);
+                Bukkit.getServer().getPluginManager().callEvent(me);
+                return me.isCancelled();
+			}
+		}
+ 		return false;
+	}
+
+	public static void raiseVariableEvent(String var, String playerName,String newValue, String prevValue) {
+		if (newValue.equalsIgnoreCase(prevValue)) return;
+		@SuppressWarnings("deprecation")
+		Player player = Bukkit.getPlayerExact(playerName);
+		if (!playerName.isEmpty()&&player==null) return;
+		VariableEvent ve = new VariableEvent (player, var, newValue, prevValue);
+		Bukkit.getServer().getPluginManager().callEvent(ve);
+	}
 
 
 

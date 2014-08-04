@@ -29,6 +29,7 @@ import java.util.List;
 
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.event.EventManager;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -45,47 +46,60 @@ public class Variables {
 	private static String varId(Player player, String var){
 		return player == null ? "general."+var : player.getName()+"."+var;
 	}
-	
+
 	private static String varId(String player, String var){
 		return player.isEmpty() ? "general."+var : player+"."+var;
 	}
-	
+
 	public static void setVar (String player, String var, String value){
+		String prevVal = Variables.getVar(player, var, ""); 
 		vars.put(varId (player,var), value);
 		save();
+		EventManager.raiseVariableEvent(var, player, value, prevVal);
 	}
-	
+
 	public static void setVar (Player player, String var, String value){
+		String prevVal = Variables.getVar(player, var, "");
 		vars.put(varId (player,var), value);
 		save();
+		EventManager.raiseVariableEvent(var, player ==null ? "" : player.getName(), value, prevVal);
 	}
-	
-	public static boolean removeVar(String playerName, String id){
+
+	/*public static boolean removeVar(String playerName, String id){
+		//String prevVal = Variables.getVar(playerName, id, "");
 		String varId = varId(playerName, id);
 		if (!vars.containsKey(varId)) return false;
 		vars.remove(varId);
+		//save();
+		//EventManager.raiseVariableEvent(id, playerName, "", prevVal);
+		return true;
+	}*/
+
+	public static void clearVar (Player player, String var){
+		String prevVal = Variables.getVar(player, var, "");
+		String id = varId(player, var);
+		if (vars.containsKey(id)) vars.remove(id);
+		save();
+		EventManager.raiseVariableEvent(var, player ==null ? "" : player.getName(), "", prevVal);
+	}
+
+	public static boolean clearVar (String player, String var){
+		String prevVal = Variables.getVar(player, var, "");
+		String id = varId(player, var);
+		if (!vars.containsKey(id)) return false;
+		vars.remove(id);
+		save();
+		EventManager.raiseVariableEvent(var, player, "", prevVal);
 		return true;
 	}
 
-	public static void clearVar (Player player, String var){
-		String id = varId(player, var);
-		if (vars.containsKey(id)) vars.remove(id);
-		save();
-	}
-	
-	public static void clearVar (String player, String var){
-		String id = varId(player, var);
-		if (vars.containsKey(id)) vars.remove(id);
-		save();
-	}
-	
 
 	public static String getVar (String player, String var, String defvar){
 		String id = varId(player, var);
 		if (vars.containsKey(id)) return vars.get(id);
 		return defvar;
 	}
-	
+
 	public static String getVar (Player player, String var, String defvar){
 		String id = varId(player, var);
 		if (vars.containsKey(id)) return vars.get(id); 
@@ -121,7 +135,7 @@ public class Variables {
 	public static boolean incVar (Player player, String var){
 		return incVar (player, var, 1);
 	}
-	
+
 	public static boolean incVar (String player, String var){
 		return incVar (player, var, 1);
 	}
@@ -129,7 +143,7 @@ public class Variables {
 	public static boolean decVar (Player player, String var){
 		return incVar (player, var, -1);
 	}
-	
+
 	public static boolean decVar (String player, String var){
 		return incVar (player, var, -1);
 	}
@@ -137,7 +151,7 @@ public class Variables {
 	public static boolean incVar (Player player, String var, double addValue){
 		return incVar (player == null ? "" : player.getName(), var, addValue);
 	}
-	
+
 	public static boolean incVar (String player, String var, double addValue){
 		String id = varId(player, var);
 		if (!vars.containsKey(id)) setVar(player,var,"0");
@@ -248,19 +262,19 @@ public class Variables {
 		int maxPage = (sender instanceof Player) ? 15 : 10000;
 		List<String> varList = new ArrayList<String> ();
 		for (String key : vars.keySet())
-				if (mask.isEmpty()||key.toLowerCase().contains(mask.toLowerCase()))
-					varList.add(key+" : "+vars.get(key));
+			if (mask.isEmpty()||key.toLowerCase().contains(mask.toLowerCase()))
+				varList.add(key+" : "+vars.get(key));
 		u().printPage(sender, varList, page, "msg_varlist", "", false, maxPage);
 	}
 
 
-    public static boolean isNumber (String... str){
-        if (str.length==0) return false;
-        for (String s : str)
-            if (!s.matches("-?[0-9]+(.[0-9]+)?")) return false;
-        return true;
-    }
-	
+	public static boolean isNumber (String... str){
+		if (str.length==0) return false;
+		for (String s : str)
+			if (!s.matches("-?[0-9]+(.[0-9]+)?")) return false;
+		return true;
+	}
+
 
 
 }

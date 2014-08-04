@@ -1,9 +1,9 @@
 name: ReActions
 main: me.fromgate.reactions.ReActions
-version: 0.9.2/1
+version: 0.9.2/3
 website: http://fromgate.me
 author: fromgate, fromgate@gmail.com
-softdepend: [Vault,Towny,WorldGuard,RacesAndClasses,PlayEffect,Factions,Craftconomy3]
+softdepend: [Vault,Towny,WorldGuard,RacesAndClasses,PlayEffect,Factions,Craftconomy3,ProtocolLib]
 commands:
    react:
       aliases: [ra,rea,rct]

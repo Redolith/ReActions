@@ -206,7 +206,6 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("act_healfailed", "Failed to perform healing...");
 		addMSG ("act_block_set", "Block placed: %1%!");
 		addMSG ("act_block_setfailed", "Failed to place block: %1%");
-		
 		addMSG ("msg_timerlist", "Timers");
 		addMSG ("msg_timerneedname", "You must define name for the timer");
 		addMSG ("msg_timerunknownname", "Could not find timer %1%");
@@ -223,8 +222,6 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("msg_varlist", "Variables");
 		addMSG ("msg_signforbidden", "You're not permitted to set signs, that subscribed to activator %1%");
 		
-		
-
 
 		/*
 		 *  Action description messages
@@ -337,8 +334,8 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("flag_SQL_CHECK","Compares result of SQL-query with provided value. Parameters: query:{SELECT...} value:<value> column:<column>");
 		addMSG ("flag_SQL_RESULT","Check is result of SQL-query returns data. If result is empty flag will return false. Parameter: query:{SELECT...}");
 		addMSG ("flag_COMPARE","Compare provide parameter with list of variable. True if parameter is equal to one of the provided variables. Parameters: param:<parameter> value1:<vaule1> vaule2:<value2>...");
-
-		
+		addMSG ("flag_FCT_AT_ZONE_REL", "Check is player in faction with defined relation");
+		addMSG ("flag_FCT_IS_REL_PLAYER_AROUND", "Check is there anyone with defined relation around the player");
 
 		/*
 		 *  Activators!
@@ -357,6 +354,10 @@ public class RAUtil extends FGUtilCore {
 				+ " Command to create: /react add exec <id>");
 		addMSG ("activator_COMMAND","This activator is initiates when player typed a defined command. "
 				+ "Command: /react add command <id> <command>");
+		
+		addMSG ("activator_MESSAGE", "This activator is initiates when defined message appears in chat input, console input, server log, chat screen. "
+				+ "Command: /react add message <id> type:<Type> source:<Source> mask:<MessageMask>");
+		
 		addMSG ("activator_PVP_KILL","This activator is activating when one player is killing another player. Command: /react add pvp_death <id>");
 		addMSG ("activator_PVP_DEATH","This activator is activating after player death, if he was murdered by another player. Command: /react add pvp_death <id>");
 		addMSG ("activator_PVP_RESPAWN","This activator is activating after respawn of dead player if he was murdered by another player. Command: /react add pvp_respawn <id>");
@@ -393,6 +394,8 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("placeholder_CALC","Calculates the expression and provide it's result. For example: \"%CALC:1+2%\" will be replaced to \"3\"");
 		addMSG ("placeholder_SIGNAct","Activator-based placeholders. Provides SIGN activator locations and text-lines");
 		addMSG ("placeholder_COMMANDAct","Activator-based placeholders. Provides COMMAND activator parameters (arguments)");
+		
+
 		
 	}
 
