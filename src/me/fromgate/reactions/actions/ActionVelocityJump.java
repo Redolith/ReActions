@@ -24,7 +24,7 @@ package me.fromgate.reactions.actions;
 
 import java.util.Map;
 
-import me.fromgate.playeffect.Util;
+import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.ParamUtil;
 import me.fromgate.reactions.util.VelocityUtil;
 import org.bukkit.Location;
@@ -39,7 +39,7 @@ public class ActionVelocityJump extends Action{
 		String locStr = ParamUtil.getParam(params, "loc", "");
 		//ReActions.util.BC("locStr: "+locStr);
 		if (locStr.isEmpty()) return false;
-		Location loc = Util.parseLocation(locStr);
+		Location loc = Locator.parseCoordinates(locStr);
 		if (loc == null) return false;
 		
 		//ReActions.util.BC("loc: "+loc.toString());

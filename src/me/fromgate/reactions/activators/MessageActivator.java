@@ -36,6 +36,8 @@ public class MessageActivator extends Activator {
 	Type type;
 	Source source;
 	String mask;
+	String answerWait;
+	boolean answerAtFirst;
 
 	public MessageActivator(String name, String group, YamlConfiguration cfg) {
 		super(name, group, cfg);
@@ -93,7 +95,8 @@ public class MessageActivator extends Activator {
 		CHAT_INPUT,
 		CONSOLE_INPUT,
 		CHAT_OUTPUT,
-		LOG_OUTPUT;
+		LOG_OUTPUT,
+		ANSWER; 
 
 		public static Source getByName(String name){
 			for (Source source : Source.values()){

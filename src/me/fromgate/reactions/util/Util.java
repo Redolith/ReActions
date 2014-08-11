@@ -28,11 +28,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.externals.Externals;
 import me.fromgate.reactions.externals.RAFactions;
 import me.fromgate.reactions.externals.RAVault;
 import me.fromgate.reactions.externals.RAWorldGuard;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -354,7 +357,7 @@ public class Util {
 			}
 
 			// Players in faction
-			if (RAFactions.isFactionConnected()){
+			if (Externals.isConnectedFactions()){
 				String factionNames = ParamUtil.getParam(params, "faction", "");
 				String [] arrFaction = factionNames.split(",");
 				for (String factionName : arrFaction)

@@ -282,7 +282,7 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("action_SQL_DELETE","Execute delete-query (delete record in MySQL database table) Parameter: query:{DELETE... }");
 		addMSG ("action_SIGN_SET_LINE","Set (or clear) one or more line of sign. Parameters: loc:<location> line1:<text>...line4:<text> clear:<1,2..4>");
 		addMSG ("action_ACTION_DELAYED","Execute another action after delay. Parameters: time:<time> action:{<another action with parameters>}");
-
+		addMSG ("action_FCT_POWER_ADD","Add power to player's faction power value. Prameters: value:<Value>");
 
 		/*
 		 * Flag description messages

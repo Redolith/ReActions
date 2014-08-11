@@ -22,8 +22,10 @@
 
 package me.fromgate.reactions.flags.factions;
 
+import me.fromgate.reactions.externals.Externals;
 import me.fromgate.reactions.externals.RAFactions;
 import me.fromgate.reactions.flags.Flag;
+
 import org.bukkit.entity.Player;
 
 /**
@@ -35,6 +37,7 @@ public class FlagAtFactionZoneRel extends Flag {
 
     @Override
     public boolean checkFlag(Player player, String param) {
+    	if (!Externals.isConnectedFactions()) return false;
         String locationFaction = RAFactions.getFactionAt(player.getLocation());
         return (RAFactions.getRelationWith(player, locationFaction).equalsIgnoreCase(param));
     }

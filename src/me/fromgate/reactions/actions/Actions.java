@@ -59,9 +59,9 @@ public enum Actions{
     ITEM_REMOVE_INVENTORY ("invitemrmv",true,new ActionItems(2)),
     ITEM_DROP ("itemdrop",true,new ActionItems(3)),
     ITEM_WEAR ("itemdrop",true,new ActionItems(4)),
-    CMD ("cmdplr",true,new ActionCommand()),
-    CMD_OP("cmdop",false,new ActionCommandOp()),
-    CMD_CONSOLE ("cmdsrv",false,new ActionCommandConsole()),
+    CMD ("cmdplr",true,new ActionCommand(0)),
+    CMD_OP("cmdop",false,new ActionCommand(1)),
+    CMD_CONSOLE ("cmdsrv",false,new ActionCommand(2)),
     MONEY_PAY ("moneypay",false,new ActionMoneyPay()),
     MONEY_GIVE ("moneygive",false,new ActionMoneyGive()),
     DELAY ("delay",false,new ActionDelay(false)),
@@ -97,7 +97,8 @@ public enum Actions{
     SQL_INSERT("sqlinsert",false, new ActionSQL(1)),
     SQL_DELETE("sqldelete",false, new ActionSQL(3)),
     ACTION_DELAYED ("actdelay",false, new ActionDelayed()),
-    MENU_ITEM ("itemmenu",true, new ActionMenuItem());
+    MENU_ITEM ("itemmenu",true, new ActionMenuItem()),
+    FCT_POWER_ADD ("factaddpower",false, new ActionFactionsPowerAdd());
 
     private String alias;
     private boolean requireplayer;

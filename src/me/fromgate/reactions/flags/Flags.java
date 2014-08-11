@@ -24,12 +24,14 @@ package me.fromgate.reactions.flags;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.Activator.FlagVal;
 import me.fromgate.reactions.flags.factions.FlagAtFactionZoneRel;
 import me.fromgate.reactions.flags.factions.FlagFaction;
 import me.fromgate.reactions.flags.factions.FlagIsFactionRelPlayerAround;
+import me.fromgate.reactions.flags.factions.FlagPlayersInRel;
 import me.fromgate.reactions.util.Placeholders;
 import me.fromgate.reactions.util.RADebug;
 
@@ -83,6 +85,7 @@ public enum Flags {
     FCT_PLAYER("playerfaction",false, new FlagFaction()),
     FCT_AT_ZONE_REL("atfactionzonerel", true, new FlagAtFactionZoneRel()),
     FCT_IS_REL_PLAYER_AROUND("isfactionrelplayeraround", true, new FlagIsFactionRelPlayerAround()),
+    FCT_ARE_PLAYERS_IN_REL("areplayersinfactionsrel", false, new FlagPlayersInRel()),
     SQL_CHECK("sqlcheck",false, new FlagSQL(true)),
     SQL_RESULT("sqlhasresult",false, new FlagSQL(false));
 

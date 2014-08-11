@@ -33,27 +33,37 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-
 import java.util.ArrayList;
 import java.util.List;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 
 public class RAFactions {
 
 	private static boolean enabled = false;
 	private static FactionListener listener;
 
-	public static void init(){
-		enabled = isFactionsInstalled();
-		if (!enabled) return;
-		ReActions.util.log("Factions found");
-		listener = new FactionListener();
-		Bukkit.getPluginManager().registerEvents(listener,ReActions.instance);
-	}
-
-	public static boolean isFactionConnected(){
+	protected static boolean init(){
+		Plugin pf = Bukkit.getServer().getPluginManager().getPlugin("Factions");
+		if (pf == null) return false;
+		try {
+			listener = new FactionListener();
+			Bukkit.getPluginManager().registerEvents(listener,ReActions.instance);
+			ReActions.util.log("Factions found");
+			enabled = true;
+		} catch (Throwable t){
+			enabled = false;
+		}
 		return enabled;
 	}
-	
+
+
+	/*
+	private static boolean isFactionConnected(){
+		return enabled;
+	} */
+
+	/*
 	private static boolean isFactionsInstalled() {
 		Plugin pf = Bukkit.getServer().getPluginManager().getPlugin("Factions");
 		if (pf == null) return false;
@@ -62,7 +72,7 @@ public class RAFactions {
 		} catch (Throwable e){
 			return false;
 		}
-	}
+	} */
 
 	public static String getPlayerFaction(Player player){
 		if (!enabled) return "";
@@ -97,13 +107,20 @@ public class RAFactions {
 		}
 		return null;
 	}
-    
-    public static String getFactionAt(Location loc) {
-        return BoardColls.get().getFactionAt(PS.valueOf(loc)).getName();
-    }
-    
-    public static String getRelationWith(Player player, String withFactionStr) {
-        UPlayer uplayer = UPlayer.get(player);
-        return uplayer.getRelationTo(getFactionByName(withFactionStr)).toString();
-    }
+
+	public static String getFactionAt(Location loc) {
+		return BoardColls.get().getFactionAt(PS.valueOf(loc)).getName();
+	}
+
+	public static String getRelationWith(Player player, String withFactionStr) {
+		UPlayer uplayer = UPlayer.get(player);
+		return uplayer.getRelationTo(getFactionByName(withFactionStr)).toString();
+	}
+
+	public static void addPower(Player player, double value){
+		UPlayer uplayer = UPlayer.get(player);
+		double currentPower = uplayer.getPower();
+		double newPower = min(uplayer.getPowerMax(), max(currentPower + value, uplayer.getPowerMin()));
+		uplayer.setPower(newPower);
+	}
 }

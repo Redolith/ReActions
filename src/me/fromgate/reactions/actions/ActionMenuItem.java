@@ -1,9 +1,7 @@
 package me.fromgate.reactions.actions;
 
 import java.util.Map;
-
 import me.fromgate.reactions.menu.InventoryMenu;
-
 import org.bukkit.entity.Player;
 
 public class ActionMenuItem extends Action {

@@ -24,18 +24,36 @@ package me.fromgate.reactions.actions;
 
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class ActionCommand extends Action {
+	private int commandAs = 0; //0 - normal, 1 - op, 2 - console
 
-    @Override
-    public boolean execute(Player p, Map<String, String> params) {
-        if (p == null) return false;
-        CommandSender sender = p;
-        plg().getServer().dispatchCommand(sender, ChatColor.translateAlternateColorCodes('&', params.get("param-line")));
-        return true;
-    }
+	public ActionCommand (int commandAs){
+		this.commandAs = commandAs;
+	}
+
+	@Override
+	public boolean execute(Player p, Map<String, String> params) {
+		if (commandAs!=2&&p == null) return false;
+		String commandLine =  ChatColor.translateAlternateColorCodes('&', params.get("param-line"));
+		switch (commandAs){
+		case 0:
+			plg().getServer().dispatchCommand(p, commandLine);	
+			break;
+		case 1:
+			boolean isop = p.isOp();
+			p.setOp(true);
+			plg().getServer().dispatchCommand(p, commandLine);
+			p.setOp(isop);
+			break;
+		case 2: 
+			plg().getServer().dispatchCommand(Bukkit.getConsoleSender(), commandLine);
+			break;
+		}
+		return true;
+	}
 
 }

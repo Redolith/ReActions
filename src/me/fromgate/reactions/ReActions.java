@@ -27,11 +27,11 @@ import java.util.logging.Logger;
 
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.Activators;
+import me.fromgate.reactions.externals.Externals;
 import me.fromgate.reactions.externals.LogHandler;
 import me.fromgate.reactions.externals.RAProtocolLib;
 import me.fromgate.reactions.externals.RACraftConomy;
 import me.fromgate.reactions.externals.RAEffects;
-import me.fromgate.reactions.externals.RAFactions;
 import me.fromgate.reactions.externals.RARacesAndClasses;
 import me.fromgate.reactions.externals.RATowny;
 import me.fromgate.reactions.externals.RAVault;
@@ -45,13 +45,9 @@ import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.RADebug;
 import me.fromgate.reactions.util.Shoot;
 import me.fromgate.reactions.util.Variables;
-
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import com.palmergames.bukkit.towny.Towny;
 
 
 public class ReActions extends JavaPlugin {
@@ -106,26 +102,39 @@ public class ReActions extends JavaPlugin {
         Timers.init();
         Activators.init();
         ItemUtil.init(this);
+        
+        
         RAEffects.init();
         RARacesAndClasses.init();
-        RAFactions.init();
-        Delayer.load();
-        Variables.load();
-        Locator.loadLocs();
+        Externals.init();
         RAVault.init();
         RACraftConomy.init();
         RAWorldGuard.init();
+        if (Bukkit.getPluginManager().getPlugin("Towny")!=null) towny_conected = RATowny.init(); 
+        if (Bukkit.getPluginManager().getPlugin("ProtocolLib")!=null) RAProtocolLib.connectProtocolLib();
+        
+        Delayer.load();
+        Variables.load();
+        Locator.loadLocs();
+        
+
+        
+        
         SQLManager.init();
         InventoryMenu.init();
-        if (checkTowny()) towny_conected = RATowny.init();
+        
+        
+        
+        
+        
         Bukkit.getLogger().addHandler(new LogHandler());
-		if (Bukkit.getPluginManager().getPlugin("ProtocolLib")!=null)
-			RAProtocolLib.connectProtocolLib();
+		
         try {
             MetricsLite metrics = new MetricsLite(this);
             metrics.start();
         } catch (IOException e) {
         }
+
         
     }
 
@@ -158,11 +167,6 @@ public class ReActions extends JavaPlugin {
         needUpdate= getConfig().getBoolean("reactions.need-file-update", true);
         Shoot.actionShootBreak = getConfig().getString("actions.shoot.break-block",Shoot.actionShootBreak);
         Shoot.actionShootThrough = getConfig().getString("actions.shoot.penetrable",Shoot.actionShootThrough);
-    }
-
-    private boolean checkTowny(){
-        Plugin twn = this.getServer().getPluginManager().getPlugin("Towny");
-        return  ((twn != null)&&(twn instanceof Towny));
     }
 
     public RAUtil getUtils(){

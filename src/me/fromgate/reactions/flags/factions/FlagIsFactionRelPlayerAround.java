@@ -22,8 +22,10 @@
 
 package me.fromgate.reactions.flags.factions;
 
+import me.fromgate.reactions.externals.Externals;
 import me.fromgate.reactions.externals.RAFactions;
 import me.fromgate.reactions.flags.Flag;
+
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -36,6 +38,7 @@ public class FlagIsFactionRelPlayerAround extends Flag {
     
     @Override
     public boolean checkFlag(Player p, String param) {
+    	if (!Externals.isConnectedFactions()) return false;
         String[] params = param.split("\\s");
         double radius = Double.valueOf(params[0].trim());
         String targetRel = params[1].trim();
