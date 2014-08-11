@@ -35,6 +35,8 @@ public class FlagAtFactionZoneRel extends Flag {
 
     @Override
     public boolean checkFlag(Player player, String param) {
+        if (!RAFactions.isFactionConnected()) return false;
+        
         String locationFaction = RAFactions.getFactionAt(player.getLocation());
         return (RAFactions.getRelationWith(player, locationFaction).equalsIgnoreCase(param));
     }

@@ -30,6 +30,7 @@ import me.fromgate.reactions.activators.Activator.FlagVal;
 import me.fromgate.reactions.flags.factions.FlagAtFactionZoneRel;
 import me.fromgate.reactions.flags.factions.FlagFaction;
 import me.fromgate.reactions.flags.factions.FlagIsFactionRelPlayerAround;
+import me.fromgate.reactions.flags.factions.FlagPlayersInRel;
 import me.fromgate.reactions.util.Placeholders;
 import me.fromgate.reactions.util.RADebug;
 
@@ -80,18 +81,18 @@ public enum Flags {
     RNC_CLASS("rncclass",true, new FlagRacesAndClasses(false)),
     WEATHER("weather",true, new FlagWeather()),
     TIMER_ACTIVE("timeract",false, new FlagTimerActive()),
-    FCT_PLAYER("playerfaction",false, new FlagFaction()),
+    SQL_CHECK("sqlcheck",false, new FlagSQL(true)),
+    SQL_RESULT("sqlhasresult",false, new FlagSQL(false)),
+    
+    // Factions
+    FCT_PLAYER("playerfaction", false, new FlagFaction()),
     FCT_AT_ZONE_REL("atfactionzonerel", true, new FlagAtFactionZoneRel()),
     FCT_IS_REL_PLAYER_AROUND("isfactionrelplayeraround", true, new FlagIsFactionRelPlayerAround()),
-    SQL_CHECK("sqlcheck",false, new FlagSQL(true)),
-    SQL_RESULT("sqlhasresult",false, new FlagSQL(false));
-
-    
+    FCT_ARE_PLAYERS_IN_REL("areplayersinfactionsrel", false, new FlagPlayersInRel());
 
     private String alias;
     private boolean require_player = true;
     private Flag flag;
-
 
     Flags (String alias, boolean needplayer, Flag flag){
         this.alias = alias;

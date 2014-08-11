@@ -36,6 +36,8 @@ public class FlagIsFactionRelPlayerAround extends Flag {
     
     @Override
     public boolean checkFlag(Player p, String param) {
+        if (!RAFactions.isFactionConnected()) return false;
+        
         String[] params = param.split("\\s");
         double radius = Double.valueOf(params[0].trim());
         String targetRel = params[1].trim();
