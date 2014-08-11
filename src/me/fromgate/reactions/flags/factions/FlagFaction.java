@@ -32,6 +32,8 @@ public class FlagFaction extends Flag {
 
 	@Override
 	public boolean checkFlag(Player player, String param) {
+        if (!RAFactions.isFactionConnected()) return false;
+        
 		return RAFactions.isPlayerInFaction(player, param);
 	}
 
