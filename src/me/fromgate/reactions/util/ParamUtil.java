@@ -88,7 +88,7 @@ public class ParamUtil {
     public static double getParam(Map<String,String> params, String key, double defparam){
         if (!params.containsKey(key)) return defparam;
         String str = params.get(key);
-        if (!str.matches("[0-9]+\\.?[0-9]*")) return defparam;
+        if (!str.matches("-?[0-9]+\\.?[0-9]*")) return defparam;
         return Double.parseDouble(str);
     }
 
