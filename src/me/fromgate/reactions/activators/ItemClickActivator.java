@@ -4,6 +4,8 @@ import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.event.ItemClickEvent;
 import me.fromgate.reactions.util.ItemUtil;
+import me.fromgate.reactions.util.Util;
+import me.fromgate.reactions.util.Variables;
 
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -37,8 +39,11 @@ public class ItemClickActivator extends Activator {
         }
         if (event instanceof ItemClickEvent){
             ItemClickEvent ie  = (ItemClickEvent) event;
-            if (ItemUtil.compareItemStr(ie.getItem(), this.item))
-                 return Actions.executeActivator(ie.getPlayer(), this);
+            if (ItemUtil.compareItemStr(ie.getItem(), this.item)){
+            	Variables.setTempVar("item", Util.itemToString(ie.getItem()));
+            	return Actions.executeActivator(ie.getPlayer(), this);
+            }
+                
         }
         return false;
     }

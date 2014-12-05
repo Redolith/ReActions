@@ -25,7 +25,7 @@ package me.fromgate.reactions.actions;
 import java.util.List;
 import java.util.Map;
 
-import me.fromgate.reactions.externals.RAWorldGuard;
+import me.fromgate.reactions.externals.wgbridge.RAWorldGuard;
 import me.fromgate.reactions.util.ParamUtil;
 import me.fromgate.reactions.util.Util;
 
@@ -68,6 +68,6 @@ public class ActionClearRegion extends Action {
         } else {
             if (type.equalsIgnoreCase("item")||type.equalsIgnoreCase("items")) return true;
         }
-        return (u().isWordInList(e.getType().name(), type));
+        return (u().isWordInList(e.getType().name().toLowerCase(), type.toLowerCase()));
     }
 }

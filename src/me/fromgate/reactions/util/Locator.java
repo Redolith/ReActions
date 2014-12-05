@@ -29,9 +29,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.externals.RAWorldGuard;
+import me.fromgate.reactions.externals.wgbridge.RAWorldGuard;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -39,6 +41,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.util.Vector;
 
 public class Locator {
 	private static HashMap<String,TpLoc> tports = new HashMap<String,TpLoc>();
@@ -49,8 +52,31 @@ public class Locator {
 		return ReActions.util;
 	}
 
+	/**
+	 * Returns location defined by group of parameter:
+	 * @param param - String that contains parameters: 
+	 *                parameter1:value1 parameter2:value2 ... parameterN:valueN   
+	 * Parameters:
+	 *   <WorldName,X,Y,Z[,Yaw,Pitch]> - defaut, simplest way to define location
+	 *   loc:<WorldName,X,Y,Z[,Yaw,Pitch]> - same as previous
+	 * 
+	 *   loc:<WorldName,X,Y,Z[,Yaw,Pitch]> radius:<Radius> - find random location around the defined block
+	 *   region:<RegionName> - find random location in provided region 
+	 *   loc1:<WorldName,X,Y,Z> loc2:<WorldName,X,Y,Z> - find random location in area defined by too points
+	 *   
+	 *   Additional parameters:
+	 *   land:true - forces to find location in point where player can stay (solid block with two blocks above it)
+	 *   add-vector:<X,Y,Z> - allows to modify result of locations selections. For examample,
+	 *                        loc:world,10,10,10 add-vector:0,5,0 will point to location world,10,15,10.
+	 * @param defaultLocation - default location, used when definitions of locations is wrong or missed
+	 * @return Location
+	 */
 	public static Location parseLocation(String param, Location defaultLocation){
 		Map<String,String> params = ParamUtil.parseParams(param,"loc");
+		return parseLocation (params, defaultLocation);
+	}
+		
+	public static Location parseLocation(Map<String,String> params, Location defaultLocation){
 		Location location = null;
 		if (ParamUtil.isParamExists(params, "loc")) {
 			String locStr = ParamUtil.getParam(params, "loc", "");
@@ -61,21 +87,28 @@ public class Locator {
 		if (ParamUtil.isParamExists(params, "region")){
 			location = getRegionLocation(ParamUtil.getParam(params, "region", ""),land);
 			location = copyYawPitch(location, defaultLocation);
-		} if (ParamUtil.isParamExists(params, "loc1","loc2")){
+		}
+		
+		if (ParamUtil.isParamExists(params, "loc1","loc2")){
 			Location loc1 = parseCoordinates(ParamUtil.getParam(params, "loc1", ""));
 			Location loc2 = parseCoordinates(ParamUtil.getParam(params, "loc2", ""));
 			if (loc1!=null&&loc2!=null)	{
 				location = getCubeLocation (loc1,loc2,land);
 				location = copyYawPitch(location, defaultLocation);
 			}
-		} if (ParamUtil.isParamExists(params, "radius")){
+		} 
+		if (ParamUtil.isParamExists(params, "radius")){
 			int radius = ParamUtil.getParam(params, "radius", -1);
 			if (radius>0){
 				location = getRadiusLocation (location == null ? defaultLocation : location,radius,land);
 				location = copyYawPitch(location, defaultLocation);
 			}
 		}
-		return location == null ? defaultLocation : location;
+		Vector vector = Locator.parseVector(ParamUtil.getParam(params, "add-vector", ""));
+		if (vector == null) vector = new Vector (0,0,0);
+		Location result = location == null ? defaultLocation : location;
+		if (result!=null) result.add(vector);
+		return result;
 	}
 
 	public static Location copyYawPitch (Location targetLoc, Location sourceLoc){
@@ -128,7 +161,7 @@ public class Locator {
 		World w = Bukkit.getWorld(ln[0]);
 		if (w==null) return null;
 		for (int i = 1; i<ln.length; i++){
-			if (!(u().isInteger(ln[i])||ln[i].matches("-?[0-9]+[0-9]*\\.[0-9]+")||ln[i].matches("-?[1-9]+[0-9]*"))) return null;
+			if (!ln[i].matches("-?[0-9]+\\.?[0-9]*")) return null;
 		}
 		loc = new Location (w, Double.parseDouble(ln[1]),Double.parseDouble(ln[2]),Double.parseDouble(ln[3]));
 		if (ln.length==6){
@@ -136,6 +169,16 @@ public class Locator {
 			loc.setPitch(Float.parseFloat(ln[5]));
 		}
 		return loc;
+	}
+	
+	public static Vector parseVector (String vectorStr){
+		if (vectorStr.isEmpty()) return null;
+		String [] ln = vectorStr.split(",");
+		if (ln.length!=3) return null;
+		for (String s : ln){
+			if (! s.matches("-?[0-9]+\\.?[0-9]*")) return null;
+		}
+		return new Vector (Double.parseDouble(ln[0]), Double.parseDouble(ln[1]),Double.parseDouble(ln[2]));
 	}
 
 	private static boolean isEmptyLocation (Location loc){

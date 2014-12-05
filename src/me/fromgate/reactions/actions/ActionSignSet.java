@@ -29,6 +29,7 @@ import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.ParamUtil;
 import me.fromgate.reactions.util.Variables;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -53,7 +54,7 @@ public class ActionSignSet extends Action{
 			String line = ParamUtil.getParam(params, "line"+Integer.toString(i), "");
 			if (line.isEmpty()) continue;
 			if (line.length()>15) line = line.substring(0, 15);
-			sign.setLine(i-1, line);
+			sign.setLine(i-1, ChatColor.translateAlternateColorCodes('&', line));
 		}
 		
 		String clear = ParamUtil.getParam(params, "clear", "");

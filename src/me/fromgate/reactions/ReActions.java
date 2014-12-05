@@ -35,7 +35,7 @@ import me.fromgate.reactions.externals.RAEffects;
 import me.fromgate.reactions.externals.RARacesAndClasses;
 import me.fromgate.reactions.externals.RATowny;
 import me.fromgate.reactions.externals.RAVault;
-import me.fromgate.reactions.externals.RAWorldGuard;
+import me.fromgate.reactions.externals.wgbridge.RAWorldGuard;
 import me.fromgate.reactions.menu.InventoryMenu;
 import me.fromgate.reactions.sql.SQLManager;
 import me.fromgate.reactions.timer.Timers;
@@ -45,6 +45,7 @@ import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.RADebug;
 import me.fromgate.reactions.util.Shoot;
 import me.fromgate.reactions.util.Variables;
+
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -116,7 +117,7 @@ public class ReActions extends JavaPlugin {
         Delayer.load();
         Variables.load();
         Locator.loadLocs();
-        
+        //Questions.init();
 
         
         
@@ -146,7 +147,7 @@ public class ReActions extends JavaPlugin {
         getConfig().set("reactions.center-player-teleport",centerTpCoords);
         getConfig().set("reactions.region-recheck-delay",worlduardRecheck);
         getConfig().set("reactions.item-hold-recheck-delay",itemHoldRecheck);
-        getConfig().getInt("reactions.item-wear-recheck-delay",itemWearRecheck);
+        getConfig().set("reactions.item-wear-recheck-delay",itemWearRecheck);
         getConfig().set("reactions.horizontal-pushback-action",horizontalPushback );
         getConfig().set("reactions.need-file-update", needUpdate);
         getConfig().set("actions.shoot.break-block",Shoot.actionShootBreak);

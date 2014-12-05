@@ -24,9 +24,11 @@ package me.fromgate.reactions.actions;
 
 import java.util.List;
 import java.util.Map;
-import me.fromgate.reactions.externals.RAWorldGuard;
+
+import me.fromgate.reactions.externals.wgbridge.RAWorldGuard;
 import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.ParamUtil;
+
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;

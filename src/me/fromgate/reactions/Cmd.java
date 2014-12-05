@@ -664,7 +664,7 @@ public class Cmd implements CommandExecutor{
 		case JOIN:
 			activator = new JoinActivator(name,param);
 			break;
-		case MOBCLICK:    
+		case MOB_CLICK:    
 			activator = new MobClickActivator (name, param);
 			break;
 		case ITEM_CLICK:    

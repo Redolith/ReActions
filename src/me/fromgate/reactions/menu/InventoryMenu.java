@@ -147,8 +147,18 @@ public class InventoryMenu implements Listener{
 		Inventory inv = getInventory (params);
 		if (inv == null) return false;
 		activeMenus.put(inv, getActivators(params));
-		player.openInventory(inv);
+		openInventory (player,inv);
 		return true;
+	}
+
+	public static void openInventory (final Player player, final Inventory inv){
+		Bukkit.getScheduler().runTaskLater(ReActions.instance, new Runnable(){
+			@Override
+			public void run() {
+				if (player.isOnline())	player.openInventory(inv);
+				else activeMenus.remove(inv);
+			}
+		}, 1);
 	}
 
 	public static boolean isMenu (Inventory inventory){
@@ -170,11 +180,11 @@ public class InventoryMenu implements Listener{
 		if (!InventoryMenu.isMenu(event.getInventory())) return;
 		Player player = (Player) event.getWhoClicked();
 		int clickedSlot = event.getSlot();
+		if (clickedSlot<0||clickedSlot>=event.getInventory().getSize()) return;
 		List<String> activators = getActivators (event.getInventory());
 		if (activators.size()>clickedSlot){
 			String activator = activators.get(clickedSlot);
 			if (!activator.isEmpty())
-				//EventManager.raiseExecEvent(player, "activator:"+activator);
 				EventManager.raiseExecEvent(player, ParamUtil.parseParams(activator, "activator"));
 		}
 		event.setCancelled(true);
@@ -214,7 +224,7 @@ public class InventoryMenu implements Listener{
 				menuList.add(id+" : "+menu.get(id).title);
 		ReActions.util.printPage(sender, menuList, page, "msg_menulist", "", false, maxPage);
 	}
-	
+
 	public static String itemToString (String itemStr){
 		if (itemStr.isEmpty()) return "AIR";
 		ItemStack item = ItemUtil.parseItemStack(itemStr);

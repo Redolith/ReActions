@@ -24,6 +24,7 @@ package me.fromgate.reactions.activators;
 
 
 import java.util.Map;
+
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.MessageEvent;
 import me.fromgate.reactions.util.ParamUtil;
@@ -95,8 +96,8 @@ public class MessageActivator extends Activator {
 		CHAT_INPUT,
 		CONSOLE_INPUT,
 		CHAT_OUTPUT,
-		LOG_OUTPUT,
-		ANSWER; 
+		LOG_OUTPUT;
+		//ANSWER; 
 
 		public static Source getByName(String name){
 			for (Source source : Source.values()){
@@ -120,6 +121,7 @@ public class MessageActivator extends Activator {
 		MessageEvent e = (MessageEvent) event;
 		if (!e.isForActivator (this)) return false;
 		setTempVars(e.getMessage());
+		//if (this.source == Source.ANSWER) Questions.removeByMessageActivator(this.name);
 		return Actions.executeActivator(e.getPlayer(), this);
 	}
 
@@ -135,6 +137,7 @@ public class MessageActivator extends Activator {
 
 	public boolean filterMessage(Source source, String message) {
 		if (source != this.source && this.source != Source.ALL) return false;
+		//if (this.source == Source.ALL&& source == Source.ANSWER) return false;
 		return filter (message);
 	}
 
@@ -157,10 +160,25 @@ public class MessageActivator extends Activator {
 
 	private void setTempVars(String message){
 		String [] args = message.split(" ");
+		int countInt = 0;
+		int countNum = 0;
 		if (args!=null&&args.length>0){
-			for (int i=0; i<args.length; i++)
+			for (int i=0; i<args.length; i++){
 				Variables.setTempVar("word"+Integer.toString(i+1), args[i]);
+				if (args[i].matches("-?[1-9]+[0-9]*")){
+					countInt++;
+					Variables.setTempVar("int"+countInt, args[i]);
+				}
+				if (args[i].matches("-?[0-9]+\\.?[0-9]*")){
+					countNum++;
+					Variables.setTempVar("num"+countNum, args[i]);
+				}
+
+			}
 		}
+		Variables.setTempVar("word-count", Integer.toString(args.length));
+		Variables.setTempVar("int-count", Integer.toString(countInt));
+		Variables.setTempVar("num-count", Integer.toString(countNum));
 	}
 
 

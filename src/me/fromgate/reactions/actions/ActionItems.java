@@ -35,6 +35,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class ActionItems extends Action {
@@ -51,11 +52,12 @@ public class ActionItems extends Action {
         case 2: return removeItemInInventory(p,params);
         case 3: return dropItems(p,params);
         case 4: return wearItem(p,params);
+        case 5: return openInventory(p,ParamUtil.getParam(params, "param-line", ""));
         }
         return true;
     }
 
-    /**
+	/**
      * Реализует действие ITEM_WEAR
      * @param p - игрок 
      * @param params - параметры: item - одеваемый предмет
@@ -174,6 +176,20 @@ public class ActionItems extends Action {
         }
         return false;
     }
+    
+    private boolean openInventory(Player p, String itemStr) {
+    	List<ItemStack> items = Util.parseRandomItems(itemStr);
+    	if (items.isEmpty())return false;
+    	String actionItems = Util.itemsToString(items);
+        setMessageParam(actionItems);
+        Variables.setTempVar("action_items", actionItems);
+        int size = Math.min(items.size(),36);
+        Inventory inv = Bukkit.createInventory(null, size);
+    	for (int i = 0; i<size; i++)
+    		inv.setItem(i, items.get(i));
+		return true;
+	}
+
 
     public boolean dropItems(Player p, Map<String, String> params) {
         int radius = ParamUtil.getParam(params, "radius", 0);

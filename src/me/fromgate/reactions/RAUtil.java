@@ -260,6 +260,7 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("action_REGION_CLEAR","Remove entities (mobs or items) in region. Paramters: region:<region id> type:<entity_type|all|mobs|items>");
 		addMSG ("action_HEAL","Heal player. Parameter: <hit points amount>");
 		addMSG ("action_BLOCK_SET","Place block in location. Parameters: loc:<location> block:<type[:data]>");
+		addMSG ("action_BLOCK_FILL","Fill area define by parameters loc1, loc2 or region with defined block type. Parameters: <loc1:<world,x1,y1,z1> loc2:<world,x2,y2,z2>|region:<RegionId>> block:<Type:Data> chance:<Chance>");
 		addMSG ("action_POWER_SET","Set redstone power of the block (supported levers and doors). Parameters: loc:<location> power:<on|off|toggle>");
 		addMSG ("action_SHOOT","Shoot (without projectile) in player view direction. Parameters: distance:<distance> singlehit:<true/false> damage:<damage amount>");
 		addMSG ("action_VAR_SET","Create global variable. Parameters: id:<id> value:<value>");
@@ -281,8 +282,9 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("action_SQL_INSERT","Execute insert-query (insert new row in table at MySQL database) Parameter: query:{INSERT... }");
 		addMSG ("action_SQL_DELETE","Execute delete-query (delete record in MySQL database table) Parameter: query:{DELETE... }");
 		addMSG ("action_SIGN_SET_LINE","Set (or clear) one or more line of sign. Parameters: loc:<location> line1:<text>...line4:<text> clear:<1,2..4>");
-		addMSG ("action_ACTION_DELAYED","Execute another action after delay. Parameters: time:<time> action:{<another action with parameters>}");
 		addMSG ("action_FCT_POWER_ADD","Add power to player's faction power value. Prameters: value:<Value>");
+		addMSG ("action_ACTION_DELAYED","Execute another action after delay. Parameters: time:<time> action:{<another action with parameters>}");
+		addMSG ("action_MENU_ITEM","Create and show GUI (item menu) to player. Parameters: menu:<MenuId>");
 
 		/*
 		 * Flag description messages
@@ -326,6 +328,8 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("flag_VAR_PLAYER_GREATER","Is personal variable greater than given value? Parameters: id:<id> value:<value>");
 		addMSG ("flag_VAR_LOWER","Is global variable lower than given value? Parameters: id:<id> value:<value>");
 		addMSG ("flag_VAR_PLAYER_LOWER","Is personal variable lower than given value? Parameters: id:<id> value:<value>");
+		addMSG ("flag_VAR_MATCH","Check is value of provided variable is match (regex) to provided value. Parameters: id:<id> value:<value>");
+		addMSG ("flag_VAR_PLAYER_MATCH","Check is value of provided variable is match (regex) to provided value. Parameters: id:<id> value:<value>");
 		addMSG ("flag_RNC_RACE","Check player's race (Requires RacesAndClasses plugin). Parameter: <race>");
 		addMSG ("flag_RNC_CLASS","Check player's class (Requires RacesAndClasses plugin). Parameter: <class>");
 		addMSG ("flag_WEATHER","Check weather state around player. Parameter: <rain/clear>");
@@ -336,7 +340,8 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("flag_COMPARE","Compare provide parameter with list of variable. True if parameter is equal to one of the provided variables. Parameters: param:<parameter> value1:<vaule1> vaule2:<value2>...");
 		addMSG ("flag_FCT_AT_ZONE_REL", "Check is player in faction with defined relation");
 		addMSG ("flag_FCT_IS_REL_PLAYER_AROUND", "Check is there anyone with defined relation around the player");
-
+		addMSG ("flag_FCT_ARE_PLAYERS_IN_REL", "Check is players are in defined relations. Parameters: <player1> <player2> <relation>. Where <realtion> could be: LEADER, OFFICER, MEMBER, RECRUIT, ALLY, TRUCE, NEUTRAL or ENEMY");
+				
 		/*
 		 *  Activators!
 		 */
@@ -373,7 +378,7 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("activator_SIGN","This activator is initiates player clicks (right-click) sign defined as activator./react add SIGN <id> line1:<text in line1>...line4:<text in line4>");
 		addMSG ("activator_FCT_CREATE","This activator is initiates when someone creates a new faction /react add fct_create <id>");
 		addMSG ("activator_FCT_DISBAND","This activator is initiates when faction is disbanded /react add fct_disband <id>");
-		
+		addMSG ("activator_VARIABLE","This activator is initiates when variable value is changed /react add variable id:<VariableId> personal:<false/true>. Local variables provided by this activator: %var_id%, %var_old%, %var_new%");
 		
 		addMSG ("msg_placeholderlisttitle","Placeholders");
 		addMSG ("placeholder_TIME_SERVER","Server (system) time");
@@ -394,8 +399,6 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("placeholder_CALC","Calculates the expression and provide it's result. For example: \"%CALC:1+2%\" will be replaced to \"3\"");
 		addMSG ("placeholder_SIGNAct","Activator-based placeholders. Provides SIGN activator locations and text-lines");
 		addMSG ("placeholder_COMMANDAct","Activator-based placeholders. Provides COMMAND activator parameters (arguments)");
-		
-
 		
 	}
 

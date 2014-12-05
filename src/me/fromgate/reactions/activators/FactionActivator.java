@@ -5,6 +5,7 @@ import java.util.Map;
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.FactionEvent;
 import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.util.Variables;
 
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -31,6 +32,8 @@ public class FactionActivator extends Activator {
 		FactionEvent fe = (FactionEvent) event;
 		if (!(newFaction.isEmpty()||newFaction.equalsIgnoreCase("any")||fe.getNewFaction().equalsIgnoreCase(newFaction))) return false;
 		if (!(oldFaction.isEmpty()||oldFaction.equalsIgnoreCase("any")||fe.getOldFaction().equalsIgnoreCase(oldFaction))) return false;
+		Variables.setTempVar("newfaction", fe.getNewFaction());
+		Variables.setTempVar("oldfaction", fe.getOldFaction());
 		return Actions.executeActivator(fe.getPlayer(), this);
 	}
 

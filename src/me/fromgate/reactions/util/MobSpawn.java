@@ -28,7 +28,7 @@ import java.util.Map;
 
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.externals.RAEffects;
-import me.fromgate.reactions.externals.RAWorldGuard;
+import me.fromgate.reactions.externals.wgbridge.RAWorldGuard;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

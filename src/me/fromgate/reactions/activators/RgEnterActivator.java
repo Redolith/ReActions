@@ -26,7 +26,9 @@ import java.util.List;
 
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.RegionEnterEvent;
-import me.fromgate.reactions.externals.RAWorldGuard;
+import me.fromgate.reactions.externals.wgbridge.RAWorldGuard;
+import me.fromgate.reactions.externals.wgbridge.WGRegion;
+
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
@@ -54,7 +56,7 @@ public class RgEnterActivator extends Activator {
     public boolean activate(Event event) {
         if (!(event instanceof RegionEnterEvent)) return false;
         RegionEnterEvent be = (RegionEnterEvent) event;
-        if (!be.getRegion().equals(this.region))	return false;
+        if (!be.getRegion().equalsIgnoreCase(WGRegion.getFullRegionName(this.region)))	return false;
         return Actions.executeActivator(be.getPlayer(), this);
     }
 

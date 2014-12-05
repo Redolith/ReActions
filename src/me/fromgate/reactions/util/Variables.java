@@ -275,6 +275,13 @@ public class Variables {
 		return true;
 	}
 
+	public static boolean matchVar(Player player, String var, String value) {
+		String id = varId(player, var);
+		if (!vars.containsKey(id)) return false;
+		String varValue = vars.get(id);
+		return varValue.matches(value);
+	}
+
 
 
 }

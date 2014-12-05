@@ -2,6 +2,9 @@ package me.fromgate.reactions.activators;
 
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.MobClickEvent;
+import me.fromgate.reactions.util.Locator;
+import me.fromgate.reactions.util.Variables;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -34,6 +37,7 @@ public class MobClickActivator extends Activator {
 		if (mob_type.isEmpty()) return false;
 		if (me.getMob()==null) return false;
 		if (!isActivatorMob (me.getMob())) return false;
+		Variables.setTempVar("moblocation", Locator.locationToString(me.getMob().getLocation()));
 		return Actions.executeActivator(me.getPlayer(), this);
 	}
 
@@ -74,7 +78,7 @@ public class MobClickActivator extends Activator {
 
 	@Override
 	public ActivatorType getType() {
-		return ActivatorType.MOBCLICK;
+		return ActivatorType.MOB_CLICK;
 	}
 
 }

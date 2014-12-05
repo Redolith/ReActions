@@ -67,6 +67,8 @@ public class FlagVar extends Flag{
             return Variables.cmpGreaterVar(p, var, value);
         case 3: 
             return Variables.cmpLowerVar(p, var, value);
+        case 4: 
+        	return Variables.matchVar(p,var, value);
         }
         return false;
     }

@@ -23,6 +23,8 @@
 package me.fromgate.reactions.flags;
 
 import me.fromgate.reactions.util.ItemUtil;
+import me.fromgate.reactions.util.Variables;
+
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -36,7 +38,9 @@ public class FlagItem extends Flag{
     @Override
     public boolean checkFlag(Player p, String itemStr) {
         switch (flagType){
-        case 0: return ItemUtil.compareItemStr(p.getItemInHand(), itemStr);
+        case 0: 
+        	Variables.setTempVar("item_amount", p.getItemInHand() == null ? "0" : String.valueOf(p.getItemInHand().getAmount()));
+        	ItemUtil.compareItemStr(p.getItemInHand(), itemStr);
         case 1: return ItemUtil.hasItemInInventory(p, itemStr);
         case 2: return isItemWeared (p,itemStr); 
         }

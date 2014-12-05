@@ -127,26 +127,21 @@ public class RAEffects {
     public static void playEffect (Player p, Map<String,String> params){
         String eff = ParamUtil.getParam(params, "eff", "");
         if (eff.isEmpty()) eff =  ParamUtil.getParam(params, "type", "SMOKE"); // для совместимости со старыми версиями
+        Location loc = Locator.parseLocation(ParamUtil.getParam(params, "loc", ""), p.getLocation());
+        if (ParamUtil.isParamExists(params, "loc")) params.put("loc", Locator.locationToString(loc));
+        if (ParamUtil.isParamExists(params, "loc1")) params.put("loc1", Locator.locationToString(Locator.parseLocation(ParamUtil.getParam(params, "loc1", ""), p.getLocation())));
+        if (ParamUtil.isParamExists(params, "loc2")) params.put("loc2", Locator.locationToString(Locator.parseLocation(ParamUtil.getParam(params, "loc2", ""), p.getLocation())));
         if (use_play_effects) {
             playPlayEffect(eff, params);    
         } else {
-            Location loc = null;
             int modifier = 0;
             int radius = 0;
-            
-            boolean land = ParamUtil.getParam(params, "land", "true").equalsIgnoreCase("false");
             if (!u().isWordInList(eff, efftypes)) return;
-            
             if (eff.equalsIgnoreCase("SMOKE")) modifier = parseSmokeDirection (ParamUtil.getParam(params, "dir", "random"));
             else modifier = Util.getMinMaxRandom(ParamUtil.getParam(params, "data", "0"));
-            
-            //loc=Util.parseLocation(ParamUtil.getParam(params, "loc", Util.locationToString(p.getLocation())));
-            
-            loc = Locator.parseLocation(ParamUtil.getParam(params, "loc", ""), p.getLocation());
-            
             radius = ParamUtil.getParam(params, "radius", 0);
+            boolean land = ParamUtil.getParam(params, "land", "true").equalsIgnoreCase("false"); 
             if (radius>0) loc = Locator.getRadiusLocation(loc, radius, land); 
-            		//Util.getRandomLocationInRadius(loc, radius,land);
             playStandartEffect (loc,eff,modifier);            
         }
     }

@@ -24,7 +24,6 @@ package me.fromgate.reactions.flags;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.Activator.FlagVal;
@@ -45,6 +44,7 @@ public enum Flags {
     ITEM ("item",true,new FlagItem(0)),
     ITEM_INVENTORY ("invitem",true,new FlagItem(1)),
     ITEM_WEAR ("invwear",true,new FlagItem(2)),
+    BLOCK("blockcheck",false, new FlagBlock()),
     TOWN ("town",true,new FlagTown()),
     MONEY ("money",false,new FlagMoney()),
     CHANCE("chance",false,new FlagChance()),
@@ -77,6 +77,8 @@ public enum Flags {
     VAR_PLAYER_GREATER("varpgrt",true, new FlagVar(2,true)),
     VAR_LOWER("varlwr",false, new FlagVar(3,false)),
     VAR_PLAYER_LOWER("varplwr",true, new FlagVar(3,true)),
+    VAR_MATCH("varmatch",false,new FlagVar(4,false)),
+    VAR_PLAYER_MATCH("varpmatch",true,new FlagVar(4,true)),
     COMPARE("cmp",false, new FlagCompare()),
     RNC_RACE("rncrace",true, new FlagRacesAndClasses(true)),
     RNC_CLASS("rncclass",true, new FlagRacesAndClasses(false)),

@@ -34,7 +34,7 @@ import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.externals.Externals;
 import me.fromgate.reactions.externals.RAFactions;
 import me.fromgate.reactions.externals.RAVault;
-import me.fromgate.reactions.externals.RAWorldGuard;
+import me.fromgate.reactions.externals.wgbridge.RAWorldGuard;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -202,7 +202,7 @@ public class Util {
 		return str;        
 	}
 
-	//id:data*amount@enchant:level,color;id:data*amount@chance/id:data*amount@enchant:level,color;id:data*amount@chance
+	//id:data*amount@enchant:level,color;id:data*amount%chance/id:data*amount@enchant:level,color;id:data*amount%chance
 	public static String parseRandomItemsStr (String items){
 		if (items.isEmpty()) return "";
 		String [] loots = items.split("/");

@@ -109,6 +109,9 @@ public class RAListener implements Listener{
 	public void onChatCommand(AsyncPlayerChatEvent event){
 		if (!event.getPlayer().hasPermission("chatcommander")) return;
 		EventManager.raiseMessageEvent(event.getPlayer(), Source.CHAT_INPUT, event.getMessage());
+		//Questions.isWaitingAnswer(event.getPlayer(), event.getMessage()) ? Source.ANSWER :Source.CHAT_INPUT, event.getMessage());
+		
+		
 
 	}
 
@@ -317,6 +320,7 @@ public class RAListener implements Listener{
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerMove (PlayerMoveEvent event){
 		PushBack.rememberLocations(event.getPlayer(), event.getFrom(), event.getTo());
+		if (event.getFrom().getBlock().equals(event.getTo().getBlock())) return;
 		EventManager.raiseRegionEvent(event.getPlayer(), event.getTo());
 		EventManager.raiseRgEnterEvent(event.getPlayer(), event.getFrom(), event.getTo());
 		EventManager.raiseRgLeaveEvent(event.getPlayer(), event.getFrom(), event.getTo());

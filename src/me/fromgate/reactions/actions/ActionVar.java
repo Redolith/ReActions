@@ -59,8 +59,6 @@ public class ActionVar extends Action  {
 
         if (!this.personalVar) player = "";
         else if (player.isEmpty()) return false;
-
-        
         switch (this.actType){
         case 0: //VAR_SET, VAR_PLAYER_SET
             Variables.setVar(player, var, value);
