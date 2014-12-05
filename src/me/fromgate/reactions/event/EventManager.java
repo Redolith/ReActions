@@ -175,11 +175,11 @@ public class EventManager {
 
 
 
-	public static boolean raiseSignEvent(Player player, String[] lines, Location loc) {
+	public static boolean raiseSignEvent(Player player, String[] lines, Location loc, boolean leftClick) {
 		for (Activator act : Activators.getActivators(ActivatorType.SIGN)){
 			SignActivator sign = (SignActivator) act;
 			if (sign.checkMask(lines)){
-				SignEvent se = new SignEvent (player, lines,loc);
+				SignEvent se = new SignEvent (player, lines, loc, leftClick);
 				Bukkit.getServer().getPluginManager().callEvent(se);
 				return true;
 			}

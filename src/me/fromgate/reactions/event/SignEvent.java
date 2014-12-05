@@ -33,11 +33,13 @@ public class SignEvent extends RAEvent {
 	
 	private String [] signLines;
 	private Location loc;
+	boolean leftClick;
 	
-	public SignEvent(Player player, String [] signLines, Location loc) {
+	public SignEvent(Player player, String [] signLines, Location loc, boolean leftClick) {
 		super(player);
 		this.signLines = signLines;
 		this.loc = loc;
+		this.leftClick = leftClick;
 	}
 	
 	public String [] getSignLines(){
@@ -48,6 +50,9 @@ public class SignEvent extends RAEvent {
 		return Locator.locationToString(this.loc);
 	}
 
+	public boolean isLeftClicked(){
+		return leftClick;
+	}
 	
 	
 }

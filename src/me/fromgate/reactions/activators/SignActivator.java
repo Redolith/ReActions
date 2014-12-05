@@ -25,18 +25,17 @@ package me.fromgate.reactions.activators;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.SignEvent;
 import me.fromgate.reactions.util.ParamUtil;
 import me.fromgate.reactions.util.Variables;
-
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
 
 public class SignActivator extends Activator {
 	private List<String> maskLines;
+	private ClickType click;
 
 	public SignActivator(String name, String group, YamlConfiguration cfg) {
 		super(name, group, cfg);
@@ -50,6 +49,7 @@ public class SignActivator extends Activator {
 		maskLines.add(ParamUtil.getParam(params, "line2", ""));
 		maskLines.add(ParamUtil.getParam(params, "line3", ""));
 		maskLines.add(ParamUtil.getParam(params, "line4", ""));
+		click = ClickType.getByName(ParamUtil.getParam(params, "click", "RIGHT"));
 	}
 
 	
@@ -71,10 +71,12 @@ public class SignActivator extends Activator {
 	public boolean activate(Event event) {
 		if (!(event instanceof SignEvent)) return false;
 		SignEvent signEvent = (SignEvent) event;
+		if (!clickCheck (signEvent.isLeftClicked())) return false;
 		if (!checkMask (signEvent.getSignLines())) return false;
 		for (int i = 0; i<signEvent.getSignLines().length; i++)
 			Variables.setTempVar("sign_line"+Integer.toString(i+1), signEvent.getSignLines()[i]);
 		Variables.setTempVar("sign_loc", signEvent.getSignLocation());
+		Variables.setTempVar("click", signEvent.isLeftClicked() ? "left" : "right");
 		return Actions.executeActivator(signEvent.getPlayer(), this);
 	}
 
@@ -86,16 +88,39 @@ public class SignActivator extends Activator {
 	@Override
 	public void save(String root, YamlConfiguration cfg) {
 		cfg.set(root+".sign-mask", maskLines);
+		cfg.set(root+".click-type", click.name());
 	}
 
 	@Override
 	public void load(String root, YamlConfiguration cfg) {
 		maskLines = cfg.getStringList(root+".sign-mask");
+		click = ClickType.getByName(cfg.getString(root+".click-type","RIGHT"));
 	}
 
 	@Override
 	public ActivatorType getType() {
 		return ActivatorType.SIGN;
+	}
+	
+	enum ClickType {
+		RIGHT,
+		LEFT,
+		ANY;
+		
+		public static ClickType getByName (String clickStr){
+			if (clickStr.equalsIgnoreCase("left")) return ClickType.LEFT;
+			if (clickStr.equalsIgnoreCase("any")) return ClickType.ANY;
+			return ClickType.RIGHT;
+		}
+	}
+	
+	private boolean clickCheck (boolean leftClick){
+		switch (click){
+		case ANY: return true;
+		case LEFT: return leftClick;
+		case RIGHT: return !leftClick;
+		}
+		return false;
 	}
 
 }
