@@ -158,7 +158,6 @@ public class EventManager {
 		Bukkit.getServer().getPluginManager().callEvent(pe);
 	}
 
-
 	// Button Event
 	public static boolean raiseButtonEvent (PlayerInteractEvent event){
 		if (!((event.getAction()==Action.RIGHT_CLICK_BLOCK)||(event.getAction()==Action.LEFT_CLICK_BLOCK))) return false;
@@ -172,8 +171,6 @@ public class EventManager {
 		Bukkit.getServer().getPluginManager().callEvent(be);
 		return be.isCancelled();
 	}
-
-
 
 	public static boolean raiseSignEvent(Player player, String[] lines, Location loc, boolean leftClick) {
 		for (Activator act : Activators.getActivators(ActivatorType.SIGN)){

@@ -304,14 +304,10 @@ public class RAListener implements Listener{
 		EventManager.raiseSignEvent(event.getPlayer(), sign.getLines(),event.getClickedBlock().getLocation(), event.getAction() == Action.LEFT_CLICK_BLOCK);
 	}
 
-
-
-
 	@EventHandler(priority=EventPriority.NORMAL)
 	public void onPlayerInteract (PlayerInteractEvent event){
 		EventManager.raiseItemClickEvent(event);
 		if (EventManager.raiseButtonEvent(event)) event.setCancelled(true);
-		//if (EventManager.raisePlateEvent(event)) event.setCancelled(true);
 		EventManager.raisePlateEvent(event);
 		if (EventManager.raiseLeverEvent(event)) event.setCancelled(true);
 		if (EventManager.raiseDoorEvent(event)) event.setCancelled(true);
