@@ -40,7 +40,7 @@ public class FlagItem extends Flag{
         switch (flagType){
         case 0: 
         	Variables.setTempVar("item_amount", p.getItemInHand() == null ? "0" : String.valueOf(p.getItemInHand().getAmount()));
-        	ItemUtil.compareItemStr(p.getItemInHand(), itemStr);
+        	return ItemUtil.compareItemStr(p.getItemInHand(), itemStr);
         case 1: return ItemUtil.hasItemInInventory(p, itemStr);
         case 2: return isItemWeared (p,itemStr); 
         }

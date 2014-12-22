@@ -65,7 +65,7 @@ public class ActionSignSet extends Action{
 				int num = Integer.parseInt(cl)-1;
 				if (num<0) continue;
 				if (num>=4) continue;
-				sign.setLine(0, "");
+				sign.setLine(num, "");
 			}
 		}
 		sign.update(true);

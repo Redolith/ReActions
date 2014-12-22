@@ -210,13 +210,6 @@ public class MobSpawn {
         if (health>0){
         	if (health>BukkitCompatibilityFix.getEntityHealth(e)) BukkitCompatibilityFix.setEntityMaxHealth(e, health);
         	BukkitCompatibilityFix.setEntityHealth(e, health);
-        	/*
-            try {
-                e.setMaxHealth(health);
-                e.setHealth(health);
-            } catch (Throwable ex){
-                ReActions.util.logOnce("mob_health", "Failed to set mob health. This feature is not compatible with CB 1.5.2 (and older)...");
-            } */
         }
     }
 
