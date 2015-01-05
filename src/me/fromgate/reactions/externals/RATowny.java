@@ -39,97 +39,107 @@ import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownyUniverse;
 
 public class RATowny {
-    private static Towny towny = null;
-    private static boolean connected = false;
+	private static Towny towny = null;
+	private static boolean connected = false;
 
-    public static boolean init(){
-        connected = connectToTowny();
-        if (connected) ReActions.util.log("Towny found");
-        return connected;
-    }
-    private static boolean connectToTowny(){
-        Plugin twn = Bukkit.getServer().getPluginManager().getPlugin("Towny");
-        if (twn == null) return false;
-        if (!(twn instanceof Towny)) return false;
-        towny = (Towny) twn;
-        return true;
-    }
-
-
-    public static void kickFromTown (Player p){
-        if (connected){
-            Resident rsd = towny.getTownyUniverse().getResidentMap().get(p.getName());
-
-            if (rsd.hasTown()){
-                Town town;
-                try {
-                    town = rsd.getTown();
-                    if (!rsd.isMayor())	townRemoveResident (town,rsd);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
+	public static boolean init(){
+		connected = connectToTowny();
+		if (connected) ReActions.util.log("Towny found");
+		return connected;
+	}
+	private static boolean connectToTowny(){
+		Plugin twn = Bukkit.getServer().getPluginManager().getPlugin("Towny");
+		if (twn == null) return false;
+		if (!(twn instanceof Towny)) return false;
+		towny = (Towny) twn;
+		return true;
+	}
 
 
-    public static void townRemoveResident (Town town, Resident resident) throws NotRegisteredException, EmptyTownException {
-        if (connected){
-            town.removeResident(resident);
-            towny.deleteCache(resident.getName());
-            TownyUniverse.getDataSource().saveResident(resident);
-            TownyUniverse.getDataSource().saveTown(town);
-            towny.getTownyUniverse().setChangedNotify(TOWN_REMOVE_RESIDENT);
-            Bukkit.getPluginManager().callEvent(new TownRemoveResidentEvent (resident, town));
-        }
-    }
+	public static void kickFromTown (Player p){
+		if (connected){
+			Resident rsd = towny.getTownyUniverse().getResidentMap().get(p.getName());
+
+			if (rsd.hasTown()){
+				Town town;
+				try {
+					town = rsd.getTown();
+					if (!rsd.isMayor())	townRemoveResident (town,rsd);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 
 
-    public static void addToTown (Player p, String town){
-        if (connected){
-            Town newtown = towny.getTownyUniverse().getTownsMap().get(town.toLowerCase());
-            if (newtown != null){
-                Resident rsd = towny.getTownyUniverse().getResidentMap().get(p.getName()); 
-                if (rsd.hasTown()){
-                    if (rsd.isMayor()) return;
-
-                    Town twn = null;
-                    try {
-                        twn = rsd.getTown();
-                        townRemoveResident  (twn, rsd);
-                    } catch (Exception e){
-                        e.printStackTrace();
-                    }
-                }
-                if (!rsd.hasTown()){
-                    try {
-                        newtown.addResident(rsd);
-                        towny.deleteCache(rsd.getName());
-                        TownyUniverse.getDataSource().saveResident(rsd);
-                        TownyUniverse.getDataSource().saveTown(newtown);
-                        towny.getTownyUniverse().setChangedNotify(TOWN_ADD_RESIDENT);
-                        Bukkit.getPluginManager().callEvent(new TownAddResidentEvent (rsd, newtown));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }					
-                }
-            }
-        }
-    }
-
-    public static boolean playerInTown(Player p, String townname){
-        if (!connected) return false;
-        Resident rsd = towny.getTownyUniverse().getResidentMap().get(p.getName());
-        if (!rsd.hasTown()||townname.isEmpty()) return false;
-        try {
-            return (townname.equalsIgnoreCase(rsd.getTown().getName()));
-        } catch (NotRegisteredException e) {
-            return false;
-        }
-    }
+	public static void townRemoveResident (Town town, Resident resident) throws NotRegisteredException, EmptyTownException {
+		if (connected){
+			town.removeResident(resident);
+			towny.deleteCache(resident.getName());
+			TownyUniverse.getDataSource().saveResident(resident);
+			TownyUniverse.getDataSource().saveTown(town);
+			towny.getTownyUniverse().setChangedNotify(TOWN_REMOVE_RESIDENT);
+			Bukkit.getPluginManager().callEvent(new TownRemoveResidentEvent (resident, town));
+		}
+	}
 
 
-    public static boolean isConnected() {
-        return connected;
-    }
+	public static void addToTown (Player p, String town){
+		if (connected){
+			Town newtown = towny.getTownyUniverse().getTownsMap().get(town.toLowerCase());
+			if (newtown != null){
+				Resident rsd = towny.getTownyUniverse().getResidentMap().get(p.getName()); 
+				if (rsd.hasTown()){
+					if (rsd.isMayor()) return;
+
+					Town twn = null;
+					try {
+						twn = rsd.getTown();
+						townRemoveResident  (twn, rsd);
+					} catch (Exception e){
+						e.printStackTrace();
+					}
+				}
+				if (!rsd.hasTown()){
+					try {
+						newtown.addResident(rsd);
+						towny.deleteCache(rsd.getName());
+						TownyUniverse.getDataSource().saveResident(rsd);
+						TownyUniverse.getDataSource().saveTown(newtown);
+						towny.getTownyUniverse().setChangedNotify(TOWN_ADD_RESIDENT);
+						Bukkit.getPluginManager().callEvent(new TownAddResidentEvent (rsd, newtown));
+					} catch (Exception e) {
+						e.printStackTrace();
+					}					
+				}
+			}
+		}
+	}
+
+	public static boolean playerInTown(Player p, String townname){
+		if (!connected) return false;
+		Resident rsd = towny.getTownyUniverse().getResidentMap().get(p.getName());
+		if (!rsd.hasTown()||townname.isEmpty()) return false;
+		try {
+			return (townname.equalsIgnoreCase(rsd.getTown().getName()));
+		} catch (NotRegisteredException e) {
+			return false;
+		}
+	}
+
+	public static String getPlayerTown (Player player){
+		if (!connected) return "";
+		Resident rsd = towny.getTownyUniverse().getResidentMap().get(player.getName());
+		if (!rsd.hasTown()) return "";
+		try {
+			return rsd.getTown().getName();
+		} catch (Exception e) {
+			return "";
+		}
+	}
+
+	public static boolean isConnected() {
+		return connected;
+	}
 }

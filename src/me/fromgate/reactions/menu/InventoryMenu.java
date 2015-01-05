@@ -14,19 +14,18 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class InventoryMenu implements Listener{
-	private static Map<Inventory,List<String>> activeMenus = new HashMap<Inventory,List<String>>();
-
+	private static Map<Integer,List<String>> activeMenus = new HashMap<Integer,List<String>>();
 	private static Map<String,VirtualInventory> menu = new HashMap<String,VirtualInventory>();
-
-
 
 	public static void init(){
 		load();
@@ -146,7 +145,7 @@ public class InventoryMenu implements Listener{
 	public static boolean createAndOpenInventory(Player player, Map<String,String> params){
 		Inventory inv = getInventory (params);
 		if (inv == null) return false;
-		activeMenus.put(inv, getActivators(params));
+		activeMenus.put(getInventoryCode (player, inv), getActivators(params));
 		openInventory (player,inv);
 		return true;
 	}
@@ -156,22 +155,23 @@ public class InventoryMenu implements Listener{
 			@Override
 			public void run() {
 				if (player.isOnline())	player.openInventory(inv);
-				else activeMenus.remove(inv);
+				else activeMenus.remove(getInventoryCode(player, inv));
 			}
 		}, 1);
 	}
 
 	public static boolean isMenu (Inventory inventory){
-		return activeMenus.containsKey(inventory);
+		return activeMenus.containsKey(getInventoryCode (inventory));
 	}
-
+	
 	public static void removeInventory (Inventory inv){
-		if (activeMenus.containsKey(inv)) activeMenus.remove(inv);
+		int code = getInventoryCode (inv);
+		if (activeMenus.containsKey(code)) activeMenus.remove(code);
 	}
 
 
 	public static List<String> getActivators (Inventory inventory){
-		if (isMenu(inventory)) return activeMenus.get(inventory);
+		if (isMenu(inventory)) return activeMenus.get(getInventoryCode(inventory));
 		return new ArrayList<String>();
 	}
 
@@ -233,5 +233,41 @@ public class InventoryMenu implements Listener{
 		String itemTypeData = item.getType().name()+(item.getDurability() == 0 ? "" : ":"+item.getDurability())+(item.getAmount()==1 ? "" : "*"+item.getAmount());
 		return ChatColor.stripColor(returnStr.isEmpty() ? itemTypeData : returnStr+"["+itemTypeData+"]");
 	}
-
+	
+	public static int getInventoryCode (InventoryClickEvent event){
+		if (event.getViewers().size()!=1) return -1;
+		HumanEntity human = event.getViewers().get(0);
+		return getInventoryCode ((Player) human, event.getInventory());
+	}
+	public static int getInventoryCode (Inventory inv){
+		if (inv.getViewers().size()!=1) return -1;
+		HumanEntity human = inv.getViewers().get(0);
+		return getInventoryCode ((Player) human, inv);
+	}
+	
+	public static int getInventoryCode (Player player, Inventory inv){
+		if (player == null || inv == null) return -1;
+		StringBuilder sb = new StringBuilder();
+		sb.append(player.getName());
+		sb.append(inv.getTitle());
+		for (ItemStack i: inv.getContents()){
+			String iStr = "emptyslot";
+			if (i!=null&&i.getType()!=Material.AIR){
+				if (i.hasItemMeta()){
+					ItemMeta im = i.getItemMeta();
+					if (im.hasDisplayName()) sb.append(im.getDisplayName());
+					if (im.hasLore())
+						for (String str : im.getLore())
+							sb.append(str);
+				}
+				sb.append(i.getType().name());
+				sb.append(":");
+				sb.append(i.getDurability());
+				sb.append(":");
+				sb.append(i.getAmount());
+			}
+			sb.append(iStr);
+		}
+		return sb.toString().hashCode(); 
+	}
 }

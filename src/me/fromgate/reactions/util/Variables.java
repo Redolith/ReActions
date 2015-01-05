@@ -26,11 +26,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.event.EventManager;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -44,11 +42,11 @@ public class Variables {
 	private static HashMap<String,String> tempvars = new HashMap<String,String>();
 
 	private static String varId(Player player, String var){
-		return player == null ? "general."+var : player.getName()+"."+var;
+		return (player == null ? "general."+var : player.getName()+"."+var).toLowerCase();
 	}
 
 	private static String varId(String player, String var){
-		return player.isEmpty() ? "general."+var : player+"."+var;
+		return (player.isEmpty() ? "general."+var : player+"."+var).toLowerCase();
 	}
 
 	public static void setVar (String player, String var, String value){
@@ -64,16 +62,6 @@ public class Variables {
 		save();
 		EventManager.raiseVariableEvent(var, player ==null ? "" : player.getName(), value, prevVal);
 	}
-
-	/*public static boolean removeVar(String playerName, String id){
-		//String prevVal = Variables.getVar(playerName, id, "");
-		String varId = varId(playerName, id);
-		if (!vars.containsKey(varId)) return false;
-		vars.remove(varId);
-		//save();
-		//EventManager.raiseVariableEvent(id, playerName, "", prevVal);
-		return true;
-	}*/
 
 	public static void clearVar (Player player, String var){
 		String prevVal = Variables.getVar(player, var, "");

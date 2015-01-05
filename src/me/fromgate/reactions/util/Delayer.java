@@ -65,7 +65,7 @@ public class Delayer {
                 if (!key.contains(".")) continue;
                 long delaytime = cfg.getLong(key);
                 if (delaytime>System.currentTimeMillis())
-                    delays.put(key, delaytime);
+                    delays.put(key.toLowerCase(), delaytime);
             }
         } catch (Exception e){
         }
@@ -73,7 +73,7 @@ public class Delayer {
 
 
     public static boolean checkDelay (String id){
-        String idd = id.contains(".") ? id : "global."+id;
+        String idd = (id.contains(".") ? id : "global."+id).toLowerCase();
         if (!delays.containsKey(idd)) return true;
         return (delays.get(idd)<System.currentTimeMillis());
     }
@@ -87,7 +87,7 @@ public class Delayer {
     }
 
     public static void setDelay(String id, Long delayTime, boolean save){
-        delays.put(id.contains(".") ? id : "global."+id, System.currentTimeMillis()+delayTime);
+        delays.put((id.contains(".") ? id : "global."+id).toLowerCase(), System.currentTimeMillis()+delayTime);
         if (save) save();
     }
 
