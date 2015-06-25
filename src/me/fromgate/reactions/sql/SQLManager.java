@@ -22,17 +22,15 @@
 
 package me.fromgate.reactions.sql;
 
+import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.Variables;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
-
-import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.util.ParamUtil;
-import me.fromgate.reactions.util.Variables;
 
 public class SQLManager {
 	private static boolean enabled = false;
@@ -80,34 +78,34 @@ public class SQLManager {
 
 
 
-	public static void setQueryToVar (String player, String var, String query, int column, Map<String,String> params){
+	public static void setQueryToVar (String player, String var, String query, int column, Param params){
 		if (!enabled) return;
 		String result = SQLManager.executeSelect(query, column,params);
 		Variables.setVar (player, var, result);
 	}
 
 
-	public static String executeSelect (String query,Map<String,String> params){
+	public static String executeSelect (String query, Param params){
 		return executeSelect(query,-1,params);
 	}
 
-	public static boolean compareSelect (String value, String query, int column, Map<String,String> params){
+	public static boolean compareSelect (String value, String query, int column, Param params){
 		String result = executeSelect(query,column, params);
 		if (ReActions.util.isInteger(result,value)) return (Integer.parseInt(result)==Integer.parseInt(value));
 		return result.equalsIgnoreCase(value);
 	}
 
 	public static Connection connectToMySQL(){
-		return connectToMySQL (new HashMap<String,String>());
+		return connectToMySQL (new Param());
 	}
 	// server port db user password codepage
-	public static Connection connectToMySQL(Map<String,String> params){
-		String сAddress = ParamUtil.getParam(params, "server", serverAdress);
-		String cPort = ParamUtil.getParam(params, "port", port);
-		String cDataBase = ParamUtil.getParam(params, "db", dataBase);
-		String cUser = ParamUtil.getParam(params, "user", userName);
-		String cPassword = ParamUtil.getParam(params, "password", password);
-		String cCodepage = ParamUtil.getParam(params, "codepage", codepage);
+	public static Connection connectToMySQL(Param params){
+		String сAddress = params.getParam("server", serverAdress);
+		String cPort = params.getParam("port", port);
+		String cDataBase = params.getParam("db", dataBase);
+		String cUser = params.getParam("user", userName);
+		String cPassword = params.getParam("password", password);
+		String cCodepage = params.getParam("codepage", codepage);
 		Properties prop = new Properties();
 		if (!cCodepage.isEmpty()){
 			prop.setProperty("useUnicode", "true");
@@ -126,7 +124,7 @@ public class SQLManager {
 	}
 	
 
-	public static String executeSelect (String query, int column, Map<String,String> params){
+	public static String executeSelect (String query, int column, Param params){
 		if (!enabled) return "";
 		
 		Statement selectStmt = null;
@@ -154,7 +152,7 @@ public class SQLManager {
 	}
 
 
-	public static boolean executeUpdate (String query, Map<String,String> params) {
+	public static boolean executeUpdate (String query, Param params) {
 		if (!enabled) return false;
 		Connection connection = connectToMySQL(params);
 		if (connection == null) return false;

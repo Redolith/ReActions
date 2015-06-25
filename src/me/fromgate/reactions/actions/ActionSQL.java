@@ -22,11 +22,9 @@
 
 package me.fromgate.reactions.actions;
 
-import java.util.Map;
-
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.sql.SQLManager;
-import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Variables;
 
 import org.bukkit.entity.Player;
@@ -39,11 +37,11 @@ public class ActionSQL extends Action {
 	}
 
 	@Override
-	public boolean execute(Player p, Map<String, String> params) {
-		String playerName = ParamUtil.getParam(params, "player", "");
-		String varName = ParamUtil.getParam(params, "variable", "");
-		int column = ParamUtil.getParam(params, "column", 1);
-		String query = ParamUtil.getParam(params, "query", "").trim();
+	public boolean execute(Player p, Param params) {
+		String playerName = params.getParam("player", "");
+		String varName = params.getParam("variable", "");
+		int column = params.getParam("column", 1);
+		String query = params.getParam("query", "").trim();
 		switch (sqlType){
 		case 0: // SELECT to variable
 			if (query.isEmpty()) return false;
@@ -55,7 +53,7 @@ public class ActionSQL extends Action {
 			Variables.setVar(playerName, varName, SQLManager.executeSelect(query, column,params));
 			break;
 		case 1: // INSERT
-			query = ParamUtil.getParam(params, "query", ParamUtil.getParam(params,"param-line","")).trim();
+			query = params.getParam("query", params.getParam("param-line","")).trim();
 			if (query.isEmpty()) return false;
 			if (!query.toLowerCase().startsWith("insert")) {
 				ReActions.util.logOnce("needupdate"+query, "You need to use only \"INSERT\" query in SQL_INSERT action. Query: "+query);
@@ -64,7 +62,7 @@ public class ActionSQL extends Action {
 			SQLManager.executeUpdate(query,params);
 			break;
 		case 2: // UPDATE
-			query = ParamUtil.getParam(params, "query", ParamUtil.getParam(params,"param-line","")).trim();
+			query = params.getParam("query", params.getParam("param-line","")).trim();
 			if (query.isEmpty()) return false;
 			if (!query.toLowerCase().startsWith("update")) {
 				ReActions.util.logOnce("needupdate"+query, "You need to use only \"UPDATE\" query in SQL_UPDATE action. Query: "+query);
@@ -73,7 +71,7 @@ public class ActionSQL extends Action {
 			SQLManager.executeUpdate(query,params);
 			break;
 		case 3: // DELETE
-			query = ParamUtil.getParam(params, "query", ParamUtil.getParam(params,"param-line","")).trim();
+			query = params.getParam("query", params.getParam("param-line","")).trim();
 			if (query.isEmpty()) return false;
 			if (!query.toLowerCase().startsWith("delete")) {
 				ReActions.util.logOnce("needdelete"+query, "You need to use only \"DELETE\" query in SQL_DELETE action. Query: "+query);

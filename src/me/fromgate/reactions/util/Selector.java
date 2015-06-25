@@ -22,10 +22,11 @@
 
 package me.fromgate.reactions.util;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Selector {
     private static Map<String, Location> locs = new HashMap<String,Location>(); 
@@ -38,7 +39,7 @@ public class Selector {
     }
     
     public static Location getSelectedLocation (Player p){
-        if (locs.containsKey(p.getName())) return locs.get(p.getName());
+        if (p!=null&&locs.containsKey(p.getName())) return locs.get(p.getName());
         return null;
     }
     

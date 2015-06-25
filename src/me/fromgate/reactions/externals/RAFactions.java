@@ -22,15 +22,14 @@
 
 package me.fromgate.reactions.externals;
 
-import com.massivecraft.factions.entity.BoardColls;
+import com.massivecraft.factions.entity.BoardColl;
 import com.massivecraft.factions.entity.Faction;
-import com.massivecraft.factions.entity.FactionColls;
-import com.massivecraft.factions.entity.UPlayer;
-import com.massivecraft.mcore.ps.PS;
+import com.massivecraft.factions.entity.FactionColl;
+import com.massivecraft.factions.entity.MPlayer;
+import com.massivecraft.massivecore.ps.PS;
 import me.fromgate.reactions.ReActions;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import java.util.ArrayList;
@@ -76,7 +75,7 @@ public class RAFactions {
 
 	public static String getPlayerFaction(Player player){
 		if (!enabled) return "";
-		UPlayer uplayer = UPlayer.get(player);
+		MPlayer uplayer = MPlayer.get(player);
 		return uplayer.getFaction().isDefault() ?  "default" : uplayer.getFaction().getName();
 	}
 
@@ -91,7 +90,7 @@ public class RAFactions {
 		if (!enabled) return players;
 		Faction faction = getFactionByName (factionName);
 		if (faction==null) return players;
-		for (UPlayer uplayer: faction.getUPlayers()){
+		for (MPlayer uplayer: faction.getMPlayers()){
 			if (uplayer.isOffline()) continue;
 			players.add(uplayer.getPlayer());
 		}
@@ -99,26 +98,27 @@ public class RAFactions {
 	}
 
 	public static Faction getFactionByName(String factionName){
-		for (World world : Bukkit.getWorlds()){
-			for (Faction faction : FactionColls.get().getForWorld(world.getName()).getAll()){
-				if (faction.isDefault()&&factionName.equalsIgnoreCase("default")) return faction;
-				if (faction.getName().equalsIgnoreCase(factionName)) return faction;
-			}
+		//for (World world : Bukkit.getWorlds()){
+		//for (Faction faction : FactionColl.get().getForWorld(world.getName()).getAll()){
+		for (Faction faction : FactionColl.get().getAll()){
+			if (faction.isDefault()&&factionName.equalsIgnoreCase("default")) return faction;
+			if (faction.getName().equalsIgnoreCase(factionName)) return faction;
 		}
+		//}
 		return null;
 	}
 
 	public static String getFactionAt(Location loc) {
-		return BoardColls.get().getFactionAt(PS.valueOf(loc)).getName();
+		return BoardColl.get().getFactionAt(PS.valueOf(loc)).getName();
 	}
 
 	public static String getRelationWith(Player player, String withFactionStr) {
-		UPlayer uplayer = UPlayer.get(player);
+		MPlayer uplayer = MPlayer.get(player);
 		return uplayer.getRelationTo(getFactionByName(withFactionStr)).toString();
 	}
 
 	public static void addPower(Player player, double value){
-		UPlayer uplayer = UPlayer.get(player);
+		MPlayer uplayer = MPlayer.get(player);
 		double currentPower = uplayer.getPower();
 		double newPower = min(uplayer.getPowerMax(), max(currentPower + value, uplayer.getPowerMin()));
 		uplayer.setPower(newPower);

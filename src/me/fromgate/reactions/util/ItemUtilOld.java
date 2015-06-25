@@ -40,7 +40,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class ItemUtil {
+public class ItemUtilOld {
     private static JavaPlugin plugin;
     private static Random random;
 
@@ -123,7 +123,6 @@ public class ItemUtil {
             if (ec.isEmpty()) continue;
             Color clr = colorByName (ec);
             if (clr != null){
-                //if (isIdInList(item.getTypeId(), "298,299,300,301")){
                 if (item.hasItemMeta()&&(item.getItemMeta() instanceof LeatherArmorMeta)) {
                     LeatherArmorMeta meta = (LeatherArmorMeta) i.getItemMeta();
                     meta.setColor(clr);

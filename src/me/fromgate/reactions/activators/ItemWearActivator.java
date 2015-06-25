@@ -3,9 +3,8 @@ package me.fromgate.reactions.activators;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.ItemWearEvent;
-import me.fromgate.reactions.util.ItemUtil;
-import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.Variables;
+import me.fromgate.reactions.util.item.ItemUtil;
 
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -33,7 +32,7 @@ public class ItemWearActivator extends Activator {
         if (event instanceof ItemWearEvent){
             ItemWearEvent iw  = (ItemWearEvent) event;
             if (iw.isItemWeared(this.item)) {
-            	Variables.setTempVar("item", Util.itemToString(iw.getFoundedItem(this.item)));
+            	Variables.setTempVar("item", ItemUtil.itemToString(iw.getFoundedItem(this.item)));
             	return Actions.executeActivator(iw.getPlayer(), this);
                 }
         }

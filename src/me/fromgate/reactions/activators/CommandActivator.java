@@ -1,29 +1,30 @@
 package me.fromgate.reactions.activators;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.CommandEvent;
-import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Variables;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class CommandActivator extends Activator {
 
-	boolean checkExact=false;
+	boolean checkExact;
 	String command;
-	Map<String,String> arguments = new HashMap<String,String>();
-
+	Param arguments = new Param();
+	boolean override;
+	boolean useRegex;
 
 	public void init(){
-		Map<String,String> params = ParamUtil.parseParams(command);
-		if (ParamUtil.isParamExists(params, "cmd")){
+		Param params = new Param(command);
+		if (params.isParamsExists("cmd")){
 			checkExact = true;
 			arguments = params;
 		}
@@ -35,47 +36,75 @@ public class CommandActivator extends Activator {
 		init();
 	}
 
-	public CommandActivator(String name, String command){
+	public CommandActivator(String name, String command, boolean override,  boolean useRegex){
 		super (name,"activators");
 		this.command = command;
+		this.override = override;
+		this.useRegex = useRegex;
 		init();
 	}
 
 	
-	public boolean commandMaches(String line){
-		if (!this.checkExact) return (line.toLowerCase().startsWith(command.toLowerCase()));
+	private boolean checkLine (String line){
+		if (this.useRegex) return line.matches(command);
+		return line.toLowerCase().startsWith(command.toLowerCase());
+	}
+	
+	public boolean commandMatches(String line){
+		if (!this.checkExact)	return checkLine(line);
 		String [] cmdLn = line.replaceFirst("/", "").split(" ");
 		if (cmdLn.length==0) return false;
 		Set<String> keys = new HashSet<String>();
 		for (int i =0; i<cmdLn.length;i++) {
 			String key = (i==0 ? "cmd" : "arg"+i);
 			keys.add(key);
-			if (!arguments.containsKey(key)) return false;
-			if (arguments.get(key).equalsIgnoreCase("*")) continue;
-			if (!arguments.get(key).equalsIgnoreCase(cmdLn[i])) return false;
+			if (!arguments.hasAnyParam(key)) return false;
+			if (arguments.getParam(key).equalsIgnoreCase("*")) continue;
+			if (!arguments.getParam(key).equalsIgnoreCase(cmdLn[i])) return false;
 		}
 		return arguments.keySet().equals(keys);
 	}
 
-	private void setTempVars(String [] args){
+	private void setTempVars(String command, String [] args){
+		String argStr = command.replaceAll(new StringBuilder("^").append(args[0]).append(" ").toString(), "");
+		Variables.setTempVar("args", argStr);
+		String argsLeft = command.replaceAll("(\\S+ )+{"+args.length+"}", "");
+		Variables.setTempVar("argsleft", argsLeft);
 		if (args.length>0){
 			for (int i=0; i<args.length; i++)
-				Variables.setTempVar("arg"+Integer.toString(i), args[i]);
+				Variables.setTempVar(new StringBuilder("arg").append(i).toString(), args[i]); 
 		}
+		
+		int count = 0;
+		while (argStr.indexOf(" ")>0){
+			count++;
+			argStr=argStr.substring(argStr.indexOf(" ")+1);
+			Variables.setTempVar("args"+count, argStr);
+			Variables.setTempVar("argscount", Integer.toString(count));
+		}
+		
 	}
 	
 	@Override
 	public boolean activate(Event event) {
 		if (!(event instanceof CommandEvent)) return false;
 		CommandEvent ce = (CommandEvent) event;
-		if (!commandMaches(ce.getCommand())) return false;
-		setTempVars(ce.getArgs());
+		
+		if (ce.isParentCanceled()&&!this.override) return false;
+		
+		
+		if (!commandMatches(ce.getCommand())) return false;
+		
+		
+		
+		setTempVars(ce.getCommand(), ce.getArgs());
+		
 		return Actions.executeActivator(ce.getPlayer(), this);
 	}
 
 	public String getCommand(){
 		if (this.checkExact){
-			return ParamUtil.getParam(arguments, "cmd", "");
+			return arguments.getParam("cmd", "");
 		} else {
 			String[] cmd = this.command.split(" ");
 			if (cmd.length==0) return "";
@@ -103,18 +132,21 @@ public class CommandActivator extends Activator {
 
 	@Override
 	public void save(String root, YamlConfiguration cfg) {
+		cfg.set(root+".override", this.override);
+		cfg.set(root+".regex",this.useRegex);
 		cfg.set(root+".command",command);
 	}
 
 	@Override
 	public void load(String root, YamlConfiguration cfg) {
-		command = cfg.getString(root+".command"); 
+		this.override = cfg.getBoolean(root+".override",true);
+		this.useRegex = cfg.getBoolean(root+".regex",false);
+		this.command = cfg.getString(root+".command");
 	}
 
 	@Override
 	public ActivatorType getType() {
 		return ActivatorType.COMMAND;
 	}
-
 
 }

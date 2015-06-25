@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2015, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -23,6 +23,7 @@
 package me.fromgate.reactions.flags;
 
 import me.fromgate.reactions.util.Delayer;
+import me.fromgate.reactions.util.Param;
 
 import org.bukkit.entity.Player;
 
@@ -35,8 +36,23 @@ public class FlagDelay extends Flag{
     
     @Override
     public boolean checkFlag(Player p, String param) {
-        if (globalDelay) return Delayer.checkDelay(param);
-        else return Delayer.checkPersonalDelay(p,param);
+    	String playerName = this.globalDelay ? "" : (p!=null ? p.getName() : "");
+    	long updateTime = 0;
+    	String id = param;
+    	
+    	Param params = new Param (param);
+    	if (params.isParamsExists("id")){
+    		id = params.getParam(id);
+    		updateTime = u().parseTime(params.getParam("set-delay","0"));
+    		playerName  = params.getParam(playerName);
+    	}
+    	boolean result = false;
+    	if (playerName.isEmpty()) result = Delayer.checkDelay(id,updateTime);
+        else result =Delayer.checkPersonalDelay(playerName,id,updateTime);
+    	
+    	Delayer.setTempPlaceholders(playerName,id);
+    	
+    	return result;
     }
 
 }

@@ -22,7 +22,7 @@
 
 package me.fromgate.reactions.flags;
 
-import me.fromgate.reactions.externals.wgbridge.RAWorldGuard;
+import me.fromgate.reactions.externals.RAWorldGuard;
 
 import org.bukkit.entity.Player;
 
@@ -41,7 +41,7 @@ public class FlagRegion extends Flag {
         case 0: return RAWorldGuard.isPlayerInRegion(p, param);
         case 1: return playersInRegion(param);
         case 2: return RAWorldGuard.isPlayerIsMember(p, param);
-        case 3:  return RAWorldGuard.isPlayerIsOwner(p, param);
+        case 3: return RAWorldGuard.isPlayerIsOwner(p, param);
         }
         return false;
     }

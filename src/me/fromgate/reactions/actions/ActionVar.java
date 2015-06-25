@@ -22,9 +22,7 @@
 
 package me.fromgate.reactions.actions;
 
-import java.util.Map;
-
-import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Variables;
 
 import org.bukkit.entity.Player;
@@ -39,24 +37,23 @@ public class ActionVar extends Action  {
     }
 
     @Override
-    public boolean execute(Player p, Map<String, String> params) {
+    public boolean execute(Player p, Param params) {
         String player = p == null ? "" : p.getName();
         String var;
         String value;
         
-        
-        if (ParamUtil.isParamExists(params, "id")){
-            var = ParamUtil.getParam(params, "id", "");
-            value = ParamUtil.getParam(params, "value", "");
-            player = ParamUtil.getParam(params, "player", player);
+        if (params.isParamsExists("id")){
+            var = params.getParam("id", "");
+            value = params.getParam("value", "");
+            player = params.getParam("player", player);
             if (var.isEmpty()) return false;
         } else {
-            String [] ln = ParamUtil.getParam(params, "param-line", "").split("/",2);
+            String [] ln = params.getParam("param-line", "").split("/",2);
             if (ln.length == 0) return false;
             var = ln[0];
             value = (ln.length>1) ? ln[1] : "";
         }
-
+       
         if (!this.personalVar) player = "";
         else if (player.isEmpty()) return false;
         switch (this.actType){

@@ -22,6 +22,17 @@
 
 package me.fromgate.reactions.timer;
 
+import me.fromgate.reactions.RAUtil;
+import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.event.EventManager;
+import me.fromgate.reactions.util.Param;
+
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.scheduler.BukkitTask;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,17 +41,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import me.fromgate.reactions.RAUtil;
-import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.event.EventManager;
-import me.fromgate.reactions.util.ParamUtil;
-
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.scheduler.BukkitTask;
 
 public class Timers {
 	/*
@@ -89,7 +89,7 @@ public class Timers {
 	private static Set<String> timersIngame;
 
 
-	public static boolean addTimer(String name, Map<String,String> params){
+	public static boolean addTimer(String name, Param params){
 		return addTimer (null,name,params,false);
 	}
 
@@ -116,13 +116,13 @@ public class Timers {
 		return u().returnMSG(true, sender, "msg_timerremoved",name);
 	}
 
-	public static boolean addTimer(CommandSender sender, String name, Map<String,String> params,boolean save){
+	public static boolean addTimer(CommandSender sender, String name, Param params,boolean save){
 		if (name.isEmpty()) return false;
 		if (timers.containsKey(name)) return u().returnMSG(false, sender, "msg_timerexist",name);
 		if (params.isEmpty()) return u().returnMSG(false, sender, "msg_timerneedparams");
-		if (ParamUtil.getParam(params, "activator", "").isEmpty()) return u().returnMSG(false, sender, "msg_timerneedactivator");
-		if (!ParamUtil.isParamExists(params, "timer-type")) return u().returnMSG(false, sender, "msg_timerneedtype");
-		if (!ParamUtil.isParamExists(params, "time")) return u().returnMSG(false, sender, "msg_timerneedtime");
+		if (params.getParam("activator", "").isEmpty()) return u().returnMSG(false, sender, "msg_timerneedactivator");
+		if (!params.isParamsExists("timer-type")) return u().returnMSG(false, sender, "msg_timerneedtype");
+		if (!params.isParamsExists("time")) return u().returnMSG(false, sender, "msg_timerneedtime");
 		Timer timer = new Timer (params);
 		timers.put(name, timer);
 		updateIngameTimers();
@@ -227,11 +227,12 @@ public class Timers {
 			for (String timerId : cs.getKeys(false)){
 				ConfigurationSection csParams = cs.getConfigurationSection(timerId);
 				if (csParams==null) continue;
-				Map<String,String> params = new HashMap<String,String>();
-				params.put("timer-type", timerType);
+				// Map<String,String> params = new HashMap<String,String>();
+				Param params = new Param(); 
+				params.set("timer-type", timerType);
 				for (String param : csParams.getKeys(true)){
 					if (!csParams.isString(param)) continue;
-					params.put(param, csParams.getString(param));
+					params.set(param, csParams.getString(param));
 				}
 				addTimer(timerId, params);				
 			}
@@ -244,14 +245,14 @@ public class Timers {
 		if (f.exists()) f.delete();
 		for (String name : timers.keySet()){
 			Timer timer = timers.get(name);
-			Map<String,String> params = timer.getParams();
+			Param params = timer.getParams();
 			if (params.isEmpty()) continue;
 			String timerType = timer.isIngameTimer() ? "INGAME" : "SERVER";
 			String root = timerType+"."+name+".";
 			for (String key : params.keySet()){
 				if (key.equalsIgnoreCase("timer-type")) continue;
 				if (key.equalsIgnoreCase("param-line")) continue;
-				cfg.set(root+key, key.equalsIgnoreCase("time") ? params.get(key).replace("_", " ") : params.get(key));
+				cfg.set(root+key, key.equalsIgnoreCase("time") ? params.getParam(key).replace("_", " ") : params.getParam(key));
 			}
 		}
 		try {

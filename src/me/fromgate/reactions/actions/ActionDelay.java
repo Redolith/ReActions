@@ -22,47 +22,51 @@
 
 package me.fromgate.reactions.actions;
 
-import java.util.Map;
-import me.fromgate.reactions.util.ParamUtil;
 import me.fromgate.reactions.util.Delayer;
+import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.Variables;
+
 import org.bukkit.entity.Player;
 
 public class ActionDelay extends Action {
-	
-	boolean personal;
-	
-	public ActionDelay (boolean personalDelay){
-		this.personal = personalDelay;
+
+	boolean globalDelay;
+
+	public ActionDelay (boolean globalDelay){
+		this.globalDelay = globalDelay;
 	}
 
-    @Override
-    public boolean execute(Player p, Map<String, String> params) {
-    	String timeStr = "";
-    	String variableId = p.getName();
-    	
-    	if (ParamUtil.isParamExists(params, "id","delay")||ParamUtil.isParamExists(params, "id","time")){
-    		variableId = ParamUtil.getParam(params, "id", "");
-    		timeStr = ParamUtil.getParam(params, "delay", ParamUtil.getParam(params, "time", ""));
-    	} else {
-    		String oldFormat = ParamUtil.getParam(params, "param-line", "");
-            if (oldFormat.contains("/")){
-                String[] m = oldFormat.split("/");
-                if (m.length>=2){
-                    timeStr = m[0];
-                    variableId = m[1];
-                }
-            } else timeStr = oldFormat;
-    	}
-    	if (timeStr.isEmpty()) return false;
-    	if (variableId.isEmpty()) return false;
-    	setDelay(p,variableId,u().parseTime(timeStr));
-        setMessageParam(timeStr);
-        return true;
-    }
-    
-    private void setDelay(Player p, String variableId, long delayTime){
-        if (!this.personal) Delayer.setDelay(variableId, delayTime);
-        else if (p!=null) Delayer.setPersonalDelay(p, variableId, delayTime);
-    }
+	@Override
+	public boolean execute(Player p, Param params) {
+		String timeStr = "";
+		String playerName = this.globalDelay ? "" : (p!=null ? p.getName() : "");
+		String variableId = "";
+		if (params.isParamsExists("id","delay")||params.isParamsExists("id","time")){
+			variableId = params.getParam("id", "");
+			playerName = params.getParam("player", playerName);
+			timeStr = params.getParam("delay", params.getParam("time", ""));
+		} else {
+			String oldFormat = params.getParam("param-line", "");
+			if (oldFormat.contains("/")){
+				String[] m = oldFormat.split("/");
+				if (m.length>=2){
+					timeStr = m[0];
+					variableId = m[1];
+				}
+			} else timeStr = oldFormat;
+		}
+
+		if (timeStr.isEmpty()) return false;
+		if (variableId.isEmpty()) return false;
+		setDelay(playerName,variableId,u().parseTime(timeStr));
+		Delayer.setTempPlaceholders(playerName,variableId);
+		setMessageParam(Variables.getTempVar("delay-left-hms",timeStr));
+		return true;
+	}
+
+	private void setDelay(String playerName, String variableId, long delayTime){
+		if (playerName.isEmpty()) Delayer.setDelay(variableId, delayTime);
+		else Delayer.setPersonalDelay(playerName, variableId, delayTime);
+	}
 
 }

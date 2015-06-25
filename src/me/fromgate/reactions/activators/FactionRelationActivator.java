@@ -1,17 +1,18 @@
 package me.fromgate.reactions.activators;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.FactionRelationEvent;
-import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Variables;
+
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
-import me.fromgate.reactions.actions.Actions;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 public class FactionRelationActivator extends Activator {
@@ -27,12 +28,12 @@ public class FactionRelationActivator extends Activator {
 	public FactionRelationActivator(String name, String param) {
 		super(name, "activators");
 		this.factions = new HashSet<String>();
-		Map<String,String> params = ParamUtil.parseParams(param, "newrelation");
-		this.factions.add(ParamUtil.getParam(params, "faction", ParamUtil.getParam(params, "faction1", "ANY")).toUpperCase());
-		this.factions.add(ParamUtil.getParam(params, "faction2", ParamUtil.getParam(params, "otherfaction", "ANY")).toUpperCase());
-		this.newRelation = ParamUtil.getParam(params, "faction2","ANY");
-		this.newRelation= ParamUtil.getParam(params, "newrelation", "ANY");
-		this.oldRelation= ParamUtil.getParam(params, "oldrelation", "ANY");
+		Param params = new Param (param, "newrelation");
+		this.factions.add(params.getParam("faction", params.getParam("faction1", "ANY")).toUpperCase());
+		this.factions.add(params.getParam("faction2", params.getParam("otherfaction", "ANY")).toUpperCase());
+		this.newRelation = params.getParam("faction2","ANY");
+		this.newRelation= params.getParam("newrelation", "ANY");
+		this.oldRelation= params.getParam("oldrelation", "ANY");
 	}
 	
 

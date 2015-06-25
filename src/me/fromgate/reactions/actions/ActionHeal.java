@@ -22,20 +22,19 @@
 
 package me.fromgate.reactions.actions;
 
-import java.util.Map;
-
 import me.fromgate.reactions.externals.RAEffects;
 import me.fromgate.reactions.util.BukkitCompatibilityFix;
-import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.util.Param;
+
 import org.bukkit.entity.Player;
 
 public class ActionHeal extends Action {
 
     @Override
-    public boolean execute(Player p, Map<String, String> params) {
-        int hp = ParamUtil.getParam(params, "hp", 0);
-        boolean playhearts = ParamUtil.getParam(params, "hearts", true);
-        if (params.containsKey("params")) hp=ParamUtil.getParam(params, "params", 0);
+    public boolean execute(Player p, Param params) {
+        int hp = params.getParam("hp", 0);
+        boolean playhearts = params.getParam("hearts", true);
+        if (params.isParamsExists("params")) hp=params.getParam("params", 0);
         double health = BukkitCompatibilityFix.getEntityHealth(p);
         double healthMax = BukkitCompatibilityFix.getEntityMaxHealth(p);
         if ((hp>0)&&(health<healthMax)) BukkitCompatibilityFix.setEntityHealth(p, Math.max(hp+health, healthMax));

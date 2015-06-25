@@ -23,11 +23,11 @@
 package me.fromgate.reactions.activators;
 
 
-import java.util.Map;
-import me.fromgate.reactions.event.VariableEvent;
-import me.fromgate.reactions.util.ParamUtil;
-import me.fromgate.reactions.util.Variables;
 import me.fromgate.reactions.actions.Actions;
+import me.fromgate.reactions.event.VariableEvent;
+import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.Variables;
+
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
@@ -42,9 +42,9 @@ public class VariableActivator extends Activator{
 	
 	public VariableActivator(String name, String param) {
 		super(name, "activators");
-		Map<String,String> params  = ParamUtil.parseParams(param, "id");
-		id = ParamUtil.getParam(params, "id", "UnknownVariable");
-		personal = ParamUtil.getParam(params, "personal", false);
+		Param params  = new Param (param, "id");
+		id = params.getParam("id", "UnknownVariable");
+		personal = params.getParam("personal", false);
 	}
 	
 	@Override

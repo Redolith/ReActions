@@ -22,20 +22,19 @@
 
 package me.fromgate.reactions.actions;
 
-import java.util.Map;
-
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator;
-import me.fromgate.reactions.activators.CommandActivator;
 import me.fromgate.reactions.activators.ActivatorType;
+import me.fromgate.reactions.activators.CommandActivator;
+import me.fromgate.reactions.util.Param;
 
 import org.bukkit.entity.Player;
 
 
 public abstract class Action {
 	Actions type = null;
-	private String message_param="";
+	private String messageParam="";
 	private boolean actionExecuting = true;
 	private Activator activator;
 
@@ -49,7 +48,7 @@ public abstract class Action {
 
 
 	public void setMessageParam (String msgparam){
-		this.message_param = msgparam;
+		this.messageParam = msgparam;
 	}
 
 	public void init(Actions at){
@@ -67,14 +66,14 @@ public abstract class Action {
 		return this.activator;
 	}
 
-	public boolean executeAction (Player p, Activator a, boolean action, Map<String, String> params){
+	public boolean executeAction (Player p, Activator a, boolean action, Param params){
 		this.actionExecuting = action;
 		this.activator = a;
-		if (!params.containsKey("param-line")) params.put("param-line", "");
-		setMessageParam(params.get("param-line"));
+		if (!params.hasAnyParam("param-line")) params.set ("param-line",""); 
+		setMessageParam(params.getParam("param-line"));
 		boolean actionFailed = (!execute (p,params));
 		if ((p!=null)&&(printAction())) 
-			u().printMSG(p, actionFailed ? "act_"+type.name().toLowerCase()+"fail" : "act_"+type.name().toLowerCase(), message_param);
+			u().printMSG(p, actionFailed ? "act_"+type.name().toLowerCase()+"fail" : "act_"+type.name().toLowerCase(), messageParam);
 		//Залипухи, но похоже по другому - никак...
 		if (a==null) return true;
 		if ((a.getType() == ActivatorType.COMMAND)&&(!((CommandActivator) a).isCommandRegistered())) return true;
@@ -86,5 +85,5 @@ public abstract class Action {
 		return (u().isWordInList(this.type.name(), plg().getActionMsg())||u().isWordInList(this.type.getAlias(), plg().getActionMsg()));
 	}
 
-	public abstract boolean execute(Player p, Map<String, String> params);
+	public abstract boolean execute(Player p, Param params);
 }

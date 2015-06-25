@@ -1,17 +1,16 @@
 package me.fromgate.reactions.menu;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import me.fromgate.reactions.util.ItemUtil;
-import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.item.ItemUtil;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class VirtualInventory {
 
@@ -71,16 +70,15 @@ public class VirtualInventory {
 		return this.execs;
 	}
 	
-	public VirtualInventory(Map<String,String> params){
-		title = ParamUtil.getParam(params, "title", "&4Re&6Actions &eMenu");
-		size = ParamUtil.getParam(params, "size", 9);
+	public VirtualInventory(Param params){
+		title = params.getParam("title", "&4Re&6Actions &eMenu");
+		size = params.getParam("size", 9);
 		size = (size%9 ==0) ? size : ((size/9)+1)*9;
 		slots = new ArrayList<String>();
 		execs= new ArrayList<String>();
-		
 		for (int i = 1; i<=size; i++){
-			execs.add(ParamUtil.getParam(params, "exec"+Integer.toString(i), ""));
-			slots.add(ParamUtil.getParam(params, "exec"+Integer.toString(i), ""));
+			execs.add(params.getParam("exec"+Integer.toString(i), ""));
+			slots.add(params.getParam("exec"+Integer.toString(i), ""));
 		}
 	}
 

@@ -1,10 +1,8 @@
 package me.fromgate.reactions.activators;
 
-import java.util.Map;
-
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.FactionEvent;
-import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Variables;
 
 import org.bukkit.Location;
@@ -21,9 +19,9 @@ public class FactionActivator extends Activator {
     }
 	public FactionActivator(String name, String param) {
 		 super (name,"activators");
-		 Map<String,String> params = ParamUtil.parseParams(param, "newfaction");
-		 this.newFaction = ParamUtil.getParam(params, "newfaction", ParamUtil.getParam(params, "faction", "ANY"));
-		 this.oldFaction = ParamUtil.getParam(params, "oldfaction", "ANY");
+		 Param params = new Param (param, "newfaction");
+		 this.newFaction = params.getParam("newfaction", params.getParam("faction", "ANY"));
+		 this.oldFaction = params.getParam("oldfaction", "ANY");
 	}
 
 	@Override

@@ -22,29 +22,29 @@
 
 package me.fromgate.reactions.actions;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import me.fromgate.reactions.externals.RAEconomics;
-import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Util;
 
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ActionMoneyGive extends Action {
 
     @Override
-    public boolean execute(Player p, Map<String, String> params) {
+    public boolean execute(Player p, Param params) {
     	if (!RAEconomics.isEconomyFound()) return false;
-    	if (params.size() == 0) return false;
-    	if (params.size() <=2) params = parseOldFormat (p,params.get("param-line"));
-    	String amountStr = ParamUtil.getParam(params, "amount", "");
+    	if (params.isEmpty()) return false;
+    	if (params.size() <=2) params = parseOldFormat (p,params.getParam("param-line"));
+    	String amountStr = params.getParam("amount", "");
     	if (amountStr.isEmpty()) return false;
-    	String currencyName = ParamUtil.getParam(params, "currency", "");
-    	String worldName = ParamUtil.getParam(params, "world", "");
-    	String target  = ParamUtil.getParam(params, "target", ParamUtil.getParam(params, "player", (p !=null ? p.getName() : "")));
+    	String currencyName = params.getParam("currency", "");
+    	String worldName = params.getParam("world", "");
+    	String target  = params.getParam("target", params.getParam("player", (p !=null ? p.getName() : "")));
     	if (target.isEmpty()) return false;
-    	String source = ParamUtil.getParam(params, "source", "");
+    	String source = params.getParam("source", "");
     	if (target.isEmpty()) return false;
     	String message = RAEconomics.creditAccount (target,source,amountStr,currencyName,worldName);
     	if (message.isEmpty()) return false;
@@ -52,7 +52,7 @@ public class ActionMoneyGive extends Action {
     	return true;
     }
     
-    private Map<String,String> parseOldFormat(Player p, String mstr){
+    private Param parseOldFormat(Player p, String mstr){
     	Map<String,String> newParams = new HashMap<String,String>();
     	if (p != null) newParams.put("target", p.getName());
     	if (mstr.contains("/")) {
@@ -62,6 +62,6 @@ public class ActionMoneyGive extends Action {
             	newParams.put("sourse", m[1]);
             }    		
     	} else newParams.put("amount", mstr.contains("-") ? Integer.toString(Util.getMinMaxRandom(mstr)) : mstr);
-    	return newParams;
+    	return new Param(newParams);
     }
 }

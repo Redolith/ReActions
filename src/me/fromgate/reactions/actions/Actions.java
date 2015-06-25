@@ -22,22 +22,23 @@
 
 package me.fromgate.reactions.actions;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.Activator.ActVal;
 import me.fromgate.reactions.flags.Flags;
-import me.fromgate.reactions.util.ParamUtil;
-import me.fromgate.reactions.util.Placeholders;
+import me.fromgate.reactions.placeholders.Placeholders;
+import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Variables;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 
 public enum Actions{
     //"tp,velocity,sound,potion,rmvpot,grpadd,grprmv,msg,dmg,townset,townkick,itemrmv,invitemrmv,itemgive,cmdplr,cmdop,cmdsrv,moneypay,moneygive,delay,pdelay,back,mob,effect,run,rgclear";
@@ -59,13 +60,15 @@ public enum Actions{
     ITEM_REMOVE_INVENTORY ("invitemrmv",true,new ActionItems(2)),
     ITEM_DROP ("itemdrop",true,new ActionItems(3)),
     ITEM_WEAR ("itemdrop",true,new ActionItems(4)),
+    ITEM_UNWEAR ("itemundress",true,new ActionItems(7)),
+    ITEM_SLOT ("itemslot",true, new ActionItems (6)),
     CMD ("cmdplr",true,new ActionCommand(0)),
     CMD_OP("cmdop",false,new ActionCommand(1)),
     CMD_CONSOLE ("cmdsrv",false,new ActionCommand(2)),
     MONEY_PAY ("moneypay",false,new ActionMoneyPay()),
     MONEY_GIVE ("moneygive",false,new ActionMoneyGive()),
-    DELAY ("delay",false,new ActionDelay(false)),
-    DELAY_PLAYER ("pdelay",true,new ActionDelay(true)),
+    DELAY ("delay",false,new ActionDelay(true)),
+    DELAY_PLAYER ("pdelay",true,new ActionDelay(false)),
     BACK("back",true,new ActionBack()),
     MOB_SPAWN ("mob",false,new ActionMobSpawn()),
     EFFECT("effect",false,new ActionEffect()),
@@ -137,36 +140,6 @@ public enum Actions{
        return name;
     }
     
-    /*
-     *  не знаю ещё зачем..... 
-     */
-    /*public static boolean executeActivator (Player p, Activator act){
-        boolean action = Flags.checkFlags(p, act);
-        boolean rst = true;
-        List<ActVal> actions = action ? act.getActions() : act.getReactions();
-        if (actions.isEmpty()) return true;
-        for (int i = 0; i<actions.size(); i++){
-            if (!Actions.isValid(actions.get(i).flag)) continue;
-            Actions at = Actions.getByName(actions.get(i).flag);
-            Map<String,String> params = Placeholders.replaceAllPlaceholders(p, act, ParamUtil.parseParams(actions.get(i).value));
-            if (!at.performAction(p, act, action, params)) rst = false;
-        }
-        return rst;
-    }*/
-    /*public static boolean executeActivator (Player p, Activator act){
-        boolean action = Flags.checkFlags(p, act);
-        List<ActVal> actions = action ? act.getActions() : act.getReactions();
-        if (actions.isEmpty()) return false;
-        boolean cancelParentEvent = false;
-        for (int i = 0; i<actions.size(); i++){
-            if (!Actions.isValid(actions.get(i).flag)) continue;
-            Actions at = Actions.getByName(actions.get(i).flag);
-            Map<String,String> params = Placeholders.replaceAllPlaceholders(p, act, ParamUtil.parseParams(actions.get(i).value));
-            if (at.performAction(p, act, action, params)) cancelParentEvent = true;
-        }
-        return cancelParentEvent;
-    }*/
-    
     public static boolean executeActivator (Player p, Activator act){
         boolean isAction = Flags.checkFlags(p, act);
         List<ActVal> actions = isAction ? act.getActions() : act.getReactions();
@@ -175,16 +148,16 @@ public enum Actions{
         for (ActVal action : actions) {
             if (!Actions.isValid(action.flag)) continue;
             Actions at = Actions.getByName(action.flag);
-            Map<String,String> params = Placeholders.replaceAllPlaceholders(p, act, ParamUtil.parseParams(action.value));
-            if (at.performAction(p, act, isAction, params)) cancelParentEvent = true;
+            Map<String,String> params = Placeholders.replacePlaceholders(p, new Param(action.value));
+            if (at.performAction(p, act, isAction, new Param (params))) cancelParentEvent = true;
         }
         Variables.clearAllTempVar();
         return cancelParentEvent;
     }
     
-    public boolean performAction(Player p, Activator a, boolean action, Map<String,String> params){
+    public boolean performAction(Player p, Activator a, boolean action, Param actionParam){
         if ((p==null)&&this.requireplayer) return false;
-        return this.action.executeAction(p, a, action, params);
+        return this.action.executeAction(p, a, action, actionParam);
     }
 
     public static boolean isValid(String name){

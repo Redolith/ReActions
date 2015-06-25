@@ -22,31 +22,30 @@
 
 package me.fromgate.reactions.timer;
 
+import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.util.Param;
+
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.quartz.CronExpression;
-
-import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.util.ParamUtil;
 
 public class Timer {
 	
 	private boolean timerType;
 	private Set<String> timesIngame;
 	private CronExpression timeServer;
-	private Map<String,String> params;
+	private Param params;
 	private boolean pause;
 	
-	public Timer (Map<String,String> params){
+	public Timer (Param params2){
 		this.timesIngame = new HashSet<String>();
-		this.params=params;
-		this.timerType = !ParamUtil.getParam(params, "timer-type", "ingame").equalsIgnoreCase("server");
-		this.pause = ParamUtil.getParam(params, "paused", false);
-		params.put("paused", String.valueOf(this.pause));
+		this.params=params2;
+		this.timerType = !params2.getParam("timer-type", "ingame").equalsIgnoreCase("server");
+		this.pause = params2.getParam("paused", false);
+		params2.set("paused", String.valueOf(this.pause));
 		this.parseTime();
 		
 	}
@@ -58,18 +57,18 @@ public class Timer {
 		return this.timerType;
 	}
 	
-	public Map<String,String> getParams(){
+	public Param getParams(){
 		return this.params;
 	}
 	
 	public void parseTime(){
 		if (this.timerType){
 			this.timesIngame = new HashSet<String>();
-			for (String time : ParamUtil.getParam(params, "time", "").split(",")){
+			for (String time : params.getParam("time", "").split(",")){
 				this.timesIngame.add(time);
 			}
 		} else {
-			String time = ParamUtil.getParam(params, "time", "").replace("_", " ");
+			String time = params.getParam("time", "").replace("_", " ");
 			try {
 				this.timeServer = new CronExpression(time);
 			} catch (ParseException e) {
@@ -105,7 +104,7 @@ public class Timer {
 	}
 
 	public String toString(){
-		return ParamUtil.getParam(this.getParams(), "activator", "Undefined") + " : "+ParamUtil.getParam(this.getParams(), "time", "Undefined") +(this.isIngameTimer() ? " (ingame)" : " (server)");
+		return params.getParam("activator", "Undefined") + " : "+params.getParam("time", "Undefined") +(this.isIngameTimer() ? " (ingame)" : " (server)");
 	}
 
 	public boolean isPaused (){

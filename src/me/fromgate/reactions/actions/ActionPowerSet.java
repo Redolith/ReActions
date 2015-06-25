@@ -22,11 +22,10 @@
 
 package me.fromgate.reactions.actions;
 
-import java.util.Map;
-
 import me.fromgate.reactions.util.Locator;
-import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Util;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -37,14 +36,14 @@ import org.bukkit.material.Lever;
 public class ActionPowerSet extends Action{
 
     @Override
-    public boolean execute(Player p, Map<String, String> params) {
-        Location loc = Locator.parseLocation(ParamUtil.getParam(params, "loc", ""),null);
+    public boolean execute(Player p, Param params) {
+        Location loc = Locator.parseLocation(params.getParam("loc", ""),null);
         setMessageParam("UNKNOWN");
         if (loc == null) return false;
         Block b = loc.getBlock();
         setMessageParam(b.getType().name());
         if (!isPowerBlock(b)) return false;
-        String state = ParamUtil.getParam(params, "power", "on");
+        String state = params.getParam("power", "on");
         boolean power = getPower(b, state);
         return setPower(b,power);
     }

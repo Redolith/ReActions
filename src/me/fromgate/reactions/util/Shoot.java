@@ -22,12 +22,8 @@
 
 package me.fromgate.reactions.util;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import me.fromgate.reactions.ReActions;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.block.Block;
@@ -40,16 +36,21 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityEvent;
 import org.bukkit.util.BlockIterator;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 public class Shoot {
 	
 	public static String actionShootBreak = "GLASS,THIN_GLASS,STAINED_GLASS,STAINED_GLASS_PANE,GLOWSTONE,REDSTONE_LAMP_OFF,REDSTONE_LAMP_ON";
 	public static String actionShootThrough = "FENCE,FENCE_GATE,IRON_BARDING,IRON_FENCE,NETHER_FENCE";
 	
-    public static void shoot(LivingEntity shooter, Map<String,String> params){
-        boolean onehit = ParamUtil.getParam(params, "singlehit", true);
-        int distance = ParamUtil.getParam(params, "distance", 100);
+    public static void shoot(LivingEntity shooter, Param params){
+        boolean onehit = params.getParam("singlehit", true);
+        int distance = params.getParam("distance", 100);
         for (LivingEntity le : getEntityBeam (shooter,getBeam (shooter,distance), onehit)){
-            double damage = (double) Util.getMinMaxRandom(ParamUtil.getParam(params, "damage", "1"));
+            double damage = (double) Util.getMinMaxRandom(params.getParam("damage", "1"));
             damageEntity (shooter,le, damage);
         }
     }

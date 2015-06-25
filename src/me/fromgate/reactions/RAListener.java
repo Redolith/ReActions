@@ -24,13 +24,11 @@
 package me.fromgate.reactions;
 
 
-import java.util.List;
-
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.ActivatorType;
 import me.fromgate.reactions.activators.Activators;
-import me.fromgate.reactions.activators.SignActivator;
 import me.fromgate.reactions.activators.MessageActivator.Source;
+import me.fromgate.reactions.activators.SignActivator;
 import me.fromgate.reactions.event.ButtonEvent;
 import me.fromgate.reactions.event.CommandEvent;
 import me.fromgate.reactions.event.DoorEvent;
@@ -47,6 +45,7 @@ import me.fromgate.reactions.event.JoinEvent;
 import me.fromgate.reactions.event.LeverEvent;
 import me.fromgate.reactions.event.MessageEvent;
 import me.fromgate.reactions.event.MobClickEvent;
+import me.fromgate.reactions.event.MobKillEvent;
 import me.fromgate.reactions.event.PVPDeathEvent;
 import me.fromgate.reactions.event.PVPKillEvent;
 import me.fromgate.reactions.event.PVPRespawnEvent;
@@ -59,12 +58,14 @@ import me.fromgate.reactions.event.VariableEvent;
 import me.fromgate.reactions.externals.RAEconomics;
 import me.fromgate.reactions.externals.RAVault;
 import me.fromgate.reactions.util.BukkitCompatibilityFix;
-import me.fromgate.reactions.util.RADebug;
 import me.fromgate.reactions.util.MobSpawn;
-import me.fromgate.reactions.util.RAPVPRespawn;
 import me.fromgate.reactions.util.PushBack;
+import me.fromgate.reactions.util.RADebug;
+import me.fromgate.reactions.util.RAPVPRespawn;
 import me.fromgate.reactions.util.Teleporter;
+import me.fromgate.reactions.util.UpdateChecker;
 import me.fromgate.reactions.util.Util;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -97,6 +98,8 @@ import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 
+import java.util.List;
+
 public class RAListener implements Listener{
 	ReActions plg;
 
@@ -104,21 +107,30 @@ public class RAListener implements Listener{
 		this.plg = plg;
 	}
 
-
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
 	public void onChatCommand(AsyncPlayerChatEvent event){
-		if (!event.getPlayer().hasPermission("chatcommander")) return;
-		EventManager.raiseMessageEvent(event.getPlayer(), Source.CHAT_INPUT, event.getMessage());
-		//Questions.isWaitingAnswer(event.getPlayer(), event.getMessage()) ? Source.ANSWER :Source.CHAT_INPUT, event.getMessage());
-		
-		
-
+		if (EventManager.raiseMessageEvent(event.getPlayer(), Source.CHAT_INPUT, event.getMessage()))
+			 event.setCancelled(true);
 	}
 
 	@EventHandler(priority=EventPriority.NORMAL)
 	public void onServerCommandEvent(ServerCommandEvent event) {
 		EventManager.raiseMessageEvent(Bukkit.getConsoleSender(), Source.CONSOLE_INPUT, event.getCommand());
 	}
+	
+	/*
+	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
+	public void onPlayerChatTabCompleteEvent (PlayerChatTabCompleteEvent event){
+		ReActions.util.BC(event.getChatMessage());
+		String message = event.getChatMessage().replaceFirst("/", "");
+		ReActions.util.BC(message);
+		for (Activator a : Activators.getActivators(ActivatorType.COMMAND)){
+			CommandActivator ca = (CommandActivator) a; 
+			if (ca.getCommand().toLowerCase().startsWith(message.toLowerCase())) event.getTabCompletions().add("/"+ca.getCommand());
+			ReActions.util.BC(ca.getCommand());
+		}
+	} */
+
 
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
 	public void onSignChange (SignChangeEvent event) {
@@ -174,13 +186,21 @@ public class RAListener implements Listener{
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
 	public void onDropLoot(EntityDeathEvent event){
 		Player killer = Util.getKiller (event.getEntity().getLastDamageCause());
-		if (event.getEntity().hasMetadata("ReActions-drop")) {
-			List<ItemStack> stacks = Util.parseItemStacks (event.getEntity().getMetadata("ReActions-drop").get(0).asString());
+		
+		List<ItemStack> stacks = MobSpawn.getMobDrop(event.getEntity());
+		if (stacks!=null&&!stacks.isEmpty()) {
+			event.getDrops().clear();
+			event.getDrops().addAll(stacks);			
+		}
+		
+		/*if (event.getEntity().hasMetadata("ReActions-drop")) {
+			List<ItemStack> stacks = ItemUtil.parseRandomItemsStr(event.getEntity().getMetadata("ReActions-drop").get(0).asString());
 			if (stacks != null) {
 				event.getDrops().clear();
 				event.getDrops().addAll(stacks);
 			}
-		}
+		} */
+		 
 		if (event.getEntity().hasMetadata("ReActions-xp")) {
 			int xp = Util.getMinMaxRandom(event.getEntity().getMetadata("ReActions-xp").get(0).asString());
 			event.setDroppedExp(xp);
@@ -195,14 +215,15 @@ public class RAListener implements Listener{
 			}
 		}
 
-		if (event.getEntity().hasMetadata("ReActions-activator")&&(killer!=null)) {
-			String exec = event.getEntity().getMetadata("ReActions-activator").get(0).asString();
-			EventManager.raiseExecEvent(killer, exec+" player:"+killer.getName());
-		}
-
 		if (event.getEntity().hasMetadata("ReActions-deatheffect")) {
 			MobSpawn.playMobEffect(event.getEntity().getLocation(), event.getEntity().getMetadata("ReActions-deatheffect").get(0).asString());
 		}
+		
+		if (event.getEntity().hasMetadata("ReActions-activator")&&(killer!=null)) {
+			String exec = event.getEntity().getMetadata("ReActions-activator").get(0).asString();
+			EventManager.raiseExecEvent(killer, exec+" player:"+killer.getName());
+		} else EventManager.raiseMobKillEvent(killer, event.getEntity());
+		
 	}
 
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
@@ -281,9 +302,9 @@ public class RAListener implements Listener{
 	}
 
 
-	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = false)
+	@EventHandler(priority=EventPriority.HIGH, ignoreCancelled = false)
 	public void onPlayerCommand (PlayerCommandPreprocessEvent event){
-		if (EventManager.raiseCommandEvent(event.getPlayer(), event.getMessage().replaceFirst("/", ""))){
+		if (EventManager.raiseCommandEvent(event.getPlayer(), event.getMessage().replaceFirst("/", ""), event.isCancelled())){
 			event.setCancelled(true);
 		}
 	}
@@ -291,7 +312,8 @@ public class RAListener implements Listener{
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = false)
 	public void onPlayerJoin (PlayerJoinEvent event){
 		RADebug.offPlayerDebug(event.getPlayer());
-		plg.u.updateMsg(event.getPlayer());
+		//plg.u.updateMsg(event.getPlayer());
+		UpdateChecker.updateMsg(event.getPlayer());
 	}
 
 	@EventHandler(priority=EventPriority.NORMAL)
@@ -307,6 +329,7 @@ public class RAListener implements Listener{
 	@EventHandler(priority=EventPriority.NORMAL)
 	public void onPlayerInteract (PlayerInteractEvent event){
 		EventManager.raiseItemClickEvent(event);
+		EventManager.raiseItemWearEvent (event.getPlayer());
 		if (EventManager.raiseButtonEvent(event)) event.setCancelled(true);
 		EventManager.raisePlateEvent(event);
 		if (EventManager.raiseLeverEvent(event)) event.setCancelled(true);
@@ -316,18 +339,16 @@ public class RAListener implements Listener{
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerMove (PlayerMoveEvent event){
 		PushBack.rememberLocations(event.getPlayer(), event.getFrom(), event.getTo());
-		if (event.getFrom().getBlock().equals(event.getTo().getBlock())) return;
-		EventManager.raiseRegionEvent(event.getPlayer(), event.getTo());
-		EventManager.raiseRgEnterEvent(event.getPlayer(), event.getFrom(), event.getTo());
-		EventManager.raiseRgLeaveEvent(event.getPlayer(), event.getFrom(), event.getTo());
+		if (event.getFrom().getBlockX()==event.getTo().getBlockX()&&
+				event.getFrom().getBlockY()==event.getTo().getBlockY()&&
+						event.getFrom().getBlockZ()==event.getTo().getBlockZ()) return;
+		EventManager.raiseAllRegionEvents(event.getPlayer(), event.getTo(), event.getFrom());
 	}
 
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerTeleport(PlayerTeleportEvent event){
 		Teleporter.startTeleport(event);
-		EventManager.raiseRegionEvent(event.getPlayer(), event.getTo());
-		EventManager.raiseRgEnterEvent(event.getPlayer(), event.getFrom(), event.getTo());
-		EventManager.raiseRgLeaveEvent(event.getPlayer(), event.getFrom(), event.getTo());
+		EventManager.raiseAllRegionEvents(event.getPlayer(), event.getTo(), event.getFrom());
 		Teleporter.stopTeleport(event.getPlayer());
 	}
 
@@ -335,8 +356,7 @@ public class RAListener implements Listener{
 	@EventHandler(priority=EventPriority.HIGH, ignoreCancelled = false)
 	public void onPlayerJoinActivators (PlayerJoinEvent event){
 		EventManager.raiseJoinEvent(event.getPlayer(), !event.getPlayer().hasPlayedBefore());
-		EventManager.raiseRegionEvent(event.getPlayer(), event.getPlayer().getLocation());
-		EventManager.raiseRgEnterEvent(event.getPlayer(), null, event.getPlayer().getLocation());
+		EventManager.raiseAllRegionEvents(event.getPlayer(), event.getPlayer().getLocation(), null);
 		EventManager.raiseItemHoldEvent(event.getPlayer());
 		EventManager.raiseItemWearEvent(event.getPlayer());
 	}
@@ -418,6 +438,11 @@ public class RAListener implements Listener{
 		event.setCancelled(Activators.activate(event));
 	}
 
+	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
+	public void onMobKillActivator (MobKillEvent event){
+		event.setCancelled(Activators.activate(event));
+	}
+
 	@EventHandler(priority=EventPriority.NORMAL)
 	public void onItemClickActivator (ItemClickEvent event){
 		event.setCancelled(Activators.activate(event));
@@ -467,6 +492,7 @@ public class RAListener implements Listener{
 	public void onVariableEvent (VariableEvent event){
 		event.setCancelled(Activators.activate(event));
 	}
+	
 
 
 }

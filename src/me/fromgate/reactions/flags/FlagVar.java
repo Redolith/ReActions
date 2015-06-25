@@ -22,9 +22,7 @@
 
 package me.fromgate.reactions.flags;
 
-import java.util.Map;
-
-import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Variables;
 
 import org.bukkit.entity.Player;
@@ -40,40 +38,36 @@ public class FlagVar extends Flag{
 
     @Override
     public boolean checkFlag(Player player, String param) {
-        Player p = player;
-        Map<String,String> params = ParamUtil.parseParams(param, "param-line");
+        Param params = new Param (param, "param-line");
         String var;
         String value;
+        String playerName = this.personalVar&&(player!=null) ? player.getName() : "";
         
-        if (ParamUtil.isParamExists(params, "id")){
-            var = ParamUtil.getParam(params, "id", "");
+        
+        if (params.isParamsExists("id")){
+            var = params.getParam("id", "");
             if (var.isEmpty()) return false;
-            value = ParamUtil.getParam(params, "value", "");
+            value = params.getParam("value", "");
+            playerName = params.getParam("player",playerName);
         } else {
-            String [] ln = ParamUtil.getParam(params, "param-line", "").split("/",2);
+            String [] ln = params.getParam("param-line", "").split("/",2);
             if (ln.length == 0) return false;
             var = ln[0];
             value = (ln.length>1) ? ln[1] : "";
         }
-        
-        if (!this.personalVar) p = null;
-        else if (p == null) return false;
+        if (playerName.isEmpty()&&this.personalVar) return false;
         switch (this.flagType){
         case 0: // VAR_EXIST
-            return Variables.existVar(p, var);
-        case 1: 
-            return Variables.cmpVar(p, var, value);
-        case 2: 
-            return Variables.cmpGreaterVar(p, var, value);
-        case 3: 
-            return Variables.cmpLowerVar(p, var, value);
-        case 4: 
-        	return Variables.matchVar(p,var, value);
+            return Variables.existVar(playerName, var);
+        case 1: // VAR_COMPARE
+            return Variables.cmpVar(playerName, var, value);
+        case 2: // VAR_GREATER
+            return Variables.cmpGreaterVar(playerName, var, value);
+        case 3: // VAR_LOWER
+            return Variables.cmpLowerVar(playerName, var, value);
+        case 4: // VAR_MATCH
+        	return Variables.matchVar(playerName,var, value);
         }
         return false;
     }
-    
-    
-    
-
 }

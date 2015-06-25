@@ -1,14 +1,10 @@
 package me.fromgate.reactions.menu;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.event.EventManager;
-import me.fromgate.reactions.util.ItemUtil;
-import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.item.ItemUtil;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -22,6 +18,12 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class InventoryMenu implements Listener{
 	private static Map<Integer,List<String>> activeMenus = new HashMap<Integer,List<String>>();
@@ -69,11 +71,11 @@ public class InventoryMenu implements Listener{
 		return true;
 	}
 
-	public static boolean set (String id, Map<String,String> params){
+	public static boolean set (String id, Param params){
 		if (!menu.keySet().contains(id)) return false;
 		VirtualInventory vi = menu.get(id);
-		String title = ParamUtil.getParam(params, "title", vi.title);
-		int size = ParamUtil.getParam(params, "size", vi.size);
+		String title = params.getParam("title", vi.title);
+		int size = params.getParam("size", vi.size);
 		size = (size%9 ==0) ? size : ((size/9)+1)*9;
 
 		List<String> activators = vi.execs;
@@ -83,10 +85,10 @@ public class InventoryMenu implements Listener{
 		if (slots.size()<size)
 			for (int i = slots.size(); i<size; i++) slots.add("");
 		for (int i = 1; i<=size; i++){
-			if (ParamUtil.isParamExists(params, "activator"+Integer.toString(i)))
-				activators.set(i-1, ParamUtil.getParam(params, "activator"+Integer.toString(i), ""));
-			if (ParamUtil.isParamExists(params, "item"+Integer.toString(i)))
-				slots.set(i-1, ParamUtil.getParam(params, "item"+Integer.toString(i), ""));
+			if (params.isParamsExists("activator"+Integer.toString(i)))
+				activators.set(i-1, params.getParam("activator"+Integer.toString(i), ""));
+			if (params.isParamsExists("item"+Integer.toString(i)))
+				slots.set(i-1, params.getParam("item"+Integer.toString(i), ""));
 		}
 		vi.title = title;
 		vi.size = size;
@@ -103,38 +105,38 @@ public class InventoryMenu implements Listener{
 	}
 
 
-	public static List<String> getActivators (Map<String,String> params){
-		if (ParamUtil.isParamExists(params, "menu")){
-			String id = ParamUtil.getParam(params, "menu", "");
+	public static List<String> getActivators (Param param){
+		if (param.isParamsExists("menu")){
+			String id = param.getParam("menu", "");
 			if (menu.containsKey(id)) return menu.get(id).getActivators();
 		} else {
-			int size = ParamUtil.getParam(params, "size", 9);
+			int size = param.getParam("size", 9);
 			if (size>0) {
 				List<String> activators = new ArrayList<String>();
 				for (int i = 1; i<=size; i++)
-					activators.add(ParamUtil.getParam(params, "exec"+Integer.toString(i), ""));
+					activators.add(param.getParam("exec"+Integer.toString(i), ""));
 				return activators;
 			}
 		}
 		return new ArrayList<String>();
 	}
 
-	public static Inventory getInventory (Map<String,String> params){
+	public static Inventory getInventory (Param param){
 		Inventory inv = null;
-		if (ParamUtil.isParamExists(params, "menu")){
-			String id = ParamUtil.getParam(params, "menu", "");
+		if (param.isParamsExists("menu")){
+			String id = param.getParam("menu", "");
 			if (menu.containsKey(id)) inv = menu.get(id).getInventory();
 		} else {
-			String title = ParamUtil.getParam(params, "title", "ReActions Menu");
-			int size = ParamUtil.getParam(params, "size", 9);
+			String title = param.getParam("title", "ReActions Menu");
+			int size = param.getParam("size", 9);
 			if (size<=0) return null;
 			List<String> activators = new ArrayList<String>();
 			inv = Bukkit.createInventory(null, size, title);
 			for (int i = 1; i<=size; i++){
-				activators.add(ParamUtil.getParam(params, "exec"+Integer.toString(i), ""));
+				activators.add(param.getParam("exec"+Integer.toString(i), ""));
 				String slotStr = "slot"+Integer.toString(i);
-				if (!ParamUtil.isParamExists(params, slotStr)) continue;
-				ItemStack slotItem = ItemUtil.parseItemStack(ParamUtil.getParam(params, slotStr, ""));
+				if (!param.isParamsExists(slotStr)) continue;
+				ItemStack slotItem = ItemUtil.parseItemStack(param.getParam(slotStr, ""));
 				if (slotItem == null) continue;
 				inv.setItem(i-1, slotItem);
 			}
@@ -142,7 +144,7 @@ public class InventoryMenu implements Listener{
 		return inv;
 	}
 
-	public static boolean createAndOpenInventory(Player player, Map<String,String> params){
+	public static boolean createAndOpenInventory(Player player, Param params){
 		Inventory inv = getInventory (params);
 		if (inv == null) return false;
 		activeMenus.put(getInventoryCode (player, inv), getActivators(params));
@@ -185,7 +187,7 @@ public class InventoryMenu implements Listener{
 		if (activators.size()>clickedSlot){
 			String activator = activators.get(clickedSlot);
 			if (!activator.isEmpty())
-				EventManager.raiseExecEvent(player, ParamUtil.parseParams(activator, "activator"));
+				EventManager.raiseExecEvent(player, new Param (activator, "activator"));
 		}
 		event.setCancelled(true);
 		InventoryMenu.removeInventory(event.getInventory());

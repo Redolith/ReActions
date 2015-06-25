@@ -22,16 +22,15 @@
 
 package me.fromgate.reactions.actions;
 
-import java.util.Map;
+import me.fromgate.reactions.util.Param;
 
-import me.fromgate.reactions.util.ParamUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class ActionVelocity extends Action{
 
     @Override
-    public boolean execute(Player p, Map<String, String> params) {
+    public boolean execute(Player p, Param params) {
         Vector v = setPlayerVelocity (p, params);
         if (v == null) return false;
         this.setMessageParam("["+v.getBlockX()+", "+v.getBlockY()+", "+v.getBlockZ()+"]");
@@ -39,15 +38,15 @@ public class ActionVelocity extends Action{
     }
     
     
-    private Vector setPlayerVelocity(Player p, Map<String,String> params) {
+    private Vector setPlayerVelocity(Player p, Param params) {
         String velstr = "";
         boolean kick = false;
-        if (params.containsKey("param")){
-            velstr = ParamUtil.getParam(params, "param", "");
+        if (params.isParamsExists("param")){
+            velstr = params.getParam("param", "");
         } else {
-            velstr = ParamUtil.getParam(params, "vector","");
-            if (velstr.isEmpty()) velstr = ParamUtil.getParam(params, "direction","");
-            kick = ParamUtil.getParam(params, "kick", false);
+            velstr = params.getParam("vector","");
+            if (velstr.isEmpty()) velstr = params.getParam("direction","");
+            kick = params.getParam("kick", false);
         }
 
         if (velstr.isEmpty()) return null;

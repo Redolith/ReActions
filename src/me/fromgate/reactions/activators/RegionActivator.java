@@ -26,8 +26,8 @@ import java.util.List;
 
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.RegionEvent;
-import me.fromgate.reactions.externals.wgbridge.RAWorldGuard;
-import me.fromgate.reactions.externals.wgbridge.WGRegion;
+import me.fromgate.reactions.externals.RAWorldGuard;
+import me.fromgate.reactions.module.wgbridge.WGBridge;
 
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -51,12 +51,15 @@ public class RegionActivator extends Activator {
         this.region = region;
     }
 
+    public String getRegion(){
+    	return this.region;
+    }
 
     @Override
     public boolean activate(Event event) {
         if (!(event instanceof RegionEvent)) return false;
         RegionEvent be = (RegionEvent) event;
-        if (be.getRegion().equalsIgnoreCase(WGRegion.getFullRegionName(this.region)))	return Actions.executeActivator(be.getPlayer(), this);
+        if (be.getRegion().equalsIgnoreCase(WGBridge.getFullRegionName(this.region)))	return Actions.executeActivator(be.getPlayer(), this);
         return false;
     }
 

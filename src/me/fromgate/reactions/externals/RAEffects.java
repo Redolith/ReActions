@@ -22,14 +22,13 @@
 
 package me.fromgate.reactions.externals;
 
-import java.util.HashMap;
-import java.util.Map;
 import me.fromgate.playeffect.PlayEffect;
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.util.Locator;
-import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Util;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -76,26 +75,25 @@ public class RAEffects {
     }
     
     public static void playEffect (Location loc, String eff, String param){
-        Map<String,String> params = ParamUtil.parseParams(param);
+        Param params = new Param (param);
         params.remove("param-line");
         playEffect(loc,eff,params);
     }
     
-    public static void playEffect (Location loc, String eff, Map<String,String> params){
+	public static void playEffect (Location loc, String eff, Param params){
         if (use_play_effects){
-            params.put("loc", Locator.locationToString(loc));
+            params.set("loc", Locator.locationToString(loc));
             playPlayEffect(eff,params);
         } else {
-            int data = 9;
-            if (params.containsKey("wind")) data = parseSmokeDirection (params.get("wind"));
+            int data = params.isParamsExists("wind") ?parseSmokeDirection (params.getParam("wind")) : 9;
             playStandartEffect (loc,eff,data);
         }
     }
     
     public static void playEffect (Location loc, String eff, int data){
         if (use_play_effects){
-            Map<String,String> params = new HashMap<String,String>();
-            params.put("loc", Locator.locationToString(loc));
+            Param params = new Param();
+            params.set("loc", Locator.locationToString(loc));
             playPlayEffect(eff,params);
         } else {
             playStandartEffect (loc,eff,data);
@@ -120,27 +118,28 @@ public class RAEffects {
         } else w.playEffect(loc, effect, mod);
     }
     
-    private static void playPlayEffect (String eff, Map<String,String> params){
-        PlayEffect.play(eff, params);
+    private static void playPlayEffect (String eff, Param params){
+        PlayEffect.play(eff, params.getMap());
     }
     
-    public static void playEffect (Player p, Map<String,String> params){
-        String eff = ParamUtil.getParam(params, "eff", "");
-        if (eff.isEmpty()) eff =  ParamUtil.getParam(params, "type", "SMOKE"); // для совместимости со старыми версиями
-        Location loc = Locator.parseLocation(ParamUtil.getParam(params, "loc", ""), p.getLocation());
-        if (ParamUtil.isParamExists(params, "loc")) params.put("loc", Locator.locationToString(loc));
-        if (ParamUtil.isParamExists(params, "loc1")) params.put("loc1", Locator.locationToString(Locator.parseLocation(ParamUtil.getParam(params, "loc1", ""), p.getLocation())));
-        if (ParamUtil.isParamExists(params, "loc2")) params.put("loc2", Locator.locationToString(Locator.parseLocation(ParamUtil.getParam(params, "loc2", ""), p.getLocation())));
+    public static void playEffect (Player p, Param params){
+        String eff = params.getParam("eff", "");
+        Location pLoc = p != null ? p.getLocation() : null;
+        if (eff.isEmpty()) eff =  params.getParam("type", "SMOKE"); // для совместимости со старыми версиями
+        Location loc = Locator.parseLocation(params.getParam("loc", ""), pLoc);
+        if (params.isParamsExists("loc")) params.set("loc", Locator.locationToString(loc));
+        if (params.isParamsExists("loc1")) params.set("loc1", Locator.locationToString(Locator.parseLocation(params.getParam("loc1", ""), pLoc)));
+        if (params.isParamsExists("loc2")) params.set("loc2", Locator.locationToString(Locator.parseLocation(params.getParam("loc2", ""), pLoc)));
         if (use_play_effects) {
             playPlayEffect(eff, params);    
         } else {
             int modifier = 0;
             int radius = 0;
             if (!u().isWordInList(eff, efftypes)) return;
-            if (eff.equalsIgnoreCase("SMOKE")) modifier = parseSmokeDirection (ParamUtil.getParam(params, "dir", "random"));
-            else modifier = Util.getMinMaxRandom(ParamUtil.getParam(params, "data", "0"));
-            radius = ParamUtil.getParam(params, "radius", 0);
-            boolean land = ParamUtil.getParam(params, "land", "true").equalsIgnoreCase("false"); 
+            if (eff.equalsIgnoreCase("SMOKE")) modifier = parseSmokeDirection (params.getParam("dir", "random"));
+            else modifier = Util.getMinMaxRandom(params.getParam("data", "0"));
+            radius = params.getParam("radius", 0);
+            boolean land = params.getParam("land", "true").equalsIgnoreCase("false"); 
             if (radius>0) loc = Locator.getRadiusLocation(loc, radius, land); 
             playStandartEffect (loc,eff,modifier);            
         }

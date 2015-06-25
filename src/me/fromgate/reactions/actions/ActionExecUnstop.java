@@ -22,20 +22,18 @@
 
 package me.fromgate.reactions.actions;
 
-import java.util.Map;
-
 import me.fromgate.reactions.activators.Activators;
-import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.util.Param;
 
 import org.bukkit.entity.Player;
 
 public class ActionExecUnstop extends Action {
 
     @Override
-    public boolean execute(Player p, Map<String, String> params) {
-        String player = ParamUtil.getParam(params, "player", (p == null ? "" : p.getName()));
+    public boolean execute(Player p, Param params) {
+        String player = params.getParam("player", (p == null ? "" : p.getName()));
         if (player.isEmpty()) return false;
-        String activator = ParamUtil.getParam(params, "activator", "");
+        String activator = params.getParam("activator", "");
         if (activator.isEmpty()) return false;
         setMessageParam(activator);
         return Activators.isStopped(player, activator, true);

@@ -22,22 +22,20 @@
 
 package me.fromgate.reactions.actions;
 
-import java.util.Map;
-
 import me.fromgate.reactions.event.EventManager;
-import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.util.Param;
 
 import org.bukkit.entity.Player;
 
 public class ActionExecute extends Action {
 
     @Override
-    public boolean execute(Player p, Map<String, String> params) {
+    public boolean execute(Player p, Param params) {
         return execActivator (p, params);
     }
 
-    public boolean execActivator (Player p, Map<String,String> params){
-        String id = ParamUtil.getParam(params, "activator", "");
+    public boolean execActivator (Player p, Param params){
+        String id = params.getParam("activator", "");
         if (id.isEmpty()) return false;
         setMessageParam(id);
         return EventManager.raiseExecEvent(p, params);

@@ -1,8 +1,8 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2015, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
- *   * 
+ *    
  *  This file is part of ReActions.
  *  
  *  ReActions is free software: you can redistribute it and/or modify
@@ -29,31 +29,9 @@ public class RAUtil extends FGUtilCore {
 		super (plugin, savelng, language, plgcmd, "reactions");
 		this.plg = plugin;
 		FillMSG();
-		InitCmd();
 		if (savelng) this.SaveMSG();
 	}
-
-	public void InitCmd(){
-		cmds.clear();
-		cmdlist = "";
-		addCmd("help", "config", "hlp_thishelp","&3/react help [command]",'b',true);
-		addCmd("run", "run","cmd_run","&3/react run <exec-activator> [target player] [delay]",'b',true);
-		addCmd("add", "config","cmd_add","&3/react add [b <id>|loc <id>|<id> f <flag> <param>|<id> r <action> <param>|<id> r <reaction> <param>",'b');
-		addCmd("set", "config","cmd_set","&3/react set delay player:<player> delay:<time> id:<id>",'b');
-		addCmd("copy", "config","cmd_copy","&3/react copy [flag|actions|reactions] <source> <destination>",'b');
-		addCmd("list", "config","cmd_list","&3/react list [loc|group|type] [page]",'b');
-		addCmd("info", "config","cmd_info","&3/react info <activator> [f|a|r]",'b');
-		addCmd("group", "config","cmd_group","&3/react group <activator> <groupname>",'b');
-		addCmd("remove", "config","cmd_remove","&3/react remove [loc|activator] <id>",'b');
-		addCmd("clear", "config","cmd_clear","&3/react clear <id> [f|a|r]",'b');
-		addCmd("select", "select","cmd_select","&3/react select",'b');
-		addCmd("debug", "debug","cmd_debug","&3/react debug [true|false|off]",'b');
-		addCmd("check", "config","cmd_check","&3/react check [radius]",'b');
-		addCmd("reload", "config","cmd_reload","&3/react reload",'b',true);
-		// Profiler enabling during development :)
-		//addCmd("profile", "config","cmd_profile","&3/react profile",'b',true);
-	}
-
+	
 	public void FillMSG(){
 		addMSG ("msg_listclicker", "List of activators:");
 		addMSG ("msg_listloc", "List of stored locations:");
@@ -244,6 +222,7 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("action_ITEM_REMOVE_INVENTORY","Remove item from the player's inventory. Parameter: <item>");
 		addMSG ("action_ITEM_DROP","Drop items around defined location. Parameters: loc:<location> radius:<radius> scatter:<true/false> land:<true/false>");
 		addMSG ("action_ITEM_WEAR","Wear item. Parameters: item:<item> slot:<auto/chestplate/helmet/leggins/boots>");
+		addMSG ("action_ITEM_UNWEAR","Unwear item. Parameters: item:<item> slot:<auto/chestplate/helmet/leggins/boots> [item-action:<remove|drop|inventory>]");
 		addMSG ("action_CMD","Execute command as player. Parameter: <command>");
 		addMSG ("action_CMD_OP","Execute command as OP. Parameter: <command>");
 		addMSG ("action_CMD_CONSOLE","Execute command as server console. Parameter: <command>");
@@ -315,6 +294,7 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("flag_POWER","Check redstone power state of block. Parameter: <location>");
 		addMSG ("flag_WORLD","Player in world? Parameter: <world>");
 		addMSG ("flag_BIOME","Player in biome? Parameter: <biome>");
+		addMSG ("flag_BLOCK","Check block type. Parameters: loc:<Location> block:<BlockType>");
 		addMSG ("flag_LIGHT_LEVEL","Player is in dark place? Parameter: <light level, 1..20>");
 		addMSG ("flag_WALK_BLOCK","Player is walking on the defined block? Parameter: <block type>");
 		addMSG ("flag_DIRECTION","Player directed to...? Parameter: <NORTH/NORTHEAST/NORTHWEST/SOUTH/SOUTHEAST/SOUTHWEST/EAST/WEST>");
@@ -369,7 +349,8 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("activator_LEVER","This activator is linked to lever block and executing when player triggers this lever. It supports lever states - \"on\" and \"off\". Command: /react add lever <id> [ON/OFF/ANY]");
 		addMSG ("activator_DOOR","This activators could be linked to any kind of doors (wooden door, fence gates and trap doors). Command: /react add door <id> [OPEN/CLOSE/ANY]");
 		addMSG ("activator_JOIN","This activator is executing when player joins a server. Command: /react add join <id> [FIRST]");
-		addMSG ("activator_MOBCLICK","This activator is executing when player right-clicking mob. You can define mob type (name supported too) for this activators. Command: /react add mobclick <id> &6Mob_Name$MOB_TYPE");
+		addMSG ("activator_MOB_CLICK","This activator is executing when player right-clicking mob. You can define mob type (name supported too) for this activators. Command: /react add mobclick <id> &6Mob_Name$MOB_TYPE");
+		addMSG ("activator_MOB_KILL","This activator is executing when player killing the mob. You can define mob type (name supported too) for this activators. Command: /react add  mobclick <id> Mob_Name$MOB_TYPE");		
 		addMSG ("activator_ITEM_CLICK","This activator is linked to right-clicking with defined item. /react add item_click <id> <item (name supported)>");
 		addMSG ("activator_ITEM_HOLD","This activator is linked to defined item, while player hold it in hand. /react add <id> item_hold <item (name supported)>");
 		addMSG ("activator_ITEM_WEAR","This activator is linked to defined item, while player wears an item. /react add item_wear <id> <item (name supported)>");
@@ -379,7 +360,6 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("activator_FCT_CREATE","This activator is initiates when someone creates a new faction /react add fct_create <id>");
 		addMSG ("activator_FCT_DISBAND","This activator is initiates when faction is disbanded /react add fct_disband <id>");
 		addMSG ("activator_VARIABLE","This activator is initiates when variable value is changed /react add variable id:<VariableId> personal:<false/true>. Local variables provided by this activator: %var_id%, %var_old%, %var_new%");
-		
 		addMSG ("msg_placeholderlisttitle","Placeholders");
 		addMSG ("placeholder_TIME_SERVER","Server (system) time");
 		addMSG ("placeholder_TIME_INGAME","In-game time. If player is unknonw will show time in default world");

@@ -22,11 +22,9 @@
 
 package me.fromgate.reactions.actions;
 
-import java.util.Map;
-
 import me.fromgate.reactions.util.Locator;
-import me.fromgate.reactions.util.ParamUtil;
-import me.fromgate.reactions.util.Util;
+import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.item.ItemUtil;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -36,19 +34,19 @@ public class ActionBlockSet extends Action {
 
     @SuppressWarnings("deprecation")
     @Override
-    public boolean execute(Player p, Map<String, String> params) {
-        String istr = ParamUtil.getParam(params, "block", "");
+    public boolean execute(Player p, Param params) {
+        String istr = params.getParam("block", "");
         if (istr.isEmpty()) return false;
         ItemStack item = u().parseItemStack(istr);
         if ((item==null)||((!item.getType().isBlock()))){
             u().logOnce("wrongblock"+istr, "Failed to execute action BLOCK_SET. Wrong block "+istr.toUpperCase());
             return false;
         }
-        Location loc = Locator.parseLocation(ParamUtil.getParam(params, "loc", ""),null);
+        Location loc = Locator.parseLocation(params.getParam("loc", ""),null);
         if (loc == null) return false;
         loc.getBlock().setType(item.getType());
         loc.getBlock().setData(item.getData().getData());
-        setMessageParam(Util.itemToString(item));
+        setMessageParam(ItemUtil.itemToString(item));
         return true;
     }
 

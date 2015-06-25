@@ -22,9 +22,7 @@
 
 package me.fromgate.reactions.actions;
 
-import java.util.Map;
-
-import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Util;
 
 import org.bukkit.entity.Player;
@@ -34,7 +32,7 @@ import org.bukkit.potion.PotionEffectType;
 public class ActionPlayerPotion extends Action {
 
     @Override
-    public boolean execute(Player p, Map<String, String> params) {
+    public boolean execute(Player p, Param params) {
         String str = potionEffect (p,params);
         if (str.isEmpty()) return false;
         this.setMessageParam(str);
@@ -42,14 +40,14 @@ public class ActionPlayerPotion extends Action {
     }
     
     
-    private String potionEffect(Player p, Map<String,String> params) {
+    private String potionEffect(Player p, Param params) {
         if (params.isEmpty()) return "";
         String peffstr = "";
         int duration=20;
         int amplifier = 1;
         boolean ambient = false;
-        if (params.containsKey("param")){
-            String param = ParamUtil.getParam(params, "param", "");
+        if (params.isParamsExists("param")){
+            String param = params.getParam("param", "");
             if (param.isEmpty()) return "";
             if (param.contains("/")){
                 String[] prm = param.split("/");
@@ -60,10 +58,10 @@ public class ActionPlayerPotion extends Action {
                 }
             } else peffstr = param;            
         } else {
-            peffstr = ParamUtil.getParam(params, "type", "");
-            duration = u().safeLongToInt(u().timeToTicks(u().parseTime(ParamUtil.getParam(params, "time", "3s")))); 
-            amplifier = Math.max(ParamUtil.getParam(params, "level", 1)-1, 0);
-            ambient = ParamUtil.getParam(params, "ambient", false);
+            peffstr = params.getParam("type", "");
+            duration = u().safeLongToInt(u().timeToTicks(u().parseTime(params.getParam("time", "3s")))); 
+            amplifier = Math.max(params.getParam("level", 1)-1, 0);
+            ambient = params.getParam("ambient", false);
         }
         PotionEffectType pef = Util.parsePotionEffect (peffstr.toUpperCase());
         if (pef == null) return "";

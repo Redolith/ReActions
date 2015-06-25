@@ -22,11 +22,8 @@
 
 package me.fromgate.reactions.actions;
 
-import java.util.List;
-import java.util.Map;
-
-import me.fromgate.reactions.externals.wgbridge.RAWorldGuard;
-import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.externals.RAWorldGuard;
+import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Util;
 
 import org.bukkit.Location;
@@ -35,12 +32,14 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 public class ActionClearRegion extends Action {
 
     @Override
-    public boolean execute(Player p, Map<String, String> params) {
-        String region = ParamUtil.getParam(params, "region", "");
-        String type = ParamUtil.getParam(params, "type", "all");
+    public boolean execute(Player p, Param params) {
+        String region = params.getParam("region", "");
+        String type = params.getParam("type", "all");
         if (region.isEmpty()) return false;
         if (!RAWorldGuard.isConnected()) return false;
         List<Location> locs = RAWorldGuard.getRegionMinMaxLocations(region);

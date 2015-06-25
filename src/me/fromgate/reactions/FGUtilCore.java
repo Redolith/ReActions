@@ -38,7 +38,6 @@ import java.util.Set;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -94,7 +93,6 @@ public abstract class FGUtilCore {
     private String project_name = "";
     private String project_current_version = "";
     private String project_last_version = "";
-    //private String project_file_url = "";
     private String project_curse_url = "";
     private String version_info_perm = permprefix+"config"; // кого оповещать об обнволениях
     private String project_bukkitdev="";
@@ -112,7 +110,6 @@ public abstract class FGUtilCore {
         this.plgcmd = plgcmd;
         this.px = ChatColor.translateAlternateColorCodes('&',"&3["+des.getName()+"]&f ");
     }
-
 
     public void initUpdateChecker(String plugin_name, String project_id, String bukkit_dev_name, boolean enable){
         this.project_id = project_id;
@@ -1205,8 +1202,8 @@ public abstract class FGUtilCore {
     	if (p!=null) this.printMSG(p, s);
     	return result;
     }
-
-
+    
+    
 }
 
 

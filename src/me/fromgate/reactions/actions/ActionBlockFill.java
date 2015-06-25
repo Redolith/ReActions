@@ -22,24 +22,23 @@
 
 package me.fromgate.reactions.actions;
 
-import java.util.List;
-import java.util.Map;
-
-import me.fromgate.reactions.externals.wgbridge.RAWorldGuard;
+import me.fromgate.reactions.externals.RAWorldGuard;
 import me.fromgate.reactions.util.Locator;
-import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.util.Param;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
+
 public class ActionBlockFill extends Action {
 
 	@Override
-	public boolean execute(Player p, Map<String, String> params) {
+	public boolean execute(Player p, Param params) {
 		// loc1: loc2: / region / chance / block
-		String istr = ParamUtil.getParam(params, "block", "");
+		String istr = params.getParam("block", "");
 		if (istr.isEmpty()) return false;
 		ItemStack item = u().parseItemStack(istr);
 		if ((item==null)||((!item.getType().isBlock()))){
@@ -47,12 +46,12 @@ public class ActionBlockFill extends Action {
 			return false;
 		}
 
-		if (!ParamUtil.isParamExists(params, "region")&&!ParamUtil.isParamExists(params, "loc1","loc2")) return false;
+		if (!params.isParamsExists("region")&&!params.isParamsExists("loc1","loc2")) return false;
 
 		Location loc1=null;
 		Location loc2=null;
 
-		String regionName = ParamUtil.getParam(params, "region", "");
+		String regionName = params.getParam("region", "");
 		if (!regionName.isEmpty()){
 			List<Location> locs = RAWorldGuard.getRegionMinMaxLocations(regionName);
 			if (locs.size()==2) {
@@ -60,15 +59,15 @@ public class ActionBlockFill extends Action {
 				loc2=locs.get(1);
 			}
 		} else {
-			String locStr = ParamUtil.getParam(params, "loc1", "");
+			String locStr = params.getParam("loc1", "");
 			if (!locStr.isEmpty()) loc1 = Locator.parseLocation(locStr, null);
-			locStr = ParamUtil.getParam(params, "loc2", "");
+			locStr = params.getParam("loc2", "");
 			if (!locStr.isEmpty()) loc2 = Locator.parseLocation(locStr, null);
 		}
 		if (loc1==null||loc2==null) return false;
 		
 		if (!loc1.getWorld().equals(loc2.getWorld())) return false;
-		int chance = ParamUtil.getParam(params, "chance", 100);
+		int chance = params.getParam("chance", 100);
 		fillArea (item,loc1,loc2,chance);
 		return true;
 	}

@@ -22,10 +22,8 @@
 
 package me.fromgate.reactions.flags;
 
-import java.util.Map;
-
 import me.fromgate.reactions.sql.SQLManager;
-import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.util.Param;
 
 import org.bukkit.entity.Player;
 
@@ -38,20 +36,20 @@ public class FlagSQL extends Flag {
 	@Override
 	public boolean checkFlag(Player p, String param) {
 		if (!SQLManager.isEnabled()) return false;
-		Map<String,String> params = ParamUtil.parseParams(param);
-		if (!ParamUtil.isParamExists(params, "value","select","from")&&
-				!(ParamUtil.isParamExists(params, "query"))) return false;
-		String value = ParamUtil.getParam(params, "value", "");
-		String select = ParamUtil.getParam(params, "select", "");
-		String query = ParamUtil.getParam(params, "query", "");
+		Param params = new Param (param);
+		if (!params.isParamsExists("value","select","from")&&
+				!(params.isParamsExists("query"))) return false;
+		String value = params.getParam("value", "");
+		String select = params.getParam("select", "");
+		String query = params.getParam("query", "");
 		if (query.isEmpty()){
 			if (select.isEmpty()) return false;
-			String from = ParamUtil.getParam(params, "from", "");
+			String from = params.getParam("from", "");
 			if (from.isEmpty()) return false;
-			String where = ParamUtil.getParam(params, "where", "");
+			String where = params.getParam("where", "");
 			query = "SELECT "+select+" FROM "+from+(where.isEmpty() ? "" : " WHERE "+where);
 		}
-		int column = ParamUtil.getParam(params, "column", 1);
+		int column = params.getParam("column", 1);
 		if (check) return SQLManager.compareSelect(value, query, column,params);
 		else return SQLManager.isSelectResultEmpty(query);
 	}

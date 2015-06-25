@@ -3,9 +3,8 @@ package me.fromgate.reactions.activators;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.ItemHoldEvent;
-import me.fromgate.reactions.util.ItemUtil;
-import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.Variables;
+import me.fromgate.reactions.util.item.ItemUtil;
 
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -33,7 +32,7 @@ public class ItemHoldActivator extends Activator {
         if (event instanceof ItemHoldEvent){
             ItemHoldEvent ie  = (ItemHoldEvent) event;
             if (ItemUtil.compareItemStr(ie.getItem(), this.item)){
-            	Variables.setTempVar("item", Util.itemToString(ie.getItem()));
+            	Variables.setTempVar("item", ItemUtil.itemToString(ie.getItem()));
                  return Actions.executeActivator(ie.getPlayer(), this);
             }
         }

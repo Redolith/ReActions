@@ -34,10 +34,9 @@ import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.externals.Externals;
 import me.fromgate.reactions.externals.RAFactions;
 import me.fromgate.reactions.externals.RAVault;
-import me.fromgate.reactions.externals.wgbridge.RAWorldGuard;
+import me.fromgate.reactions.externals.RAWorldGuard;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -53,7 +52,6 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Openable;
 import org.bukkit.potion.PotionEffectType;
@@ -81,25 +79,15 @@ public class Util {
 		else return min;
 	}
 
-	public static ItemStack getRndItem (String str){
-		if (str.isEmpty()) return new ItemStack (Material.AIR);
-		String [] ln = str.split(",");
-		if (ln.length==0) return new ItemStack (Material.AIR);
-		ItemStack item = ItemUtil.parseItemStack(ln[u().tryChance(ln.length)]);
-		if (item == null) return new ItemStack (Material.AIR);
-		item.setAmount(1);
-		return item;
-	}
-
-	public static String soundPlay (Location loc, Map<String,String> params){
+	public static String soundPlay (Location loc, Param params){
 		if (params.isEmpty()) return "";
 		String sndstr = "";
 		String strvolume ="1";
 		String strpitch = "1";
 		float pitch = 1;
 		float volume = 1;
-		if (params.containsKey("param")){
-			String param = ParamUtil.getParam(params, "param", "");
+		if (params.hasAnyParam("param")){
+			String param = params.getParam("param", "");
 			if (param.isEmpty()) return "";
 			if (param.contains("/")){
 				String[] prm = param.split("/");
@@ -112,9 +100,9 @@ public class Util {
 			if (strvolume.matches("[0-9]+-?\\.[0-9]*")) volume = Float.parseFloat(strvolume);
 			if (strpitch.matches("[0-9]+-?\\.[0-9]*")) pitch = Float.parseFloat(strpitch);            
 		} else {
-			sndstr = ParamUtil.getParam(params, "type", "");
-			pitch = ParamUtil.getParam(params, "pitch", 1.0f);
-			volume = ParamUtil.getParam(params, "volume", 1.0f);
+			sndstr = params.getParam("type", "");
+			pitch = params.getParam("pitch", 1.0f);
+			volume = params.getParam("volume", 1.0f);
 		}
 		Sound sound = getSoundStr (sndstr);
 		loc.getWorld().playSound(loc, sound, volume, pitch);
@@ -123,8 +111,9 @@ public class Util {
 
 	public static void soundPlay (Location loc, String param){
 		if (param.isEmpty()) return;
-		Map<String,String> params = new HashMap<String,String>();
-		params.put("param", param);
+		/*Map<String,String> params = new HashMap<String,String>();
+		params.put("param", param); */
+		Param params = new Param (param,"param");
 		soundPlay (loc, params);
 	}
 
@@ -166,74 +155,6 @@ public class Util {
 		return entities;
 	}
 
-	public static List<ItemStack> parseRandomItems (String stacks){
-		return parseItemStacks (Util.parseRandomItemsStr(stacks));
-	}
-
-
-	public static List<ItemStack> parseItemStacks (String items){
-		List<ItemStack> stacks = new ArrayList<ItemStack>();
-		String[] ln = items.split(";");
-		for (String item : ln){
-			ItemStack stack = ItemUtil.parseItemStack(item);
-			if (stack != null) stacks.add(stack);
-		}
-		return stacks;
-	}
-	public static String itemToString (ItemStack item){
-		String itemStr ="";
-		if (item == null) return itemStr;
-		String itemName = item.getType().name();
-		try {
-			if (item.getItemMeta().hasDisplayName()) itemName =ChatColor.stripColor(item.getItemMeta().getDisplayName());
-		} catch (Exception e){
-		}
-		String amount = item.getAmount()>1 ? "*"+item.getAmount() : "";
-		itemStr = itemName+amount;
-		return itemStr;
-	}
-
-	public static String itemsToString (List<ItemStack> items){
-		String str="";
-		for (ItemStack i : items){
-			String itemStr = itemToString(i);
-			if (!itemStr.isEmpty()) str = str.isEmpty() ? itemStr : ", " +itemStr;
-		}
-		return str;        
-	}
-
-	//id:data*amount@enchant:level,color;id:data*amount%chance/id:data*amount@enchant:level,color;id:data*amount%chance
-	public static String parseRandomItemsStr (String items){
-		if (items.isEmpty()) return "";
-		String [] loots = items.split("/");
-		Map<String,Integer> drops = new HashMap<String,Integer>();
-		int maxchance = 0;
-		int nochcount = 0;
-		for (String loot: loots){
-			String [] ln = loot.split("%");
-			if (ln.length>0){
-				String stacks = ln[0];
-				if (stacks.isEmpty()) continue;
-				int chance =-1;
-				if ((ln.length==2)&&ReActions.util.isInteger(ln[1])) {
-					chance = Integer.parseInt(ln[1]);
-					maxchance += chance; 
-				} else nochcount++;
-				drops.put(stacks, chance);
-			}
-		}
-
-		if (drops.isEmpty()) return "";
-		int eqperc = (nochcount*100)/drops.size();
-		maxchance = maxchance+eqperc*nochcount;
-		int rnd = ReActions.util.tryChance(maxchance);
-		int curchance = 0;
-		for (String stack : drops.keySet()){
-			curchance = curchance+ (drops.get(stack)<0 ? eqperc : drops.get(stack));
-			if (rnd<=curchance) return stack;
-		}
-		return "";
-	}
 
 	@SuppressWarnings("deprecation")
 	public static String replaceStandartLocations (Player p, String param){
@@ -339,18 +260,19 @@ public class Util {
 	}
 
 	//region,rgplayer,player,world,faction,group,perm
-	public static Set<Player> getPlayerList(Map<String,String> params, Player singlePlayer){
+	public static Set<Player> getPlayerList(Param param, Player singlePlayer){
 		Set<Player> players = new HashSet<Player>();
-		if (params.containsKey("region")||params.containsKey("rgplayer")||params.containsKey("player")||
+		if (param.hasAnyParam("region","rgplayer","player","world","faction","group","perm")){
+		/*if (params.containsKey("region")||params.containsKey("rgplayer")||params.containsKey("player")||
 				params.containsKey("world")||
 				params.containsKey("faction")||
 				params.containsKey("group")||
-				params.containsKey("perm")){
+				params.containsKey("perm")){ */
 
 			// Players in regions
 			if (RAWorldGuard.isConnected()){
-				String regionNames = ParamUtil.getParam(params, "region", "");
-				if (regionNames.isEmpty()) regionNames = ParamUtil.getParam(params, "rgplayer", "");
+				String regionNames = param.getParam("region", "");
+				if (regionNames.isEmpty()) regionNames = param.getParam("rgplayer", "");
 				String[] arrRegion = regionNames.split(",");
 				for (String regionName: arrRegion)
 					players.addAll(RAWorldGuard.playersInRegion(regionName));
@@ -358,14 +280,14 @@ public class Util {
 
 			// Players in faction
 			if (Externals.isConnectedFactions()){
-				String factionNames = ParamUtil.getParam(params, "faction", "");
+				String factionNames = param.getParam("faction", "");
 				String [] arrFaction = factionNames.split(",");
 				for (String factionName : arrFaction)
 					players.addAll(RAFactions.playersInFaction(factionName));
 			}
 
 			// Players in worlds
-			String worldNames = ParamUtil.getParam(params, "world", "");
+			String worldNames = param.getParam("world", "");
 			String[] arrWorlds = worldNames.split(",");
 			for (String worldName: arrWorlds){
 				World world = Bukkit.getWorld(worldName);
@@ -374,8 +296,8 @@ public class Util {
 			}
 
 			// Player by permission & group
-			String group = ParamUtil.getParam(params, "group", "");
-			String perm = ParamUtil.getParam(params, "perm", "");
+			String group = param.getParam("group", "");
+			String perm = param.getParam("perm", "");
 			if ((!group.isEmpty())||(!perm.isEmpty())){
 				for (Player pl : Bukkit.getOnlinePlayers()){
 					if ((!group.isEmpty())&& RAVault.playerInGroup(pl, group)) players.add(pl);
@@ -384,7 +306,7 @@ public class Util {
 			}
 
 			// Players by name (all = all players, null - empty player)
-			String playerNames = ParamUtil.getParam(params, "player", "");
+			String playerNames = param.getParam("player", "");
 			if (playerNames.equalsIgnoreCase("all")){
 				players.clear();
 				for (Player player : Bukkit.getOnlinePlayers())

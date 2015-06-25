@@ -22,10 +22,6 @@
 
 package me.fromgate.reactions.event;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator;
@@ -34,12 +30,12 @@ import me.fromgate.reactions.activators.Activators;
 import me.fromgate.reactions.activators.ItemHoldActivator;
 import me.fromgate.reactions.activators.ItemWearActivator;
 import me.fromgate.reactions.activators.MessageActivator;
-import me.fromgate.reactions.activators.SignActivator;
 import me.fromgate.reactions.activators.MessageActivator.Source;
-import me.fromgate.reactions.externals.wgbridge.RAWorldGuard;
-import me.fromgate.reactions.util.ItemUtil;
-import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.activators.SignActivator;
+import me.fromgate.reactions.externals.RAWorldGuard;
+import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Util;
+import me.fromgate.reactions.util.item.ItemUtil;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -55,6 +51,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Button;
 import org.bukkit.metadata.FixedMetadataValue;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class EventManager {
 	private static ReActions plg(){
@@ -98,6 +97,14 @@ public class EventManager {
 		Bukkit.getServer().getPluginManager().callEvent(e);       
 		return true;
 	}
+	
+	public static boolean raiseMobKillEvent (Player p, LivingEntity mob){
+		if (mob == null) return false;
+		MobKillEvent e = new MobKillEvent(p,mob);
+		Bukkit.getServer().getPluginManager().callEvent(e);       
+		return true;
+	}
+
 
 	public static boolean raiseJoinEvent(Player player, boolean joinfirst){
 		JoinEvent e = new JoinEvent (player,joinfirst);
@@ -184,10 +191,10 @@ public class EventManager {
 		return false;
 	}
 
-	public static boolean raiseCommandEvent (Player p, String command){
+	public static boolean raiseCommandEvent (Player p, String command, boolean canceled){
 		if (command.isEmpty()) return false;
 		String [] args = command.split(" ");
-		CommandEvent ce = new CommandEvent (p,command,args);
+		CommandEvent ce = new CommandEvent (p,command,args, canceled);
 		Bukkit.getServer().getPluginManager().callEvent(ce);
 		if (ce.isCancelled()) return true;
 		return false;
@@ -195,14 +202,13 @@ public class EventManager {
 
 	public static boolean raiseExecEvent (CommandSender sender, String param){
 		if (param.isEmpty()) return false;
-		Map<String,String> params = ParamUtil.parseParams(param,"player");
-		return raiseExecEvent (sender, params); 
+		return raiseExecEvent (sender, new Param (param,"player")); 
 	}
 
-	public static boolean raiseExecEvent (CommandSender sender, Map<String,String> params){
-		if (params.isEmpty()) return false;
+	public static boolean raiseExecEvent (CommandSender sender, Param param){
+		if (param.isEmpty()) return false;
 		final Player senderPlayer = (sender instanceof Player) ? (Player) sender : null;
-		final String id = ParamUtil.getParam(params, "activator", "").isEmpty() ? ParamUtil.getParam(params, "exec", "") : ParamUtil.getParam(params, "activator", "");
+		final String id = param.getParam("activator", "").isEmpty() ? param.getParam("exec", "") : param.getParam("activator", "");
 		if (id.isEmpty()) return false;
 		Activator act = plg().getActivator(id);
 		if (act == null) {
@@ -213,13 +219,12 @@ public class EventManager {
 			u().logOnce("wrongactype_"+id, "Failed to run exec activator "+id+". Wrong activator type.");
 			return false;
 		}
-		int repeat = Math.min(ParamUtil.getParam(params, "repeat", 1), 1);
-		long delay = u().timeToTicks(u().parseTime(ParamUtil.getParam(params, "delay", "1t")));
+		int repeat = Math.min(param.getParam("repeat", 1), 1);
+		long delay = u().timeToTicks(u().parseTime(param.getParam("delay", "1t")));
 		final List<Player> target = new ArrayList<Player>();
-		target.addAll(Util.getPlayerList(params,null)); // Получаем перечень игроков: player, world, region
+		target.addAll(Util.getPlayerList(param,null)); 
 		if (target.isEmpty() &&(senderPlayer !=null)) target.add(senderPlayer); 
-		if (target.isEmpty()) target.add(null); // TODO запуск для пустого списка?!
-
+		if (target.isEmpty()) target.add(null); 
 		for (int i = 0; i<repeat; i++){
 			Bukkit.getScheduler().runTaskLater(plg(), new Runnable(){
 				@Override
@@ -251,18 +256,6 @@ public class EventManager {
 		return false;
 	}
 
-	public static void raiseRegionEvent (Player player, Location to){
-		if (!RAWorldGuard.isConnected()) return;
-		List<String> rgs = RAWorldGuard.getRegions(to);
-		if (rgs.isEmpty()) return;
-		for (String rg : rgs){
-			if (isTimeToRaiseEvent (player,rg, plg().worlduardRecheck)){
-				RegionEvent wge = new RegionEvent (player, rg);
-				Bukkit.getServer().getPluginManager().callEvent(wge);	
-				setFutureRegionCheck(player,rg);
-			}
-		}
-	}
 	public static void raiseItemWearEvent (final Player player){
 		Bukkit.getScheduler().runTaskLater(plg(), new Runnable(){
 			@Override
@@ -346,11 +339,42 @@ public class EventManager {
 		return true;
 	}
 
+	public static void raiseAllRegionEvents (final Player player, final Location to, final Location from){
+		if (!RAWorldGuard.isConnected()) return;
+		Bukkit.getScheduler().runTaskAsynchronously(ReActions.instance, new Runnable(){
+			@Override
+			public void run() {
 
-	public static void raiseRgEnterEvent (Player player, Location from, Location to){
-		if (!RAWorldGuard.isConnected()) return; 
-		List<String> regionTo = RAWorldGuard.getRegions(to);
-		List<String> regionFrom = RAWorldGuard.getRegions(from);
+				final List<String> regionsTo = RAWorldGuard.getRegions(to);
+				final List<String> regionsFrom = RAWorldGuard.getRegions(from);
+
+				Bukkit.getScheduler().runTask(ReActions.instance, new Runnable(){
+					@Override
+					public void run() {
+						raiseRegionEvent  (player,regionsTo);
+						raiseRgEnterEvent (player, regionsTo, regionsFrom);
+						raiseRgLeaveEvent (player, regionsTo, regionsFrom);
+					}
+				});
+			}
+		}); 
+	}
+
+
+
+	private static void raiseRegionEvent (Player player, List<String> to){
+		if (to.isEmpty()) return;
+		for (String rg : to){
+			if (isTimeToRaiseEvent (player,rg, plg().worlduardRecheck)){
+				RegionEvent wge = new RegionEvent (player, rg);
+				Bukkit.getServer().getPluginManager().callEvent(wge);	
+				setFutureRegionCheck(player,rg);
+			}
+		}
+	}
+
+
+	private static void raiseRgEnterEvent (Player player, List<String> regionTo, List<String> regionFrom){
 		if (regionTo.isEmpty()) return;
 		for (String rg : regionTo)
 			if (!regionFrom.contains(rg)){
@@ -359,12 +383,9 @@ public class EventManager {
 			}
 	}
 
-	public static void raiseRgLeaveEvent (Player player, Location from, Location to){
-		if (!RAWorldGuard.isConnected()) return; 
-		List<String> regionTo = RAWorldGuard.getRegions(to);
-		List<String> rgsfrom = RAWorldGuard.getRegions(from);
-		if (rgsfrom.isEmpty()) return;
-		for (String rg : rgsfrom)
+	private static void raiseRgLeaveEvent (Player player, List<String> regionTo, List<String> regionFrom){
+		if (regionFrom.isEmpty()) return;
+		for (String rg : regionFrom)
 			if (!regionTo.contains(rg)){
 				RegionLeaveEvent wge = new RegionLeaveEvent (player, rg);
 				Bukkit.getServer().getPluginManager().callEvent(wge);				
@@ -426,7 +447,6 @@ public class EventManager {
 		Player player = sender!=null&&(sender instanceof Player) ? (Player) sender : null;
 		for (MessageActivator a : Activators.getMessageActivators()){
 			if (a.filterMessage(source, message)) {
-				//if (source == Source.ANSWER) Questions.removeMessage(a.getName(), player);
 				MessageEvent me = new MessageEvent (player, a, message);
 				Bukkit.getServer().getPluginManager().callEvent(me);
 				return me.isCancelled();

@@ -22,17 +22,18 @@
 
 package me.fromgate.reactions.actions;
 
-import java.util.Map;
-import java.util.Set;
-import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Util;
+
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
+
+import java.util.Set;
 
 public class ActionMessage extends Action {
 
     @Override
-    public boolean execute(Player p, Map<String, String> params) {
+    public boolean execute(Player p, Param params) {
         sendMessage (p,params);
         return true;
     }
@@ -44,7 +45,7 @@ public class ActionMessage extends Action {
     	return false;
     }
     
-    private void sendMessage(Player player, Map<String, String> params){
+    private void sendMessage(Player player, Param params){
         Set<Player> players = Util.getPlayerList(params,player);
         String message = removeParams (params);
         if (message.isEmpty()) return;
@@ -69,8 +70,8 @@ public class ActionMessage extends Action {
         }
     }
     
-	private String removeParams(Map<String, String> params){
-		String message = ParamUtil.getParam(params, "param-line", "");
+	private String removeParams(Param params){
+		String message = params.getParam("param-line", "");
 		if (message.isEmpty()) return message;
 		if (params.size()<=1) return message;
 		String [] msgArray = message.split(" ");

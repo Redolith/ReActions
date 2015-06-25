@@ -22,7 +22,7 @@
 
 package me.fromgate.reactions.event;
 
-import me.fromgate.reactions.util.ItemUtil;
+import me.fromgate.reactions.util.item.ItemUtil;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

@@ -22,8 +22,6 @@
 
 package me.fromgate.reactions.flags;
 
-import java.util.ArrayList;
-import java.util.List;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.Activator.FlagVal;
@@ -31,11 +29,15 @@ import me.fromgate.reactions.flags.factions.FlagAtFactionZoneRel;
 import me.fromgate.reactions.flags.factions.FlagFaction;
 import me.fromgate.reactions.flags.factions.FlagIsFactionRelPlayerAround;
 import me.fromgate.reactions.flags.factions.FlagPlayersInRel;
-import me.fromgate.reactions.util.Placeholders;
+import me.fromgate.reactions.placeholders.Placeholders;
 import me.fromgate.reactions.util.RADebug;
+import me.fromgate.reactions.util.Variables;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public enum Flags {
     GROUP ("group",true,new FlagGroup()),
@@ -138,8 +140,6 @@ public enum Flags {
     }
 
     public static boolean checkFlags (Player p, Activator c){
-    	
-    	
         return RADebug.checkFlagAndDebug(p, checkAllFlags (p, c));
     }
 
@@ -147,7 +147,8 @@ public enum Flags {
         if (c.getFlags().size()>0)
             for (int i = 0; i<c.getFlags().size();i++){
                 FlagVal f = c.getFlags().get(i);
-                if (!checkFlag (p, f.flag, Placeholders.replacePlaceholders(p, c, f.value), f.not)) return false;
+                Variables.setTempVar(new StringBuilder(f.flag).append("_flag").toString().toUpperCase(), f.value);
+                if (!checkFlag (p, f.flag, Placeholders.replacePlaceholders(p, f.value), f.not)) return false;
             }
         return true;
     }

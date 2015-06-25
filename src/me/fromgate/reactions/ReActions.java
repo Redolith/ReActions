@@ -22,36 +22,40 @@
 
 package me.fromgate.reactions;
 
-import java.io.IOException;
-import java.util.logging.Logger;
-
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.Activators;
+import me.fromgate.reactions.commands.Commander;
 import me.fromgate.reactions.externals.Externals;
 import me.fromgate.reactions.externals.LogHandler;
-import me.fromgate.reactions.externals.RAProtocolLib;
 import me.fromgate.reactions.externals.RACraftConomy;
 import me.fromgate.reactions.externals.RAEffects;
+import me.fromgate.reactions.externals.RAProtocolLib;
 import me.fromgate.reactions.externals.RARacesAndClasses;
 import me.fromgate.reactions.externals.RATowny;
 import me.fromgate.reactions.externals.RAVault;
-import me.fromgate.reactions.externals.wgbridge.RAWorldGuard;
+import me.fromgate.reactions.externals.RAWorldGuard;
 import me.fromgate.reactions.menu.InventoryMenu;
+import me.fromgate.reactions.placeholders.Placeholders;
 import me.fromgate.reactions.sql.SQLManager;
 import me.fromgate.reactions.timer.Timers;
 import me.fromgate.reactions.util.Delayer;
-import me.fromgate.reactions.util.ItemUtil;
+import me.fromgate.reactions.util.FakeCmd;
 import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.RADebug;
 import me.fromgate.reactions.util.Shoot;
+import me.fromgate.reactions.util.UpdateChecker;
 import me.fromgate.reactions.util.Variables;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.IOException;
+import java.util.logging.Logger;
+
 
 public class ReActions extends JavaPlugin {
+	boolean saveEmptySections = false;
     String actionMsg="tp,grpadd,grprmv,townset,townkick,itemrmv,invitemrmv,itemgive,moneypay,moneygive"; //отображать сообщения о выполнении действий
     String language="english";
     boolean languageSave=false;
@@ -63,15 +67,23 @@ public class ReActions extends JavaPlugin {
     public int sameMessagesDelay = 10;
     public boolean horizontalPushback = false;
     boolean enableProfiler = true;
-    private boolean needUpdate;
     public static ReActions instance;
     public static RAUtil util;
     
 
+	public static ReActions getPlugin(){
+		return instance;
+	}
+	public static RAUtil getUtil(){
+		return util;
+	}
+    
+	
+	
     //разные переменные
     RAUtil u;
     Logger log = Logger.getLogger("Minecraft");
-    private Cmd cmd;
+    //private CmdOld cmd;
     private RAListener l;
     private boolean towny_conected = false;
 
@@ -90,19 +102,24 @@ public class ReActions extends JavaPlugin {
         loadCfg();
         saveCfg();
         u = new RAUtil (this, languageSave, language, "react");
-        u.initUpdateChecker("ReActions", "61726", "reactions", this.checkUpdates);
+        UpdateChecker.init(this, "ReActions", "61726", "reactions", this.checkUpdates);
+        //u.initUpdateChecker("ReActions", "61726", "reactions", this.checkUpdates);
+        
         if (!getDataFolder().exists()) getDataFolder().mkdirs();
         l = new RAListener (this);
         PluginManager pm = this.getServer().getPluginManager();
         pm.registerEvents(l, this);
         pm.registerEvents(new InventoryMenu(), this);
-        cmd = new Cmd (this);
-        getCommand("react").setExecutor(cmd);
+        
+        /*cmd = new CmdOld (this);
+        getCommand("react").setExecutor(cmd);*/
         instance = this;
         util = u;
+        Commander.init(this);
         Timers.init();
         Activators.init();
-        ItemUtil.init(this);
+        FakeCmd.init();
+      //  ItemUtil.init(this);
         
         
         RAEffects.init();
@@ -123,9 +140,7 @@ public class ReActions extends JavaPlugin {
         
         SQLManager.init();
         InventoryMenu.init();
-        
-        
-        
+        Placeholders.init();
         
         
         Bukkit.getLogger().addHandler(new LogHandler());
@@ -143,29 +158,29 @@ public class ReActions extends JavaPlugin {
     protected void saveCfg(){
         getConfig().set("general.language",language);
         getConfig().set("general.check-updates",checkUpdates);
+        getConfig().set("reactions.save-empty-actions-and-flags-sections",saveEmptySections);
         getConfig().set("reactions.show-messages-for-actions",actionMsg);
         getConfig().set("reactions.center-player-teleport",centerTpCoords);
         getConfig().set("reactions.region-recheck-delay",worlduardRecheck);
         getConfig().set("reactions.item-hold-recheck-delay",itemHoldRecheck);
         getConfig().set("reactions.item-wear-recheck-delay",itemWearRecheck);
         getConfig().set("reactions.horizontal-pushback-action",horizontalPushback );
-        getConfig().set("reactions.need-file-update", needUpdate);
         getConfig().set("actions.shoot.break-block",Shoot.actionShootBreak);
         getConfig().set("actions.shoot.penetrable",Shoot.actionShootThrough);
         saveConfig();
     }
 
-    protected void loadCfg(){
+    public void loadCfg(){
         language= getConfig().getString("general.language","english");
         checkUpdates = getConfig().getBoolean("general.check-updates",true);
         languageSave = getConfig().getBoolean("general.language-save",false);
+        saveEmptySections = getConfig().getBoolean("reactions.save-empty-actions-and-flags-sections",false);
         centerTpCoords = getConfig().getBoolean("reactions.center-player-teleport",true);
         actionMsg= getConfig().getString("reactions.show-messages-for-actions","tp,grpadd,grprmv,townset,townkick,itemrmv,itemgive,moneypay,moneygive");
         worlduardRecheck = getConfig().getInt("reactions.region-recheck-delay",2);
         itemHoldRecheck = getConfig().getInt("reactions.item-hold-recheck-delay",2);
         itemWearRecheck = getConfig().getInt("reactions.item-wear-recheck-delay",2);;
         horizontalPushback = getConfig().getBoolean("reactions.horizontal-pushback-action", false);
-        needUpdate= getConfig().getBoolean("reactions.need-file-update", true);
         Shoot.actionShootBreak = getConfig().getString("actions.shoot.break-block",Shoot.actionShootBreak);
         Shoot.actionShootThrough = getConfig().getString("actions.shoot.penetrable",Shoot.actionShootThrough);
     }
@@ -181,15 +196,8 @@ public class ReActions extends JavaPlugin {
     public String getActionMsg(){
         return this.actionMsg;
     }
+	public boolean saveEmpty() {
+		return this.saveEmptySections;
+	}
 
-    public boolean needUpdateFiles() {
-        return needUpdate;
-    }
-
-    public void setUpdateFiles (boolean update){
-        if (update!= needUpdate){
-            needUpdate = update;
-            saveCfg();
-        }
-    }
 }

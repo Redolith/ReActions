@@ -23,16 +23,9 @@
 
 package me.fromgate.reactions.util;
 
-import java.io.File;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.externals.wgbridge.RAWorldGuard;
+import me.fromgate.reactions.externals.RAWorldGuard;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -42,6 +35,12 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.util.Vector;
+
+import java.io.File;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class Locator {
 	private static HashMap<String,TpLoc> tports = new HashMap<String,TpLoc>();
@@ -67,47 +66,49 @@ public class Locator {
 	 *   Additional parameters:
 	 *   land:true - forces to find location in point where player can stay (solid block with two blocks above it)
 	 *   add-vector:<X,Y,Z> - allows to modify result of locations selections. For examample,
-	 *                        loc:world,10,10,10 add-vector:0,5,0 will point to location world,10,15,10.
+	 *                        loc:world,10,10,10 add-vector:0,5,0 will point to ation world,10,15,10.
 	 * @param defaultLocation - default location, used when definitions of locations is wrong or missed
 	 * @return Location
 	 */
 	public static Location parseLocation(String param, Location defaultLocation){
-		Map<String,String> params = ParamUtil.parseParams(param,"loc");
+		Param params = new Param (param,"loc");
 		return parseLocation (params, defaultLocation);
 	}
 		
-	public static Location parseLocation(Map<String,String> params, Location defaultLocation){
+	public static Location parseLocation(Param params, Location defaultLocation){
 		Location location = null;
-		if (ParamUtil.isParamExists(params, "loc")) {
-			String locStr = ParamUtil.getParam(params, "loc", "");
+		if (params.isParamsExists("loc")) {
+			String locStr = params.getParam("loc", "");
 			location = Locator.getTpLoc(locStr);
 			if (location == null) location = parseCoordinates(locStr);
 		}
-		boolean land = ParamUtil.getParam(params, "land", true);
-		if (ParamUtil.isParamExists(params, "region")){
-			location = getRegionLocation(ParamUtil.getParam(params, "region", ""),land);
+		
+		boolean land = params.getParam("land", true);
+		if (params.isParamsExists("region")){
+			location = getRegionLocation(params.getParam("region", ""),land);
 			location = copyYawPitch(location, defaultLocation);
 		}
 		
-		if (ParamUtil.isParamExists(params, "loc1","loc2")){
-			Location loc1 = parseCoordinates(ParamUtil.getParam(params, "loc1", ""));
-			Location loc2 = parseCoordinates(ParamUtil.getParam(params, "loc2", ""));
+		if (params.isParamsExists("loc1","loc2")){
+			Location loc1 = parseCoordinates(params.getParam("loc1", ""));
+			Location loc2 = parseCoordinates(params.getParam("loc2", ""));
 			if (loc1!=null&&loc2!=null)	{
 				location = getCubeLocation (loc1,loc2,land);
 				location = copyYawPitch(location, defaultLocation);
 			}
 		} 
-		if (ParamUtil.isParamExists(params, "radius")){
-			int radius = ParamUtil.getParam(params, "radius", -1);
+		if (params.isParamsExists("radius")){
+			int radius = params.getParam("radius", -1);
 			if (radius>0){
 				location = getRadiusLocation (location == null ? defaultLocation : location,radius,land);
 				location = copyYawPitch(location, defaultLocation);
 			}
 		}
-		Vector vector = Locator.parseVector(ParamUtil.getParam(params, "add-vector", ""));
+		Vector vector = Locator.parseVector(params.getParam("add-vector", ""));
 		if (vector == null) vector = new Vector (0,0,0);
 		Location result = location == null ? defaultLocation : location;
 		if (result!=null) result.add(vector);
+		
 		return result;
 	}
 
@@ -136,23 +137,43 @@ public class Locator {
 		if (minmax.isEmpty()) return null;
 		return getMinMaxLocation (minmax,land);
 	}
-
+	
+	
 	public static Location getRadiusLocation (Location center, int radius, boolean land){
-		int x = u().getRandomInt(radius*2+1)-radius;
-		int z = u().getRandomInt(radius*2+1)-radius;
-		do {
-			x = u().getRandomInt(radius*2+1)-radius;
-			z = u().getRandomInt(radius*2+1)-radius;
-		} while (radius>(Math.sqrt((double)x)+Math.sqrt((double)z)));
-
 		List<Location> locs = new ArrayList<Location>();
-		for (int y=Math.max(center.getBlockY()-radius, 0); y<=Math.min(center.getBlockY()+radius, center.getWorld().getMaxHeight()-1); y++){
-			locs.add(new Location (center.getWorld(),center.getBlockX()+x,
-					y, center.getBlockZ()+z));
+		if (radius<=16){
+			for (int x = -radius; x<=radius;x++)
+				for (int y = -radius; y<=radius;y++)
+					for (int z = -radius; z<=radius;z++){
+						Location loc = (new Location (center.getWorld(),
+								center.getBlockX()+x,
+								center.getBlockY()+y,
+								center.getBlockZ()+z)).add(0.5, 0.5, 0.5);
+						if (loc.getBlockY()<0||loc.getBlockY()>=loc.getWorld().getMaxHeight()) continue;
+						if (loc.distance(center)<=radius) locs.add(loc);						
+					}
+		} else {
+			int x = u().getRandomInt(radius*2+1)-radius;
+			int y = u().getRandomInt(radius*2+1)-radius;
+			int z = u().getRandomInt(radius*2+1)-radius;
+			do {
+				x = u().getRandomInt(radius*2+1)-radius;
+				y = u().getRandomInt(radius*2+1)-radius;
+				z = u().getRandomInt(radius*2+1)-radius;
+			} while (radius<Math.sqrt(
+					(double)x*(double)x+
+					(double)z*(double)z+
+					(double)y*(double)y));
+			
+			for (y=Math.max(center.getBlockY()-radius, 0); y<=Math.min(center.getBlockY()+radius, center.getWorld().getMaxHeight()-1); y++){
+				if (radius<Math.sqrt((double)x*(double)x+(double)z*(double)z+(double)y*(double)y))
+					locs.add(new Location (center.getWorld(),center.getBlockX()+x,y, center.getBlockZ()+z));
+			}
 		}
+		if (locs.isEmpty()) locs.add(center);
 		return getEmptyOrLandedLocations (locs,land);
-	}
-
+	} 
+	
 	public static Location parseCoordinates (String strloc){
 		Location loc = null;
 		if (strloc.isEmpty()) return null;
@@ -307,8 +328,10 @@ public class Locator {
 		return tports.size();
 	}
 
-	public static void addTpLoc (String id, Location loc){
+	public static boolean addTpLoc (String id, Location loc){
+		if (id.isEmpty()) return false;
 		tports.put(id, new TpLoc (loc));
+		return true;
 	}
 
 	public static boolean removeTpLoc(String id){

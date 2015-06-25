@@ -38,6 +38,9 @@ public class MobClickActivator extends Activator {
 		if (me.getMob()==null) return false;
 		if (!isActivatorMob (me.getMob())) return false;
 		Variables.setTempVar("moblocation", Locator.locationToString(me.getMob().getLocation()));
+		Variables.setTempVar("mobtype", me.getMob().getType().name());
+		String mobName = me.getMob().getCustomName();
+		if (mobName!=null&&!mobName.isEmpty()) Variables.setTempVar("mobname", mobName);
 		return Actions.executeActivator(me.getPlayer(), this);
 	}
 

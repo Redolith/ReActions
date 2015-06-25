@@ -22,13 +22,10 @@
 
 package me.fromgate.reactions.util;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.externals.RAEffects;
-import me.fromgate.reactions.externals.wgbridge.RAWorldGuard;
+import me.fromgate.reactions.externals.RAWorldGuard;
+import me.fromgate.reactions.util.item.ItemUtil;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -41,40 +38,48 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class MobSpawn {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-    public static void mobSpawn(Player p, Map<String,String> params) {
-        String mob = ParamUtil.getParam(params, "type", "PIG");
-        String locstr = ParamUtil.getParam(params, "loc", "");
-        Location loc = Locator.parseLocation(locstr, p.getLocation());  //Util.locToLocation(p,locstr);
-        String region = ParamUtil.getParam(params, "region", "");
-        int radius = ParamUtil.getParam(params, "radius", 0);
-        int num=Util.getMinMaxRandom(ParamUtil.getParam(params, "num", "1"));
-        String hparam = ParamUtil.getParam(params, "health", "0");
+public class MobSpawn {
+	
+	private static Map<LivingEntity,List<ItemStack>> drops= new HashMap<LivingEntity, List<ItemStack>>();
+	
+
+    public static void mobSpawn(Player p, Param params) {
+        String mob = params.getParam( "type", "PIG");
+        String locstr = params.getParam( "loc", "");
+        Location loc = Locator.parseLocation(locstr, p==null ? null : p.getLocation());  
+        String region = params.getParam( "region", "");
+        int radius = params.getParam( "radius", 0);
+        int num=Util.getMinMaxRandom(params.getParam( "num", "1"));
+        String hparam = params.getParam( "health", "0");
         double health = Util.getMinMaxRandom(hparam);
-        String playeffect = ParamUtil.getParam(params, "effect", "");
-        String dtheffect = ParamUtil.getParam(params, "dtheffect", "");
-        String chest = ParamUtil.getParam(params, "chest", "");
-        String leg = ParamUtil.getParam(params, "leg", "");
-        String helm = ParamUtil.getParam(params, "helm", "");
-        String boot = ParamUtil.getParam(params, "boot", "");
-        String weapon = ParamUtil.getParam(params, "weapon", "");
-        boolean land = ParamUtil.getParam(params, "land", true);
-        String poteff = ParamUtil.getParam(params, "potion", "");
-        String name = ParamUtil.getParam(params, "name", "");
-        String drop = ParamUtil.getParam(params, "drop", "");
-        String xp= ParamUtil.getParam(params, "xp", "");
-        String money = ParamUtil.getParam(params, "money", "");
-        String growl = ParamUtil.getParam(params, "growl", "");
-        String cry = ParamUtil.getParam(params, "cry", "");
-        String equip = ParamUtil.getParam(params, "equip", "");
-        double dmg = ParamUtil.getParam(params, "dmg", 1.0D);
-        String exec = ParamUtil.getParam(params, "run", "");
-        String exec_delay = ParamUtil.getParam(params, "rundelay", "1t");
+        String playeffect = params.getParam( "effect", "");
+        String dtheffect = params.getParam( "dtheffect", "");
+        String chest = params.getParam( "chest", "");
+        String leg = params.getParam( "leg", "");
+        String helm = params.getParam( "helm", "");
+        String boot = params.getParam( "boot", "");
+        String weapon = params.getParam( "weapon", "");
+        boolean land = params.getParam( "land", true);
+        String poteff = params.getParam( "potion", "");
+        String name = params.getParam( "name", "");
+        String drop = params.getParam( "drop", "");
+        String xp= params.getParam( "xp", "");
+        String money = params.getParam( "money", "");
+        String growl = params.getParam( "growl", "");
+        String cry = params.getParam( "cry", "");
+        String equip = params.getParam( "equip", "");
+        double dmg = params.getParam( "dmg", 1.0D);
+        String exec = params.getParam( "run", "");
+        String exec_delay = params.getParam( "rundelay", "1t");
         
         if (RAWorldGuard.isRegionExists(region)) loc = Locator.getRegionLocation(region, land);
         else if (radius>0) loc = Locator.getRadiusLocation(loc, radius, land); 
-        if (loc == null) loc = p.getLocation();
+        if (loc==null) return;
         
         for (int i = 0; i<num; i++){
             List<LivingEntity> mobs = spawnMob(loc,mob);
@@ -175,7 +180,7 @@ public class MobSpawn {
     public static void setMobDrop(LivingEntity e, String drop){
         //id:data*amount,id:dat*amount%chance;id:data*amount;id:dat*amount%chance;id:data*amount;id:dat*amount%chance
         if (drop.isEmpty())  return;
-        String stack = Util.parseRandomItemsStr(drop);
+        List<ItemStack> stack = ItemUtil.parseRandomItemsStr(drop);
         if (stack.isEmpty()) return;
         setMobDropStack (e,stack);
     }
@@ -195,9 +200,10 @@ public class MobSpawn {
         e.setMetadata("ReActions-growl", new FixedMetadataValue(ReActions.instance, growl));
     }
 
-    public static void setMobDropStack(LivingEntity e, String stack) {
+    public static void setMobDropStack(LivingEntity e, List<ItemStack> stack) {
         if (stack.isEmpty()) return;
-        e.setMetadata("ReActions-drop", new FixedMetadataValue(ReActions.instance, stack));
+        drops.put(e, stack);
+        //e.setMetadata("ReActions-drop", new FixedMetadataValue(ReActions.instance, stack));
     }
 
     private static void setDeathEffect(LivingEntity e, String dtheffect) {
@@ -226,23 +232,23 @@ public class MobSpawn {
     public static void setMobEquipment(LivingEntity e, String helm, String chest, String leg, String boot, String weapon){
         if (!ReActions.util.isWordInList(e.getType().name(), "zombie,skeleton")) return;
         if (!helm.isEmpty()){
-            ItemStack item = Util.getRndItem(helm);
+            ItemStack item = ItemUtil.getRndItem(helm);
             if (item != null) e.getEquipment().setHelmet(item);
         }
         if (!chest.isEmpty()){
-            ItemStack item = Util.getRndItem(chest);
+            ItemStack item = ItemUtil.getRndItem(chest);
             if (item != null) e.getEquipment().setChestplate(item);
         }
         if (!leg.isEmpty()){
-            ItemStack item = Util.getRndItem(leg);
+            ItemStack item = ItemUtil.getRndItem(leg);
             if (item != null) e.getEquipment().setLeggings(item);
         }
         if (!boot.isEmpty()){
-            ItemStack item = Util.getRndItem(boot);
+            ItemStack item = ItemUtil.getRndItem(boot);
             if (item != null) e.getEquipment().setBoots(item);
         }
         if (!weapon.isEmpty()){
-            ItemStack item = Util.getRndItem(weapon);
+            ItemStack item = ItemUtil.getRndItem(weapon);
             if (item != null) e.getEquipment().setItemInHand(item);
         }        
     }
@@ -264,6 +270,20 @@ public class MobSpawn {
     }
 
 
+    public static List<ItemStack> getMobDrop (LivingEntity le){
+		if (drops.containsKey(le)) {
+			List<ItemStack> drop = drops.get(le);
+			drops.remove(le);
+			return drop;
+		} else {
+			List<LivingEntity> deadMobs = new ArrayList<LivingEntity>();
+			for (LivingEntity l : drops.keySet())
+				if (l.isDead()) deadMobs.add(l);
+			for (LivingEntity l : deadMobs)
+				drops.remove(l);
+		}
+		return null;
+    }
 
 
 }

@@ -22,10 +22,9 @@
 
 package me.fromgate.reactions.flags;
 
-import java.util.Map;
-
 import me.fromgate.reactions.util.Locator;
-import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.util.Param;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -36,8 +35,8 @@ public class FlagPowered extends Flag {
 
     @Override
     public boolean checkFlag(Player p, String param) {
-    	Map<String,String> params = ParamUtil.parseParams(param);
-    	String locStr = ParamUtil.isParamExists(params, "loc") ? ParamUtil.getParam(params, "loc", "") : param;
+    	Param params = new Param(param);
+    	String locStr = params.isParamsExists("loc") ? params.getParam("loc", "") : param;
     	if (locStr.isEmpty()) return false;
         Location loc = Locator.parseLocation(locStr,null);
         if (loc == null) return false;

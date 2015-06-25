@@ -22,16 +22,20 @@
 
 package me.fromgate.reactions.util;
 
+import me.fromgate.reactions.RAUtil;
+import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.event.EventManager;
+
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import me.fromgate.reactions.RAUtil;
-import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.event.EventManager;
-import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Variables {
 	static RAUtil  u(){
@@ -94,30 +98,30 @@ public class Variables {
 		return defvar;
 	}
 
-	public static boolean cmpVar (Player player, String var, String cmpvalue){
-		String id = varId(player, var);
+	public static boolean cmpVar (String playerName, String var, String cmpvalue){
+		String id = varId(playerName, var);
 		if (!vars.containsKey(id)) return false;
-		String value = getVar(player,var,"");
+		String value = getVar(playerName,var,"");
 		if (isNumber(cmpvalue,value)) return (Double.parseDouble(cmpvalue)==Double.parseDouble(value));
 		return value.equalsIgnoreCase(cmpvalue);
 	}
 
-	public static boolean cmpGreaterVar (Player player, String var, String cmpvalue){
-		String id = varId(player, var);
+	public static boolean cmpGreaterVar (String playerName, String var, String cmpvalue){
+		String id = varId(playerName, var);
 		if (!vars.containsKey(id)) return false;
 		if (!isNumber(vars.get(id),cmpvalue)) return false;
 		return Double.parseDouble(vars.get(id))>Double.parseDouble(cmpvalue);
 	}
 
-	public static boolean cmpLowerVar (Player player, String var, String cmpvalue){
-		String id = varId(player, var);
+	public static boolean cmpLowerVar (String playerName, String var, String cmpvalue){
+		String id = varId(playerName, var);
 		if (!vars.containsKey(id)) return false;
 		if (!isNumber(vars.get(id),cmpvalue)) return false;
 		return Double.parseDouble(vars.get(id))<Double.parseDouble(cmpvalue);
 	}
 
-	public static boolean existVar(Player player, String var){
-		return (vars.containsKey(varId(player, var)));
+	public static boolean existVar(String playerName, String var){
+		return (vars.containsKey(varId(playerName, var)));
 	}
 
 	public static boolean incVar (Player player, String var){
@@ -195,22 +199,27 @@ public class Variables {
 		}
 	}
 
+
 	public static String replacePlaceholders(Player p, String str){
 		String newStr = str;
 		if (!str.isEmpty()&&(str.contains("%var:")||str.contains("%varp:"))){
 			for (String key : vars.keySet()){
+				String replacement = vars.get(key);
+				replacement = replacement.matches("[0-9]\\.0") ? Integer.toString((int) Double.parseDouble(replacement)): Matcher.quoteReplacement(replacement);
 				if (key.startsWith("general")){
-					String id = key.replaceFirst("general.", "");
-					newStr = newStr.replaceAll("%var:"+id+"%", vars.get(key));
-				} else if ((p!=null)&&(key.startsWith(p.getName()))){
-					String id = key.replaceFirst(p.getName()+".", "");
-					newStr = newStr.replaceAll("%varp:"+id+"%", vars.get(key));
+					String id = key.replaceFirst("general\\.", "");
+					newStr = newStr.replaceAll(new StringBuilder ("(?i)%var:").append(Pattern.quote(id)).append("%").toString(), replacement);
+				} else {
+					if ((p!=null)&&(key.toLowerCase().startsWith(p.getName().toLowerCase()))){
+						String id = key.replaceAll("(?i)^"+p.getName()+"\\.", "");
+						newStr = newStr.replaceAll(new StringBuilder ("(?i)%varp:").append(Pattern.quote(id)).append("%").toString(), replacement);
+					} 
+					newStr = newStr.replaceAll(new StringBuilder ("(?i)%varp?:").append(Pattern.quote(key)).append("%").toString(), replacement);
 				}
 			}
 		}
 		return newStr;
 	}
-
 
 	/*
 	 *  Temporary variables - replacement for place holders
@@ -220,8 +229,7 @@ public class Variables {
 		if (str.isEmpty()) return str;
 		String newStr = str;
 		for (String key : tempvars.keySet()){
-			newStr = newStr.replaceAll("%"+key.toLowerCase()+"%", tempvars.get(key));
-			newStr = newStr.replaceAll("%"+key.toUpperCase()+"%", tempvars.get(key));
+			newStr = newStr.replaceAll("(?i)%"+key.toLowerCase()+"%", Matcher.quoteReplacement(tempvars.get(key)));
 		}
 		return newStr;
 	}
@@ -263,8 +271,8 @@ public class Variables {
 		return true;
 	}
 
-	public static boolean matchVar(Player player, String var, String value) {
-		String id = varId(player, var);
+	public static boolean matchVar(String playerName, String var, String value) {
+		String id = varId(playerName, var);
 		if (!vars.containsKey(id)) return false;
 		String varValue = vars.get(id);
 		return varValue.matches(value);

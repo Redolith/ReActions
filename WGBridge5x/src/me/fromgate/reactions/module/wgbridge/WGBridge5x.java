@@ -1,4 +1,5 @@
-package me.fromgate.reactions.externals.wgbridge;
+package me.fromgate.reactions.module.wgbridge;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,36 +13,40 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
 import com.sk89q.worldguard.LocalPlayer;
-import com.sk89q.worldguard.bukkit.RegionQuery;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.domains.Association;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
-public class WGBridge extends WGRegion {
+
+public class WGBridge5x extends WGBridge {
 	
 	private static WorldGuardPlugin worldguard = null;
-    private static RegionQuery query = null;
 
 	@Override
 	public void init() {
 		if (!isConnected()) return;
 		if (this.wgPlugin instanceof WorldGuardPlugin) {
 			worldguard = (WorldGuardPlugin) wgPlugin;
-			query = worldguard.getRegionContainer().createQuery();
-			ReActions.util.log("Loading region module compatible with WorldGuard v6.x");
+			setVersion("WGBridge 0.0.2/WG5x");
 		} else this.connected = false;
 	}
 
 	@Override
 	public List<String> getRegions(Location loc) {
-        List<String> rgs = new ArrayList<String>();
-        if (loc == null) return rgs;
-        if (!connected) return rgs; 
-        ApplicableRegionSet rset =query.getApplicableRegions(loc);
-        if ((rset == null)||(rset.size()==0)) return rgs; 
-        for (ProtectedRegion rg : rset ) rgs.add((loc.getWorld().getName()+"."+rg.getId()).toLowerCase());
-        return rgs; 
+	    List<String> rgs = new ArrayList<String>();
+	    if (loc == null) return rgs;
+	    if (!connected) return rgs;
+	    ApplicableRegionSet rset = null;
+	    try {
+	      rset = worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc);
+	    } catch (Exception e) {
+	      ReActions.util.log("Failed to get region list!");
+	      e.printStackTrace();
+	    }
+	    if ((rset == null) || (rset.size() == 0)) return rgs;
+	    for (ProtectedRegion rg : rset)
+	    	rgs.add(loc.getWorld().getName()+"."+rg.getId());
+	    return rgs;
 	}
 
 	@Override
@@ -132,7 +137,7 @@ public class WGBridge extends WGRegion {
         String regionName = getRegionName (region);
         ProtectedRegion rg = worldguard.getRegionManager(world).getRegion(regionName);
         if (rg==null) return false;
-        return localPlayer.getAssociation(rg) == Association.MEMBER || localPlayer.getAssociation(rg) == Association.OWNER; 
+        return (rg.isOwner(p.getName())) || (rg.isMember(p.getName()));
 	}
 
 	@Override
@@ -145,7 +150,7 @@ public class WGBridge extends WGRegion {
         String regionName = getRegionName (region);
         ProtectedRegion rg = worldguard.getRegionManager(world).getRegion(regionName);
         if (rg==null) return false;
-        return localPlayer.getAssociation(rg) == Association.OWNER; 
+        return rg.isOwner(p.getName());
 	}
 
 	@Override
@@ -158,8 +163,19 @@ public class WGBridge extends WGRegion {
         String regionName = getRegionName (region);
         ProtectedRegion rg = worldguard.getRegionManager(world).getRegion(regionName);
         if (rg==null) return false;
-        return localPlayer.getAssociation(rg) == Association.MEMBER;
+        return rg.isMember(p.getName());
 	}
 
+	@Override
+	public boolean isLocationInRegion(Location loc, String region) {
+		if (loc==null) return false;
+		if (!connected) return false;
+        World world = getRegionWorld (region);
+        if (!loc.getWorld().equals(world)) return false;
+        String regionName = getRegionName (region);
+		ProtectedRegion rg = worldguard.getRegionManager(world).getRegion(regionName);
+		if (rg==null) return false;
+		return (rg.contains(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
+	}
 
 }

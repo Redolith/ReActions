@@ -22,16 +22,18 @@
 
 package me.fromgate.reactions.activators;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.SignEvent;
-import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Variables;
+
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SignActivator extends Activator {
 	private List<String> maskLines;
@@ -43,13 +45,13 @@ public class SignActivator extends Activator {
 
 	public SignActivator(String name, String param) {
 		super (name, "activators");
-		Map<String,String>  params = ParamUtil.parseParams(param);
+		Param  params = new Param(param);
 		maskLines = new ArrayList<String>();
-		maskLines.add(ParamUtil.getParam(params, "line1", ""));
-		maskLines.add(ParamUtil.getParam(params, "line2", ""));
-		maskLines.add(ParamUtil.getParam(params, "line3", ""));
-		maskLines.add(ParamUtil.getParam(params, "line4", ""));
-		click = ClickType.getByName(ParamUtil.getParam(params, "click", "RIGHT"));
+		maskLines.add(params.getParam("line1", ""));
+		maskLines.add(params.getParam("line2", ""));
+		maskLines.add(params.getParam("line3", ""));
+		maskLines.add(params.getParam("line4", ""));
+		click = ClickType.getByName(params.getParam("click", "RIGHT"));
 	}
 
 	
@@ -61,7 +63,7 @@ public class SignActivator extends Activator {
 				emptyLines++;
 				continue;
 			}
-			if (!maskLines.get(i).equalsIgnoreCase(sign[i])) return false;
+			if (!ChatColor.translateAlternateColorCodes('&', maskLines.get(i)).equalsIgnoreCase(ChatColor.translateAlternateColorCodes('&',sign[i]))) return false;
 		}
 		if (emptyLines>=4) return false;
 		return true;

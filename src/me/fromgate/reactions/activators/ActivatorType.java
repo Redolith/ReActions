@@ -35,6 +35,7 @@ public enum ActivatorType {
     DOOR ("door",DoorActivator.class,DoorEvent.class),
     JOIN ("join",JoinActivator.class,JoinEvent.class),
     MOB_CLICK ("mobclick",MobClickActivator.class,MobClickEvent.class),
+    MOB_KILL ("mobkill",MobKillActivator.class,MobKillEvent.class),
     ITEM_CLICK ("itemclick",ItemClickActivator.class,ItemClickEvent.class),
     ITEM_HOLD ("itemhold",ItemHoldActivator.class,ItemHoldEvent.class),
     ITEM_WEAR("itemwear",ItemWearActivator.class,ItemWearEvent.class),

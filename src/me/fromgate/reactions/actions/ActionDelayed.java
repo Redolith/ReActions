@@ -1,9 +1,7 @@
 package me.fromgate.reactions.actions;
 
-import java.util.Map;
-
 import me.fromgate.reactions.activators.Activator;
-import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.util.Param;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -11,10 +9,10 @@ import org.bukkit.entity.Player;
 public class ActionDelayed extends Action {
 
 	@Override
-	public boolean execute(final Player p, Map<String, String> params) {
-		Long delay= u().parseTime(ParamUtil.getParam(params, "time", "0"));
+	public boolean execute(final Player p, Param params) {
+		Long delay= u().parseTime(params.getParam("time", "0"));
 		if (delay==0) return false;
-		String actionSource = ParamUtil.getParam(params, "action", "");
+		String actionSource = params.getParam("action", "");
 		if (actionSource.isEmpty()) return false;
 		String actionStr;
 		String paramStr = "";
@@ -30,7 +28,7 @@ public class ActionDelayed extends Action {
 		}
 		final boolean isAction = this.isAction();
 		final Activator activator = this.getActivator();
-		final Map<String,String> actionParam = ParamUtil.parseParams(paramStr);
+		final Param actionParam = new Param (paramStr);
 		Bukkit.getScheduler().runTaskLater(plg(), new Runnable(){
 			@Override
 			public void run() {

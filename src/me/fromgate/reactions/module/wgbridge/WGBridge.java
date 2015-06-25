@@ -1,4 +1,4 @@
-package me.fromgate.reactions.externals.wgbridge;
+package me.fromgate.reactions.module.wgbridge;
 
 import java.util.List;
 
@@ -10,21 +10,33 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-public abstract class  WGRegion {
+public abstract class  WGBridge {
     protected Plugin wgPlugin = null;
     protected boolean connected = false;
     
-    public WGRegion (){
+    private String version;
+    
+    public WGBridge (){
     	connectToWorldGuard();
+    	setVersion("["+this.getClass().getSimpleName()+"]");
     	init();
-        if (connected) ReActions.util.log("WorldGuard "+wgPlugin.getDescription().getVersion()+" found");
-        else ReActions.util.log("Worlguard not found...");
+        if (connected) {
+        	ReActions.util.log("WorldGuard "+wgPlugin.getDescription().getVersion()+" found. Bridge loaded: "+getVersion());
+        } else ReActions.util.log("Worlguard not found...");
+    }
+    
+    protected void setVersion(String version){
+    	this.version = version;
+    }
+    
+    public String getVersion(){
+    	return this.version;
     }
     
 	private void connectToWorldGuard() {
         Plugin twn = Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
         if (twn == null) return;
-        if  (!twn.getClass().getName().equals("com.sk89q.worldguard.bukkit.WorldGuardPlugin"))return;
+        if  (!twn.getClass().getName().equals("com.sk89q.worldguard.bukkit.WorldGuardPlugin")) return;
         wgPlugin = twn;
         connected = true;
 	}
@@ -57,6 +69,7 @@ public abstract class  WGRegion {
 	}
 
 	public abstract void init();
+	public abstract boolean isLocationInRegion(Location loc, String regionName);
 	public abstract List<String> getRegions(Location loc);
     public abstract List<String> getRegions (Player p);
     public abstract int countPlayersInRegion (String rg);

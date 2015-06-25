@@ -26,8 +26,8 @@ import java.util.List;
 
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.RegionLeaveEvent;
-import me.fromgate.reactions.externals.wgbridge.RAWorldGuard;
-import me.fromgate.reactions.externals.wgbridge.WGRegion;
+import me.fromgate.reactions.externals.RAWorldGuard;
+import me.fromgate.reactions.module.wgbridge.WGBridge;
 
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -55,7 +55,7 @@ public class RgLeaveActivator extends Activator{
     public boolean activate(Event event) {
         if (!(event instanceof RegionLeaveEvent)) return false;
         RegionLeaveEvent be = (RegionLeaveEvent) event;
-        if (!be.getRegion().equalsIgnoreCase(WGRegion.getFullRegionName(this.region))) return false;
+        if (!be.getRegion().equalsIgnoreCase(WGBridge.getFullRegionName(this.region))) return false;
         return Actions.executeActivator(be.getPlayer(), this);
     }
 
@@ -80,6 +80,10 @@ public class RgLeaveActivator extends Activator{
     @Override
     public ActivatorType getType() {
         return ActivatorType.REGION_LEAVE;
+    }
+
+    public String getRegion(){
+    	return this.region;
     }
 
 }

@@ -22,7 +22,7 @@
 
 package me.fromgate.reactions.actions;
 
-import java.util.Map;
+import me.fromgate.reactions.util.Param;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -36,9 +36,9 @@ public class ActionCommand extends Action {
 	}
 
 	@Override
-	public boolean execute(Player p, Map<String, String> params) {
+	public boolean execute(Player p, Param params) {
 		if (commandAs!=2&&p == null) return false;
-		String commandLine =  ChatColor.translateAlternateColorCodes('&', params.get("param-line"));
+		String commandLine =  ChatColor.translateAlternateColorCodes('&', params.getParam("param-line"));
 		switch (commandAs){
 		case 0:
 			plg().getServer().dispatchCommand(p, commandLine);	

@@ -23,13 +23,16 @@
 
 package me.fromgate.reactions.activators;
 
-import java.util.ArrayList;
-import java.util.List;
+import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.flags.Flags;
+
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Activator {
 
@@ -192,22 +195,14 @@ public abstract class Activator {
 		 String key = getType()+"."+this.name;
 		 save (key, cfg);
 		 List<String> flg = new ArrayList<String>();
-		 if (!flags.isEmpty())
-			 for (int i = 0; i<flags.size(); i++)
-				 flg.add(flags.get(i).toString());
-		 cfg.set(key+".flags", flg);
-
+		 for (FlagVal f : flags) flg.add(f.toString());
+		 cfg.set(key+".flags", flg.isEmpty()&&!ReActions.getPlugin().saveEmpty() ? null : flg);
 		 flg = new ArrayList<String>();
-		 if (!actions.isEmpty())
-			 for (int i = 0; i<actions.size(); i++)
-				 flg.add(actions.get(i).toString());
-		 cfg.set(key+".actions", flg);
-
+		 for (ActVal a: actions) flg.add(a.toString());
+		 cfg.set(key+".actions", flg.isEmpty()&&!ReActions.getPlugin().saveEmpty() ? null : flg);
 		 flg = new ArrayList<String>();
-		 if (!reactions.isEmpty())
-			 for (int i = 0; i<reactions.size(); i++)
-				 flg.add(reactions.get(i).toString());
-		 cfg.set(key+".reactions", flg);
+		 for (ActVal a: reactions) flg.add(a.toString());
+		 cfg.set(key+".reactions", flg.isEmpty()&&!ReActions.getPlugin().saveEmpty() ? null : flg);
 	 }
 
 	 public void loadActivator (YamlConfiguration cfg){

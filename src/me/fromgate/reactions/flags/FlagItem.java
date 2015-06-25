@@ -22,8 +22,10 @@
 
 package me.fromgate.reactions.flags;
 
-import me.fromgate.reactions.util.ItemUtil;
+import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Variables;
+import me.fromgate.reactions.util.item.ItemUtil;
+import me.fromgate.reactions.util.item.VirtualItem;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -40,8 +42,8 @@ public class FlagItem extends Flag{
         switch (flagType){
         case 0: 
         	Variables.setTempVar("item_amount", p.getItemInHand() == null ? "0" : String.valueOf(p.getItemInHand().getAmount()));
-        	return ItemUtil.compareItemStr(p.getItemInHand(), itemStr);
-        case 1: return ItemUtil.hasItemInInventory(p, itemStr);
+        	return ItemUtil.compareItemStr(p.getItemInHand(), itemStr, true);
+        case 1: return hasItemInInventory(p, itemStr);
         case 2: return isItemWeared (p,itemStr); 
         }
         return false;
@@ -52,7 +54,24 @@ public class FlagItem extends Flag{
             if (ItemUtil.compareItemStr(armour, itemStr)) return true;
         return false;
     }
-
-        
+    
+    private boolean hasItemInInventory(Player player, String itemStr){
+    	Param params = new Param (itemStr);
+    	if (!params.isParamsExists("slot","item")) return ItemUtil.hasItemInInventory(player, itemStr);
+    	String slotStr = params.getParam("slot", "");
+    	if (slotStr.isEmpty()) return false;
+    	int slotNum = u().isInteger(slotStr) ? Integer.parseInt(slotStr) : -1;
+    	if (slotNum>=player.getInventory().getSize()) return false;
+    	VirtualItem vi = null;
+    	if (slotNum<0){
+    		if (slotStr.equalsIgnoreCase("helm")||slotStr.equalsIgnoreCase("helmet")) vi = ItemUtil.itemFromItemStack(player.getInventory().getHelmet());
+    		else if (slotStr.equalsIgnoreCase("chestplate")||slotStr.equalsIgnoreCase("chest")) vi = ItemUtil.itemFromItemStack(player.getInventory().getChestplate());
+    		else if (slotStr.equalsIgnoreCase("Leggings")||slotStr.equalsIgnoreCase("Leg")) vi = ItemUtil.itemFromItemStack(player.getInventory().getLeggings());
+    		else if (slotStr.equalsIgnoreCase("boot")||slotStr.equalsIgnoreCase("boots")) ItemUtil.itemFromItemStack(player.getInventory().getBoots());
+    	} else  vi = ItemUtil.itemFromItemStack(player.getInventory().getItem(slotNum));
+    	vi = ItemUtil.itemFromItemStack(player.getInventory().getItem(slotNum));
+    	if (vi==null) return false;
+    	return vi.compare(itemStr);
+    }
 
 }

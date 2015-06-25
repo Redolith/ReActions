@@ -23,21 +23,21 @@
 
 package me.fromgate.reactions.flags;
 
-import java.util.Map;
-import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.util.Param;
+
 import org.bukkit.entity.Player;
 
 public class FlagCompare extends Flag{
 
 	@Override
 	public boolean checkFlag(Player p, String param) {
-		Map<String,String> params = ParamUtil.parseParams(param, "unknown");
-		String paramValue = ParamUtil.getParam(params, "param", "");
+		Param params = new Param(param, "unknown");
+		String paramValue = params.getParam("param", "");
 		if (paramValue.isEmpty()) return false;
-		if (!ParamUtil.isParamExists(params, "value1")) return false;
+		if (!params.isParamsExists("value1")) return false;
 		for (String valueKey : params.keySet()){
 			if (!((valueKey.toLowerCase()).startsWith("value"))) continue;
-			String value = params.get(valueKey);
+			String value = params.getParam(valueKey);
 			if (u().isIntegerSigned(value,paramValue)&&(Integer.parseInt(value)==Integer.parseInt(paramValue))) return true;
 			else if (paramValue.equalsIgnoreCase(value)) return true;
 		}

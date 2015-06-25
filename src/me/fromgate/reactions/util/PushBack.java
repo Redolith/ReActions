@@ -105,7 +105,7 @@ public class PushBack {
         
     }
     
-    private static Location getPlayerPrevLoc1(Player p) {
+    public static Location getPlayerPrevLoc1(Player p) {
         if (!p.hasMetadata("ra-pb-loc1-world")) return null;
         if (p.getMetadata("ra-pb-loc1-world").isEmpty()) return null;
         if (!p.hasMetadata("ra-pb-loc1-x")) return null;
@@ -122,7 +122,7 @@ public class PushBack {
                 p.getMetadata("ra-pb-loc1-pitch").get(0).asFloat());
     }
     
-    private static Location getPlayerPrevLoc2(Player p) {
+    public static Location getPlayerPrevLoc2(Player p) {
         if (!p.hasMetadata("ra-pb-loc2-world")) return null;
         if (p.getMetadata("ra-pb-loc2-world").isEmpty()) return null;
         if (!p.hasMetadata("ra-pb-loc2-x")) return null;

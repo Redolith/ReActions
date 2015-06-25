@@ -23,12 +23,11 @@
 package me.fromgate.reactions.activators;
 
 
-import java.util.Map;
-
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.MessageEvent;
-import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Variables;
+
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
@@ -46,10 +45,10 @@ public class MessageActivator extends Activator {
 
 	public MessageActivator (String name, String param){
 		super (name,"activators");
-		Map<String,String> params = ParamUtil.parseParams(param, "mask");
-		this.type = Type.getByName(ParamUtil.getParam(params, "type", "EQUAL"));
-		this.source = Source.getByName(ParamUtil.getParam(params, "source", "CHAT_MESSAGE"));
-		this.mask = ParamUtil.getParam(params, "mask", ParamUtil.getParam(params, "message", "<message mask>"));
+		Param params = new Param (param, "mask");
+		this.type = Type.getByName(params.getParam("type", "EQUAL"));
+		this.source = Source.getByName(params.getParam("source", "CHAT_MESSAGE"));
+		this.mask = params.getParam("mask", params.getParam("message", "<message mask>"));
 	}
 
 	@Override
@@ -121,7 +120,6 @@ public class MessageActivator extends Activator {
 		MessageEvent e = (MessageEvent) event;
 		if (!e.isForActivator (this)) return false;
 		setTempVars(e.getMessage());
-		//if (this.source == Source.ANSWER) Questions.removeByMessageActivator(this.name);
 		return Actions.executeActivator(e.getPlayer(), this);
 	}
 
@@ -137,7 +135,6 @@ public class MessageActivator extends Activator {
 
 	public boolean filterMessage(Source source, String message) {
 		if (source != this.source && this.source != Source.ALL) return false;
-		//if (this.source == Source.ALL&& source == Source.ANSWER) return false;
 		return filter (message);
 	}
 

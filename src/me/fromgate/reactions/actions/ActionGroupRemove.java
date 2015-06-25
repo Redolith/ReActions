@@ -22,18 +22,16 @@
 
 package me.fromgate.reactions.actions;
 
-import java.util.Map;
-
 import me.fromgate.reactions.externals.RAVault;
-import me.fromgate.reactions.util.ParamUtil;
+import me.fromgate.reactions.util.Param;
 
 import org.bukkit.entity.Player;
 
 public class ActionGroupRemove extends Action{
 
     @Override
-    public boolean execute(Player p, Map<String, String> params) {
-        String param = ParamUtil.getParam(params, "param-line", "");
+    public boolean execute(Player p, Param params) {
+        String param = params.getParam("param-line", "");
         if (RAVault.playerInGroup(p, param)) {
             if (!RAVault.playerRemoveGroup(p, param)) return false;
         }
