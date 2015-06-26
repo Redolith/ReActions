@@ -258,9 +258,9 @@ public class Activators {
 
 	public static List<String> getActivatorsList(){
 		List<String> lst = new ArrayList<String>();
+		for (Activator a : act)
 		if (!act.isEmpty())
-			for (int i = 0; i<act.size();i++)
-				lst.add( "&a"+act.get(i).toString());
+			lst.add( "&a"+a.toString());
 		return lst;
 	}
 

@@ -58,7 +58,7 @@ public class Commander implements CommandExecutor{
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String cmdLabel, String[] args) {
 		for (Cmd cmd : commands){
-			if (!cmd.getCommand().equalsIgnoreCase(cmdLabel)) continue;
+			if (!cmd.getCommand().equalsIgnoreCase(command.getLabel())) continue;
 			if (cmd.executeCommand(sender, args)) return true;
 		}
 		return false;
@@ -70,17 +70,16 @@ public class Commander implements CommandExecutor{
 			helpList.add(cmd.getFullDescription());
 		}
 		int pageHeight = (sender instanceof Player) ? 9 : 1000;
-		
+
 		ReActions.getUtil().printMsg(sender, "&6&lReActions v"+ReActions.getPlugin().getDescription().getVersion()+" &r&6| "+ReActions.getUtil().getMSG("hlp_help",'6'));
 		ChatPage chatPage = paginate (helpList, page,60,pageHeight);
-		
+
 		for (String str : chatPage.getLines())
 			sender.sendMessage(str);
-		
+
 		if (pageHeight == 9)
 			ReActions.getUtil().printMSG(sender, "lst_footer",'e','6', chatPage.getPageNumber(),chatPage.getTotalPages());
 	}
-	
 
 	public static ChatPage paginate(List<String> unpaginatedStrings, int pageNumber, int lineLength, int pageHeight){
 		List<String> lines = new ArrayList<String>();

@@ -24,6 +24,7 @@ package me.fromgate.reactions.activators;
 
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.ButtonEvent;
+
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -55,10 +56,6 @@ public class ButtonActivator extends Activator{
         this.z = b.getZ();
     }
 
-
-    /*
-     * Очередная залипуха, надо будет потом переделать
-     */
     @Override
     public boolean activate(Event event) {
         if (!(event instanceof ButtonEvent)) return false;

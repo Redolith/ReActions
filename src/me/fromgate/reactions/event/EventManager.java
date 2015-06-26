@@ -208,7 +208,7 @@ public class EventManager {
 	public static boolean raiseExecEvent (CommandSender sender, Param param){
 		if (param.isEmpty()) return false;
 		final Player senderPlayer = (sender instanceof Player) ? (Player) sender : null;
-		final String id = param.getParam("activator", "").isEmpty() ? param.getParam("exec", "") : param.getParam("activator", "");
+		final String id = param.getParam("activator",param.getParam("exec"));
 		if (id.isEmpty()) return false;
 		Activator act = plg().getActivator(id);
 		if (act == null) {

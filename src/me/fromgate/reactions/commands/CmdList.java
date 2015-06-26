@@ -55,7 +55,8 @@ public class CmdList extends Cmd{
 			} else if (arg1.equalsIgnoreCase("menu")||arg1.equalsIgnoreCase("menus")){
 				InventoryMenu.printMenuList(sender,page,mask);
 			} else {
-				ReActions.getUtil().printMSG(sender,"msg_listcount",Activators.size(),Locator.sizeTpLoc());
+				printAct(sender, page, lpp);
+				//ReActions.getUtil().printMSG(sender,"msg_listcount",Activators.size(),Locator.sizeTpLoc());
 			}
 		}
 		return true;

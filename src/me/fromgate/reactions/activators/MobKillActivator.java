@@ -41,7 +41,7 @@ public class MobKillActivator extends Activator {
 		Variables.setTempVar("mobkiller", me.getPlayer() == null ? "" : me.getPlayer().getName());
 		Variables.setTempVar("mobtype", me.getMob().getType().name());
 		String mobName = me.getMob().getCustomName();
-		if (mobName!=null&&!mobName.isEmpty()) Variables.setTempVar("mobname", mobName);
+		Variables.setTempVar("mobname", mobName!=null&&!mobName.isEmpty() ? mobName : me.getMob().getType().name() );
 		return Actions.executeActivator(me.getPlayer(), this);
 	}
 
