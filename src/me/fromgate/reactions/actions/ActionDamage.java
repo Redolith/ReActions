@@ -25,17 +25,31 @@ package me.fromgate.reactions.actions;
 import me.fromgate.reactions.util.BukkitCompatibilityFix;
 import me.fromgate.reactions.util.Param;
 
+import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
 import org.bukkit.entity.Player;
 
 public class ActionDamage extends Action {
 
-    @Override
+    @SuppressWarnings("deprecation")
+	@Override
     public boolean execute(Player p, Param params) {
-        double dmg = params.getParam("param-line", 0);
-        if (dmg>0) BukkitCompatibilityFix.damageEntity(p, dmg);
-        else p.playEffect(EntityEffect.HURT);
-        setMessageParam(Double.toString(dmg));
+    	Player player = p;
+    	double damage = 0;
+        if (params.hasAnyParam("damage","player")){
+        	String playerName = params.getParam("player", p!=null ? p.getName() : "");
+        	player = playerName.isEmpty() ? null : Bukkit.getPlayerExact(playerName);
+        	damage = params.getParam("damage", 0);
+        } else params.getParam("param-line", 0);
+        return damagePlayer (player, damage);
+    }
+    
+    
+    public boolean damagePlayer (Player player, double damage){
+    	if (player==null||player.isDead()||!player.isOnline()) return false;
+        if (damage>0) BukkitCompatibilityFix.damageEntity(player, damage);
+        else player.playEffect(EntityEffect.HURT);
+        setMessageParam(Double.toString(damage));
         return true;
     }
 

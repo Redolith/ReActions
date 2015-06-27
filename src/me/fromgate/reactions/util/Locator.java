@@ -108,7 +108,6 @@ public class Locator {
 		if (vector == null) vector = new Vector (0,0,0);
 		Location result = location == null ? defaultLocation : location;
 		if (result!=null) result.add(vector);
-		
 		return result;
 	}
 

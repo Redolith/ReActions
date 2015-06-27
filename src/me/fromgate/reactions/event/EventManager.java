@@ -276,7 +276,6 @@ public class EventManager {
 	public static boolean raiseItemWearEvent (Player player, String itemStr){
 		if (!player.isOnline()) return false;
 		if (player.isDead()) return false;
-		//String id = "reactions-rchk-iw-"+itemStr;
 		if (!isTimeToRaiseEvent (player,"iw-"+itemStr, plg().itemWearRecheck)) return false;
 		player.removeMetadata("reactions-rchk-iw-"+itemStr, plg());
 		ItemWearEvent iwe = new ItemWearEvent (player);

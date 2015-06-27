@@ -65,7 +65,7 @@ public class Param {
 	public static Param fromOldFormat (String oldFormat, String divider, String... keys){
 		Param param = new Param (oldFormat);
 		param.setParamString(oldFormat);
-		if (param.isParamsExists(keys)) return param;
+		if (param.hasAnyParam(keys)) return param;
 		param = new Param();
 		param.setParamString(oldFormat);
 		param.set("param-line", oldFormat); // и снова залипуха

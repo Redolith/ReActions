@@ -26,6 +26,7 @@ import me.fromgate.reactions.externals.RAEffects;
 import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Teleporter;
+import me.fromgate.reactions.util.Variables;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -61,6 +62,11 @@ public class ActionTp extends Action{
                 while (!loc.getChunk().isLoaded()) loc.getChunk().load();
             } catch (Exception e) {
             }
+            
+            Variables.setTempVar("loc-from", Locator.locationToString(p.getLocation()));
+            Variables.setTempVar("loc-from-str", Locator.locationToStringFormated(p.getLocation()));
+            Variables.setTempVar("loc-to", Locator.locationToString(loc));
+            Variables.setTempVar("loc-to-str", Locator.locationToStringFormated(loc));
             Teleporter.teleport(p, loc);
             String playeffect = params.getParam("effect", "");
             if (!playeffect.isEmpty()){

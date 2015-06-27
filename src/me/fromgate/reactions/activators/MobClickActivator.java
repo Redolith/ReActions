@@ -3,6 +3,7 @@ package me.fromgate.reactions.activators;
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.MobClickEvent;
 import me.fromgate.reactions.util.Locator;
+import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Variables;
 
 import org.bukkit.ChatColor;
@@ -23,10 +24,14 @@ public class MobClickActivator extends Activator {
 		super(name, "activators");
 		this.mob_type = param;
 		this.mob_name = "";
-		if (param.contains("$")) {
+		Param params = new Param(param);
+		if (params.isParamsExists("type")){
+			this.mob_type = params.getParam("type");
+			this.mob_name = params.getParam("name");
+		} else	if (param.contains("$")) {
 			this.mob_name = this.mob_type.substring(0,this.mob_type.indexOf("$"));
 			this.mob_type = this.mob_type.substring(this.mob_name.length()+1);
-		}
+		} 
 	}
 
 

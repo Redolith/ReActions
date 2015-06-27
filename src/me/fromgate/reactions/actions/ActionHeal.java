@@ -26,20 +26,50 @@ import me.fromgate.reactions.externals.RAEffects;
 import me.fromgate.reactions.util.BukkitCompatibilityFix;
 import me.fromgate.reactions.util.Param;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class ActionHeal extends Action {
 
-    @Override
+    @SuppressWarnings("deprecation")
+	@Override
     public boolean execute(Player p, Param params) {
-        int hp = params.getParam("hp", 0);
+    	Player player = p;
+    	double hp = params.getParam("hp", 0);
         boolean playhearts = params.getParam("hearts", true);
         if (params.isParamsExists("params")) hp=params.getParam("params", 0);
-        double health = BukkitCompatibilityFix.getEntityHealth(p);
-        double healthMax = BukkitCompatibilityFix.getEntityMaxHealth(p);
-        if ((hp>0)&&(health<healthMax)) BukkitCompatibilityFix.setEntityHealth(p, Math.max(hp+health, healthMax));
-        if (playhearts&&RAEffects.isPlayEffectConnected()) RAEffects.playEffect(p.getEyeLocation(), "HEART", "offset:0.5 num:4 speed:0.7");
-        setMessageParam(Integer.toString(hp));
+    	String playerName = params.getParam("player", p!=null ? p.getName() : "");
+    	player = playerName.isEmpty() ? null : Bukkit.getPlayerExact(playerName);
+        if (player == null) return false;
+        double health = BukkitCompatibilityFix.getEntityHealth(player);
+        double healthMax = BukkitCompatibilityFix.getEntityMaxHealth(player);
+        if ((hp>0)&&(health<healthMax)) BukkitCompatibilityFix.setEntityHealth(player, Math.max(hp+health, healthMax));
+        if (playhearts&&RAEffects.isPlayEffectConnected()) RAEffects.playEffect(player.getEyeLocation(), "HEART", "offset:0.5 num:4 speed:0.7");
+        setMessageParam(Double.toString(hp));
         return true;
     }
+    
+    
+    /*
+     *     public boolean execute(Player p, Param params) {
+    	Player player = p;
+    	double damage = 0;
+        if (params.hasAnyParam("damage","player")){
+        	`String playerName = params.getParam("player", p!=null ? p.getName() : "");
+        	player = playerName.isEmpty() ? null : Bukkit.getPlayerExact(playerName);
+        	damage = params.getParam("damage", 0);
+        } else params.getParam("param-line", 0);
+        return damagePlayer (player, damage);
+    }
+    
+    
+    public boolean damagePlayer (Player player, double damage){
+    	if (player==null||player.isDead()||!player.isOnline()) return false;
+        if (damage>0) BukkitCompatibilityFix.damageEntity(player, damage);
+        else player.playEffect(EntityEffect.HURT);
+        setMessageParam(Double.toString(damage));
+        return true;
+    }
+     */
+    
 }

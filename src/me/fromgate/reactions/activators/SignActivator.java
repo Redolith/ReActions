@@ -29,6 +29,7 @@ import me.fromgate.reactions.util.Variables;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
 
@@ -43,6 +44,17 @@ public class SignActivator extends Activator {
 		super(name, group, cfg);
 	}
 
+	public SignActivator(String name, String param, Sign sign) {
+		super (name, "activators");
+		Param  params = new Param(param);
+		maskLines = new ArrayList<String>();
+		maskLines.add(params.getParam("line1", sign.getLine(0)));
+		maskLines.add(params.getParam("line2", sign.getLine(1)));
+		maskLines.add(params.getParam("line3", sign.getLine(2)));
+		maskLines.add(params.getParam("line4", sign.getLine(3)));
+		click = ClickType.getByName(params.getParam("click", "RIGHT"));
+	}
+	
 	public SignActivator(String name, String param) {
 		super (name, "activators");
 		Param  params = new Param(param);

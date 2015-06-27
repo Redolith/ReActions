@@ -39,6 +39,7 @@ import me.fromgate.reactions.util.Util;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -100,7 +101,7 @@ public class CmdAdd extends Cmd {
 		} else ReActions.getUtil().printMSG(sender, "cmd_unknownadd",'c');
 		return true;
 	}
-	
+
 	public boolean addAction(String clicker, String flag, String param){
 		if (Actions.isValid(flag)){    
 			Activators.addAction(clicker, flag, param);
@@ -126,7 +127,7 @@ public class CmdAdd extends Cmd {
 		}
 		return false;
 	}
-	
+
 	private boolean addActivator (Player p, String type, String name, String param, Block b){
 		ActivatorType at = ActivatorType.getByName(type);
 		if (at==null) return false;
@@ -227,7 +228,11 @@ public class CmdAdd extends Cmd {
 			activator = new FactionCreateActivator (name, param);
 			break;
 		case SIGN:    
-			activator = new SignActivator (name, param);
+			Sign sign = null;
+			if (b!=null&&(b.getType() == Material.SIGN_POST|| b.getType() == Material.WALL_SIGN))
+				sign = (Sign) b.getState();
+			if (sign!= null) activator = new SignActivator (name, param, sign);
+			else activator = new SignActivator (name, param);
 			break;
 		case VARIABLE:    
 			activator = new VariableActivator (name, param);
@@ -245,5 +250,5 @@ public class CmdAdd extends Cmd {
 		return true;
 	}
 
-	
+
 }

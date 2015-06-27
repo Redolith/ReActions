@@ -30,7 +30,7 @@ import org.bukkit.entity.Player;
 public class ActionSound extends Action {
     @Override
     public boolean execute(Player p, Param params) {
-        String str = Util.soundPlay(p.getLocation(), params);
+        String str = Util.soundPlay(p==null ? null : p.getLocation(), params);
         if (str.isEmpty()) return false;
         this.setMessageParam(str);
         return true;

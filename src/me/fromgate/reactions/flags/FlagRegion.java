@@ -23,6 +23,7 @@
 package me.fromgate.reactions.flags;
 
 import me.fromgate.reactions.externals.RAWorldGuard;
+import me.fromgate.reactions.util.Param;
 
 import org.bukkit.entity.Player;
 
@@ -47,13 +48,9 @@ public class FlagRegion extends Flag {
     }
 
     private boolean playersInRegion (String param){
-        String rg = param;
-        int minp = 1;
-        if (param.contains("/")){
-            rg = param.substring(0,param.indexOf("/"));
-            String s = param.substring(param.indexOf("/")+1);
-            if ((!s.isEmpty())&&u().isInteger(s)) minp = Integer.parseInt(s);
-        }
+        Param params = Param.fromOldFormat(param, "/", "region","players");
+        String rg = params.getParam("region");
+        int minp = params.getParam("players", 1);
         return (minp<=RAWorldGuard.countPlayersInRegion(rg));
     }
 }

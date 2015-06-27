@@ -45,14 +45,14 @@ public enum Actions{
     TP ("tp",true,new ActionTp()),
     VELOCITY ("velocity",true,new ActionVelocity()),
     VELOCITY_JUMP ("jump",true,new ActionVelocityJump()),
-    SOUND ("sound",false,new ActionSound()),    //добавить параметр location
+    SOUND ("sound",false,new ActionSound()),
     POTION ("potion",true,new ActionPlayerPotion()),
     POTION_REMOVE ("rmvpot",true,new ActionPlayerPotionRemove()),
     GROUP_ADD ("grpadd",true,new ActionGroupAdd()),
     GROUP_REMOVE ("grprmv",true,new ActionGroupRemove()),
-    MESSAGE ("msg",false,new ActionMessage()), //или всё-таки добавить параметры ??
-    BROADCAST ("msgall",false,new ActionBroadcast()), //или всё-таки добавить параметры ??
-    DAMAGE ("dmg",true,new ActionDamage()),
+    MESSAGE ("msg",false,new ActionMessage()), 
+    BROADCAST ("msgall",false,new ActionBroadcast()), 
+    DAMAGE ("dmg",false,new ActionDamage()),
     TOWN_SET ("townset",true,new ActionTownSet()),
     TOWN_KICK ("townkick",true,new ActionTownKick()),
     ITEM_GIVE ("itemgive",true,new ActionItems(0)),
@@ -76,7 +76,7 @@ public enum Actions{
     EXECUTE_STOP ("stop",false,new ActionExecStop()),  /// ???? не уверен
     EXECUTE_UNSTOP ("unstop",false,new ActionExecUnstop()),  /// ???? не уверен
     REGION_CLEAR("rgclear",false,new ActionClearRegion()),
-    HEAL("heal",true,new ActionHeal()),
+    HEAL("heal",false,new ActionHeal()),
     BLOCK_SET("block",false,new ActionBlockSet()),
     BLOCK_FILL("blockfill",false,new ActionBlockFill()),
     SIGN_SET_LINE("sign",false,new ActionSignSet()),

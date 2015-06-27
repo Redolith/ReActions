@@ -22,13 +22,6 @@
 
 package me.fromgate.reactions.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.externals.Externals;
@@ -56,6 +49,13 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.material.Openable;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 public class Util {
 
 	private static RAUtil u(){
@@ -81,6 +81,7 @@ public class Util {
 
 	public static String soundPlay (Location loc, Param params){
 		if (params.isEmpty()) return "";
+		Location soundLoc = loc;
 		String sndstr = "";
 		String strvolume ="1";
 		String strpitch = "1";
@@ -100,12 +101,14 @@ public class Util {
 			if (strvolume.matches("[0-9]+-?\\.[0-9]*")) volume = Float.parseFloat(strvolume);
 			if (strpitch.matches("[0-9]+-?\\.[0-9]*")) pitch = Float.parseFloat(strpitch);            
 		} else {
+			String locationStr = params.getParam("loc");
+			soundLoc = locationStr.isEmpty() ? loc : Locator.parseLocation(locationStr, null);
 			sndstr = params.getParam("type", "");
 			pitch = params.getParam("pitch", 1.0f);
 			volume = params.getParam("volume", 1.0f);
 		}
 		Sound sound = getSoundStr (sndstr);
-		loc.getWorld().playSound(loc, sound, volume, pitch);
+		if (soundLoc!=null) soundLoc.getWorld().playSound(soundLoc, sound, volume, pitch);
 		return sound.name();
 	}
 
@@ -263,12 +266,6 @@ public class Util {
 	public static Set<Player> getPlayerList(Param param, Player singlePlayer){
 		Set<Player> players = new HashSet<Player>();
 		if (param.hasAnyParam("region","rgplayer","player","world","faction","group","perm")){
-		/*if (params.containsKey("region")||params.containsKey("rgplayer")||params.containsKey("player")||
-				params.containsKey("world")||
-				params.containsKey("faction")||
-				params.containsKey("group")||
-				params.containsKey("perm")){ */
-
 			// Players in regions
 			if (RAWorldGuard.isConnected()){
 				String regionNames = param.getParam("region", "");
@@ -322,7 +319,15 @@ public class Util {
 					if ((targetPlayer !=null)&&(targetPlayer.isOnline()))players.add(targetPlayer);	
 				}
 			}
-		} else if (singlePlayer != null) players.add(singlePlayer);
+		} else {
+			
+			
+			
+			
+			
+			
+		}
+		if (players.isEmpty()&& singlePlayer != null) players.add(singlePlayer);
 		return players;
 	}
 
