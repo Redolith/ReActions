@@ -309,12 +309,9 @@ public class VirtualItem extends ItemStack {
 					.toUpperCase());
 			if (pType == null)
 				continue;
-			int amplifier = (ln.length > 1 && ln[1].matches("\\d+-\\d+|\\d+")) ? getNumber(ln[1])
-					: 0;
-			int duration = (ln.length > 2) ? parseTimeTicks(ln[2])
-					: Integer.MAX_VALUE;
-			pm.addCustomEffect(new PotionEffect(pType, duration, amplifier,
-					true), true);
+			int amplifier = (ln.length > 1 && ln[1].matches("\\d+-\\d+|\\d+")) ? getNumber(ln[1]): 0;
+			int duration = (ln.length > 2) ? parseTimeTicks(ln[2]) : Integer.MAX_VALUE;
+			pm.addCustomEffect(new PotionEffect(pType, duration, amplifier,	true), true);
 		}
 		this.setItemMeta(pm);
 	}

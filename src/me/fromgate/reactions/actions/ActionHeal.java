@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2015, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -48,28 +48,4 @@ public class ActionHeal extends Action {
         setMessageParam(Double.toString(hp));
         return true;
     }
-    
-    
-    /*
-     *     public boolean execute(Player p, Param params) {
-    	Player player = p;
-    	double damage = 0;
-        if (params.hasAnyParam("damage","player")){
-        	`String playerName = params.getParam("player", p!=null ? p.getName() : "");
-        	player = playerName.isEmpty() ? null : Bukkit.getPlayerExact(playerName);
-        	damage = params.getParam("damage", 0);
-        } else params.getParam("param-line", 0);
-        return damagePlayer (player, damage);
-    }
-    
-    
-    public boolean damagePlayer (Player player, double damage){
-    	if (player==null||player.isDead()||!player.isOnline()) return false;
-        if (damage>0) BukkitCompatibilityFix.damageEntity(player, damage);
-        else player.playEffect(EntityEffect.HURT);
-        setMessageParam(Double.toString(damage));
-        return true;
-    }
-     */
-    
 }

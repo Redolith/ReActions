@@ -319,13 +319,6 @@ public class Util {
 					if ((targetPlayer !=null)&&(targetPlayer.isOnline()))players.add(targetPlayer);	
 				}
 			}
-		} else {
-			
-			
-			
-			
-			
-			
 		}
 		if (players.isEmpty()&& singlePlayer != null) players.add(singlePlayer);
 		return players;
