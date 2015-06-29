@@ -136,5 +136,23 @@ public class SignActivator extends Activator {
 		}
 		return false;
 	}
+	
+	 @Override
+	 public String toString(){
+		 StringBuilder sb = new StringBuilder (name).append(" [").append(getType()).append("]");
+		 if (!getFlags().isEmpty()) sb.append(" F:").append(getFlags().size());
+		 if (!getActions().isEmpty()) sb.append(" A:").append(getActions().size());
+		 if (!getReactions().isEmpty()) sb.append(" R:").append(getReactions().size());
+		 sb.append(" (");
+		 sb.append("click:").append(this.click.name());
+		 sb.append(" sign:");
+		 if (this.maskLines.isEmpty()) sb.append("[][][][]");
+		 else {
+			 for (String s : maskLines)
+				 sb.append("[").append(s).append("]");
+		 }
+		 sb.append(")");
+		 return sb.toString();
+	 }	
 
 }

@@ -69,6 +69,9 @@ public class ActionVar extends Action  {
         case 3: //VAR_DEC, VAR_PLAYER_DEC
             int decValue = value.isEmpty()||!(u().isInteger(value)) ? 1 : Integer.parseInt(value);
             return Variables.decVar(player, var,decValue);
+        case 4:  //VAR_TEMP_SET
+        	Variables.setTempVar(var, value);
+        	return true;
         }
         return false;
     }

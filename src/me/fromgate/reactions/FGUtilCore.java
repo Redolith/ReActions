@@ -23,21 +23,6 @@
 
 package me.fromgate.reactions;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -58,6 +43,23 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -78,7 +80,7 @@ public abstract class FGUtilCore {
     private char c1 = 'a'; //цвет 1 (по умолчанию для текста)
     private char c2 = '2'; //цвет 2 (по умолчанию для значений)
     protected String msglist ="";
-    private boolean colorconsole = false;  // надо будет добавить методы для конфигурации "из вне"
+    protected boolean colorconsole = false;  // надо будет добавить методы для конфигурации "из вне"
     private Set<String> log_once = new HashSet<String>();
     protected HashMap<String,Cmd> cmds = new HashMap<String,Cmd>();
     protected String cmdlist ="";

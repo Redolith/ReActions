@@ -1141,8 +1141,8 @@ public class VirtualItem extends ItemStack {
 			if (itemMap.containsKey("item")) itemMap.remove("item");
 			if (itemMap.containsKey("default-param")) itemMap.remove("default-param");
 		}
-		// if (this.hasDisplayName()&&!itemMap.containsKey("name")) return false;
-		// if (this.hasLore()&&!itemMap.containsKey("lore")) return false;
+		if (this.hasDisplayName()&&!itemMap.containsKey("name")) return false;
+		if (this.hasLore()&&!itemMap.containsKey("lore")) return false;
 		for (String key : itemMap.keySet()) {
 			if (key.equalsIgnoreCase("type")) {
 				String typeStr = itemMap.get(key).toUpperCase();

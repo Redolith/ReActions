@@ -45,6 +45,7 @@ import me.fromgate.reactions.event.JoinEvent;
 import me.fromgate.reactions.event.LeverEvent;
 import me.fromgate.reactions.event.MessageEvent;
 import me.fromgate.reactions.event.MobClickEvent;
+import me.fromgate.reactions.event.MobDamageEvent;
 import me.fromgate.reactions.event.MobKillEvent;
 import me.fromgate.reactions.event.PVPDeathEvent;
 import me.fromgate.reactions.event.PVPKillEvent;
@@ -110,27 +111,13 @@ public class RAListener implements Listener{
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
 	public void onChatCommand(AsyncPlayerChatEvent event){
 		if (EventManager.raiseMessageEvent(event.getPlayer(), Source.CHAT_INPUT, event.getMessage()))
-			 event.setCancelled(true);
+			event.setCancelled(true);
 	}
 
 	@EventHandler(priority=EventPriority.NORMAL)
 	public void onServerCommandEvent(ServerCommandEvent event) {
 		EventManager.raiseMessageEvent(Bukkit.getConsoleSender(), Source.CONSOLE_INPUT, event.getCommand());
 	}
-	
-	/*
-	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
-	public void onPlayerChatTabCompleteEvent (PlayerChatTabCompleteEvent event){
-		ReActions.util.BC(event.getChatMessage());
-		String message = event.getChatMessage().replaceFirst("/", "");
-		ReActions.util.BC(message);
-		for (Activator a : Activators.getActivators(ActivatorType.COMMAND)){
-			CommandActivator ca = (CommandActivator) a; 
-			if (ca.getCommand().toLowerCase().startsWith(message.toLowerCase())) event.getTabCompletions().add("/"+ca.getCommand());
-			ReActions.util.BC(ca.getCommand());
-		}
-	} */
-
 
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
 	public void onSignChange (SignChangeEvent event) {
@@ -186,13 +173,13 @@ public class RAListener implements Listener{
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
 	public void onDropLoot(EntityDeathEvent event){
 		Player killer = Util.getKiller (event.getEntity().getLastDamageCause());
-		
+
 		List<ItemStack> stacks = MobSpawn.getMobDrop(event.getEntity());
 		if (stacks!=null&&!stacks.isEmpty()) {
 			event.getDrops().clear();
 			event.getDrops().addAll(stacks);			
 		}
-		
+
 		/*if (event.getEntity().hasMetadata("ReActions-drop")) {
 			List<ItemStack> stacks = ItemUtil.parseRandomItemsStr(event.getEntity().getMetadata("ReActions-drop").get(0).asString());
 			if (stacks != null) {
@@ -200,7 +187,7 @@ public class RAListener implements Listener{
 				event.getDrops().addAll(stacks);
 			}
 		} */
-		 
+
 		if (event.getEntity().hasMetadata("ReActions-xp")) {
 			int xp = Util.getMinMaxRandom(event.getEntity().getMetadata("ReActions-xp").get(0).asString());
 			event.setDroppedExp(xp);
@@ -218,13 +205,14 @@ public class RAListener implements Listener{
 		if (event.getEntity().hasMetadata("ReActions-deatheffect")) {
 			MobSpawn.playMobEffect(event.getEntity().getLocation(), event.getEntity().getMetadata("ReActions-deatheffect").get(0).asString());
 		}
-		
+
 		if (event.getEntity().hasMetadata("ReActions-activator")&&(killer!=null)) {
 			String exec = event.getEntity().getMetadata("ReActions-activator").get(0).asString();
 			EventManager.raiseExecEvent(killer, exec+" player:"+killer.getName());
 		} else EventManager.raiseMobKillEvent(killer, event.getEntity());
-		
+
 	}
+
 
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
 	public void onMobGrowl (EntityDamageEvent event){
@@ -243,14 +231,28 @@ public class RAListener implements Listener{
 	}
 
 	@EventHandler(priority=EventPriority.HIGH, ignoreCancelled = true)
-	public void onMobDmg (EntityDamageEvent event){
+	public void onMobDamageByPlayer (EntityDamageEvent event){
+		if ((event.getCause()!=DamageCause.ENTITY_ATTACK)&&(event.getCause()!=DamageCause.PROJECTILE)) return;
+		if (!(event instanceof EntityDamageByEntityEvent)) return;
+		EntityDamageByEntityEvent evdmg = (EntityDamageByEntityEvent)event;
+		LivingEntity damager = Util.getDamagerEntity(evdmg);
+		if (damager == null) return;
+		if (damager.getType() != EntityType.PLAYER) return;
+		if (EventManager.raiseMobDamageEvent(event, (Player) damager)) event.setCancelled(true);
+	}
+
+
+
+
+	@EventHandler(priority=EventPriority.HIGH, ignoreCancelled = true)
+	public void onDamageByMob (EntityDamageEvent event){
 		if ((event.getCause()!=DamageCause.ENTITY_ATTACK)&&(event.getCause()!=DamageCause.PROJECTILE)) return;
 		if (!(event instanceof EntityDamageByEntityEvent)) return;
 		EntityDamageByEntityEvent evdmg = (EntityDamageByEntityEvent)event;
 		LivingEntity damager = Util.getDamagerEntity(evdmg);
 		if (damager == null) return;
 		if (damager.getType() == EntityType.PLAYER) return;
-		if (!damager.hasMetadata("ReActions-dmg")) return;
+		if (!damager.hasMetadata("ReActions-dmg"))  return;
 		double dmg = damager.getMetadata("ReActions-dmg").get(0).asDouble();
 		if (dmg<0) return;
 		dmg = BukkitCompatibilityFix.getEventDamage(event)*dmg;        
@@ -341,7 +343,7 @@ public class RAListener implements Listener{
 		PushBack.rememberLocations(event.getPlayer(), event.getFrom(), event.getTo());
 		if (event.getFrom().getBlockX()==event.getTo().getBlockX()&&
 				event.getFrom().getBlockY()==event.getTo().getBlockY()&&
-						event.getFrom().getBlockZ()==event.getTo().getBlockZ()) return;
+				event.getFrom().getBlockZ()==event.getTo().getBlockZ()) return;
 		EventManager.raiseAllRegionEvents(event.getPlayer(), event.getTo(), event.getFrom());
 	}
 
@@ -442,6 +444,11 @@ public class RAListener implements Listener{
 	public void onMobKillActivator (MobKillEvent event){
 		event.setCancelled(Activators.activate(event));
 	}
+	
+	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
+	public void onMobDamageActivator (MobDamageEvent event){
+		event.setCancelled(Activators.activate(event));
+	}
 
 	@EventHandler(priority=EventPriority.NORMAL)
 	public void onItemClickActivator (ItemClickEvent event){
@@ -492,7 +499,7 @@ public class RAListener implements Listener{
 	public void onVariableEvent (VariableEvent event){
 		event.setCancelled(Activators.activate(event));
 	}
-	
+
 
 
 }

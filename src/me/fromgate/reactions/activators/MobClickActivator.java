@@ -88,5 +88,18 @@ public class MobClickActivator extends Activator {
 	public ActivatorType getType() {
 		return ActivatorType.MOB_CLICK;
 	}
+	
+	 @Override
+	 public String toString(){
+		 StringBuilder sb = new StringBuilder (name).append(" [").append(getType()).append("]");
+		 if (!getFlags().isEmpty()) sb.append(" F:").append(getFlags().size());
+		 if (!getActions().isEmpty()) sb.append(" A:").append(getActions().size());
+		 if (!getReactions().isEmpty()) sb.append(" R:").append(getReactions().size());
+		 sb.append(" (");
+		 sb.append("type:").append(mob_type.isEmpty() ? "-" : mob_type.toUpperCase());
+		 sb.append(" name:").append(mob_name.isEmpty() ? "-": mob_name.isEmpty());
+		 sb.append(")");
+		 return sb.toString();
+	 }
 
 }

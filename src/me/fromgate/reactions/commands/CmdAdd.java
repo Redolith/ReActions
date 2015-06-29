@@ -19,6 +19,7 @@ import me.fromgate.reactions.activators.JoinActivator;
 import me.fromgate.reactions.activators.LeverActivator;
 import me.fromgate.reactions.activators.MessageActivator;
 import me.fromgate.reactions.activators.MobClickActivator;
+import me.fromgate.reactions.activators.MobDamageActivator;
 import me.fromgate.reactions.activators.MobKillActivator;
 import me.fromgate.reactions.activators.PVPDeathActivator;
 import me.fromgate.reactions.activators.PVPKillActivator;
@@ -29,6 +30,7 @@ import me.fromgate.reactions.activators.RgEnterActivator;
 import me.fromgate.reactions.activators.RgLeaveActivator;
 import me.fromgate.reactions.activators.SignActivator;
 import me.fromgate.reactions.activators.VariableActivator;
+import me.fromgate.reactions.externals.RAWorldGuard;
 import me.fromgate.reactions.flags.Flags;
 import me.fromgate.reactions.menu.InventoryMenu;
 import me.fromgate.reactions.timer.Timers;
@@ -45,7 +47,7 @@ import org.bukkit.entity.Player;
 
 @CmdDefine(command = "react", description = "cmd_add", permission = "reactions.config",
 subCommands = { "add" }, allowConsole=true,
-shortDescription = "&3/react add [b <id>|loc <id>|<id> f <flag> <param>|<id> r <action> <param>|<id> r <reaction> <param>")
+shortDescription = "&3/react add [<activator> <Id>|loc <Id>|<Id> f <flag> <param>|<Id> <a|r> <action> <param>")
 public class CmdAdd extends Cmd {
 	@Override
 	public boolean execute (CommandSender sender, String[] args) {
@@ -205,6 +207,8 @@ public class CmdAdd extends Cmd {
 			break;
 		case MOB_KILL:    
 			activator = new MobKillActivator (name, param);
+		case MOB_DAMAGE:    
+			activator = new MobDamageActivator (name, param);
 			break;
 		case ITEM_CLICK:    
 			if (!param.isEmpty()) activator = new ItemClickActivator (name, param);
@@ -247,6 +251,7 @@ public class CmdAdd extends Cmd {
 			ReActions.getUtil().printMSG(p, "cmd_addbadded",activator.toString());
 		} else ReActions.getUtil().printMSG(p, "cmd_notaddbadded",activator.toString());
 		FakeCmd.updateAllCommands();
+		RAWorldGuard.updateRegionCache();
 		return true;
 	}
 

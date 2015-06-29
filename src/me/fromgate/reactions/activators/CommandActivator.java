@@ -80,7 +80,7 @@ public class CommandActivator extends Activator {
 			count++;
 			argStr=argStr.substring(argStr.indexOf(" ")+1);
 			Variables.setTempVar("args"+count, argStr);
-			Variables.setTempVar("argscount", Integer.toString(count));
+			Variables.setTempVar("argscount", Integer.toString(count+1));
 		}
 		
 	}
@@ -89,16 +89,9 @@ public class CommandActivator extends Activator {
 	public boolean activate(Event event) {
 		if (!(event instanceof CommandEvent)) return false;
 		CommandEvent ce = (CommandEvent) event;
-		
 		if (ce.isParentCanceled()&&!this.override) return false;
-		
-		
 		if (!commandMatches(ce.getCommand())) return false;
-		
-		
-		
 		setTempVars(ce.getCommand(), ce.getArgs());
-		
 		return Actions.executeActivator(ce.getPlayer(), this);
 	}
 
@@ -148,5 +141,18 @@ public class CommandActivator extends Activator {
 	public ActivatorType getType() {
 		return ActivatorType.COMMAND;
 	}
+	
+	 @Override
+	 public String toString(){
+		 StringBuilder sb = new StringBuilder (name).append(" [").append(getType()).append("]");
+		 if (!getFlags().isEmpty()) sb.append(" F:").append(getFlags().size());
+		 if (!getActions().isEmpty()) sb.append(" A:").append(getActions().size());
+		 if (!getReactions().isEmpty()) sb.append(" R:").append(getReactions().size());
+		 sb.append(" (override:").append(this.override);
+		 if (this.useRegex) sb.append(" regex:true");
+		 sb.append(" command:").append(this.command).append(")");
+		 return sb.toString();
+	 }
+
 
 }

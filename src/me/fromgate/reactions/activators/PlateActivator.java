@@ -24,6 +24,7 @@ package me.fromgate.reactions.activators;
 
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.PlateEvent;
+
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -96,5 +97,15 @@ public class PlateActivator extends Activator{
     public ActivatorType getType() {
         return ActivatorType.PLATE;
     }
+    
+	 @Override
+	 public String toString(){
+		 StringBuilder sb = new StringBuilder (name).append(" [").append(getType()).append("]");
+		 if (!getFlags().isEmpty()) sb.append(" F:").append(getFlags().size());
+		 if (!getActions().isEmpty()) sb.append(" A:").append(getActions().size());
+		 if (!getReactions().isEmpty()) sb.append(" R:").append(getReactions().size());
+		 sb.append(" (").append(world).append(", ").append(x).append(", ").append(y).append(", ").append(z).append(")");
+		 return sb.toString();
+	 }
 
 }

@@ -67,6 +67,8 @@ public class ReActions extends JavaPlugin {
     public int sameMessagesDelay = 10;
     public boolean horizontalPushback = false;
     boolean enableProfiler = true;
+    int chatLength = 55;
+    
     public static ReActions instance;
     public static RAUtil util;
     
@@ -103,7 +105,6 @@ public class ReActions extends JavaPlugin {
         saveCfg();
         u = new RAUtil (this, languageSave, language, "react");
         UpdateChecker.init(this, "ReActions", "61726", "reactions", this.checkUpdates);
-        //u.initUpdateChecker("ReActions", "61726", "reactions", this.checkUpdates);
         
         if (!getDataFolder().exists()) getDataFolder().mkdirs();
         l = new RAListener (this);
@@ -111,15 +112,12 @@ public class ReActions extends JavaPlugin {
         pm.registerEvents(l, this);
         pm.registerEvents(new InventoryMenu(), this);
         
-        /*cmd = new CmdOld (this);
-        getCommand("react").setExecutor(cmd);*/
         instance = this;
         util = u;
         Commander.init(this);
         Timers.init();
         Activators.init();
         FakeCmd.init();
-      //  ItemUtil.init(this);
         
         
         RAEffects.init();
@@ -134,9 +132,6 @@ public class ReActions extends JavaPlugin {
         Delayer.load();
         Variables.load();
         Locator.loadLocs();
-        //Questions.init();
-
-        
         
         SQLManager.init();
         InventoryMenu.init();
@@ -165,6 +160,7 @@ public class ReActions extends JavaPlugin {
         getConfig().set("reactions.item-hold-recheck-delay",itemHoldRecheck);
         getConfig().set("reactions.item-wear-recheck-delay",itemWearRecheck);
         getConfig().set("reactions.horizontal-pushback-action",horizontalPushback );
+        getConfig().getInt("reactions.default-chat-line-length",chatLength);
         getConfig().set("actions.shoot.break-block",Shoot.actionShootBreak);
         getConfig().set("actions.shoot.penetrable",Shoot.actionShootThrough);
         saveConfig();
@@ -174,6 +170,7 @@ public class ReActions extends JavaPlugin {
         language= getConfig().getString("general.language","english");
         checkUpdates = getConfig().getBoolean("general.check-updates",true);
         languageSave = getConfig().getBoolean("general.language-save",false);
+        chatLength = getConfig().getInt("reactions.default-chat-line-length",55);
         saveEmptySections = getConfig().getBoolean("reactions.save-empty-actions-and-flags-sections",false);
         centerTpCoords = getConfig().getBoolean("reactions.center-player-teleport",true);
         actionMsg= getConfig().getString("reactions.show-messages-for-actions","tp,grpadd,grprmv,townset,townkick,itemrmv,itemgive,moneypay,moneygive");
@@ -200,4 +197,7 @@ public class ReActions extends JavaPlugin {
 		return this.saveEmptySections;
 	}
 
+	public int getChatLineLength(){
+		return this.chatLength;
+	}
 }

@@ -72,7 +72,7 @@ public class Commander implements CommandExecutor{
 		int pageHeight = (sender instanceof Player) ? 9 : 1000;
 
 		ReActions.getUtil().printMsg(sender, "&6&lReActions v"+ReActions.getPlugin().getDescription().getVersion()+" &r&6| "+ReActions.getUtil().getMSG("hlp_help",'6'));
-		ChatPage chatPage = paginate (helpList, page,60,pageHeight);
+		ChatPage chatPage = paginate (helpList, page,ReActions.getPlugin().getChatLineLength(),pageHeight);
 
 		for (String str : chatPage.getLines())
 			sender.sendMessage(str);

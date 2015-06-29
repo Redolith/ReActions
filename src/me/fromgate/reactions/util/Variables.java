@@ -229,7 +229,7 @@ public class Variables {
 		if (str.isEmpty()) return str;
 		String newStr = str;
 		for (String key : tempvars.keySet()){
-			newStr = newStr.replaceAll("(?i)%"+key.toLowerCase()+"%", Matcher.quoteReplacement(tempvars.get(key)));
+			newStr = newStr.replaceAll("(?i)%"+key+"%", Matcher.quoteReplacement(tempvars.get(key)));
 		}
 		return newStr;
 	}

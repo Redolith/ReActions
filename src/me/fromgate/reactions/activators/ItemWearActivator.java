@@ -68,5 +68,16 @@ public class ItemWearActivator extends Activator {
 	public String getItemStr(){
 		return this.item;
 	}
+	
+	 @Override
+	 public String toString(){
+		 StringBuilder sb = new StringBuilder (name).append(" [").append(getType()).append("]");
+		 if (!getFlags().isEmpty()) sb.append(" F:").append(getFlags().size());
+		 if (!getActions().isEmpty()) sb.append(" A:").append(getActions().size());
+		 if (!getReactions().isEmpty()) sb.append(" R:").append(getReactions().size());
+		 sb.append(" (").append(this.item).append(")");
+		 return sb.toString();
+	 }
+	
 }
 

@@ -2,6 +2,7 @@ package me.fromgate.reactions.activators;
 
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.JoinEvent;
+
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
@@ -52,5 +53,15 @@ public class JoinActivator extends Activator {
     public ActivatorType getType() {
         return ActivatorType.JOIN;
     }
+    
+	 @Override
+	 public String toString(){
+		 StringBuilder sb = new StringBuilder (name).append(" [").append(getType()).append("]");
+		 if (!getFlags().isEmpty()) sb.append(" F:").append(getFlags().size());
+		 if (!getActions().isEmpty()) sb.append(" A:").append(getActions().size());
+		 if (!getReactions().isEmpty()) sb.append(" R:").append(getReactions().size());
+		 sb.append(" (first join:").append(this.firstJoin).append(")");
+		 return sb.toString();
+	 }
 
 }

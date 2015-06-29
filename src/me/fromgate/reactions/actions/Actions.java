@@ -29,7 +29,6 @@ import me.fromgate.reactions.activators.Activator.ActVal;
 import me.fromgate.reactions.flags.Flags;
 import me.fromgate.reactions.placeholders.Placeholders;
 import me.fromgate.reactions.util.Param;
-import me.fromgate.reactions.util.Variables;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -37,7 +36,6 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 
 public enum Actions{
@@ -90,6 +88,7 @@ public enum Actions{
     VAR_PLAYER_INC("varpinc",true,new ActionVar(2,true)),
     VAR_DEC("vardec",false,new ActionVar(3,false)),
     VAR_PLAYER_DEC("varpdec",true,new ActionVar(3,true)),
+    VAR_TEMP_SET("vartempset",false,new ActionVar(4,false)),
     RNC_SET_RACE("setrace",true,new ActionRacesAndClasses(true)),
     RNC_SET_CLASS("setclass",true,new ActionRacesAndClasses(false)),
     TIMER_STOP("timerstop",false,new ActionTimer(true)),
@@ -148,10 +147,9 @@ public enum Actions{
         for (ActVal action : actions) {
             if (!Actions.isValid(action.flag)) continue;
             Actions at = Actions.getByName(action.flag);
-            Map<String,String> params = Placeholders.replacePlaceholders(p, new Param(action.value));
-            if (at.performAction(p, act, isAction, new Param (params))) cancelParentEvent = true;
+            if (at.performAction(p, act, isAction, new Param (Placeholders.replacePlaceholders(p, action.value)))) cancelParentEvent = true;
         }
-        Variables.clearAllTempVar();
+        
         return cancelParentEvent;
     }
     

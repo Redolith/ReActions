@@ -36,8 +36,9 @@ public class MessageActivator extends Activator {
 	Type type;
 	Source source;
 	String mask;
-	String answerWait;
-	boolean answerAtFirst;
+	
+	//String answerWait;
+	//boolean answerAtFirst;
 
 	public MessageActivator(String name, String group, YamlConfiguration cfg) {
 		super(name, group, cfg);
@@ -178,5 +179,22 @@ public class MessageActivator extends Activator {
 		Variables.setTempVar("num-count", Integer.toString(countNum));
 	}
 
+	 @Override
+	 public String toString(){
+		 StringBuilder sb = new StringBuilder (name).append(" [").append(getType()).append("]");
+		 if (!getFlags().isEmpty()) sb.append(" F:").append(getFlags().size());
+		 if (!getActions().isEmpty()) sb.append(" A:").append(getActions().size());
+		 if (!getReactions().isEmpty()) sb.append(" R:").append(getReactions().size());
+		 sb.append(" (");
+		 sb.append("type:").append(this.type.name());
+		 sb.append(" source:").append(this.source.name());
+		 sb.append(" mask:").append(this.mask);
+		 sb.append(")");
+		 return sb.toString();
+	 }
+
+	
+	
+	
 
 }

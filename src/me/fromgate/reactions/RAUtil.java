@@ -22,6 +22,12 @@
 
 package me.fromgate.reactions;
 
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.util.ChatPaginator;
+import org.bukkit.util.ChatPaginator.ChatPage;
+
 public class RAUtil extends FGUtilCore {
 	ReActions plg;
 
@@ -31,7 +37,7 @@ public class RAUtil extends FGUtilCore {
 		FillMSG();
 		if (savelng) this.SaveMSG();
 	}
-	
+
 	public void FillMSG(){
 		addMSG ("msg_listclicker", "List of activators:");
 		addMSG ("msg_listloc", "List of stored locations:");
@@ -199,7 +205,7 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("msg_varremovefail", "Failed to remove variable");
 		addMSG ("msg_varlist", "Variables");
 		addMSG ("msg_signforbidden", "You're not permitted to set signs, that subscribed to activator %1%");
-		
+
 
 		/*
 		 *  Action description messages
@@ -321,7 +327,7 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("flag_FCT_AT_ZONE_REL", "Check is player in faction with defined relation");
 		addMSG ("flag_FCT_IS_REL_PLAYER_AROUND", "Check is there anyone with defined relation around the player");
 		addMSG ("flag_FCT_ARE_PLAYERS_IN_REL", "Check is players are in defined relations. Parameters: <player1> <player2> <relation>. Where <realtion> could be: LEADER, OFFICER, MEMBER, RECRUIT, ALLY, TRUCE, NEUTRAL or ENEMY");
-				
+
 		/*
 		 *  Activators!
 		 */
@@ -339,10 +345,10 @@ public class RAUtil extends FGUtilCore {
 				+ " Command to create: /react add exec <id>");
 		addMSG ("activator_COMMAND","This activator is initiates when player typed a defined command. "
 				+ "Command: /react add command <id> <command>");
-		
+
 		addMSG ("activator_MESSAGE", "This activator is initiates when defined message appears in chat input, console input, server log, chat screen. "
 				+ "Command: /react add message <id> type:<Type> source:<Source> mask:<MessageMask>");
-		
+
 		addMSG ("activator_PVP_KILL","This activator is activating when one player is killing another player. Command: /react add pvp_death <id>");
 		addMSG ("activator_PVP_DEATH","This activator is activating after player death, if he was murdered by another player. Command: /react add pvp_death <id>");
 		addMSG ("activator_PVP_RESPAWN","This activator is activating after respawn of dead player if he was murdered by another player. Command: /react add pvp_respawn <id>");
@@ -379,7 +385,58 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("placeholder_CALC","Calculates the expression and provide it's result. For example: \"%CALC:1+2%\" will be replaced to \"3\"");
 		addMSG ("placeholder_SIGNAct","Activator-based placeholders. Provides SIGN activator locations and text-lines");
 		addMSG ("placeholder_COMMANDAct","Activator-based placeholders. Provides COMMAND activator parameters (arguments)");
-		
 	}
+
+	@Override
+    public void printMsg(CommandSender p, String msg){
+        String message =ChatColor.translateAlternateColorCodes('&', msg);
+        if ((!(p instanceof Player))&&(!colorconsole)) message = ChatColor.stripColor(message);
+        ChatPage chatPage = ChatPaginator.paginate(message, 1, ReActions.getPlugin().getChatLineLength(), 10000);
+		for (String line : chatPage.getLines())
+			p.sendMessage(line); 
+	}
+
+	@Override
+	public void printMSG (CommandSender p, Object... s){
+		String message = getMSG (s); 
+		if ((!(p instanceof Player))&&(!colorconsole)) message = ChatColor.stripColor(message);
+		ChatPage chatPage = ChatPaginator.paginate(message, 1, ReActions.getPlugin().getChatLineLength(), 10000);
+		for (String line : chatPage.getLines())
+			p.sendMessage(line);
+	}
+
+	/*
+	 * 	public static void printHelp(CommandSender sender, int page) {
+		List<String> helpList = new ArrayList<String>();
+		for (Cmd cmd : commands){
+			helpList.add(cmd.getFullDescription());
+		}
+		int pageHeight = (sender instanceof Player) ? 9 : 1000;
+
+		ReActions.getUtil().printMsg(sender, "&6&lReActions v"+ReActions.getPlugin().getDescription().getVersion()+" &r&6| "+ReActions.getUtil().getMSG("hlp_help",'6'));
+		ChatPage chatPage = paginate (helpList, page,55,pageHeight);
+
+		for (String str : chatPage.getLines())
+			sender.sendMessage(str);
+
+		if (pageHeight == 9)
+			ReActions.getUtil().printMSG(sender, "lst_footer",'e','6', chatPage.getPageNumber(),chatPage.getTotalPages());
+	}
+
+	public static ChatPage paginate(List<String> unpaginatedStrings, int pageNumber, int lineLength, int pageHeight){
+		List<String> lines = new ArrayList<String>();
+		for (String str : unpaginatedStrings){
+			lines.addAll(Arrays.asList(ChatPaginator.wordWrap(str, lineLength)));
+		}
+		int totalPages = lines.size()/ pageHeight + (lines.size() % pageHeight == 0 ? 0 : 1);
+		int actualPageNumber = pageNumber <= totalPages ? pageNumber : totalPages;
+		int from = (actualPageNumber - 1) * pageHeight;
+		int to = from + pageHeight <= lines.size()? from + pageHeight : lines.size();
+		String[] selectedLines = (String[])Java15Compat.Arrays_copyOfRange((String[])lines.toArray(new String[lines.size()]), from, to);
+		return new ChatPage(selectedLines, actualPageNumber, totalPages);
+	}
+	 */
+
+
 
 }

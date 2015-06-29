@@ -57,4 +57,15 @@ public class FactionActivator extends Activator {
 		return ActivatorType.FCT_CHANGE;
 	}
 
+	 @Override
+	 public String toString(){
+		 StringBuilder sb = new StringBuilder (name).append(" [").append(getType()).append("]");
+		 if (!getFlags().isEmpty()) sb.append(" F:").append(getFlags().size());
+		 if (!getActions().isEmpty()) sb.append(" A:").append(getActions().size());
+		 if (!getReactions().isEmpty()) sb.append(" R:").append(getReactions().size());
+		 sb.append(" (old faction:").append(this.oldFaction).append(" new faction:").append(this.newFaction).append(")");
+		 return sb.toString();
+	 }
+
+	
 }

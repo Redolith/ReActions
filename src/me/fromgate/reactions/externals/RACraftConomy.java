@@ -22,13 +22,14 @@
 
 package me.fromgate.reactions.externals;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import me.fromgate.reactions.ReActions;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import com.greatmancode.craftconomy3.Cause;
 import com.greatmancode.craftconomy3.Common;
 import com.greatmancode.craftconomy3.account.Account;
@@ -39,10 +40,6 @@ import com.greatmancode.craftconomy3.tools.interfaces.Loader;
 public class RACraftConomy {
 	private static boolean enabled = false;
 	private static Common craftconomy = null;
-
-	/*private static RAUtil u(){
-		return ReActions.util;
-	}*/
 
 	public static void init(){
 		enabled = isCraftconomyInstalled();
@@ -227,7 +224,6 @@ public class RACraftConomy {
 			String key = "money."+(balance.getWorld().equalsIgnoreCase(worldDef) ? "" : balance.getWorld()+".")+balance.getCurrency().getName();
 			String amount = craftconomy.format(balance.getWorld(), balance.getCurrency(), balance.getBalance()); 
 			balances.put(key, amount);
-			//ReActions.util.BC(worldDef + " ? "+ balance.getWorld());
 			if (balance.getWorld().equals(worldDef)&&balance.getCurrency().equals(craftconomy.getCurrencyManager().getDefaultCurrency()))
 					balances.put("money", amount);
 		}

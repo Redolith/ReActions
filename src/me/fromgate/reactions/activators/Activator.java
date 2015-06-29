@@ -26,6 +26,7 @@ package me.fromgate.reactions.activators;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.flags.Flags;
+import me.fromgate.reactions.util.Variables;
 
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -153,8 +154,13 @@ public abstract class Activator {
 
 	 @Override
 	 public String toString(){
-		 return name+" ["+getType()+ "] F:"+this.flags.size()+" A:"+this.actions.size()+" R:"+this.reactions.size();
+		 StringBuilder sb = new StringBuilder (name).append(" [").append(getType()).append("]");
+		 if (!getFlags().isEmpty()) sb.append(" F:").append(getFlags().size());
+		 if (!getActions().isEmpty()) sb.append(" A:").append(getActions().size());
+		 if (!getReactions().isEmpty()) sb.append(" R:").append(getReactions().size());
+		 return sb.toString();
 	 }
+
 
 	 @Override
 	 public int hashCode() {
@@ -256,17 +262,15 @@ public abstract class Activator {
 		 return this.group;
 	 }
 
-	 public boolean isAnnoying(){
-		 return false;
-	 }
-
 	 public String getName(){
 		 return this.name;
 	 }
 
 
 	 public boolean executeActivator(Event event){
-		 return activate(event);
+		 boolean result = activate(event);
+		 Variables.clearAllTempVar();
+		 return result;
 	 }
 
 
@@ -279,9 +283,5 @@ public abstract class Activator {
 		 return ((getType().name().equalsIgnoreCase(str))||(getType().getAlias().equalsIgnoreCase(str))); 
 	 }
 
-	 /*
-	 public String getTargetPlayer() {
-		 return "%targetplayer%";
-	 }*/
 
 }

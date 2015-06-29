@@ -45,6 +45,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -461,6 +462,15 @@ public class EventManager {
 		if (!playerName.isEmpty()&&player==null) return;
 		VariableEvent ve = new VariableEvent (player, var, newValue, prevValue);
 		Bukkit.getServer().getPluginManager().callEvent(ve);
+	}
+
+	public static boolean raiseMobDamageEvent(EntityDamageEvent event, Player damager) {
+		if (damager == null) return false;
+		if (!(event.getEntity() instanceof LivingEntity)) return false;
+		MobDamageEvent mde = new MobDamageEvent ((LivingEntity) event.getEntity(), damager, event.getDamage(), event.getCause());
+		Bukkit.getServer().getPluginManager().callEvent(mde);
+		event.setDamage(mde.getDamage());
+		return mde.isCancelled();
 	}
 
 

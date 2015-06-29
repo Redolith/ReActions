@@ -57,12 +57,9 @@ public class ItemUtil {
 	}
 	
 	private static boolean removeItemInInventory(Inventory inventory, Map<String, String> itemParams) {
-		//ReActions.util.BC("0");
 		int amountToRemove = Integer.parseInt(VirtualItem.getParam(itemParams, "amount","1"));
 		int countItems =  countItemsInventory (inventory, itemParams);
 		if (amountToRemove>countItems) return false;
-		//ReActions.util.BC("1");
-		
 		for (int i = 0; i<inventory.getSize(); i++){
 			if (inventory.getItem(i)==null||inventory.getItem(i).getType()==Material.AIR) continue;
 			VirtualItem vi = ItemUtil.itemFromItemStack(inventory.getItem(i));

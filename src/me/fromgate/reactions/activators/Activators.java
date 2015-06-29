@@ -285,8 +285,7 @@ public class Activators {
 	public static boolean activate (RAEvent event){
 		if (act.isEmpty()) return false;
 		boolean cancelParentEvent = false;
-		for (int i = 0; i<act.size(); i++){
-			Activator a = act.get(i);
+		for (Activator a : act){
 			if (a.getType().getEventClass().isInstance(event)){
 				if (a.executeActivator(event)) cancelParentEvent = true;
 			}

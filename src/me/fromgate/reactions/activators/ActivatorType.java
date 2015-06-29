@@ -8,15 +8,40 @@ package me.fromgate.reactions.activators;
  */
 
 
-import java.util.ArrayList;
-import java.util.List;
+import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.event.ButtonEvent;
+import me.fromgate.reactions.event.CommandEvent;
+import me.fromgate.reactions.event.DoorEvent;
+import me.fromgate.reactions.event.ExecEvent;
+import me.fromgate.reactions.event.FactionCreateEvent;
+import me.fromgate.reactions.event.FactionDisbandEvent;
+import me.fromgate.reactions.event.FactionEvent;
+import me.fromgate.reactions.event.FactionRelationEvent;
+import me.fromgate.reactions.event.ItemClickEvent;
+import me.fromgate.reactions.event.ItemHoldEvent;
+import me.fromgate.reactions.event.ItemWearEvent;
+import me.fromgate.reactions.event.JoinEvent;
+import me.fromgate.reactions.event.LeverEvent;
+import me.fromgate.reactions.event.MessageEvent;
+import me.fromgate.reactions.event.MobClickEvent;
+import me.fromgate.reactions.event.MobDamageEvent;
+import me.fromgate.reactions.event.MobKillEvent;
+import me.fromgate.reactions.event.PVPDeathEvent;
+import me.fromgate.reactions.event.PVPKillEvent;
+import me.fromgate.reactions.event.PVPRespawnEvent;
+import me.fromgate.reactions.event.PlateEvent;
+import me.fromgate.reactions.event.RegionEnterEvent;
+import me.fromgate.reactions.event.RegionEvent;
+import me.fromgate.reactions.event.RegionLeaveEvent;
+import me.fromgate.reactions.event.SignEvent;
+import me.fromgate.reactions.event.VariableEvent;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
-import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.event.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public enum ActivatorType {
     // алиас, класс активатора, класс события
@@ -36,6 +61,7 @@ public enum ActivatorType {
     JOIN ("join",JoinActivator.class,JoinEvent.class),
     MOB_CLICK ("mobclick",MobClickActivator.class,MobClickEvent.class),
     MOB_KILL ("mobkill",MobKillActivator.class,MobKillEvent.class),
+    MOB_DAMAGE ("mobdamage",MobDamageActivator.class,MobDamageEvent.class),
     ITEM_CLICK ("itemclick",ItemClickActivator.class,ItemClickEvent.class),
     ITEM_HOLD ("itemhold",ItemHoldActivator.class,ItemHoldEvent.class),
     ITEM_WEAR("itemwear",ItemWearActivator.class,ItemWearEvent.class),

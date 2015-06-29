@@ -22,8 +22,6 @@
 
 package me.fromgate.reactions.activators;
 
-import java.util.List;
-
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.RegionEvent;
 import me.fromgate.reactions.externals.RAWorldGuard;
@@ -32,6 +30,8 @@ import me.fromgate.reactions.module.wgbridge.WGBridge;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
+
+import java.util.List;
 
 public class RegionActivator extends Activator {
 
@@ -86,9 +86,16 @@ public class RegionActivator extends Activator {
         return ActivatorType.REGION;
     }
 
-    @Override
-    public boolean isAnnoying(){
-        return true;
-    }
+	 @Override
+	 public String toString(){
+		 StringBuilder sb = new StringBuilder (name).append(" [").append(getType()).append("]");
+		 if (!getFlags().isEmpty()) sb.append(" F:").append(getFlags().size());
+		 if (!getActions().isEmpty()) sb.append(" A:").append(getActions().size());
+		 if (!getReactions().isEmpty()) sb.append(" R:").append(getReactions().size());
+		 sb.append(" (");
+		 sb.append("region:").append(this.region);
+		 sb.append(")");
+		 return sb.toString();
+	 }
 
 }

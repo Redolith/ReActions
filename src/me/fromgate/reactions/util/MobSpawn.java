@@ -49,7 +49,11 @@ public class MobSpawn {
 	
 
     public static void mobSpawn(Player p, Param params) {
-        String mob = params.getParam( "type", "PIG");
+        String mob = params.getParam( "type", "").toUpperCase();
+        if (mob.isEmpty()) {
+        	ReActions.getUtil().log("Failed to spawn mob: "+params.getParam("param-line"));
+        	return;
+        }
         String locstr = params.getParam( "loc", "");
         Location loc = Locator.parseLocation(locstr, p==null ? null : p.getLocation());  
         String region = params.getParam( "region", "");
