@@ -49,7 +49,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Button;
 import org.bukkit.metadata.FixedMetadataValue;
 
@@ -98,7 +97,7 @@ public class EventManager {
 		Bukkit.getServer().getPluginManager().callEvent(e);       
 		return true;
 	}
-	
+
 	public static boolean raiseMobKillEvent (Player p, LivingEntity mob){
 		if (mob == null) return false;
 		MobKillEvent e = new MobKillEvent(p,mob);
@@ -257,88 +256,6 @@ public class EventManager {
 		return false;
 	}
 
-	public static void raiseItemWearEvent (final Player player){
-		Bukkit.getScheduler().runTaskLater(plg(), new Runnable(){
-			@Override
-			public void run() {
-				if (!player.isOnline()) return;
-				if (player.isDead()) return;
-				boolean hasArmour = false;
-				for (ItemStack is : player.getInventory().getArmorContents()){
-					if (is!=null&&is.getType() != Material.AIR) hasArmour = true;
-				}
-				if (!hasArmour) return;
-				for (ItemWearActivator iw : Activators.getItemWearActivatos())
-					raiseItemWearEvent (player, iw.getItemStr());
-			}
-		}, 1);
-	}
-
-	public static boolean raiseItemWearEvent (Player player, String itemStr){
-		if (!player.isOnline()) return false;
-		if (player.isDead()) return false;
-		if (!isTimeToRaiseEvent (player,"iw-"+itemStr, plg().itemWearRecheck)) return false;
-		player.removeMetadata("reactions-rchk-iw-"+itemStr, plg());
-		ItemWearEvent iwe = new ItemWearEvent (player);
-		if (!iwe.isItemWeared(itemStr)) return false;
-		Bukkit.getServer().getPluginManager().callEvent(iwe);   
-		setFutureItemWearCheck (player,itemStr);
-		return true;
-	}
-
-	private static void setFutureItemWearCheck(final Player p, final String itemStr){
-		final String id = "iw-"+itemStr;
-		if (isTimeToRaiseEvent(p, id,plg().itemHoldRecheck)){
-			p.setMetadata("reactions-rchk-"+id, new FixedMetadataValue (plg(), System.currentTimeMillis()));
-			Bukkit.getScheduler().runTaskLater(plg(), new Runnable(){
-				@Override
-				public void run() {
-					if (!p.isOnline()) return;
-					if (p.isDead()) return;
-					p.removeMetadata("reactions-rchk-"+id, plg());
-					ItemWearEvent iwe = new ItemWearEvent (p);
-					if (iwe.isItemWeared(itemStr)){
-						Bukkit.getServer().getPluginManager().callEvent(iwe);   
-						setFutureItemWearCheck (p,itemStr);
-					}
-				}
-			}, 20*plg().itemWearRecheck);
-		}
-	}
-
-
-
-	public static void raiseItemHoldEvent (final Player player){
-		Bukkit.getScheduler().runTaskLater(plg(), new Runnable(){
-			@Override
-			public void run() {
-				if (!player.isOnline()) return;
-				if (player.isDead()) return;
-				if (player.getItemInHand()==null) return;
-				if (player.getItemInHand().getType() == Material.AIR) return;
-				for (ItemHoldActivator ih : Activators.getItemHoldActivatos())
-					if (raiseItemHoldEvent (player, ih.getItemStr())) return;
-			}
-		}, 1);
-
-	}
-
-
-	public static boolean raiseItemHoldEvent (Player player, String itemstr){
-		if (!player.isOnline()) return false;
-		if (player.isDead()) return false;
-		if (player.getItemInHand()==null) return false;
-		if (player.getItemInHand().getType() == Material.AIR) return false;
-		String id = "reactions-rchk-ih-"+itemstr;
-		if (!isTimeToRaiseEvent (player,id, plg().itemHoldRecheck)) return false;
-		player.removeMetadata(id, plg());
-		if (!ItemUtil.compareItemStr(player.getItemInHand(), itemstr)) return false;
-		ItemHoldEvent ihe = new ItemHoldEvent (player);
-		Bukkit.getServer().getPluginManager().callEvent(ihe);   
-		setFutureItemHoldCheck (player,itemstr);
-		return true;
-	}
-
 	public static void raiseAllRegionEvents (final Player player, final Location to, final Location from){
 		if (!RAWorldGuard.isConnected()) return;
 		Bukkit.getScheduler().runTaskAsynchronously(ReActions.instance, new Runnable(){
@@ -360,20 +277,6 @@ public class EventManager {
 		}); 
 	}
 
-
-
-	private static void raiseRegionEvent (Player player, List<String> to){
-		if (to.isEmpty()) return;
-		for (String rg : to){
-			if (isTimeToRaiseEvent (player,rg, plg().worlduardRecheck)){
-				RegionEvent wge = new RegionEvent (player, rg);
-				Bukkit.getServer().getPluginManager().callEvent(wge);	
-				setFutureRegionCheck(player,rg);
-			}
-		}
-	}
-
-
 	private static void raiseRgEnterEvent (Player player, List<String> regionTo, List<String> regionFrom){
 		if (regionTo.isEmpty()) return;
 		for (String rg : regionTo)
@@ -392,56 +295,109 @@ public class EventManager {
 			}
 	}
 
-	// Данная функция вызывает каждую секунду 
-	// эвент, на тот случай, если игрок "застыл" и PlayerMoveEvent не отрабатывает
-	private static void setFutureRegionCheck(final Player p, final String region){
-		final String rg = "rg-"+region;
-		if (isTimeToRaiseEvent(p, rg,plg().worlduardRecheck)){
-			p.setMetadata("reactions-rchk-"+rg, new FixedMetadataValue (plg(), System.currentTimeMillis()));
-			Bukkit.getScheduler().runTaskLater(plg(), new Runnable(){
-				@Override
-				public void run() {
-					if (!p.isOnline()) return;
-					if (p.isDead()) return;
-					p.removeMetadata("reactions-rchk-"+rg, plg());
-					if (RAWorldGuard.isPlayerInRegion(p, region)){
-						RegionEvent wge = new RegionEvent (p, region);
-						Bukkit.getServer().getPluginManager().callEvent(wge);	
-						setFutureRegionCheck (p,region);
-					}
-				}
-			}, 20*plg().worlduardRecheck);
+	private static void raiseRegionEvent (Player player, List<String> to){
+		if (to.isEmpty()) return;
+		for (String region : to){
+			setFutureRegionCheck(player.getName(),region);
 		}
 	}
 
-	private static void setFutureItemHoldCheck(final Player p, final String itemstr){
-		final String id = "ih-"+itemstr;
-		if (isTimeToRaiseEvent(p, id,plg().itemHoldRecheck)){
-			p.setMetadata("reactions-rchk-"+id, new FixedMetadataValue (plg(), System.currentTimeMillis()));
-			Bukkit.getScheduler().runTaskLater(plg(), new Runnable(){
-				@Override
-				public void run() {
-					if (!p.isOnline()) return;
-					if (p.isDead()) return;
-					if (p.getItemInHand()==null) return;
-					if (p.getItemInHand().getType() == Material.AIR) return;
-					p.removeMetadata("reactions-rchk-"+id, plg());
-					if (ItemUtil.compareItemStr(p.getItemInHand(), itemstr)){
-						ItemHoldEvent ihe = new ItemHoldEvent (p);
-						Bukkit.getServer().getPluginManager().callEvent(ihe);   
-						setFutureItemHoldCheck (p,itemstr);
-					}
-				}
-			}, 20*plg().itemHoldRecheck);
-		}
+	private static void setFutureRegionCheck (final String playerName, final String region){
+		@SuppressWarnings("deprecation")
+		Player player = Bukkit.getPlayerExact(playerName);
+		if (player==null) return;
+		if (!player.isOnline()) return;
+		if (player.isDead()) return;
+		if (!RAWorldGuard.isPlayerInRegion(player, region)) return;
+		String rg = "rg-"+region;
+		if (!isTimeToRaiseEvent(player, rg,plg().worlduardRecheck)) return; 
+
+		RegionEvent wge = new RegionEvent (player, region);
+		Bukkit.getServer().getPluginManager().callEvent(wge);
+
+		Bukkit.getScheduler().runTaskLater(plg(), new Runnable(){
+			@Override
+			public void run() {
+				setFutureRegionCheck (playerName,region);		
+			}
+		}, 20*plg().worlduardRecheck);
+	}
+
+
+	private static void setFutureItemWearCheck (final String playerName, final String itemStr){
+		@SuppressWarnings("deprecation")
+		Player player = Bukkit.getPlayerExact(playerName);
+		if (player==null) return;
+		if (!player.isOnline()) return;
+		if (player.isDead()) return;
+		String rg = "iw-"+itemStr;
+		if (!isTimeToRaiseEvent(player, rg,plg().itemWearRecheck)) return;
+		ItemWearEvent iwe = new ItemWearEvent (player);
+		if (!iwe.isItemWeared(itemStr)) return;
+		Bukkit.getServer().getPluginManager().callEvent(iwe);   
+		Bukkit.getScheduler().runTaskLater(plg(), new Runnable(){
+			@Override
+			public void run() {
+				setFutureItemWearCheck (playerName,itemStr);		
+			}
+		}, 20*plg().itemWearRecheck);
+	}
+
+
+	public static void raiseItemWearEvent (Player player){
+		final String playerName = player.getName();
+		Bukkit.getScheduler().runTaskLater(plg(), new Runnable(){
+			@Override
+			public void run() {
+				for (ItemWearActivator iw : Activators.getItemWearActivatos())
+					setFutureItemWearCheck (playerName, iw.getItemStr());
+			}
+		}, 1);
+	}
+
+	public static void raiseItemHoldEvent (Player player){
+		final String playerName = player.getName();
+		Bukkit.getScheduler().runTaskLater(plg(),new Runnable(){
+			@Override
+			public void run() {
+				for (ItemHoldActivator ih : Activators.getItemHoldActivatos())			
+					setFutureItemHoldCheck (playerName, ih.getItemStr());
+			}
+		}, 1);
+	} 
+
+
+	private static boolean setFutureItemHoldCheck (final String playerName, final String itemStr){
+		@SuppressWarnings("deprecation")
+		Player player = Bukkit.getPlayerExact(playerName);
+		if (player==null) return false;
+		if (!player.isOnline()) return false;
+		if (player.isDead()) return false;
+		if (player.getItemInHand()==null) return false;
+		if (player.getItemInHand().getType() == Material.AIR) return false;
+		String rg = "ih-"+itemStr;
+		if (!isTimeToRaiseEvent(player, rg,plg().itemHoldRecheck)) return false;
+		if (!ItemUtil.compareItemStr(player.getItemInHand(), itemStr)) return false;
+
+		ItemHoldEvent ihe = new ItemHoldEvent (player);
+		Bukkit.getServer().getPluginManager().callEvent(ihe);   
+
+		Bukkit.getScheduler().runTaskLater(plg(), new Runnable(){
+			@Override
+			public void run() {
+				setFutureItemHoldCheck (playerName,itemStr);		
+			}
+		}, 20*plg().itemHoldRecheck);
+		return true;
 	}
 
 	public static boolean isTimeToRaiseEvent(Player p, String id, int seconds){
-		if (!p.hasMetadata("reactions-rchk-"+id)) return true;
 		Long curtime = System.currentTimeMillis();
-		Long prevtime = p.getMetadata("reactions-rchk-"+id).get(0).asLong();
-		return ((curtime-prevtime)>=(1000*seconds)); 
-	}
+		Long prevtime = p.hasMetadata("reactions-rchk-"+id) ? p.getMetadata("reactions-rchk-"+id).get(0).asLong() : 0;
+		boolean needUpdate = ((curtime-prevtime)>=(1000*seconds));
+		if (needUpdate) p.setMetadata("reactions-rchk-"+id, new FixedMetadataValue (plg(),curtime));
+		return needUpdate; 
+	} 
 
 	public static boolean raiseMessageEvent(CommandSender sender, Source source, String message) {
 		Player player = sender!=null&&(sender instanceof Player) ? (Player) sender : null;

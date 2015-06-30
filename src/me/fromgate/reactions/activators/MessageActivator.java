@@ -76,6 +76,7 @@ public class MessageActivator extends Activator {
 
 		public static Type getByName(String name){
 			if (name.equalsIgnoreCase("contain")) return Type.CONTAINS;
+			if (name.equalsIgnoreCase("equals")) return Type.EQUAL;
 			for (Type t : Type.values()){
 				if (t.name().equalsIgnoreCase(name)) return t;
 			}
@@ -163,6 +164,7 @@ public class MessageActivator extends Activator {
 		if (args!=null&&args.length>0){
 			for (int i=0; i<args.length; i++){
 				Variables.setTempVar("word"+Integer.toString(i+1), args[i]);
+				Variables.setTempVar("wnum"+Integer.toString(i+1), args[i].replaceAll("\\D+", ""));
 				if (args[i].matches("-?[1-9]+[0-9]*")){
 					countInt++;
 					Variables.setTempVar("int"+countInt, args[i]);

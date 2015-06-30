@@ -85,6 +85,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -136,7 +137,12 @@ public class RAListener implements Listener{
 		EventManager.raiseItemHoldEvent(event.getPlayer());
 		EventManager.raiseItemWearEvent(event.getPlayer());
 	}
-
+	
+	public void onInventoryInteractEvent (InventoryInteractEvent event){
+		EventManager.raiseItemHoldEvent((Player) event.getWhoClicked());
+		EventManager.raiseItemWearEvent((Player) event.getWhoClicked());
+	}
+	
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
 	public void onInventoryCloseEvent (InventoryCloseEvent event){
 		EventManager.raiseItemHoldEvent((Player) event.getPlayer());
