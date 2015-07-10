@@ -49,7 +49,7 @@ public class RAWorldGuard {
 	public static boolean init(){
 		bridge = getWGBridge();
 		updateRegionCache();
-		return bridge.isConnected();
+		return isConnected();
 	}
 	
 	public static WGBridge getWGBridge(){

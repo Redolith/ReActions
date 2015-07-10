@@ -38,7 +38,9 @@ public class ActionVar extends Action  {
 
     @Override
     public boolean execute(Player p, Param params) {
-        String player = p == null ? "" : p.getName();
+        
+    	String player = (p!= null&&this.personalVar) ? p.getName() : "";
+        
         String var;
         String value;
         
@@ -54,8 +56,8 @@ public class ActionVar extends Action  {
             value = (ln.length>1) ? ln[1] : "";
         }
        
-        if (!this.personalVar) player = "";
-        else if (player.isEmpty()) return false;
+        if (this.personalVar&&player.isEmpty()) return false;
+        
         switch (this.actType){
         case 0: //VAR_SET, VAR_PLAYER_SET
             Variables.setVar(player, var, value);

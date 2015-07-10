@@ -32,13 +32,14 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 
 public class Delayer {
 
-    public static HashMap<String,Long> delays = new HashMap<String,Long>();
+    public static Map<String,Long> delays = new TreeMap<String,Long>(String.CASE_INSENSITIVE_ORDER);
 
     public static void save(){
         try {
@@ -67,19 +68,16 @@ public class Delayer {
                 if (!key.contains(".")) continue;
                 long delaytime = cfg.getLong(key);
                 if (delaytime>System.currentTimeMillis())
-                    delays.put(key.toLowerCase(), delaytime);
+                    delays.put(key, delaytime);
             }
         } catch (Exception e){
         }
     }
 
-
     public static boolean checkDelay (String id, long updateTime){
-        String idd = (id.contains(".") ? id : "global."+id).toLowerCase();
+        String idd = (id.contains(".") ? id : "global."+id);
         if (delays.containsKey(idd)&&delays.get(idd)>System.currentTimeMillis()) return false; 
         if (updateTime>0) Delayer.setDelay(idd, updateTime);
-        /*if (!delays.containsKey(idd)) return true;
-        return (delays.get(idd)<System.currentTimeMillis()); */
         return true;
     }
 
@@ -92,7 +90,7 @@ public class Delayer {
     }
 
     public static void setDelay(String id, Long delayTime, boolean save){
-        delays.put((id.contains(".") ? id : "global."+id).toLowerCase(), System.currentTimeMillis()+delayTime);
+        delays.put((id.contains(".") ? id : "global."+id), System.currentTimeMillis()+delayTime);
         if (save) save();
     }
 
@@ -118,7 +116,7 @@ public class Delayer {
     }
 
     public static String [] getStringTime (String playerName, String id){
-    	String fullId = (id.contains(".") ? id : (playerName==null||playerName.isEmpty() ? "global."+id :playerName+"."+id)).toLowerCase();
+    	String fullId = (id.contains(".") ? id : (playerName==null||playerName.isEmpty() ? "global."+id :playerName+"."+id));
     	if (checkDelay (fullId,0)) return null;
     	long time = delays.get(fullId);
     	String [] times = new String [8];

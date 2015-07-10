@@ -385,6 +385,9 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("placeholder_CALC","Calculates the expression and provide it's result. For example: \"%CALC:1+2%\" will be replaced to \"3\"");
 		addMSG ("placeholder_SIGNAct","Activator-based placeholders. Provides SIGN activator locations and text-lines");
 		addMSG ("placeholder_COMMANDAct","Activator-based placeholders. Provides COMMAND activator parameters (arguments)");
+		addMSG ("msg_needvdmid","You need to define id of element (variable, delay or menu)");
+		
+		
 	}
 
 	@Override

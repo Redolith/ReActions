@@ -37,9 +37,6 @@ public class MessageActivator extends Activator {
 	Source source;
 	String mask;
 	
-	//String answerWait;
-	//boolean answerAtFirst;
-
 	public MessageActivator(String name, String group, YamlConfiguration cfg) {
 		super(name, group, cfg);
 	}
@@ -158,6 +155,7 @@ public class MessageActivator extends Activator {
 
 
 	private void setTempVars(String message){
+		Variables.setTempVar("message", message);
 		String [] args = message.split(" ");
 		int countInt = 0;
 		int countNum = 0;

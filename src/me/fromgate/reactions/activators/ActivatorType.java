@@ -26,10 +26,10 @@ import me.fromgate.reactions.event.MessageEvent;
 import me.fromgate.reactions.event.MobClickEvent;
 import me.fromgate.reactions.event.MobDamageEvent;
 import me.fromgate.reactions.event.MobKillEvent;
-import me.fromgate.reactions.event.PVPDeathEvent;
 import me.fromgate.reactions.event.PVPKillEvent;
-import me.fromgate.reactions.event.PVPRespawnEvent;
 import me.fromgate.reactions.event.PlateEvent;
+import me.fromgate.reactions.event.PlayerRespawnedEvent;
+import me.fromgate.reactions.event.PlayerWasKilledEvent;
 import me.fromgate.reactions.event.RegionEnterEvent;
 import me.fromgate.reactions.event.RegionEvent;
 import me.fromgate.reactions.event.RegionLeaveEvent;
@@ -54,8 +54,8 @@ public enum ActivatorType {
     COMMAND ("cmd",CommandActivator.class,CommandEvent.class),
     MESSAGE ("msg",MessageActivator.class,MessageEvent.class),
     PVP_KILL ("pvpkill",PVPKillActivator.class, PVPKillEvent.class),
-    PVP_DEATH ("pvpdeath",PVPDeathActivator.class, PVPDeathEvent.class),
-    PVP_RESPAWN("pvprespawn",PVPRespawnActivator.class, PVPRespawnEvent.class),
+    PLAYER_DEATH ("PVP_DEATH",PlayerDeathActivator.class, PlayerWasKilledEvent.class),
+    PLAYER_RESPAWN("PVP_RESPAWN",PlayerRespawnActivator.class, PlayerRespawnedEvent.class),
     LEVER ("lvr",LeverActivator.class,LeverEvent.class),
     DOOR ("door",DoorActivator.class,DoorEvent.class),
     JOIN ("join",JoinActivator.class,JoinEvent.class),

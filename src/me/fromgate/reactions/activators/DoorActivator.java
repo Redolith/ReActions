@@ -58,7 +58,8 @@ public class DoorActivator extends Activator {
         cfg.set(root+".x",x);
         cfg.set(root+".y",y);
         cfg.set(root+".z",z);
-        cfg.set(root+".lever-state",state);
+        cfg.set(root+".state",state);
+        cfg.set(root+".lever-state",null);
     }
 
     @Override
@@ -67,7 +68,7 @@ public class DoorActivator extends Activator {
         x = cfg.getInt(root+".x");
         y = cfg.getInt(root+".y");
         z = cfg.getInt(root+".z");
-        this.state = cfg.getString(root+".lever-state","ANY");
+        this.state = cfg.getString(root+".state",cfg.getString(root+".lever-state","ANY"));
         if ((!this.state.equalsIgnoreCase("open"))&&(!state.equalsIgnoreCase("close"))) state = "ANY";
     }
 

@@ -2,6 +2,7 @@ package me.fromgate.reactions.activators;
 
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.CommandEvent;
+import me.fromgate.reactions.util.FakeCmd;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Variables;
 
@@ -92,6 +93,7 @@ public class CommandActivator extends Activator {
 		if (ce.isParentCanceled()&&!this.override) return false;
 		if (!commandMatches(ce.getCommand())) return false;
 		setTempVars(ce.getCommand(), ce.getArgs());
+		if (!isCommandRegistered()) FakeCmd.registerNewCommand(ce.getCommand());
 		return Actions.executeActivator(ce.getPlayer(), this);
 	}
 
@@ -109,7 +111,7 @@ public class CommandActivator extends Activator {
 		String command = getCommand();
 		if (command.isEmpty()) return false;
 		return isCommandRegistered (command);
-	}
+	} 
 
 
 	public boolean isCommandRegistered(String cmd){
@@ -154,5 +156,8 @@ public class CommandActivator extends Activator {
 		 return sb.toString();
 	 }
 
+	 public boolean useRegex(){
+		 return this.useRegex;
+	 }
 
 }

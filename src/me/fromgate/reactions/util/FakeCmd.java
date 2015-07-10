@@ -29,6 +29,7 @@ public class FakeCmd implements CommandExecutor{
 	public static void updateAllCommands(){
 		for (Activator a : Activators.getActivators(ActivatorType.COMMAND)){
 			CommandActivator c = (CommandActivator) a;
+			if (c.useRegex()) continue; // Пропускаем, эти команды будут регистрироваться в реальном времени
 			if (!c.isCommandRegistered()) registerNewCommand (c.getCommand());
 		}
 	}

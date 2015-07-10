@@ -21,10 +21,10 @@ import me.fromgate.reactions.activators.MessageActivator;
 import me.fromgate.reactions.activators.MobClickActivator;
 import me.fromgate.reactions.activators.MobDamageActivator;
 import me.fromgate.reactions.activators.MobKillActivator;
-import me.fromgate.reactions.activators.PVPDeathActivator;
 import me.fromgate.reactions.activators.PVPKillActivator;
-import me.fromgate.reactions.activators.PVPRespawnActivator;
 import me.fromgate.reactions.activators.PlateActivator;
+import me.fromgate.reactions.activators.PlayerDeathActivator;
+import me.fromgate.reactions.activators.PlayerRespawnActivator;
 import me.fromgate.reactions.activators.RegionActivator;
 import me.fromgate.reactions.activators.RgEnterActivator;
 import me.fromgate.reactions.activators.RgLeaveActivator;
@@ -166,14 +166,14 @@ public class CmdAdd extends Cmd {
 				activator = new PlateActivator (name,b);
 			} else ReActions.getUtil().printMSG(p, "cmd_addbreqbut");
 			break;
-		case PVP_RESPAWN:
-			activator = new PVPRespawnActivator (name);
+		case PLAYER_RESPAWN:
+			activator = new PlayerRespawnActivator (name,param);
 			break;
 		case PVP_KILL:
 			activator = new PVPKillActivator (name);
 			break;
-		case PVP_DEATH:
-			activator = new PVPDeathActivator (name);
+		case PLAYER_DEATH:
+			activator = new PlayerDeathActivator (name,param);
 			break;
 		case REGION:
 			if (param.isEmpty()) ReActions.getUtil().printMSG(p, "msg_needregion",'c');

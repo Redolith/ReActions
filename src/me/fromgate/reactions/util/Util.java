@@ -24,16 +24,10 @@ package me.fromgate.reactions.util;
 
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.externals.Externals;
-import me.fromgate.reactions.externals.RAFactions;
-import me.fromgate.reactions.externals.RAVault;
-import me.fromgate.reactions.externals.RAWorldGuard;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -51,10 +45,8 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class Util {
 
@@ -194,6 +186,21 @@ public class Util {
 		return pef;
 	}
 
+	public static LivingEntity getAnyKiller(EntityDamageEvent event){
+		if (event instanceof EntityDamageByEntityEvent){
+			EntityDamageByEntityEvent evdmg = (EntityDamageByEntityEvent)event;
+			if (evdmg.getDamager() instanceof LivingEntity) return (LivingEntity) evdmg.getDamager();
+			if (evdmg.getCause() == DamageCause.PROJECTILE){
+				Projectile prj = (Projectile) evdmg.getDamager();
+				LivingEntity shooterEntity = BukkitCompatibilityFix.getShooter(prj);
+				if (shooterEntity == null) return null;
+				if (shooterEntity instanceof LivingEntity) return (LivingEntity) shooterEntity;
+			}
+		}
+		return null;
+	}
+	
+	
 	public static Player getKiller(EntityDamageEvent event){
 		if (event instanceof EntityDamageByEntityEvent){
 			EntityDamageByEntityEvent evdmg = (EntityDamageByEntityEvent)event;
@@ -261,68 +268,12 @@ public class Util {
 		if (b.getType() == Material.FENCE_GATE) return true;
 		return false;
 	}
-
-	//region,rgplayer,player,world,faction,group,perm
-	public static Set<Player> getPlayerList(Param param, Player singlePlayer){
-		Set<Player> players = new HashSet<Player>();
-		if (param.hasAnyParam("region","rgplayer","player","world","faction","group","perm")){
-			// Players in regions
-			if (RAWorldGuard.isConnected()){
-				String regionNames = param.getParam("region", "");
-				if (regionNames.isEmpty()) regionNames = param.getParam("rgplayer", "");
-				String[] arrRegion = regionNames.split(",");
-				for (String regionName: arrRegion)
-					players.addAll(RAWorldGuard.playersInRegion(regionName));
-			}
-
-			// Players in faction
-			if (Externals.isConnectedFactions()){
-				String factionNames = param.getParam("faction", "");
-				String [] arrFaction = factionNames.split(",");
-				for (String factionName : arrFaction)
-					players.addAll(RAFactions.playersInFaction(factionName));
-			}
-
-			// Players in worlds
-			String worldNames = param.getParam("world", "");
-			String[] arrWorlds = worldNames.split(",");
-			for (String worldName: arrWorlds){
-				World world = Bukkit.getWorld(worldName);
-				if (world ==null) continue;
-				for (Player p : world.getPlayers()) players.add(p);
-			}
-
-			// Player by permission & group
-			String group = param.getParam("group", "");
-			String perm = param.getParam("perm", "");
-			if ((!group.isEmpty())||(!perm.isEmpty())){
-				for (Player pl : Bukkit.getOnlinePlayers()){
-					if ((!group.isEmpty())&& RAVault.playerInGroup(pl, group)) players.add(pl);
-					if ((!perm.isEmpty())&&pl.hasPermission(perm)) players.add(pl);
-				}
-			}
-
-			// Players by name (all = all players, null - empty player)
-			String playerNames = param.getParam("player", "");
-			if (playerNames.equalsIgnoreCase("all")){
-				players.clear();
-				for (Player player : Bukkit.getOnlinePlayers())
-					players.add(player);				
-			} else if (playerNames.equalsIgnoreCase("null")){
-				players.clear();
-				players.add(null);
-			} else {
-				String[] arrPlayers = playerNames.split(",");
-				for (String playerName: arrPlayers){
-					@SuppressWarnings("deprecation")
-					Player targetPlayer = Bukkit.getPlayerExact(playerName);
-					if ((targetPlayer !=null)&&(targetPlayer.isOnline()))players.add(targetPlayer);	
-				}
-			}
-		}
-		if (players.isEmpty()&& singlePlayer != null) players.add(singlePlayer);
-		return players;
+	
+	public static String join (String... s){
+		StringBuilder sb = new StringBuilder();
+		for (String str :s)
+			sb.append(str);
+		return sb.toString();
 	}
-
 
 }

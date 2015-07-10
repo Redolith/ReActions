@@ -31,11 +31,14 @@ import me.fromgate.reactions.activators.ItemHoldActivator;
 import me.fromgate.reactions.activators.ItemWearActivator;
 import me.fromgate.reactions.activators.MessageActivator;
 import me.fromgate.reactions.activators.MessageActivator.Source;
+import me.fromgate.reactions.activators.PlayerDeathActivator.DeathCause;
 import me.fromgate.reactions.activators.SignActivator;
 import me.fromgate.reactions.externals.RAWorldGuard;
+import me.fromgate.reactions.util.BukkitCompatibilityFix;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.item.ItemUtil;
+import me.fromgate.reactions.util.playerselector.PlayerSelectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -159,9 +162,9 @@ public class EventManager {
 	// PVP Death Event
 	public static void raisePVPDeathEvent (PlayerDeathEvent event){
 		Player deadplayer = event.getEntity();
-		Player killer = Util.getKiller(deadplayer.getLastDamageCause());
-		if (killer==null) return;
-		PVPDeathEvent pe = new PVPDeathEvent(killer, deadplayer);
+		LivingEntity killer = Util.getAnyKiller(deadplayer.getLastDamageCause());
+		DeathCause ds = (killer==null) ? DeathCause.OTHER : (killer instanceof Player) ? DeathCause.PVP : DeathCause.PVE;
+		PlayerWasKilledEvent pe = new PlayerWasKilledEvent(killer, deadplayer, ds);
 		Bukkit.getServer().getPluginManager().callEvent(pe);
 	}
 
@@ -222,9 +225,8 @@ public class EventManager {
 		int repeat = Math.min(param.getParam("repeat", 1), 1);
 		long delay = u().timeToTicks(u().parseTime(param.getParam("delay", "1t")));
 		final List<Player> target = new ArrayList<Player>();
-		target.addAll(Util.getPlayerList(param,null)); 
-		if (target.isEmpty() &&(senderPlayer !=null)) target.add(senderPlayer); 
-		if (target.isEmpty()) target.add(null); 
+		target.addAll(PlayerSelectors.getPlayerList(param)); 
+		if (target.isEmpty()&&!param.hasAnyParam(PlayerSelectors.getAllKeys())) target.add(senderPlayer); 
 		for (int i = 0; i<repeat; i++){
 			Bukkit.getScheduler().runTaskLater(plg(), new Runnable(){
 				@Override
@@ -423,13 +425,11 @@ public class EventManager {
 	public static boolean raiseMobDamageEvent(EntityDamageEvent event, Player damager) {
 		if (damager == null) return false;
 		if (!(event.getEntity() instanceof LivingEntity)) return false;
-		MobDamageEvent mde = new MobDamageEvent ((LivingEntity) event.getEntity(), damager, event.getDamage(), event.getCause());
+		double damage = BukkitCompatibilityFix.getEventDamage(event);
+		MobDamageEvent mde = new MobDamageEvent ((LivingEntity) event.getEntity(), damager, damage, event.getCause());
 		Bukkit.getServer().getPluginManager().callEvent(mde);
-		event.setDamage(mde.getDamage());
+		BukkitCompatibilityFix.setEventDamage(event, mde.getDamage());
 		return mde.isCancelled();
 	}
-
-
-
 
 }

@@ -22,8 +22,8 @@
 
 package me.fromgate.reactions.actions;
 
-import me.fromgate.reactions.util.MobSpawn;
 import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.mob.MobSpawn;
 
 import org.bukkit.entity.Player;
 

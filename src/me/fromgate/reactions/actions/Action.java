@@ -25,8 +25,6 @@ package me.fromgate.reactions.actions;
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator;
-import me.fromgate.reactions.activators.ActivatorType;
-import me.fromgate.reactions.activators.CommandActivator;
 import me.fromgate.reactions.util.Param;
 
 import org.bukkit.entity.Player;
@@ -76,7 +74,7 @@ public abstract class Action {
 			u().printMSG(p, actionFailed ? "act_"+type.name().toLowerCase()+"fail" : "act_"+type.name().toLowerCase(), messageParam);
 		//Залипухи, но похоже по другому - никак...
 		if (a==null) return true;
-		if ((a.getType() == ActivatorType.COMMAND)&&(!((CommandActivator) a).isCommandRegistered())) return true;
+		//if ((a.getType() == ActivatorType.COMMAND)&&(!((CommandActivator) a).isCommandRegistered())) return true;
 		if ((this.type==Actions.CANCEL_EVENT)&&(!actionFailed)) return true;
 		return false;
 	}

@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2015, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -47,10 +47,10 @@ import me.fromgate.reactions.event.MessageEvent;
 import me.fromgate.reactions.event.MobClickEvent;
 import me.fromgate.reactions.event.MobDamageEvent;
 import me.fromgate.reactions.event.MobKillEvent;
-import me.fromgate.reactions.event.PVPDeathEvent;
 import me.fromgate.reactions.event.PVPKillEvent;
-import me.fromgate.reactions.event.PVPRespawnEvent;
 import me.fromgate.reactions.event.PlateEvent;
+import me.fromgate.reactions.event.PlayerRespawnedEvent;
+import me.fromgate.reactions.event.PlayerWasKilledEvent;
 import me.fromgate.reactions.event.RegionEnterEvent;
 import me.fromgate.reactions.event.RegionEvent;
 import me.fromgate.reactions.event.RegionLeaveEvent;
@@ -59,13 +59,13 @@ import me.fromgate.reactions.event.VariableEvent;
 import me.fromgate.reactions.externals.RAEconomics;
 import me.fromgate.reactions.externals.RAVault;
 import me.fromgate.reactions.util.BukkitCompatibilityFix;
-import me.fromgate.reactions.util.MobSpawn;
 import me.fromgate.reactions.util.PushBack;
 import me.fromgate.reactions.util.RADebug;
-import me.fromgate.reactions.util.RAPVPRespawn;
+import me.fromgate.reactions.util.PlayerRespawner;
 import me.fromgate.reactions.util.Teleporter;
 import me.fromgate.reactions.util.UpdateChecker;
 import me.fromgate.reactions.util.Util;
+import me.fromgate.reactions.util.mob.MobSpawn;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -157,7 +157,7 @@ public class RAListener implements Listener{
 
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerDeath(PlayerDeathEvent event){
-		RAPVPRespawn.addPVPRespawn(event);
+		PlayerRespawner.addPlayerRespawn(event);
 		EventManager.raisePVPKillEvent(event);
 		EventManager.raisePVPDeathEvent(event);
 	}
@@ -172,7 +172,7 @@ public class RAListener implements Listener{
 
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerRespawn(PlayerRespawnEvent event){  
-		RAPVPRespawn.raisePVPRespawnEvent(event.getPlayer());
+		PlayerRespawner.raisePlayerRespawnEvent(event.getPlayer());
 	}
 
 
@@ -185,14 +185,6 @@ public class RAListener implements Listener{
 			event.getDrops().clear();
 			event.getDrops().addAll(stacks);			
 		}
-
-		/*if (event.getEntity().hasMetadata("ReActions-drop")) {
-			List<ItemStack> stacks = ItemUtil.parseRandomItemsStr(event.getEntity().getMetadata("ReActions-drop").get(0).asString());
-			if (stacks != null) {
-				event.getDrops().clear();
-				event.getDrops().addAll(stacks);
-			}
-		} */
 
 		if (event.getEntity().hasMetadata("ReActions-xp")) {
 			int xp = Util.getMinMaxRandom(event.getEntity().getMetadata("ReActions-xp").get(0).asString());
@@ -416,12 +408,12 @@ public class RAListener implements Listener{
 	}
 
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
-	public void onPVPDeathActivator (PVPDeathEvent event){
+	public void onPVPDeathActivator (PlayerWasKilledEvent event){
 		event.setCancelled(Activators.activate(event));
 	}
 
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
-	public void onPVPRespawnActivator (PVPRespawnEvent event){
+	public void onPVPRespawnActivator (PlayerRespawnedEvent event){
 		event.setCancelled(Activators.activate(event));
 	}
 
@@ -509,7 +501,3 @@ public class RAListener implements Listener{
 
 
 }
-
-
-
-

@@ -22,16 +22,16 @@
 
 package me.fromgate.reactions.actions;
 
-import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.Param;
-import me.fromgate.reactions.util.Util;
+import me.fromgate.reactions.util.playerselector.PlayerSelectors;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 
+import java.util.HashSet;
 import java.util.Set;
+
+import com.google.common.base.Joiner;
 
 public class ActionMessage extends Action {
 
@@ -41,28 +41,33 @@ public class ActionMessage extends Action {
 		return true;
 	}
 
+	private String removeParams (String message){
+		StringBuilder sb = new StringBuilder("(?i)(");
+		sb.append(Joiner.on("|").join(PlayerSelectors.getAllKeys()));
+		sb.append("|hide):(\\{.*\\}|\\S+)\\s{0,1}");
+		return message.replaceAll(sb.toString(), "");
+		//String message = params.getParam("text", params.getParam("param-line").replaceAll("(?i)(region|loc|radius|rgplayer|player|world|faction|group|perm):(\\{.*\\}|\\S+)\\s{0,1}", ""));
+
+	}
 
 	private void sendMessage(Player player, Param params){
-		Set<Player> players = getPlayerList (player,params);
-		String message = params.getParam("param-line").replaceAll("(?i)(region|loc|radius|rgplayer|player|world|faction|group|perm):(\\{.*\\}|\\S+)\\s{0,1}", "");
+		Set<Player> players = new HashSet<Player>();
+		if (params.hasAnyParam(PlayerSelectors.getAllKeys())){
+			players.addAll(PlayerSelectors.getPlayerList(params));
+			if (players.isEmpty()&&params.isParamsExists("player"))
+				players.addAll(PlayerSelectors.getPlayerList(new Param (params.getParam("player"))));
+		} else if (player!=null) players.add(player);
+		if (players.isEmpty()) return;
+		
+		String message = params.getParam("text", removeParams (params.getParam("param-line"))); 
 		if (message.isEmpty()) return;
 		String annoymentTime = params.getParam("hide");
 		for (Player p : players)
 			if (showMessage (p, message,annoymentTime)) u().printMsg(p, message);
 	}
-	private Set<Player> getPlayerList(Player player, Param params){
-		Set<Player> players = Util.getPlayerList(params,player);
-		int radius = params.getParam("radius", 0);
-		Location loc = Locator.parseLocation(params.getParam("loc"), player == null ? null : player.getLocation());
-		if (loc!=null&&radius>0){
-			for (Player p : Bukkit.getOnlinePlayers()){
-				if (p.getLocation().distance(loc)<=radius)
-					players.add(p);
-			}
-		}
-		return players;
-	}
-	
+
+
+
 	private boolean showMessage (Player player, String message, String annoymentTime){
 		if (annoymentTime.isEmpty()) return true;
 		long time = u().parseTime(annoymentTime);

@@ -39,11 +39,12 @@ import org.bukkit.util.Vector;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class Locator {
-	private static HashMap<String,TpLoc> tports = new HashMap<String,TpLoc>();
+	private static Map<String,TpLoc> tports = new TreeMap<String,TpLoc>(String.CASE_INSENSITIVE_ORDER);
 
 
 

@@ -24,7 +24,7 @@ public class CmdReload extends Cmd {
 		ReActions.getPlugin().loadCfg();
 		Delayer.load();
 		Variables.load();
-		Timers.load();
+		Timers.init();
 		InventoryMenu.load();
 		FakeCmd.updateAllCommands();
 		ReActions.getUtil().printMSG(sender, "msg_cmdreload",Activators.size(),Locator.sizeTpLoc());

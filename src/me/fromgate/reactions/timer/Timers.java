@@ -36,11 +36,11 @@ import org.bukkit.scheduler.BukkitTask;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 public class Timers {
 	/*
@@ -85,7 +85,7 @@ public class Timers {
 		return ReActions.util;
 	}
 
-	private static Map<String,Timer> timers = new HashMap<String,Timer>();
+	private static Map<String,Timer> timers = new TreeMap<String,Timer>(String.CASE_INSENSITIVE_ORDER);
 	private static Set<String> timersIngame;
 
 
@@ -131,7 +131,7 @@ public class Timers {
 	}
 
 	public static Map<String,Timer> getIngameTimers(){
-		Map<String,Timer> ingameTimers = new HashMap<String,Timer>();
+		Map<String,Timer> ingameTimers = new TreeMap<String,Timer>(String.CASE_INSENSITIVE_ORDER);
 		for (String key : timers.keySet()){
 			Timer timer = timers.get(key); 
 			if (timer.isIngameTimer()) ingameTimers.put(key, timer);
@@ -140,7 +140,7 @@ public class Timers {
 	}
 
 	public static Map<String,Timer> getServerTimers(){
-		Map<String,Timer> serverTimers = new HashMap<String,Timer>();
+		Map<String,Timer> serverTimers = new TreeMap<String,Timer>(String.CASE_INSENSITIVE_ORDER);
 		for (String key : timers.keySet()){
 			Timer timer = timers.get(key); 
 			if (!timer.isIngameTimer()) serverTimers.put(key, timer);
@@ -227,7 +227,6 @@ public class Timers {
 			for (String timerId : cs.getKeys(false)){
 				ConfigurationSection csParams = cs.getConfigurationSection(timerId);
 				if (csParams==null) continue;
-				// Map<String,String> params = new HashMap<String,String>();
 				Param params = new Param(); 
 				params.set("timer-type", timerType);
 				for (String param : csParams.getKeys(true)){

@@ -24,10 +24,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class InventoryMenu implements Listener{
 	private static Map<Integer,List<String>> activeMenus = new HashMap<Integer,List<String>>();
-	private static Map<String,VirtualInventory> menu = new HashMap<String,VirtualInventory>();
+	private static Map<String,VirtualInventory> menu = new TreeMap<String,VirtualInventory>(String.CASE_INSENSITIVE_ORDER);
 
 	public static void init(){
 		load();
@@ -100,8 +101,9 @@ public class InventoryMenu implements Listener{
 	}
 
 	public static boolean remove (String id){
-
-		return false;
+		if (!menu.containsKey(id)) return false;
+		menu.remove(id);
+		return true;
 	}
 
 
@@ -165,7 +167,7 @@ public class InventoryMenu implements Listener{
 	public static boolean isMenu (Inventory inventory){
 		return activeMenus.containsKey(getInventoryCode (inventory));
 	}
-	
+
 	public static void removeInventory (Inventory inv){
 		int code = getInventoryCode (inv);
 		if (activeMenus.containsKey(code)) activeMenus.remove(code);
@@ -181,7 +183,7 @@ public class InventoryMenu implements Listener{
 	public void onInventoryClick(InventoryClickEvent event) {
 		if (!InventoryMenu.isMenu(event.getInventory())) return;
 		Player player = (Player) event.getWhoClicked();
-		int clickedSlot = event.getSlot();
+		int clickedSlot = event.getRawSlot();
 		if (clickedSlot<0||clickedSlot>=event.getInventory().getSize()) return;
 		List<String> activators = getActivators (event.getInventory());
 		if (activators.size()>clickedSlot){
@@ -235,7 +237,7 @@ public class InventoryMenu implements Listener{
 		String itemTypeData = item.getType().name()+(item.getDurability() == 0 ? "" : ":"+item.getDurability())+(item.getAmount()==1 ? "" : "*"+item.getAmount());
 		return ChatColor.stripColor(returnStr.isEmpty() ? itemTypeData : returnStr+"["+itemTypeData+"]");
 	}
-	
+
 	public static int getInventoryCode (InventoryClickEvent event){
 		if (event.getViewers().size()!=1) return -1;
 		HumanEntity human = event.getViewers().get(0);
@@ -246,7 +248,7 @@ public class InventoryMenu implements Listener{
 		HumanEntity human = inv.getViewers().get(0);
 		return getInventoryCode ((Player) human, inv);
 	}
-	
+
 	public static int getInventoryCode (Player player, Inventory inv){
 		if (player == null || inv == null) return -1;
 		StringBuilder sb = new StringBuilder();

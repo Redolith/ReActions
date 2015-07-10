@@ -10,6 +10,10 @@ import me.fromgate.reactions.util.Variables;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Arrays;
+
+import com.google.common.base.Joiner;
+
 
 @CmdDefine(command = "react", description = "cmd_set", permission = "reactions.config", subCommands = {"set"}, allowConsole=true, shortDescription = "&3/react set delay player:<player> delay:<time> id:<id>")
 public class CmdSet extends Cmd{
@@ -19,13 +23,7 @@ public class CmdSet extends Cmd{
 	public boolean execute (CommandSender sender, String[] args) {
 		if (args.length == 1) return false;
 		String arg1 = args[1];
-		String arg2 = args.length >=3 ? args[2] : "";
-		if (args.length>4){
-			StringBuilder sb = new StringBuilder (arg2);
-			for (int i = 3; i<args.length;i++)
-				sb.append(" ").append(args[i]);
-			arg2 = sb.toString();
-		}
+		String arg2 = args.length>3 ? Joiner.on(" ").join(Arrays.copyOfRange(args, 2, args.length)) : "";
 		return this.setVariable(sender, arg1, arg2);
 	}
 	

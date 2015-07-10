@@ -32,8 +32,9 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,15 +43,15 @@ public class Variables {
 		return ReActions.util;
 	}
 
-	private static HashMap<String,String> vars = new HashMap<String,String>();
-	private static HashMap<String,String> tempvars = new HashMap<String,String>();
+	private static Map<String,String> vars = new TreeMap<String,String>(String.CASE_INSENSITIVE_ORDER);
+	private static Map<String,String> tempvars = new TreeMap<String,String>(String.CASE_INSENSITIVE_ORDER);
 
 	private static String varId(Player player, String var){
-		return (player == null ? "general."+var : player.getName()+"."+var).toLowerCase();
+		return (player == null ? "general."+var : player.getName()+"."+var);
 	}
 
 	private static String varId(String player, String var){
-		return (player.isEmpty() ? "general."+var : player+"."+var).toLowerCase();
+		return (player.isEmpty() ? "general."+var : player+"."+var);
 	}
 
 	public static void setVar (String player, String var, String value){
@@ -199,23 +200,22 @@ public class Variables {
 		}
 	}
 
-
 	public static String replacePlaceholders(Player p, String str){
+		if (!str.matches("(?i).*%varp?:\\S+%.*")) return str;
+		
 		String newStr = str;
-		if (!str.isEmpty()&&(str.contains("%var:")||str.contains("%varp:"))){
-			for (String key : vars.keySet()){
-				String replacement = vars.get(key);
-				replacement = replacement.matches("[0-9]\\.0") ? Integer.toString((int) Double.parseDouble(replacement)): Matcher.quoteReplacement(replacement);
-				if (key.startsWith("general")){
-					String id = key.replaceFirst("general\\.", "");
-					newStr = newStr.replaceAll(new StringBuilder ("(?i)%var:").append(Pattern.quote(id)).append("%").toString(), replacement);
-				} else {
-					if ((p!=null)&&(key.toLowerCase().startsWith(p.getName().toLowerCase()))){
-						String id = key.replaceAll("(?i)^"+p.getName()+"\\.", "");
-						newStr = newStr.replaceAll(new StringBuilder ("(?i)%varp:").append(Pattern.quote(id)).append("%").toString(), replacement);
-					} 
-					newStr = newStr.replaceAll(new StringBuilder ("(?i)%varp?:").append(Pattern.quote(key)).append("%").toString(), replacement);
-				}
+		for (String key : vars.keySet()){
+			String replacement = vars.get(key);
+			replacement = replacement.matches("^[0-9]+\\.0$") ? Integer.toString((int) Double.parseDouble(replacement)): Matcher.quoteReplacement(replacement);
+			if (key.startsWith("general")){
+				String id = key.replaceFirst("general\\.", "");
+				newStr = newStr.replaceAll(new StringBuilder ("(?i)%var:").append(Pattern.quote(id)).append("%").toString(), replacement);
+			} else {
+				if (p!=null&&key.matches(Util.join("(?i)^",p.getName(),"\\..*"))){
+					String id = key.replaceAll(Util.join("(?i)^",p.getName(),"\\."), "");
+					newStr = newStr.replaceAll(new StringBuilder ("(?i)%varp:").append(Pattern.quote(id)).append("%").toString(), replacement);
+				} 
+				newStr = newStr.replaceAll(new StringBuilder ("(?i)%varp?:").append(Pattern.quote(key)).append("%").toString(), replacement);
 			}
 		}
 		return newStr;
@@ -235,11 +235,11 @@ public class Variables {
 	}
 
 	public static void setTempVar (String varId, String value){
-		tempvars.put(varId.toLowerCase(), value);
+		tempvars.put(varId, value);
 	}
 
 	public static void clearTempVar (String varId){
-		if (tempvars.containsKey(varId.toLowerCase())) vars.remove(varId.toLowerCase());
+		if (tempvars.containsKey(varId)) vars.remove(varId);
 	}
 
 	public static void clearAllTempVar (){
@@ -250,7 +250,7 @@ public class Variables {
 		return getTempVar (varId,"");
 	}
 	public static String getTempVar (String varId, String defvar){
-		if (tempvars.containsKey(varId.toLowerCase())) return tempvars.get(varId.toLowerCase());
+		if (tempvars.containsKey(varId)) return tempvars.get(varId);
 		return defvar;
 	}
 
@@ -258,7 +258,7 @@ public class Variables {
 		int maxPage = (sender instanceof Player) ? 15 : 10000;
 		List<String> varList = new ArrayList<String> ();
 		for (String key : vars.keySet())
-			if (mask.isEmpty()||key.toLowerCase().contains(mask.toLowerCase()))
+			if (mask.isEmpty()||key.contains(mask))
 				varList.add(key+" : "+vars.get(key));
 		u().printPage(sender, varList, page, "msg_varlist", "", false, maxPage);
 	}
@@ -277,7 +277,5 @@ public class Variables {
 		String varValue = vars.get(id);
 		return varValue.matches(value);
 	}
-
-
 
 }

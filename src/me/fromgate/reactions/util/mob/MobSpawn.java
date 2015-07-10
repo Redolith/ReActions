@@ -20,11 +20,15 @@
  * 
  */
 
-package me.fromgate.reactions.util;
+package me.fromgate.reactions.util.mob;
 
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.externals.RAEffects;
 import me.fromgate.reactions.externals.RAWorldGuard;
+import me.fromgate.reactions.util.BukkitCompatibilityFix;
+import me.fromgate.reactions.util.Locator;
+import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.item.ItemUtil;
 
 import org.bukkit.ChatColor;
@@ -123,7 +127,8 @@ public class MobSpawn {
 
             
             EntityType et = EntityType.fromName(mbs);
-            if (mbs.equalsIgnoreCase("horse")) et = EntityType.HORSE;
+            if (mbs.equalsIgnoreCase("horse")) et = MobHorse.getHorseType();
+            if (mbs.equalsIgnoreCase("wither")) et = MobWither.getWitherType();
             
             if (et == null){
                 ReActions.util.logOnce("mobspawnunknowntype_"+mobstr, "Unknown mob type "+mbs+" ("+mobstr+")");

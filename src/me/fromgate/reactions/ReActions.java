@@ -45,6 +45,7 @@ import me.fromgate.reactions.util.RADebug;
 import me.fromgate.reactions.util.Shoot;
 import me.fromgate.reactions.util.UpdateChecker;
 import me.fromgate.reactions.util.Variables;
+import me.fromgate.reactions.util.playerselector.PlayerSelectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
@@ -118,6 +119,7 @@ public class ReActions extends JavaPlugin {
         Timers.init();
         Activators.init();
         FakeCmd.init();
+        PlayerSelectors.init();
         
         
         RAEffects.init();

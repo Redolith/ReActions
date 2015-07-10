@@ -22,23 +22,34 @@
 
 package me.fromgate.reactions.event;
 
+import me.fromgate.reactions.activators.PlayerDeathActivator.DeathCause;
+
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-public class PVPDeathEvent extends RAEvent {
-    private Player deadplayer;
+public class PlayerRespawnedEvent extends RAEvent{
+	private DeathCause cause;
+    private LivingEntity killer;
 
-    public PVPDeathEvent (Player killer, Player killedplayer){
-        super(killer);
-        this.deadplayer = killedplayer;
+
+    public PlayerRespawnedEvent (Player player, LivingEntity killer, DeathCause cause){
+        super (player);
+        this.killer = killer;
+        this.cause = cause;
     }
+
 
     @Override
     public Player getPlayer() {
-        return this.deadplayer;
+        return this.player;
     }
 
-    public Player getKiller() {
-        return player;
+    public LivingEntity getKiller() {
+        return this.killer;
+    }
+    
+    public DeathCause getDeathCause(){
+    	return this.cause;
     }
 
 }

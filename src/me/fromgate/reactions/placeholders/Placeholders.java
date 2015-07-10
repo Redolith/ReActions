@@ -2,7 +2,6 @@ package me.fromgate.reactions.placeholders;
 
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.flags.Flags;
-import me.fromgate.reactions.util.ClassFinder;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Variables;
 
@@ -32,16 +31,6 @@ public class Placeholders {
 		if (ph.getId().equalsIgnoreCase("UNKNOWN")) return false;
 		placeholders.add(ph);
 		return true;
-	}
-
-	@SuppressWarnings({ "unchecked", "unused" })
-	private static List<Class<? extends Placeholder>> findPlaceholderClasses(){
-		List<Class<?>> classes = ClassFinder.find("me.fromgate.reactions.placeholders");
-		List<Class<? extends Placeholder>> phClasses = new ArrayList<Class<? extends Placeholder>>();
-		for (Class<?> c : classes){
-			if (c.isAssignableFrom(Placeholder.class)) phClasses.add((Class<? extends Placeholder>) c);
-		}
-		return phClasses;		
 	}
 
 	public static Map<String, String> replacePlaceholders(Player p, Param param) {

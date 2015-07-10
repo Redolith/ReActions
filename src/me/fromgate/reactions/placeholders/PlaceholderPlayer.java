@@ -3,7 +3,7 @@ package me.fromgate.reactions.placeholders;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.util.BukkitCompatibilityFix;
 import me.fromgate.reactions.util.Locator;
-import me.fromgate.reactions.util.RAPVPRespawn;
+import me.fromgate.reactions.util.PlayerRespawner;
 import me.fromgate.reactions.util.item.ItemUtil;
 import me.fromgate.reactions.util.item.VirtualItem;
 
@@ -36,7 +36,7 @@ public class PlaceholderPlayer extends Placeholder{
 			return Locator.locationToString(player.getLocation());
 		case PLAYER_LOC_DEATH:
 		case DEATHPOINT:
-			Location loc = RAPVPRespawn.getLastDeathPoint(player);
+			Location loc = PlayerRespawner.getLastDeathPoint(player);
 			if (loc == null) loc = player.getLocation();
 			return Locator.locationToString(loc);
 		case PLAYER_LOC_EYE:
@@ -74,7 +74,7 @@ public class PlaceholderPlayer extends Placeholder{
 			if (value.equalsIgnoreCase("hand")) return getPlayerItemInHand(player);
 			else if (value.equalsIgnoreCase("helm")||value.equalsIgnoreCase("helmet")) vi = ItemUtil.itemFromItemStack(player.getInventory().getHelmet());
 			else if (value.equalsIgnoreCase("chestplate")||value.equalsIgnoreCase("chest")) vi = ItemUtil.itemFromItemStack(player.getInventory().getChestplate());
-			else if (value.equalsIgnoreCase("Leggings")||value.equalsIgnoreCase("legв")) vi = ItemUtil.itemFromItemStack(player.getInventory().getLeggings());
+			else if (value.equalsIgnoreCase("Leggings")||value.equalsIgnoreCase("legs")) vi = ItemUtil.itemFromItemStack(player.getInventory().getLeggings());
 			else if (value.equalsIgnoreCase("boot")||value.equalsIgnoreCase("boots")) vi = ItemUtil.itemFromItemStack(player.getInventory().getBoots());
 		}
 		if (vi==null) return "";
