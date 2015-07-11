@@ -1,12 +1,17 @@
 name: ReActions
 main: me.fromgate.reactions.ReActions
-version: 0.9.5/21
+version: 0.9.6
 website: http://fromgate.me
 author: fromgate, fromgate@gmail.com
 softdepend: [Vault,Towny,WorldGuard,RacesAndClasses,PlayEffect,Factions,Craftconomy3,ProtocolLib]
 commands:
    react:
       aliases: [ra,rea,rct]
-      description: 
+      description: Main command of ReActions 
       usage: 
            /react help
+   exec:
+      aliases: [execute,run]
+      description: execute EXEC-activator  
+      usage: 
+           /exec <ActivatorId> [player:<PlayerSelector>] [delay:<Time>]

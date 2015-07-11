@@ -37,6 +37,7 @@ public class Commander implements CommandExecutor{
 		addNewCommand (new CmdDebug());
 		addNewCommand (new CmdCheck());
 		addNewCommand (new CmdReload());
+		addNewCommand (new CmdExec());
 	}
 
 	public static JavaPlugin getPlugin(){

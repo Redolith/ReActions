@@ -225,8 +225,12 @@ public class EventManager {
 		int repeat = Math.min(param.getParam("repeat", 1), 1);
 		long delay = u().timeToTicks(u().parseTime(param.getParam("delay", "1t")));
 		final List<Player> target = new ArrayList<Player>();
-		target.addAll(PlayerSelectors.getPlayerList(param)); 
+		if (param.isParamsExists("player")) 
+			target.addAll(PlayerSelectors.getPlayerList(new Param(param.getParam("player"),"player")));
+		target.addAll(PlayerSelectors.getPlayerList(param));   // Оставляем для совместимости со старым вариантом
+		
 		if (target.isEmpty()&&!param.hasAnyParam(PlayerSelectors.getAllKeys())) target.add(senderPlayer); 
+		
 		for (int i = 0; i<repeat; i++){
 			Bukkit.getScheduler().runTaskLater(plg(), new Runnable(){
 				@Override

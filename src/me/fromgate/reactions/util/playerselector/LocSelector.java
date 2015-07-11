@@ -12,7 +12,6 @@ import java.util.Set;
 
 @SelectorDefine(key = "loc")
 public class LocSelector extends PlayerSelector {
-
 	@Override
 	public Set<Player> selectPlayers(String param) {
 		Set<Player> players = new HashSet<Player>();
@@ -22,7 +21,10 @@ public class LocSelector extends PlayerSelector {
 		if (locStr.isEmpty()) return players;
 		Location loc = Locator.parseLocation(locStr, null);
 		if (loc==null) return players;
-		int radius = params.getParam("radius", 1);
+		loc.setX(loc.getBlockX()+0.5);
+		loc.setY(loc.getBlockY()+0.5);
+		loc.setZ(loc.getBlockZ()+0.5);
+		double radius = params.getParam("radius", 1.0);
 		for (Player player : loc.getWorld().getPlayers())
 			if (player.getLocation().distance(loc)<=radius) players.add(player);
 		return players;

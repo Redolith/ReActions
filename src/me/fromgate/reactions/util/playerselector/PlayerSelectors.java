@@ -1,6 +1,7 @@
 package me.fromgate.reactions.util.playerselector;
 
 import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.Util;
 
 import org.bukkit.entity.Player;
 
@@ -27,13 +28,15 @@ public class PlayerSelectors {
 		if (selector.getKey()==null) return;
 		selectors.add(selector);
 	}
-	/*int radius = params.getParam("radius", 0);
-	Location loc = Locator.parseLocation(params.getParam("loc"), player == null ? null : player.getLocation()); */
 
 	public static Set<Player> getPlayerList(Param param){
 		Set<Player> players = new HashSet<Player>();
-		for (PlayerSelector selector : selectors)
-			players.addAll(selector.selectPlayers(param.getParam(selector.getKey())));
+		for (PlayerSelector selector : selectors){
+			String selectorParam = param.getParam(selector.getKey());
+			if (selector.getKey().equalsIgnoreCase("loc")&&param.isParamsExists("radius"))
+				selectorParam = Util.join("loc:",selectorParam," ","radius:",param.getParam("radius","1"));
+			players.addAll(selector.selectPlayers(selectorParam));
+		}
 		return players;
 	}
 
