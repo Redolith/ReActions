@@ -26,6 +26,8 @@ package me.fromgate.reactions.activators;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.flags.Flags;
+import me.fromgate.reactions.util.ActVal;
+import me.fromgate.reactions.util.FlagVal;
 import me.fromgate.reactions.util.Variables;
 
 import org.bukkit.Location;
@@ -108,49 +110,6 @@ public abstract class Activator {
 	public void clearReactions(){
 		reactions.clear();
 	}
-
-
-	/*
-	 * Надо будет вынести в отдельный файл
-	 */
-	 public class ActVal{
-		public String flag;
-		public String value;
-		public ActVal(String f, String v){
-			this.flag =f;
-			this.value = v;
-		}
-		public ActVal(String f){
-			this.flag =f;
-			this.value = "";
-		}
-		@Override
-		public String toString() {
-			return Actions.getValidName(flag) + "=" + value;
-		}
-	 }
-
-	 /*
-	  * Надо будет вынести в отдельный файл
-	  */
-	 public class FlagVal{
-		 public String flag;
-		 public String value;
-		 public boolean not;
-
-		 public FlagVal(String f, String v, boolean not){
-			 this.flag =f;
-			 this.value = v;
-			 this.not = not;
-		 }
-
-		 @Override
-		 public String toString() {
-			 String str =  Flags.getValidName (flag) + "=" + value;
-			 if (this.not) str = "!"+str;
-			 return str; 
-		 }
-	 }
 
 	 @Override
 	 public String toString(){

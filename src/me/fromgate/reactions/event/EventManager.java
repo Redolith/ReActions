@@ -55,8 +55,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.material.Button;
 import org.bukkit.metadata.FixedMetadataValue;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class EventManager {
 	private static ReActions plg(){
@@ -223,8 +224,11 @@ public class EventManager {
 			return false;
 		}
 		int repeat = Math.min(param.getParam("repeat", 1), 1);
+		
 		long delay = u().timeToTicks(u().parseTime(param.getParam("delay", "1t")));
-		final List<Player> target = new ArrayList<Player>();
+		
+		final Set<Player> target = new HashSet<Player>();
+		
 		if (param.isParamsExists("player")) 
 			target.addAll(PlayerSelectors.getPlayerList(new Param(param.getParam("player"),"player")));
 		target.addAll(PlayerSelectors.getPlayerList(param));   // Оставляем для совместимости со старым вариантом

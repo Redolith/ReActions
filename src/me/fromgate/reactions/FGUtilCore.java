@@ -903,7 +903,7 @@ public abstract class FGUtilCore {
      * Преобразует строку вида <id>:<data>[*<amount>] в ItemStack
      * Возвращает null если строка кривая
      */
-
+    @Deprecated
     public ItemStack parseItemStack (String itemstr){
         if (itemstr.isEmpty()) return null;
 

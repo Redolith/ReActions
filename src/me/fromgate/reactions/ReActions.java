@@ -46,6 +46,7 @@ import me.fromgate.reactions.util.Shoot;
 import me.fromgate.reactions.util.UpdateChecker;
 import me.fromgate.reactions.util.Variables;
 import me.fromgate.reactions.util.playerselector.PlayerSelectors;
+import me.fromgate.reactions.util.waiter.ActionsWaiter;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
@@ -128,6 +129,7 @@ public class ReActions extends JavaPlugin {
         RAVault.init();
         RACraftConomy.init();
         RAWorldGuard.init();
+        ActionsWaiter.init();
         if (Bukkit.getPluginManager().getPlugin("Towny")!=null) towny_conected = RATowny.init(); 
         if (Bukkit.getPluginManager().getPlugin("ProtocolLib")!=null) RAProtocolLib.connectProtocolLib();
         
@@ -162,7 +164,7 @@ public class ReActions extends JavaPlugin {
         getConfig().set("reactions.item-hold-recheck-delay",itemHoldRecheck);
         getConfig().set("reactions.item-wear-recheck-delay",itemWearRecheck);
         getConfig().set("reactions.horizontal-pushback-action",horizontalPushback );
-        getConfig().getInt("reactions.default-chat-line-length",chatLength);
+        getConfig().set("reactions.default-chat-line-length",chatLength);
         getConfig().set("actions.shoot.break-block",Shoot.actionShootBreak);
         getConfig().set("actions.shoot.penetrable",Shoot.actionShootThrough);
         saveConfig();

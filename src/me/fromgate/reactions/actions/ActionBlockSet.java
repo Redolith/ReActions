@@ -27,6 +27,7 @@ import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.item.ItemUtil;
 
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -36,16 +37,18 @@ public class ActionBlockSet extends Action {
     @Override
     public boolean execute(Player p, Param params) {
         String istr = params.getParam("block", "");
+        boolean phys = params.getParam("physics", true);
         if (istr.isEmpty()) return false;
-        ItemStack item = u().parseItemStack(istr);
+        ItemStack item = ItemUtil.parseItemStack(istr); 
         if ((item==null)||((!item.getType().isBlock()))){
             u().logOnce("wrongblock"+istr, "Failed to execute action BLOCK_SET. Wrong block "+istr.toUpperCase());
             return false;
         }
         Location loc = Locator.parseLocation(params.getParam("loc", ""),null);
         if (loc == null) return false;
-        loc.getBlock().setType(item.getType());
-        loc.getBlock().setData(item.getData().getData());
+        Block b = loc.getBlock();
+        b.setType(item.getType());
+        b.setData(item.getData().getData(),phys);
         setMessageParam(ItemUtil.itemToString(item));
         return true;
     }

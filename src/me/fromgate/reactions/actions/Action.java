@@ -60,20 +60,21 @@ public abstract class Action {
 		return this.activator.getName();
 	}
 
+	/*
 	public Activator getActivator(){
 		return this.activator;
-	}
+	} */
 
-	public boolean executeAction (Player p, Activator a, boolean action, Param params){
+	public boolean executeAction (Player p,/* Activator a,*/ boolean action, Param params){
 		this.actionExecuting = action;
-		this.activator = a;
+		//this.activator = a;
 		if (!params.hasAnyParam("param-line")) params.set ("param-line",""); 
 		setMessageParam(params.getParam("param-line"));
 		boolean actionFailed = (!execute (p,params));
 		if ((p!=null)&&(printAction())) 
 			u().printMSG(p, actionFailed ? "act_"+type.name().toLowerCase()+"fail" : "act_"+type.name().toLowerCase(), messageParam);
 		//Залипухи, но похоже по другому - никак...
-		if (a==null) return true;
+		//if (a==null) return true;
 		//if ((a.getType() == ActivatorType.COMMAND)&&(!((CommandActivator) a).isCommandRegistered())) return true;
 		if ((this.type==Actions.CANCEL_EVENT)&&(!actionFailed)) return true;
 		return false;

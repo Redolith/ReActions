@@ -24,12 +24,12 @@ package me.fromgate.reactions.flags;
 
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator;
-import me.fromgate.reactions.activators.Activator.FlagVal;
 import me.fromgate.reactions.flags.factions.FlagAtFactionZoneRel;
 import me.fromgate.reactions.flags.factions.FlagFaction;
 import me.fromgate.reactions.flags.factions.FlagIsFactionRelPlayerAround;
 import me.fromgate.reactions.flags.factions.FlagPlayersInRel;
 import me.fromgate.reactions.placeholders.Placeholders;
+import me.fromgate.reactions.util.FlagVal;
 import me.fromgate.reactions.util.RADebug;
 import me.fromgate.reactions.util.Variables;
 

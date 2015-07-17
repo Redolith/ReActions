@@ -24,11 +24,11 @@ package me.fromgate.reactions.activators;
 
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.activators.Activator.ActVal;
-import me.fromgate.reactions.activators.Activator.FlagVal;
 import me.fromgate.reactions.event.RAEvent;
 import me.fromgate.reactions.externals.RAWorldGuard;
 import me.fromgate.reactions.timer.Timers;
+import me.fromgate.reactions.util.ActVal;
+import me.fromgate.reactions.util.FlagVal;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -41,8 +41,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-
 
 public class Activators {
 	private static ReActions plg(){

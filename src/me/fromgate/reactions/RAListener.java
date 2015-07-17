@@ -66,6 +66,7 @@ import me.fromgate.reactions.util.Teleporter;
 import me.fromgate.reactions.util.UpdateChecker;
 import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.mob.MobSpawn;
+import me.fromgate.reactions.util.waiter.ActionsWaiter;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -253,7 +254,7 @@ public class RAListener implements Listener{
 		if (!damager.hasMetadata("ReActions-dmg"))  return;
 		double dmg = damager.getMetadata("ReActions-dmg").get(0).asDouble();
 		if (dmg<0) return;
-		dmg = BukkitCompatibilityFix.getEventDamage(event)*dmg;        
+		dmg = BukkitCompatibilityFix.getEventDamage(event)*dmg;
 		BukkitCompatibilityFix.setEventDamage(event, dmg);
 	}
 
@@ -311,6 +312,7 @@ public class RAListener implements Listener{
 
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = false)
 	public void onPlayerJoin (PlayerJoinEvent event){
+		ActionsWaiter.refresh();
 		RADebug.offPlayerDebug(event.getPlayer());
 		//plg.u.updateMsg(event.getPlayer());
 		UpdateChecker.updateMsg(event.getPlayer());

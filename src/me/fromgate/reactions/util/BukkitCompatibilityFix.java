@@ -22,9 +22,6 @@
 
 package me.fromgate.reactions.util;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-
 import me.fromgate.reactions.ReActions;
 
 import org.bukkit.entity.Damageable;
@@ -34,6 +31,9 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityEvent;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 
 public class BukkitCompatibilityFix {
 	/* 
@@ -101,7 +101,7 @@ public class BukkitCompatibilityFix {
 	 *  Works nice in 1.5.2
 	 */
 	public static void setEventDamage (EntityDamageEvent event, double damage){
-		executeMethodObjectDouble ("damage",event,EntityDamageEvent.class,damage);
+		executeMethodObjectDouble ("setDamage",event,EntityDamageEvent.class,damage);
 	}
 
 	/*

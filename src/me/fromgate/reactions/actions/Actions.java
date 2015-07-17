@@ -25,9 +25,9 @@ package me.fromgate.reactions.actions;
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator;
-import me.fromgate.reactions.activators.Activator.ActVal;
 import me.fromgate.reactions.flags.Flags;
 import me.fromgate.reactions.placeholders.Placeholders;
+import me.fromgate.reactions.util.ActVal;
 import me.fromgate.reactions.util.Param;
 
 import org.bukkit.Bukkit;
@@ -100,7 +100,8 @@ public enum Actions{
     SQL_DELETE("sqldelete",false, new ActionSQL(3)),
     ACTION_DELAYED ("actdelay",false, new ActionDelayed()),
     MENU_ITEM ("itemmenu",true, new ActionMenuItem()),
-    FCT_POWER_ADD ("factaddpower",false, new ActionFactionsPowerAdd());
+    FCT_POWER_ADD ("factaddpower",false, new ActionFactionsPowerAdd()),
+    WAIT ("wait",false, new ActionWait());
 
     private String alias;
     private boolean requireplayer;
@@ -143,19 +144,42 @@ public enum Actions{
         boolean isAction = Flags.checkFlags(p, act);
         List<ActVal> actions = isAction ? act.getActions() : act.getReactions();
         if (actions.isEmpty()) return false;
-        boolean cancelParentEvent = false;
+        return executeActions (p,actions,isAction);
+        /*boolean cancelParentEvent = false;
         for (ActVal action : actions) {
             if (!Actions.isValid(action.flag)) continue;
             Actions at = Actions.getByName(action.flag);
-            if (at.performAction(p, act, isAction, new Param (Placeholders.replacePlaceholders(p, action.value)))) cancelParentEvent = true;
+            if (at.performAction(p,  isAction, new Param (Placeholders.replacePlaceholders(p, action.value)))) cancelParentEvent = true;
         }
-        
-        return cancelParentEvent;
+        return cancelParentEvent; */
     }
     
-    public boolean performAction(Player p, Activator a, boolean action, Param actionParam){
+    public static boolean executeActions (Player player, List<ActVal> actions, boolean isAction){
+    	boolean cancelParentEvent = false;
+    	if (actions == null || actions.isEmpty()) return false;
+    	for (int i=0; i<actions.size(); i++){
+    		ActVal av = actions.get(i);
+    		if (!Actions.isValid(av.flag)) continue;
+    		Actions at = Actions.getByName(av.flag);
+    		if (at == Actions.WAIT){
+    			if (i==actions.size()-1) continue;
+    			ActionWait aw = (ActionWait) at.action;
+    			Param param = new Param (Placeholders.replacePlaceholders(player, av.value),"time");
+    			String timeStr = param.getParam("time","0");
+    			long time = u().parseTime(timeStr);
+    			if (time==0) continue;
+    			List<ActVal> futureList = new ArrayList<ActVal>();
+    			futureList.addAll(actions.subList(i+1, actions.size()));
+    			aw.executeDelayed(player, futureList, isAction, time);
+    			return cancelParentEvent;
+    		}
+    		if (at.performAction(player, isAction, new Param (Placeholders.replacePlaceholders(player, av.value)))) cancelParentEvent = true;
+    	}
+    	return cancelParentEvent;
+    }
+    public boolean performAction(Player p, /*Activator a,*/ boolean action, Param actionParam){
         if ((p==null)&&this.requireplayer) return false;
-        return this.action.executeAction(p, a, action, actionParam);
+        return this.action.executeAction(p,/* a,*/ action, actionParam);
     }
 
     public static boolean isValid(String name){

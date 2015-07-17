@@ -25,6 +25,7 @@ package me.fromgate.reactions.actions;
 import me.fromgate.reactions.externals.RAWorldGuard;
 import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.item.ItemUtil;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -40,7 +41,7 @@ public class ActionBlockFill extends Action {
 		// loc1: loc2: / region / chance / block
 		String istr = params.getParam("block", "");
 		if (istr.isEmpty()) return false;
-		ItemStack item = u().parseItemStack(istr);
+		ItemStack item = ItemUtil.parseItemStack(istr); 
 		if ((item==null)||((!item.getType().isBlock()))){
 			u().logOnce("wrongblockfill"+istr, "Failed to execute action BLOCK_FILL. Wrong block "+istr.toUpperCase());
 			return false;

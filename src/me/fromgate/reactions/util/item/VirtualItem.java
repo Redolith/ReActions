@@ -154,14 +154,14 @@ public class VirtualItem extends ItemStack {
 				itemStr = itemStr.substring(0, itemStr.indexOf(":"));
 				dataStr = itemStr.substring(itemStr.indexOf(":") + 1);
 			}
-			type = itemStr.matches("[0-9]+") ? Material.getMaterial(Integer
+			type = itemStr.matches("\\d+") ? Material.getMaterial(Integer
 					.valueOf(itemStr)) : Material.getMaterial(itemStr
 							.toUpperCase());
-			data = dataStr.matches("[0-9]+") ? Integer.valueOf(dataStr) : 0;
+			data = dataStr.matches("\\d+") ? Integer.valueOf(dataStr) : 0;
 			amount = getNumber(amountStr); 
 		} else if (params.containsKey("type")) {
 			String typeStr = getParam(params, "type", "");
-			type = typeStr.matches("[0-9]+") ? Material.getMaterial(Integer
+			type = typeStr.matches("\\d+") ? Material.getMaterial(Integer
 					.valueOf(typeStr)) : Material.getMaterial(typeStr
 							.toUpperCase());
 		} else

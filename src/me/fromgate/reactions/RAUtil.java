@@ -269,6 +269,7 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("action_SIGN_SET_LINE","Set (or clear) one or more line of sign. Parameters: loc:<location> line1:<text>...line4:<text> clear:<1,2..4>");
 		addMSG ("action_FCT_POWER_ADD","Add power to player's faction power value. Prameters: value:<Value>");
 		addMSG ("action_ACTION_DELAYED","Execute another action after delay. Parameters: time:<time> action:{<another action with parameters>}");
+		addMSG ("action_WAIT","Wait some time before exucute another actions. Parameter: time:<time>");
 		addMSG ("action_MENU_ITEM","Create and show GUI (item menu) to player. Parameters: menu:<MenuId>");
 
 		/*
@@ -386,17 +387,22 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("placeholder_SIGNAct","Activator-based placeholders. Provides SIGN activator locations and text-lines");
 		addMSG ("placeholder_COMMANDAct","Activator-based placeholders. Provides COMMAND activator parameters (arguments)");
 		addMSG ("msg_needvdmid","You need to define id of element (variable, delay or menu)");
-		
-		
+
+
 	}
 
 	@Override
-    public void printMsg(CommandSender p, String msg){
-        String message =ChatColor.translateAlternateColorCodes('&', msg);
-        if ((!(p instanceof Player))&&(!colorconsole)) message = ChatColor.stripColor(message);
-        ChatPage chatPage = ChatPaginator.paginate(message, 1, ReActions.getPlugin().getChatLineLength(), 10000);
-		for (String line : chatPage.getLines())
-			p.sendMessage(line); 
+	public void printMsg(CommandSender sender, String msg){
+		String message =ChatColor.translateAlternateColorCodes('&', msg);
+		if ((!(sender instanceof Player))&&(!colorconsole)) message = ChatColor.stripColor(message);
+		ChatPage chatPage = null;
+		try {
+			chatPage = ChatPaginator.paginate(message, 1, ReActions.getPlugin().getChatLineLength(), 10000);
+		} catch (Exception ignore){};
+		if (chatPage!=null){
+			for (String line : chatPage.getLines())
+				sender.sendMessage(line);
+		} else sender.sendMessage(message); 
 	}
 
 	@Override
