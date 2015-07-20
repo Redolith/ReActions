@@ -41,6 +41,7 @@ import me.fromgate.reactions.util.item.ItemUtil;
 import me.fromgate.reactions.util.playerselector.PlayerSelectors;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
@@ -52,6 +53,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.material.Button;
 import org.bukkit.metadata.FixedMetadataValue;
 
@@ -308,11 +310,11 @@ public class EventManager {
 	private static void raiseRegionEvent (Player player, List<String> to){
 		if (to.isEmpty()) return;
 		for (String region : to){
-			setFutureRegionCheck(player.getName(),region);
+			setFutureRegionCheck(player.getName(),region,false);
 		}
 	}
 
-	private static void setFutureRegionCheck (final String playerName, final String region){
+	private static void setFutureRegionCheck (final String playerName, final String region, boolean repeat){
 		@SuppressWarnings("deprecation")
 		Player player = Bukkit.getPlayerExact(playerName);
 		if (player==null) return;
@@ -320,7 +322,7 @@ public class EventManager {
 		if (player.isDead()) return;
 		if (!RAWorldGuard.isPlayerInRegion(player, region)) return;
 		String rg = "rg-"+region;
-		if (!isTimeToRaiseEvent(player, rg,plg().worlduardRecheck)) return; 
+		if (!isTimeToRaiseEvent(player, rg,plg().worlduardRecheck,repeat)) return; 
 
 		RegionEvent wge = new RegionEvent (player, region);
 		Bukkit.getServer().getPluginManager().callEvent(wge);
@@ -328,27 +330,26 @@ public class EventManager {
 		Bukkit.getScheduler().runTaskLater(plg(), new Runnable(){
 			@Override
 			public void run() {
-				setFutureRegionCheck (playerName,region);		
+				setFutureRegionCheck (playerName,region, true);		
 			}
 		}, 20*plg().worlduardRecheck);
 	}
 
 
-	private static void setFutureItemWearCheck (final String playerName, final String itemStr){
+	private static void setFutureItemWearCheck (final String playerName, final String itemStr,boolean repeat){
 		@SuppressWarnings("deprecation")
 		Player player = Bukkit.getPlayerExact(playerName);
 		if (player==null) return;
 		if (!player.isOnline()) return;
-		if (player.isDead()) return;
 		String rg = "iw-"+itemStr;
-		if (!isTimeToRaiseEvent(player, rg,plg().itemWearRecheck)) return;
+		if (!isTimeToRaiseEvent(player, rg,plg().itemWearRecheck,repeat)) return;
 		ItemWearEvent iwe = new ItemWearEvent (player);
 		if (!iwe.isItemWeared(itemStr)) return;
 		Bukkit.getServer().getPluginManager().callEvent(iwe);   
 		Bukkit.getScheduler().runTaskLater(plg(), new Runnable(){
 			@Override
 			public void run() {
-				setFutureItemWearCheck (playerName,itemStr);		
+				setFutureItemWearCheck (playerName,itemStr,true);		
 			}
 		}, 20*plg().itemWearRecheck);
 	}
@@ -360,7 +361,7 @@ public class EventManager {
 			@Override
 			public void run() {
 				for (ItemWearActivator iw : Activators.getItemWearActivatos())
-					setFutureItemWearCheck (playerName, iw.getItemStr());
+					setFutureItemWearCheck (playerName, iw.getItemStr(),false);
 			}
 		}, 1);
 	}
@@ -371,13 +372,13 @@ public class EventManager {
 			@Override
 			public void run() {
 				for (ItemHoldActivator ih : Activators.getItemHoldActivatos())			
-					setFutureItemHoldCheck (playerName, ih.getItemStr());
+					setFutureItemHoldCheck (playerName, ih.getItemStr(),false);
 			}
 		}, 1);
 	} 
 
 
-	private static boolean setFutureItemHoldCheck (final String playerName, final String itemStr){
+	private static boolean setFutureItemHoldCheck (final String playerName, final String itemStr, boolean repeat){
 		@SuppressWarnings("deprecation")
 		Player player = Bukkit.getPlayerExact(playerName);
 		if (player==null) return false;
@@ -386,7 +387,7 @@ public class EventManager {
 		if (player.getItemInHand()==null) return false;
 		if (player.getItemInHand().getType() == Material.AIR) return false;
 		String rg = "ih-"+itemStr;
-		if (!isTimeToRaiseEvent(player, rg,plg().itemHoldRecheck)) return false;
+		if (!isTimeToRaiseEvent(player, rg,plg().itemHoldRecheck,repeat)) return false;
 		if (!ItemUtil.compareItemStr(player.getItemInHand(), itemStr)) return false;
 
 		ItemHoldEvent ihe = new ItemHoldEvent (player);
@@ -395,16 +396,16 @@ public class EventManager {
 		Bukkit.getScheduler().runTaskLater(plg(), new Runnable(){
 			@Override
 			public void run() {
-				setFutureItemHoldCheck (playerName,itemStr);		
+				setFutureItemHoldCheck (playerName,itemStr,true);		
 			}
 		}, 20*plg().itemHoldRecheck);
 		return true;
 	}
 
-	public static boolean isTimeToRaiseEvent(Player p, String id, int seconds){
+	public static boolean isTimeToRaiseEvent(Player p, String id, int seconds,boolean repeat){
 		Long curtime = System.currentTimeMillis();
 		Long prevtime = p.hasMetadata("reactions-rchk-"+id) ? p.getMetadata("reactions-rchk-"+id).get(0).asLong() : 0;
-		boolean needUpdate = ((curtime-prevtime)>=(1000*seconds));
+		boolean needUpdate = repeat||((curtime-prevtime)>=(1000*seconds));
 		if (needUpdate) p.setMetadata("reactions-rchk-"+id, new FixedMetadataValue (plg(),curtime));
 		return needUpdate; 
 	} 
@@ -438,6 +439,12 @@ public class EventManager {
 		Bukkit.getServer().getPluginManager().callEvent(mde);
 		BukkitCompatibilityFix.setEventDamage(event, mde.getDamage());
 		return mde.isCancelled();
+	}
+
+	public static void raiseQuitEvent(PlayerQuitEvent event) {
+		QuitEvent qu = new QuitEvent (event.getPlayer(), event.getQuitMessage());
+		Bukkit.getServer().getPluginManager().callEvent(qu);
+		event.setQuitMessage(ChatColor.translateAlternateColorCodes('&', qu.getQuitMessage()));
 	}
 
 }

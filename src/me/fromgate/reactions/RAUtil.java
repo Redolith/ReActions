@@ -355,7 +355,8 @@ public class RAUtil extends FGUtilCore {
 		addMSG ("activator_PVP_RESPAWN","This activator is activating after respawn of dead player if he was murdered by another player. Command: /react add pvp_respawn <id>");
 		addMSG ("activator_LEVER","This activator is linked to lever block and executing when player triggers this lever. It supports lever states - \"on\" and \"off\". Command: /react add lever <id> [ON/OFF/ANY]");
 		addMSG ("activator_DOOR","This activators could be linked to any kind of doors (wooden door, fence gates and trap doors). Command: /react add door <id> [OPEN/CLOSE/ANY]");
-		addMSG ("activator_JOIN","This activator is executing when player joins a server. Command: /react add join <id> [FIRST]");
+		addMSG ("activator_JOIN","This activator is executing when player joins ther server. Command: /react add join <id> [FIRST]");
+		addMSG ("activator_QUIT","This activator is executing when player leaves the server. Command: /react add join <id>");
 		addMSG ("activator_MOB_CLICK","This activator is executing when player right-clicking mob. You can define mob type (name supported too) for this activators. Command: /react add mobclick <id> &6Mob_Name$MOB_TYPE");
 		addMSG ("activator_MOB_KILL","This activator is executing when player killing the mob. You can define mob type (name supported too) for this activators. Command: /react add  mobclick <id> Mob_Name$MOB_TYPE");		
 		addMSG ("activator_ITEM_CLICK","This activator is linked to right-clicking with defined item. /react add item_click <id> <item (name supported)>");

@@ -42,16 +42,12 @@ public class FlagDelay extends Flag{
     	
     	Param params = new Param (param);
     	if (params.isParamsExists("id")){
-    		id = params.getParam(id);
-    		updateTime = u().parseTime(params.getParam("set-delay","0"));
-    		playerName  = params.getParam(playerName);
+    		id = params.getParam("id");
+    		updateTime = u().parseTime(params.getParam("set-delay",params.getParam("set-time","0")));
+    		playerName  = params.getParam("player",playerName);
     	}
-    	boolean result = false;
-    	if (playerName.isEmpty()) result = Delayer.checkDelay(id,updateTime);
-        else result =Delayer.checkPersonalDelay(playerName,id,updateTime);
-    	
+    	boolean result = playerName.isEmpty() ? Delayer.checkDelay(id,updateTime) : Delayer.checkPersonalDelay(playerName,id,updateTime); 
     	Delayer.setTempPlaceholders(playerName,id);
-    	
     	return result;
     }
 

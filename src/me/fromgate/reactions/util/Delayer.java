@@ -76,9 +76,9 @@ public class Delayer {
 
     public static boolean checkDelay (String id, long updateTime){
         String idd = (id.contains(".") ? id : "global."+id);
-        if (delays.containsKey(idd)&&delays.get(idd)>System.currentTimeMillis()) return false; 
-        if (updateTime>0) Delayer.setDelay(idd, updateTime);
-        return true;
+        boolean result = !delays.containsKey(idd)?true:((Long)delays.get(idd)).longValue() < System.currentTimeMillis();
+        if (result&&updateTime>0) Delayer.setDelay(idd, updateTime);
+        return result;
     }
 
     public static boolean checkPersonalDelay (String playerName, String id, long updateTime){
@@ -118,6 +118,7 @@ public class Delayer {
     public static String [] getStringTime (String playerName, String id){
     	String fullId = (id.contains(".") ? id : (playerName==null||playerName.isEmpty() ? "global."+id :playerName+"."+id));
     	if (checkDelay (fullId,0)) return null;
+    	if (!delays.containsKey(fullId)) return null;
     	long time = delays.get(fullId);
     	String [] times = new String [8];
     	times [0] = Time.fullTimeToString(time,"dd-MM-YYYY HH:mm:ss");

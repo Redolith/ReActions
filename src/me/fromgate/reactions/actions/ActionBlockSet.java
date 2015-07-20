@@ -27,30 +27,38 @@ import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.item.ItemUtil;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class ActionBlockSet extends Action {
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public boolean execute(Player p, Param params) {
-        String istr = params.getParam("block", "");
-        boolean phys = params.getParam("physics", true);
-        if (istr.isEmpty()) return false;
-        ItemStack item = ItemUtil.parseItemStack(istr); 
-        if ((item==null)||((!item.getType().isBlock()))){
-            u().logOnce("wrongblock"+istr, "Failed to execute action BLOCK_SET. Wrong block "+istr.toUpperCase());
-            return false;
-        }
-        Location loc = Locator.parseLocation(params.getParam("loc", ""),null);
-        if (loc == null) return false;
-        Block b = loc.getBlock();
-        b.setType(item.getType());
-        b.setData(item.getData().getData(),phys);
-        setMessageParam(ItemUtil.itemToString(item));
-        return true;
-    }
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean execute(Player p, Param params) {
+		//String istr = params.getParam("block", "");
+		boolean phys = params.getParam("physics", false);
+		Param itemParam = new Param (params.getParam("block", "AIR"),"type");
+		ItemStack item = null;
+		if (!itemParam.getParam("type", "AIR").equalsIgnoreCase("air")){
+			item = ItemUtil.itemFromMap(itemParam);	
+			if ((item==null)||((!item.getType().isBlock()))){
+				u().logOnce("wrongblock"+params.getParam("block"), "Failed to execute action BLOCK_FILL. Wrong block "+params.getParam("block"));
+				return false;
+			}
+		}
+
+		Location loc = Locator.parseLocation(params.getParam("loc", ""),null);
+		if (loc == null) return false;
+		Block b = loc.getBlock();
+		if (item!=null){
+			//b.setType(item.getType());
+			//b.setData(item.getData().getData(),phys);
+			b.setTypeIdAndData(item.getTypeId(), item.getData().getData(), phys);
+		} else b.setTypeId(Material.AIR.getId(), phys);
+		setMessageParam(ItemUtil.itemToString(item));
+		return true;
+	}
 
 }

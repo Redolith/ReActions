@@ -22,6 +22,7 @@
 
 package me.fromgate.reactions.actions;
 
+import me.fromgate.reactions.event.EventManager;
 import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Variables;
@@ -134,6 +135,7 @@ public class ActionItems extends Action {
 		player.getInventory().setArmorContents(armour);
 		if (existDrop==1) ItemUtil.giveItemOrDrop(player, oldItem);
 		else if (existDrop==2) player.getWorld().dropItemNaturally(player.getLocation(), oldItem);
+		EventManager.raiseItemWearEvent(player);
 		return true;
 	}
 
@@ -204,6 +206,7 @@ public class ActionItems extends Action {
 			public void run(){
 				for (ItemStack i : items)
 					ItemUtil.giveItemOrDrop(p, i);
+				EventManager.raiseItemHoldEvent(p);
 			}
 		}, 1);
 		return true;

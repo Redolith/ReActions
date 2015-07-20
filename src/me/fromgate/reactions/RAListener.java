@@ -51,6 +51,7 @@ import me.fromgate.reactions.event.PVPKillEvent;
 import me.fromgate.reactions.event.PlateEvent;
 import me.fromgate.reactions.event.PlayerRespawnedEvent;
 import me.fromgate.reactions.event.PlayerWasKilledEvent;
+import me.fromgate.reactions.event.QuitEvent;
 import me.fromgate.reactions.event.RegionEnterEvent;
 import me.fromgate.reactions.event.RegionEvent;
 import me.fromgate.reactions.event.RegionLeaveEvent;
@@ -95,6 +96,7 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.server.ServerCommandEvent;
@@ -139,6 +141,7 @@ public class RAListener implements Listener{
 		EventManager.raiseItemWearEvent(event.getPlayer());
 	}
 	
+	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
 	public void onInventoryInteractEvent (InventoryInteractEvent event){
 		EventManager.raiseItemHoldEvent((Player) event.getWhoClicked());
 		EventManager.raiseItemWearEvent((Player) event.getWhoClicked());
@@ -363,6 +366,10 @@ public class RAListener implements Listener{
 		EventManager.raiseItemWearEvent(event.getPlayer());
 	}
 
+	@EventHandler(priority=EventPriority.HIGH)
+	public void onPlayerQuitActivators (PlayerQuitEvent event){
+		EventManager.raiseQuitEvent (event);
+	}
 
 	/*
 	 * ReActions' Events 
@@ -435,6 +442,11 @@ public class RAListener implements Listener{
 		event.setCancelled(Activators.activate(event));
 	}
 
+	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
+	public void onQuitActivator (QuitEvent event){
+		event.setCancelled(Activators.activate(event));
+	}
+	
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
 	public void onMobClickActivator (MobClickEvent event){
 		event.setCancelled(Activators.activate(event));

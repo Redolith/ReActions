@@ -1,5 +1,10 @@
 package me.fromgate.reactions.util;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -8,10 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -19,7 +20,7 @@ import org.json.simple.JSONValue;
 public class UpdateChecker {
 	private static JavaPlugin pluginInstance;
 	private static boolean enableUpdateChecker;
-	private static String projectId; //66204 - PlayEffect
+	private static String projectId; 
 	private static String projectName;
 	private static String projectApiUrl;
 	private static String informPermission; // кого оповещать об обнволениях

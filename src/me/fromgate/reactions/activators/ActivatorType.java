@@ -30,6 +30,7 @@ import me.fromgate.reactions.event.PVPKillEvent;
 import me.fromgate.reactions.event.PlateEvent;
 import me.fromgate.reactions.event.PlayerRespawnedEvent;
 import me.fromgate.reactions.event.PlayerWasKilledEvent;
+import me.fromgate.reactions.event.QuitEvent;
 import me.fromgate.reactions.event.RegionEnterEvent;
 import me.fromgate.reactions.event.RegionEvent;
 import me.fromgate.reactions.event.RegionLeaveEvent;
@@ -59,6 +60,7 @@ public enum ActivatorType {
     LEVER ("lvr",LeverActivator.class,LeverEvent.class),
     DOOR ("door",DoorActivator.class,DoorEvent.class),
     JOIN ("join",JoinActivator.class,JoinEvent.class),
+    QUIT ("quit",QuitActivator.class,QuitEvent.class),
     MOB_CLICK ("mobclick",MobClickActivator.class,MobClickEvent.class),
     MOB_KILL ("mobkill",MobKillActivator.class,MobKillEvent.class),
     MOB_DAMAGE ("mobdamage",MobDamageActivator.class,MobDamageEvent.class),

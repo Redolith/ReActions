@@ -57,6 +57,7 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -198,7 +199,7 @@ public class VirtualItem extends ItemStack {
 	 * @return
 	 */
 	public Map<String, String> toMap() {
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new LinkedHashMap<String, String>();
 		params.put("type", this.getType().name());
 		params.put("data", Integer.toString(this.getDurability()));
 		params.put("amount", Integer.toString(this.getAmount()));

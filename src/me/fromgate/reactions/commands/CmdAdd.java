@@ -25,6 +25,7 @@ import me.fromgate.reactions.activators.PVPKillActivator;
 import me.fromgate.reactions.activators.PlateActivator;
 import me.fromgate.reactions.activators.PlayerDeathActivator;
 import me.fromgate.reactions.activators.PlayerRespawnActivator;
+import me.fromgate.reactions.activators.QuitActivator;
 import me.fromgate.reactions.activators.RegionActivator;
 import me.fromgate.reactions.activators.RgEnterActivator;
 import me.fromgate.reactions.activators.RgLeaveActivator;
@@ -201,6 +202,9 @@ public class CmdAdd extends Cmd {
 			break;
 		case JOIN:
 			activator = new JoinActivator(name,param);
+			break;
+		case QUIT:
+			activator = new QuitActivator(name);
 			break;
 		case MOB_CLICK:    
 			activator = new MobClickActivator (name, param);
