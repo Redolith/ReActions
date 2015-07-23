@@ -145,7 +145,7 @@ public class VirtualItem18 extends VirtualItem {
 							.toUpperCase());
 			data = dataStr.matches("[0-9]+") ? Integer.valueOf(dataStr) : 0;
 			amount = getNumber(amountStr); // amountStr.matches("[0-9]+") ?
-			// Integer.valueOf(amountStr) : 1;
+			if (amount == 0) return null; 
 		} else if (params.containsKey("type")) {
 			String typeStr = getParam(params, "type", "");
 			type = typeStr.matches("[0-9]+") ? Material.getMaterial(Integer

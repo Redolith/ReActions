@@ -444,7 +444,7 @@ public class EventManager {
 	public static void raiseQuitEvent(PlayerQuitEvent event) {
 		QuitEvent qu = new QuitEvent (event.getPlayer(), event.getQuitMessage());
 		Bukkit.getServer().getPluginManager().callEvent(qu);
-		event.setQuitMessage(ChatColor.translateAlternateColorCodes('&', qu.getQuitMessage()));
+		event.setQuitMessage(qu.getQuitMessage()==null ||qu.getQuitMessage().isEmpty() ? null : ChatColor.translateAlternateColorCodes('&', qu.getQuitMessage()));
 	}
 
 }

@@ -33,9 +33,9 @@ public class QuitEvent extends RAEvent {
     }
 
     public String getQuitMessage(){
-    	return this.quitMessage;
+    	return this.quitMessage==null ? "": this.quitMessage;
     }
     public void setQuiteMessage (String quitMessage){
-        this.quitMessage = quitMessage; 
+        this.quitMessage = quitMessage == null ? "" : quitMessage; 
     }
 }

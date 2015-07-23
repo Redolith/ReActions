@@ -160,6 +160,7 @@ public class VirtualItem extends ItemStack {
 							.toUpperCase());
 			data = dataStr.matches("\\d+") ? Integer.valueOf(dataStr) : 0;
 			amount = getNumber(amountStr); 
+			if (amount == 0) return null; 
 		} else if (params.containsKey("type")) {
 			String typeStr = getParam(params, "type", "");
 			type = typeStr.matches("\\d+") ? Material.getMaterial(Integer
@@ -1158,7 +1159,7 @@ public class VirtualItem extends ItemStack {
 
 			if (key.equalsIgnoreCase("amount")){
 				String amountStr = itemMap.get(key);
-				if (amountStr.matches("\\d+")&&this.getAmount()!=Integer.parseInt(amountStr)) return this.getAmount()>=Integer.parseInt(amountStr);
+				if (amountStr.matches("\\d+")&&this.getAmount()<Integer.parseInt(amountStr)) return false ;//this.getAmount()>=Integer.parseInt(amountStr);
 				else if (amountStr.matches("<\\d+|>\\d+|<=\\d+|>=\\d+")){
 					boolean greater = amountStr.startsWith(">");
 					boolean equal = amountStr.contains("=");
