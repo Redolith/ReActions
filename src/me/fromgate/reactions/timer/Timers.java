@@ -77,15 +77,15 @@ public class Timers {
 	 */
 
 
-	private static BukkitTask ingameTimer;
+	private static BukkitTask ingameTimer = null;
 	private static String currentIngameTime;
-	private static BukkitTask serverTimer;
+	private static BukkitTask serverTimer = null;
 
 	private static RAUtil u(){
 		return ReActions.util;
 	}
 
-	private static Map<String,Timer> timers = new TreeMap<String,Timer>(String.CASE_INSENSITIVE_ORDER);
+	private static Map<String,Timer> timers;
 	private static Set<String> timersIngame;
 
 
@@ -162,13 +162,15 @@ public class Timers {
 	public static void init(){
 		currentIngameTime="";
 		timersIngame = new HashSet<String>();
+		timers = new TreeMap<String,Timer>(String.CASE_INSENSITIVE_ORDER);
 		load();
 		initIngameTimer();
 		initServerTimer();
 	}
 
 	public static void initIngameTimer(){
-		ingameTimer = Bukkit.getScheduler().runTaskTimer(ReActions.instance, new Runnable(){
+		if (ingameTimer!=null) return;
+		ingameTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(ReActions.instance, new Runnable(){
 			@Override
 			public void run() {
 				String currentTime = Time.currentIngameTime();
@@ -186,15 +188,20 @@ public class Timers {
 	}
 
 	public static void initServerTimer(){
-		serverTimer = Bukkit.getScheduler().runTaskTimer(ReActions.instance, new Runnable(){
+		if (serverTimer!=null) return;
+		serverTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(ReActions.instance, new Runnable(){
 			@Override
 			public void run() {
+				for (Timer timer : getServerTimers().values())
+					if (timer.isTimeToRun())
+						EventManager.raiseExecEvent(null, timer.getParams());
+				/*
 				Map<String,Timer> timers = getServerTimers();
 				for (String key : timers.keySet()){
 					Timer timer = timers.get(key);
 					if (timer.isTimeToRun())
 						EventManager.raiseExecEvent(null, timer.getParams());					
-				}
+				}*/
 			}
 		}, 1, 20);
 	}

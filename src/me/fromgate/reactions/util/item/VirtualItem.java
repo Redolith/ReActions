@@ -67,6 +67,8 @@ import java.util.regex.Pattern;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import com.google.common.base.Joiner;
+
 public class VirtualItem extends ItemStack {
 
 	protected static boolean ALLOW_RANDOM = true;
@@ -148,12 +150,12 @@ public class VirtualItem extends ItemStack {
 			String dataStr = "0";
 			String amountStr = "1";
 			if (itemStr.contains("*")) {
-				itemStr = itemStr.substring(0, itemStr.indexOf("*"));
-				amountStr = itemStr.substring(itemStr.indexOf("*") + 1);
+				itemStr = new String (itemStr.substring(0, itemStr.indexOf("*")));
+				amountStr = new String (itemStr.substring(itemStr.indexOf("*") + 1));
 			}
 			if (itemStr.contains(":")) {
-				itemStr = itemStr.substring(0, itemStr.indexOf(":"));
-				dataStr = itemStr.substring(itemStr.indexOf(":") + 1);
+				itemStr = new String (itemStr.substring(0, itemStr.indexOf(":")));
+				dataStr = new String (itemStr.substring(itemStr.indexOf(":") + 1));
 			}
 			type = itemStr.matches("\\d+") ? Material.getMaterial(Integer
 					.valueOf(itemStr)) : Material.getMaterial(itemStr
@@ -276,8 +278,8 @@ public class VirtualItem extends ItemStack {
 			String eType = e;
 			int power = 0;
 			if (eType.contains(":")) {
-				String powerStr = eType.substring(eType.indexOf(":") + 1);
-				eType = eType.substring(0, eType.indexOf(":"));
+				String powerStr = new String (eType.substring(eType.indexOf(":") + 1));
+				eType = new String (eType.substring(0, eType.indexOf(":")));
 				power = powerStr.matches("[0-9+]") ? Integer.valueOf(powerStr) : 0;
 			}
 			Enchantment enchantment = Enchantment.getByName(eType.toUpperCase());
@@ -374,7 +376,7 @@ public class VirtualItem extends ItemStack {
 		if (!this.hasItemMeta()) return false;
 		return this.getItemMeta().hasDisplayName();
 	}
-	
+
 	public boolean hasLore(){
 		if (!this.hasItemMeta()) return false;
 		return this.getItemMeta().hasLore();
@@ -393,8 +395,8 @@ public class VirtualItem extends ItemStack {
 		if (im.hasLore()) return im.getLore();
 		return null;
 	}
-	
-	
+
+
 	protected void putItemMeta(Map<String, String> params, ItemMeta itemMeta) {
 		if (itemMeta == null)
 			return;
@@ -624,7 +626,7 @@ public class VirtualItem extends ItemStack {
 		}
 		return sb.toString();
 	}
-	
+
 	public String toDisplayString(){
 		StringBuilder sb = new StringBuilder ();
 		if (this.getItemMeta().hasDisplayName()) sb.append(this.getItemMeta().getDisplayName());
@@ -660,8 +662,8 @@ public class VirtualItem extends ItemStack {
 			String eType = e;
 			int power = 0;
 			if (eType.contains(":")) {
-				String powerStr = eType.substring(eType.indexOf(":") + 1);
-				eType = eType.substring(0, eType.indexOf(":"));
+				String powerStr = new String (eType.substring(eType.indexOf(":") + 1));
+				eType = new String (eType.substring(0, eType.indexOf(":")));
 				power = powerStr.matches("\\d+-\\d+|\\d+") ? getNumber(powerStr)
 						: 0;
 			}
@@ -779,15 +781,15 @@ public class VirtualItem extends ItemStack {
 			String key = paramPart;
 			String value = "";
 			if (paramPart.contains(":")) {
-				key = paramPart.substring(0, paramPart.indexOf(":"));
-				value = paramPart.substring(paramPart.indexOf(":") + 1);
+				key = new String (paramPart.substring(0, paramPart.indexOf(":")));
+				value = new String (paramPart.substring(paramPart.indexOf(":") + 1));
 			} else {
 				key = "default-param"; // это для упрощенного формата
 				value = paramPart;
 			}
 
 			if (key.isEmpty())	continue;
-			if (value.matches("\\{.*\\}"))	value = value.substring(1, value.length() - 1);
+			if (value.matches("\\{.*\\}"))	value = new String (value.substring(1, value.length() - 1));
 			params.put(key, value);
 		}
 		return params;
@@ -976,8 +978,8 @@ public class VirtualItem extends ItemStack {
 		String strMin = numMinMaxStr;
 		String strMax = numMinMaxStr;
 		if (numMinMaxStr.contains("-")) {
-			strMin = numMinMaxStr.substring(0, numMinMaxStr.indexOf("-"));
-			strMax = numMinMaxStr.substring(numMinMaxStr.indexOf("-") + 1);
+			strMin = new String (numMinMaxStr.substring(0, numMinMaxStr.indexOf("-")));
+			strMax = new String (numMinMaxStr.substring(numMinMaxStr.indexOf("-") + 1));
 		}
 		if (strMin.matches("\\d+"))
 			min = Integer.parseInt(strMin);
@@ -1010,17 +1012,17 @@ public class VirtualItem extends ItemStack {
 		String name = "";
 		String loreStr = "";
 		if (iStr.contains("$")) {
-			name = iStr.substring(0, iStr.indexOf("$"));
-			iStr = iStr.substring(name.length() + 1);
+			name = new String (iStr.substring(0, iStr.indexOf("$")));
+			iStr = new String (iStr.substring(name.length() + 1));
 			if (name.contains("@")) {
-				loreStr = name.substring(name.indexOf("@") + 1);
-				name = name.substring(0, name.indexOf("@"));
+				loreStr = new String (name.substring(name.indexOf("@") + 1));
+				name = new String (name.substring(0, name.indexOf("@")));
 			}
 
 		}
 		if (iStr.contains("@")) {
-			enchant = iStr.substring(iStr.indexOf("@") + 1);
-			iStr = iStr.substring(0, iStr.indexOf("@"));
+			enchant = new String (iStr.substring(iStr.indexOf("@") + 1));
+			iStr = new String (iStr.substring(0, iStr.indexOf("@")));
 		}
 		int id = -1;
 		int amount = 1;
@@ -1062,7 +1064,7 @@ public class VirtualItem extends ItemStack {
 							String ench = ec;
 							int level = 1;
 							if (ec.contains(":")) {
-								ench = ec.substring(0, ec.indexOf(":"));
+								ench = new String (ec.substring(0, ec.indexOf(":")));
 								level = Math.max(1, getNumber(ec.substring(ench
 										.length() + 1)));
 							}
@@ -1128,12 +1130,12 @@ public class VirtualItem extends ItemStack {
 			String dataStr = "";
 			String amountStr = "";
 			if (itemStr.contains("*")) {
-				itemStr = itemStr.substring(0, itemStr.indexOf("*"));
-				amountStr = itemStr.substring(itemStr.indexOf("*") + 1);
+				itemStr = new String (itemStr.substring(0, itemStr.indexOf("*")));
+				amountStr = new String (itemStr.substring(itemStr.indexOf("*") + 1));
 			}
 			if (itemStr.contains(":")) {
-				itemStr = itemStr.substring(0, itemStr.indexOf(":"));
-				dataStr = itemStr.substring(itemStr.indexOf(":") + 1);
+				itemStr = new String (itemStr.substring(0, itemStr.indexOf(":")));
+				dataStr = new String (itemStr.substring(itemStr.indexOf(":") + 1));
 			}
 			itemMap.put("type", itemStr.matches("[0-9]+") ? (Material.getMaterial(Integer.valueOf(itemStr))).name() : (Material.getMaterial(itemStr.toUpperCase())).name());
 
@@ -1145,61 +1147,46 @@ public class VirtualItem extends ItemStack {
 		}
 		if (this.hasDisplayName()&&!itemMap.containsKey("name")) return false;
 		if (this.hasLore()&&!itemMap.containsKey("lore")) return false;
-		for (String key : itemMap.keySet()) {
-			if (key.equalsIgnoreCase("type")) {
-				String typeStr = itemMap.get(key).toUpperCase();
-				if (typeStr.matches("\\d+")&& this.getTypeId() != Integer.parseInt(typeStr)) return false;
-				//if (!this.getType().name().matches(typeStr)) return false;
-				if (!compareOrMatch (this.getType().name(), typeStr.toUpperCase(), regex)) return false;
-			}
-			if (key.equalsIgnoreCase("data")){
-				int reqData = itemMap.get(key).matches("\\d+") ? Integer.parseInt(itemMap.get(key)) : -1;
-				if (reqData!=(int) this.getDurability()) return false;
-			}
-
-			if (key.equalsIgnoreCase("amount")){
-				String amountStr = itemMap.get(key);
-				if (amountStr.matches("\\d+")&&this.getAmount()<Integer.parseInt(amountStr)) return false ;//this.getAmount()>=Integer.parseInt(amountStr);
-				else if (amountStr.matches("<\\d+|>\\d+|<=\\d+|>=\\d+")){
-					boolean greater = amountStr.startsWith(">");
-					boolean equal = amountStr.contains("=");
-					int reqAmount = Integer.parseInt(amountStr.replaceAll ("\\D+",""));
-					reqAmount = equal ? (greater ? reqAmount++ : reqAmount--) : reqAmount;
-					if (greater&&this.getAmount()<reqAmount) return false;
-					if (!greater&&this.getAmount()>reqAmount) return false;
+		if (itemMap.containsKey("type")){
+			String typeStr = itemMap.get("type").toUpperCase();
+			if (typeStr.matches("\\d+")) {
+				Material m = null;
+				try {
+					m = Material.getMaterial(Integer.parseInt(typeStr));
+				} catch (Exception e){
 				}
+				if (m==null) return false;
+				typeStr = m.name();
 			}
+			if (!compareOrMatch (this.getType().name(), typeStr.toUpperCase(), regex)) return false;
+		}
+		if (itemMap.containsKey("data")){
+			String dataStr = itemMap.get("data"); 
+			int reqData = dataStr.matches("\\d+") ? Integer.parseInt(dataStr) : -1;
+			if (reqData!=(int) this.getDurability()) return false;
+		}
 
-			//amount:<=10 --
-			/*
-			if (key.equalsIgnoreCase("amount")){
-				String amountStr = itemMap.get(key);
-				if (amountStr.matches("\\d+")&&this.getAmount()!=Integer.parseInt(amountStr)) return false;
-				else if (amountStr.matches("<\\d+|>\\d+|<=\\d+|>=\\d+")){
-					boolean greater = amountStr.startsWith(">");
-					boolean equal = amountStr.contains("=");
-					int reqAmount = Integer.parseInt(amountStr.replaceAll ("\\D+",""));
-					reqAmount = equal ? (greater ? reqAmount++ : reqAmount--) : reqAmount;
-					if (greater&&this.getAmount()<reqAmount) return false;
-					if (!greater&&this.getAmount()>reqAmount) return false;
-				}
-			} */
-
-			if (key.equalsIgnoreCase("name")) {
-				String thisName = thisMeta.hasDisplayName() ? thisMeta.getDisplayName() : "";
-				if (!compareOrMatch (thisName,ChatColor.translateAlternateColorCodes('&',itemMap.get(key)),regex)) return false;
-				//if (!thisName.matches()) return false;
+		if (itemMap.containsKey("amount")){
+			String amountStr = itemMap.get("amount");
+			if (amountStr.matches("\\d+")&&this.getAmount()<Integer.parseInt(amountStr)) return false ;//this.getAmount()>=Integer.parseInt(amountStr);
+			else if (amountStr.matches("<\\d+|>\\d+|<=\\d+|>=\\d+")){
+				boolean greater = amountStr.startsWith(">");
+				boolean equal = amountStr.contains("=");
+				int reqAmount = Integer.parseInt(amountStr.replaceAll ("\\D+",""));
+				reqAmount = equal ? (greater ? reqAmount++ : reqAmount--) : reqAmount;
+				if (greater&&this.getAmount()<reqAmount) return false;
+				if (!greater&&this.getAmount()>reqAmount) return false;
 			}
-
-			if (key.equalsIgnoreCase("lore")) {
-				List<String> thisLore = thisMeta.hasLore() ? thisMeta.getLore() : new ArrayList<String>();
-				String [] ln = itemMap.get(key).split(Pattern.quote(DIVIDER));
-				if (thisLore.size()<ln.length) return false;
-				if (ln.length>0)
-					for (int i = 0; i<ln.length; i++){
-						if (!compareOrMatch (thisLore.get(i),ChatColor.translateAlternateColorCodes('&',ln[i]),regex)) return false;
-					}
-			}
+		}
+		if (itemMap.containsKey("name")) {
+			String thisName = thisMeta.hasDisplayName() ? thisMeta.getDisplayName() : "";
+			if (!compareOrMatch (thisName,ChatColor.translateAlternateColorCodes('&',itemMap.get("name")),regex)) return false;
+		}
+		if (itemMap.containsKey("lore")) {
+			List<String> thisLore = thisMeta.hasLore() ? thisMeta.getLore() : new ArrayList<String>();
+			String thisLoreStr = Joiner.on(DIVIDER).join(thisLore);
+			String loreStr = ChatColor.translateAlternateColorCodes('&',itemMap.get("lore")); //Joiner.on(regex ? Pattern.quote(DIVIDER) : DIVIDER).join(thisLore);
+			if (!compareOrMatch (thisLoreStr,loreStr,regex)) return false;
 		}
 		return true;
 	}

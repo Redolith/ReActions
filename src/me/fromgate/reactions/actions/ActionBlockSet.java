@@ -39,6 +39,7 @@ public class ActionBlockSet extends Action {
 	public boolean execute(Player p, Param params) {
 		//String istr = params.getParam("block", "");
 		boolean phys = params.getParam("physics", false);
+		boolean drop = params.getParam("drop", false);
 		Param itemParam = new Param (params.getParam("block", "AIR"),"type");
 		ItemStack item = null;
 		if (!itemParam.getParam("type", "AIR").equalsIgnoreCase("air")){
@@ -52,6 +53,9 @@ public class ActionBlockSet extends Action {
 		Location loc = Locator.parseLocation(params.getParam("loc", ""),null);
 		if (loc == null) return false;
 		Block b = loc.getBlock();
+		
+		if (b.getType()!=Material.AIR&&drop) b.breakNaturally();
+		
 		if (item!=null){
 			//b.setType(item.getType());
 			//b.setData(item.getData().getData(),phys);

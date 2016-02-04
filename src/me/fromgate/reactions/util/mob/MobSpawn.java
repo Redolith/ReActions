@@ -239,7 +239,7 @@ public class MobSpawn {
     }
 
     public static void setMobEquipment(LivingEntity e, String helm, String chest, String leg, String boot, String weapon){
-        if (!ReActions.util.isWordInList(e.getType().name(), "zombie,skeleton")) return;
+       // if (!ReActions.util.isWordInList(e.getType().name(), "zombie,skeleton,villager")) return;
         if (!helm.isEmpty()){
             ItemStack item = ItemUtil.getRndItem(helm);
             if (item != null) e.getEquipment().setHelmet(item);

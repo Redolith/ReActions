@@ -13,6 +13,7 @@ import me.fromgate.reactions.activators.FactionActivator;
 import me.fromgate.reactions.activators.FactionCreateActivator;
 import me.fromgate.reactions.activators.FactionRelationActivator;
 import me.fromgate.reactions.activators.ItemClickActivator;
+import me.fromgate.reactions.activators.ItemConsumeActivator;
 import me.fromgate.reactions.activators.ItemHoldActivator;
 import me.fromgate.reactions.activators.ItemWearActivator;
 import me.fromgate.reactions.activators.JoinActivator;
@@ -206,8 +207,8 @@ public class CmdAdd extends Cmd {
 		case QUIT:
 			activator = new QuitActivator(name);
 			break;
-		case MOB_CLICK:    
-			activator = new MobClickActivator (name, param);
+		case MOB_CLICK:
+			activator = new MobClickActivator (name, param.replace("%here%", Locator.locationToString(p.getLocation())));
 			break;
 		case MOB_KILL:    
 			activator = new MobKillActivator (name, param);
@@ -216,6 +217,9 @@ public class CmdAdd extends Cmd {
 			break;
 		case ITEM_CLICK:    
 			if (!param.isEmpty()) activator = new ItemClickActivator (name, param);
+			break;
+		case ITEM_CONSUME:    
+			if (!param.isEmpty()) activator = new ItemConsumeActivator (name, param);
 			break;
 		case ITEM_HOLD:    
 			if (!param.isEmpty()) activator = new ItemHoldActivator (name, param);

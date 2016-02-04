@@ -41,10 +41,12 @@ public class ActionDelay extends Action {
 		String timeStr = "";
 		String playerName = this.globalDelay ? "" : (p!=null ? p.getName() : "");
 		String variableId = "";
+		boolean add=false;
 		if (params.isParamsExists("id","delay")||params.isParamsExists("id","time")){
 			variableId = params.getParam("id", "");
 			playerName = params.getParam("player", playerName);
 			timeStr = params.getParam("delay", params.getParam("time", ""));
+			add = params.getParam("add", false);
 		} else {
 			String oldFormat = params.getParam("param-line", "");
 			if (oldFormat.contains("/")){
@@ -58,15 +60,15 @@ public class ActionDelay extends Action {
 
 		if (timeStr.isEmpty()) return false;
 		if (variableId.isEmpty()) return false;
-		setDelay(playerName,variableId,u().parseTime(timeStr));
+		setDelay(playerName,variableId,u().parseTime(timeStr),add);
 		Delayer.setTempPlaceholders(playerName,variableId);
 		setMessageParam(Variables.getTempVar("delay-left-hms",timeStr));
 		return true;
 	}
 
-	private void setDelay(String playerName, String variableId, long delayTime){
-		if (playerName.isEmpty()) Delayer.setDelay(variableId, delayTime);
-		else Delayer.setPersonalDelay(playerName, variableId, delayTime);
+	private void setDelay(String playerName, String variableId, long delayTime,boolean add){
+		if (playerName.isEmpty()) Delayer.setDelay(variableId, delayTime, add);
+		else Delayer.setPersonalDelay(playerName, variableId, delayTime, add);
 	}
 
 }

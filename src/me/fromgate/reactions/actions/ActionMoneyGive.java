@@ -42,10 +42,9 @@ public class ActionMoneyGive extends Action {
     	if (amountStr.isEmpty()) return false;
     	String currencyName = params.getParam("currency", "");
     	String worldName = params.getParam("world", "");
-    	String target  = params.getParam("target", params.getParam("player", (p !=null ? p.getName() : "")));
+    	String target  = params.getParam("target", params.getParam("player", (p ==null ? "" : p.getName())));
     	if (target.isEmpty()) return false;
     	String source = params.getParam("source", "");
-    	if (target.isEmpty()) return false;
     	String message = RAEconomics.creditAccount (target,source,amountStr,currencyName,worldName);
     	if (message.isEmpty()) return false;
     	setMessageParam(message);

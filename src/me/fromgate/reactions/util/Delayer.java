@@ -27,7 +27,6 @@ import me.fromgate.reactions.timer.Time;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -77,7 +76,7 @@ public class Delayer {
     public static boolean checkDelay (String id, long updateTime){
         String idd = (id.contains(".") ? id : "global."+id);
         boolean result = !delays.containsKey(idd)?true:((Long)delays.get(idd)).longValue() < System.currentTimeMillis();
-        if (result&&updateTime>0) Delayer.setDelay(idd, updateTime);
+        if (result&&updateTime>0) Delayer.setDelay(idd, updateTime,false);
         return result;
     }
 
@@ -85,21 +84,19 @@ public class Delayer {
         return checkDelay (playerName+"."+id, updateTime);
     }
 
-    public static void setDelay(String id, Long delayTime){
-        setDelay(id,delayTime,true);
+    public static void setDelay(String id, Long delayTime, boolean add){
+        setDelaySave(id,delayTime,true, add);
     }
 
-    public static void setDelay(String id, Long delayTime, boolean save){
-        delays.put((id.contains(".") ? id : "global."+id), System.currentTimeMillis()+delayTime);
+    public static void setDelaySave(String id, Long delayTime, boolean save, boolean add){
+    	String delayId =id.contains(".") ? id : "global."+id;
+    	long currentDelay = add&&delays.containsKey(delayId) ? delays.get(delayId) :System.currentTimeMillis();
+        delays.put(delayId, delayTime+currentDelay);
         if (save) save();
     }
 
-    public static void setPersonalDelay(Player p, String id, Long delayTime){
-        setDelay (p.getName()+"."+id, delayTime,true);
-    }
-
-    public static void setPersonalDelay(String playerName, String id, Long delayTime){
-        setDelay (playerName+"."+id, delayTime,true);
+    public static void setPersonalDelay(String playerName, String id, Long delayTime, boolean add){
+        setDelay (playerName+"."+id, delayTime,add);
     }
     
     public static void printDelayList (CommandSender p, int page, int lpp) {
@@ -160,6 +157,5 @@ public class Delayer {
     		Variables.setTempVar("delay-left-ss", times[6]);
     	}
 	}
-    
-
+	
 }

@@ -61,7 +61,7 @@ public class ActionItems extends Action {
 
 
 	/**
-	 * Реализует действие ITEM_SET - установить предмет в определенный слот
+	 * Реализует действие ITEM_SLOT - установить предмет в определенный слот
 	 * @param p
 	 * @param params - параметры: item - предмет
 	 *                            slot - слот (Номер слота или helmet, chestplate...)
@@ -90,6 +90,10 @@ public class ActionItems extends Action {
 		if (existStr.equalsIgnoreCase("drop")) p.getWorld().dropItemNaturally(p.getLocation(), oldItem);
 		else if (existStr.equalsIgnoreCase("undress")) ItemUtil.giveItemOrDrop(p, oldItem);
 		else if (existStr.equalsIgnoreCase("keep")) p.getInventory().setItem(slotNum, oldItem);
+		String actionItems = ItemUtil.toDisplayString(itemStr);
+		setMessageParam(actionItems);
+		Variables.setTempVar("item_str", actionItems);
+		
 		return true;
 	}
 

@@ -40,6 +40,7 @@ public class ActionBlockFill extends Action {
 	@Override
 	public boolean execute(Player p, Param params) {
 		boolean phys = params.getParam("physics", false);
+		boolean drop = params.getParam("drop", false);
 		Param itemParam = new Param (params.getParam("block", "AIR"),"type");
 		ItemStack item = null;
 		if (!itemParam.getParam("type", "AIR").equalsIgnoreCase("air")){
@@ -72,12 +73,12 @@ public class ActionBlockFill extends Action {
 
 		if (!loc1.getWorld().equals(loc2.getWorld())) return false;
 		int chance = params.getParam("chance", 100);
-		fillArea (item,loc1,loc2,chance, phys);
+		fillArea (item,loc1,loc2,chance, phys,drop);
 		return true;
 	}
 
 	@SuppressWarnings("deprecation")
-	public void fillArea (ItemStack blockItem, Location loc1, Location loc2, int chance, boolean phys){
+	public void fillArea (ItemStack blockItem, Location loc1, Location loc2, int chance, boolean phys, boolean drop){
 		Location min = new Location (loc1.getWorld(), Math.min(loc1.getBlockX(), loc2.getBlockX()),
 				Math.min(loc1.getBlockY(), loc2.getBlockY()), Math.min(loc1.getBlockZ(), loc2.getBlockZ()));
 		Location max = new Location (loc1.getWorld(), Math.max(loc1.getBlockX(), loc2.getBlockX()),
@@ -87,6 +88,7 @@ public class ActionBlockFill extends Action {
 				for (int z = min.getBlockZ(); z<=max.getBlockZ(); z++)
 					if (u().rollDiceChance(chance)) {
 						Block block =min.getWorld().getBlockAt(x, y, z);
+						if (block.getType()!=Material.AIR&&drop) block.breakNaturally();
 						if (blockItem!=null&&blockItem.getType()!=Material.AIR){
 							block.setTypeIdAndData(blockItem.getTypeId(), blockItem.getData().getData(), phys);
 							/*

@@ -39,6 +39,7 @@ import me.fromgate.reactions.event.FactionDisbandEvent;
 import me.fromgate.reactions.event.FactionEvent;
 import me.fromgate.reactions.event.FactionRelationEvent;
 import me.fromgate.reactions.event.ItemClickEvent;
+import me.fromgate.reactions.event.ItemConsumeEvent;
 import me.fromgate.reactions.event.ItemHoldEvent;
 import me.fromgate.reactions.event.ItemWearEvent;
 import me.fromgate.reactions.event.JoinEvent;
@@ -92,6 +93,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -167,6 +169,12 @@ public class RAListener implements Listener{
 	}
 
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
+	public void onPlayerItemConsume (PlayerItemConsumeEvent event){
+		event.setCancelled(EventManager.raiseItemConsumeEvent(event));
+	}
+	
+	
+	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerClickMob(PlayerInteractEntityEvent event){
 		EventManager.raiseItemClickEvent(event);
 		if (event.getRightClicked() == null) return;
@@ -177,6 +185,7 @@ public class RAListener implements Listener{
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerRespawn(PlayerRespawnEvent event){  
 		PlayerRespawner.raisePlayerRespawnEvent(event.getPlayer());
+		EventManager.raiseAllRegionEvents(event.getPlayer(), event.getRespawnLocation(), event.getPlayer().getLocation());
 	}
 
 
@@ -243,9 +252,6 @@ public class RAListener implements Listener{
 		if (EventManager.raiseMobDamageEvent(event, (Player) damager)) event.setCancelled(true);
 	}
 
-
-
-
 	@EventHandler(priority=EventPriority.HIGH, ignoreCancelled = true)
 	public void onDamageByMob (EntityDamageEvent event){
 		if ((event.getCause()!=DamageCause.ENTITY_ATTACK)&&(event.getCause()!=DamageCause.PROJECTILE)) return;
@@ -281,7 +287,6 @@ public class RAListener implements Listener{
 		} else if (evdmg.getDamager().getType() != EntityType.PLAYER) return;
 		Util.soundPlay(le.getLocation(), cry);        
 	}
-
 
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPvPDamage(EntityDamageEvent event){
@@ -349,7 +354,7 @@ public class RAListener implements Listener{
 				event.getFrom().getBlockZ()==event.getTo().getBlockZ()) return;
 		EventManager.raiseAllRegionEvents(event.getPlayer(), event.getTo(), event.getFrom());
 	}
-
+	
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerTeleport(PlayerTeleportEvent event){
 		Teleporter.startTeleport(event);
@@ -466,6 +471,11 @@ public class RAListener implements Listener{
 	public void onItemClickActivator (ItemClickEvent event){
 		event.setCancelled(Activators.activate(event));
 	}
+	
+	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
+	public void onConsume (ItemConsumeEvent event){
+		event.setCancelled(Activators.activate(event));
+	}
 
 	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled = true)
 	public void onItemHold (ItemHoldEvent event){
@@ -511,7 +521,5 @@ public class RAListener implements Listener{
 	public void onVariableEvent (VariableEvent event){
 		event.setCancelled(Activators.activate(event));
 	}
-
-
 
 }

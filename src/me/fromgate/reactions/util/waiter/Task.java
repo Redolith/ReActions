@@ -22,7 +22,7 @@ public class Task implements Runnable{
 	boolean isExecuted;
 	long executionTime; 
 	BukkitTask task;
-	
+
 	public Task (String playerName, List<ActVal> actions, boolean isAction, long time){
 		this.taskId = UUID.randomUUID().toString();
 		this.playerName = playerName;
@@ -32,11 +32,11 @@ public class Task implements Runnable{
 		this.executionTime=System.currentTimeMillis()+time;
 		task = Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), this, ReActions.getUtil().timeToTicks(time));
 	}
-	
+
 	public String getId(){
 		return this.taskId;
 	}
-	
+
 	public Task (YamlConfiguration cfg, String taskId){
 		this.taskId = taskId;
 		this.load(cfg, taskId);
@@ -44,12 +44,12 @@ public class Task implements Runnable{
 		if (time<0) this.execute();
 		else task = Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), this, ReActions.getUtil().timeToTicks(time));
 	}
-	
+
 	@Override
 	public void run() {
 		execute();
 	}
-	
+
 	public void execute(){
 		if (this.isExecuted()) return;
 		@SuppressWarnings("deprecation")
@@ -57,30 +57,32 @@ public class Task implements Runnable{
 		if (p==null&& playerName!=null) return;
 		Actions.executeActions(p, actions, isAction);
 		this.isExecuted = true;
+		ActionsWaiter.remove(this);
+		/*
 		Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), new Runnable(){
 			@Override
 			public void run() {
-				ActionsWaiter.refresh();
+				ActionsWaiter.remove(Task.this);
 			}
-		}, 1);
+		}, 1); */
 	}
 
 	public void stop(){
 		this.task.cancel();
 		this.task = null;
 	}
-	
+
 	public long getExecutionTime(){
 		return this.executionTime;
 	}
-	
+
 	public boolean isTimePassed(){
 		return this.executionTime<System.currentTimeMillis();
 	}
 	public boolean isExecuted(){
 		return this.isExecuted;
 	}
-	
+
 	public void save(YamlConfiguration cfg){
 		cfg.set(Util.join(this.taskId,".player"), this.playerName == null ? "" : this.playerName );
 		cfg.set(Util.join(this.taskId,".execution-time"), this.executionTime);
@@ -91,7 +93,7 @@ public class Task implements Runnable{
 		}
 		cfg.set(Util.join(this.taskId,".actions.list"), actionList);
 	}
-	
+
 	public void load (YamlConfiguration cfg, String root){
 		this.playerName = cfg.getString(Util.join(root,".player")); 
 		this.executionTime= cfg.getLong(Util.join(root,".execution-time"), 0);
@@ -107,5 +109,5 @@ public class Task implements Runnable{
 				}
 			}
 	}
-	
+
 }

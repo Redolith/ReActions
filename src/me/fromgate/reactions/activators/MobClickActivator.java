@@ -13,8 +13,9 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Event;
 
 public class MobClickActivator extends Activator {
-	private String mob_name;
-	private String mob_type;
+	private String mobName;
+	private String mobType;
+	private String mobLocation;
 
 	public MobClickActivator(String name, String group, YamlConfiguration cfg) {
 		super(name, group, cfg);
@@ -22,15 +23,17 @@ public class MobClickActivator extends Activator {
 
 	public MobClickActivator(String name, String param) {
 		super(name, "activators");
-		this.mob_type = param;
-		this.mob_name = "";
+		this.mobType = param;
+		this.mobName = "";
+		this.mobLocation = "";
 		Param params = new Param(param);
 		if (params.isParamsExists("type")){
-			this.mob_type = params.getParam("type");
-			this.mob_name = params.getParam("name");
+			this.mobType = params.getParam("type");
+			this.mobName = params.getParam("name");
+			this.mobLocation = params.getParam("loc");
 		} else	if (param.contains("$")) {
-			this.mob_name = this.mob_type.substring(0,this.mob_type.indexOf("$"));
-			this.mob_type = this.mob_type.substring(this.mob_name.length()+1);
+			this.mobName = this.mobType.substring(0,this.mobType.indexOf("$"));
+			this.mobType = this.mobType.substring(this.mobName.length()+1);
 		} 
 	}
 
@@ -39,22 +42,29 @@ public class MobClickActivator extends Activator {
 	public boolean activate(Event event) {
 		if (!(event instanceof MobClickEvent)) return false;
 		MobClickEvent me = (MobClickEvent) event;
-		if (mob_type.isEmpty()) return false;
+		if (mobType.isEmpty()) return false;
 		if (me.getMob()==null) return false;
+		
 		if (!isActivatorMob (me.getMob())) return false;
 		Variables.setTempVar("moblocation", Locator.locationToString(me.getMob().getLocation()));
 		Variables.setTempVar("mobtype", me.getMob().getType().name());
-		String mobName = me.getMob().getCustomName();
+		String mobName = getMobName(me.getMob());
 		Variables.setTempVar("mobname", mobName!=null&&!mobName.isEmpty() ? mobName : me.getMob().getType().name() );
 		return Actions.executeActivator(me.getPlayer(), this);
 	}
 
-
+	private boolean checkLocations(LivingEntity mob){
+		if (this.mobLocation.isEmpty()) return true;
+		return this.isLocatedAt(mob.getLocation());
+	}
+	
 	private boolean isActivatorMob(LivingEntity mob){
-		if (!mob_name.isEmpty()){
-			if (!ChatColor.translateAlternateColorCodes('&', mob_name.replace("_", " ")).equals(getMobName(mob))) return false;
+		if (!mob.getType().name().equalsIgnoreCase(this.mobType))  return false;
+		if (!mobName.isEmpty()){
+			if (!ChatColor.translateAlternateColorCodes('&', mobName.replace("_", " ")).equals(getMobName(mob))) return false;
 		} else if (!getMobName(mob).isEmpty()) return false;
-		return mob.getType().name().equalsIgnoreCase(this.mob_type);
+		if (!checkLocations(mob)) return false;
+		return true;
 	}
 
 
@@ -63,25 +73,30 @@ public class MobClickActivator extends Activator {
 		return mob.getCustomName();
 	}
 
-	// TODO 
-	// в теории можно добавить сюда
-	// определение активаторов на близко расположенных мобах
 	@Override
 	public boolean isLocatedAt(Location l) {
-		return false;
+		if (this.mobLocation.isEmpty()) return false;
+		Location loc = Locator.parseCoordinates(this.mobLocation);
+		if (loc==null) return false;
+		return l.getWorld().equals(loc.getWorld())&&
+				l.getBlockX()==loc.getBlockX()&&
+				l.getBlockY()==loc.getBlockY()&&
+				l.getBlockZ()==loc.getBlockZ();
 	}
 
 
 	@Override
 	public void save(String root, YamlConfiguration cfg) {
-		cfg.set(root+".mob-type",this.mob_type);
-		cfg.set(root+".mob-name",this.mob_name);
+		cfg.set(root+".mob-type",this.mobType);
+		cfg.set(root+".mob-name",this.mobName.isEmpty() ? null : this.mobName);
+		cfg.set(root+".location",this.mobLocation.isEmpty() ? null : this.mobLocation);
 	}
 
 	@Override
 	public void load(String root, YamlConfiguration cfg) {
-		this.mob_type = cfg.getString(root+".mob-type","");
-		this.mob_name = cfg.getString(root+".mob-name","");
+		this.mobType = cfg.getString(root+".mob-type","");
+		this.mobName = cfg.getString(root+".mob-name","");
+		this.mobLocation = cfg.getString(root+".location","");
 	}
 
 	@Override
@@ -96,8 +111,9 @@ public class MobClickActivator extends Activator {
 		 if (!getActions().isEmpty()) sb.append(" A:").append(getActions().size());
 		 if (!getReactions().isEmpty()) sb.append(" R:").append(getReactions().size());
 		 sb.append(" (");
-		 sb.append("type:").append(mob_type.isEmpty() ? "-" : mob_type.toUpperCase());
-		 sb.append(" name:").append(mob_name.isEmpty() ? "-": mob_name.isEmpty());
+		 sb.append("type:").append(mobType.isEmpty() ? "-" : mobType.toUpperCase());
+		 sb.append(" name:").append(mobName.isEmpty() ? "-": mobName);
+		 sb.append(" loc:").append(mobLocation.isEmpty() ? "-": mobLocation);
 		 sb.append(")");
 		 return sb.toString();
 	 }

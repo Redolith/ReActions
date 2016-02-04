@@ -67,7 +67,8 @@ public class CommandActivator extends Activator {
 	}
 
 	private void setTempVars(String command, String [] args){
-		String argStr = command.replaceAll(new StringBuilder("^").append(args[0]).append(" ").toString(), "");
+		String argStr = args.length>1 ? command.replaceAll(new StringBuilder("^").append(args[0]).append(" ").toString(), "") : "";
+		Variables.setTempVar("command", command);
 		Variables.setTempVar("args", argStr);
 		String argsLeft = command.replaceAll("(\\S+ )+{"+args.length+"}", "");
 		Variables.setTempVar("argsleft", argsLeft);

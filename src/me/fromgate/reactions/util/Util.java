@@ -90,8 +90,8 @@ public class Util {
 					if (prm.length>2) strpitch = prm[2];
 				}
 			} else sndstr = param;
-			if (strvolume.matches("[0-9]+-?\\.[0-9]*")) volume = Float.parseFloat(strvolume);
-			if (strpitch.matches("[0-9]+-?\\.[0-9]*")) pitch = Float.parseFloat(strpitch);            
+			if (strvolume.matches("([0-9]+\\.[0-9]+)|([0-9]+)")) volume = Float.parseFloat(strvolume);
+			if (strpitch.matches("([0-9]+\\.[0-9]+)|([0-9]+)")) pitch = Float.parseFloat(strpitch);            
 		} else {
 			String locationStr = params.getParam("loc");
 			soundLoc = locationStr.isEmpty() ? loc : Locator.parseLocation(locationStr, null);

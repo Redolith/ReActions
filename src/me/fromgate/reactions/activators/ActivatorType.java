@@ -18,6 +18,7 @@ import me.fromgate.reactions.event.FactionDisbandEvent;
 import me.fromgate.reactions.event.FactionEvent;
 import me.fromgate.reactions.event.FactionRelationEvent;
 import me.fromgate.reactions.event.ItemClickEvent;
+import me.fromgate.reactions.event.ItemConsumeEvent;
 import me.fromgate.reactions.event.ItemHoldEvent;
 import me.fromgate.reactions.event.ItemWearEvent;
 import me.fromgate.reactions.event.JoinEvent;
@@ -65,6 +66,7 @@ public enum ActivatorType {
     MOB_KILL ("mobkill",MobKillActivator.class,MobKillEvent.class),
     MOB_DAMAGE ("mobdamage",MobDamageActivator.class,MobDamageEvent.class),
     ITEM_CLICK ("itemclick",ItemClickActivator.class,ItemClickEvent.class),
+    ITEM_CONSUME ("consume",ItemConsumeActivator.class, ItemConsumeEvent.class),
     ITEM_HOLD ("itemhold",ItemHoldActivator.class,ItemHoldEvent.class),
     ITEM_WEAR("itemwear",ItemWearActivator.class,ItemWearEvent.class),
     FCT_CHANGE("faction",FactionActivator.class,FactionEvent.class),

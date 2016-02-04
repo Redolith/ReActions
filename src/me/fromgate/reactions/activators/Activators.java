@@ -77,7 +77,7 @@ public class Activators {
 		if (!dir.exists()) dir.mkdirs();
 		for (String fstr : dir.list())
 			if (fstr.endsWith(".yml")) {
-				grps.add(fstr.substring(0, fstr.length()-4));
+				grps.add(new String (fstr.substring(0, fstr.length()-4)));
 			}
 		return grps;
 	}

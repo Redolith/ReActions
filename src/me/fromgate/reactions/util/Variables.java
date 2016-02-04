@@ -229,7 +229,9 @@ public class Variables {
 		if (str.isEmpty()) return str;
 		String newStr = str;
 		for (String key : tempvars.keySet()){
-			newStr = newStr.replaceAll("(?i)%"+key+"%", Matcher.quoteReplacement(tempvars.get(key)));
+			String replacement = tempvars.get(key);
+			replacement = replacement.matches("^[0-9]+\\.0$") ? Integer.toString((int) Double.parseDouble(replacement)): Matcher.quoteReplacement(replacement);
+			newStr = newStr.replaceAll("(?i)%"+key+"%", replacement);
 		}
 		return newStr;
 	}

@@ -33,11 +33,12 @@ public class CmdSet extends Cmd{
 		String id = params.getParam("id", "");
 		if (id.isEmpty()) return ReActions.getUtil().returnMSG (true, sender, "msg_needvdmid",'c');
 		if (var.equalsIgnoreCase("delay")||var.equalsIgnoreCase("d")){
+			boolean add = params.getParam("add", false);
 			String player = params.getParam("player", "");
 			if (player.equalsIgnoreCase("%player%")&&(p!=null)) player = p.getName();
 			Long time = /*System.currentTimeMillis()+*/ReActions.getUtil().parseTime(params.getParam("delay","3s")); //дефолтная задержка три секунды
-			if (player.isEmpty()) Delayer.setDelay(id, time);
-			else Delayer.setPersonalDelay(player, id, time);
+			if (player.isEmpty()) Delayer.setDelay(id, time,add);
+			else Delayer.setPersonalDelay(player, id, time,add);
 			ReActions.getUtil().printMSG(sender, "cmd_delayset", player.isEmpty() ? id : player+"."+id, Time.fullTimeToString(System.currentTimeMillis()+time));
 		} else if (var.equalsIgnoreCase("var")||var.equalsIgnoreCase("variable")||var.equalsIgnoreCase("v")){
 			String value = params.getParam("value", "");

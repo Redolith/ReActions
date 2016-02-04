@@ -53,6 +53,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.material.Button;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -126,6 +127,13 @@ public class EventManager {
 		return e.isCancelled();
 	}
 
+	public static boolean raiseItemConsumeEvent(PlayerItemConsumeEvent event){
+		if (event.getItem()==null) return false;
+		ItemConsumeEvent ce = new ItemConsumeEvent(event.getPlayer());
+		Bukkit.getServer().getPluginManager().callEvent(ce);
+		return ce.isCancelled();
+	}
+	
 	public static boolean raiseItemClickEvent(PlayerInteractEntityEvent event){
 		if (event.getPlayer().getItemInHand()==null) return false;
 		if (event.getPlayer().getItemInHand().getType() == Material.AIR) return false;
@@ -270,7 +278,7 @@ public class EventManager {
 
 	public static void raiseAllRegionEvents (final Player player, final Location to, final Location from){
 		if (!RAWorldGuard.isConnected()) return;
-		Bukkit.getScheduler().runTaskAsynchronously(ReActions.instance, new Runnable(){
+		Bukkit.getScheduler().runTaskLaterAsynchronously(ReActions.instance, new Runnable(){
 			@Override
 			public void run() {
 
@@ -286,7 +294,7 @@ public class EventManager {
 					}
 				});
 			}
-		}); 
+		},1); 
 	}
 
 	private static void raiseRgEnterEvent (Player player, List<String> regionTo, List<String> regionFrom){

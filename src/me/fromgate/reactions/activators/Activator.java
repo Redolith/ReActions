@@ -179,9 +179,9 @@ public abstract class Activator {
 			 String param = "";
 			 boolean not = false;
 			 if (flgstr.contains("=")){
-				 flag  = flgstr.substring(0, flgstr.indexOf("="));
+				 flag  = new String (flgstr.substring(0, flgstr.indexOf("=")));
 				 if (flgstr.indexOf("=")<flgstr.length())
-					 param = flgstr.substring(flgstr.indexOf("=")+1,flgstr.length());
+					 param = new String (flgstr.substring(flgstr.indexOf("=")+1,flgstr.length()));
 			 }
 			 if (flag.startsWith("!")){
 				 flag=flag.replaceFirst("!", "");
@@ -195,8 +195,8 @@ public abstract class Activator {
 			 String flag = flgstr;
 			 String param = "";
 			 if (flgstr.contains("=")){
-				 flag  = flgstr.substring(0, flgstr.indexOf("="));
-				 param = flgstr.substring(flgstr.indexOf("=")+1,flgstr.length());
+				 flag  = new String (flgstr.substring(0, flgstr.indexOf("=")));
+				 param = new String (flgstr.substring(flgstr.indexOf("=")+1,flgstr.length()));
 			 }
 			 addAction(flag, param);
 		 }
@@ -206,8 +206,8 @@ public abstract class Activator {
 			 String flag = flgstr;
 			 String param = "";
 			 if (flgstr.contains("=")){
-				 flag  = flgstr.substring(0, flgstr.indexOf("="));
-				 param = flgstr.substring(flgstr.indexOf("=")+1,flgstr.length());
+				 flag  = new String (flgstr.substring(0, flgstr.indexOf("=")));
+				 param = new String (flgstr.substring(flgstr.indexOf("=")+1,flgstr.length()));
 			 }
 			 addReaction(flag, param);
 		 }

@@ -69,27 +69,20 @@ public class ActionsWaiter {
 			tasks.add(t);
 		}
 	}
-
 	
 	public static void refresh(){
 		Set<Task> toRemove = new HashSet<Task>();
-		//  for( Iterator< String > it = list.iterator(); it.hasNext() ; )
+		if (tasks.isEmpty()) return;
 		for (Iterator<Task> it = tasks.iterator(); it.hasNext() ;){
 			Task t = it.next();
 			if (t.isTimePassed()) t.execute();
 			if (t.isExecuted()) toRemove.add(t);
 		}
-		
-		/*
-		for (Task t : tasks){
-			if (t.isTimePassed()) t.execute();
-			if (t.isExecuted()) toRemove.add(t);
-		}
-		*/
+		if (toRemove.isEmpty()) return;
 		for (Task t : toRemove)
 			if (tasks.contains(t)) tasks.remove(t);
 		save();
-	}
+	} 
 	
 	public static void save(){
 		YamlConfiguration cfg = new YamlConfiguration();
@@ -100,7 +93,7 @@ public class ActionsWaiter {
 		}
 		try {
 			cfg.save(f);
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			ReActions.getUtil().log("Failed to save delayed actions");
 		}
 	}

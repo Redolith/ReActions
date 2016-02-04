@@ -133,12 +133,12 @@ public class VirtualItem18 extends VirtualItem {
 			String dataStr = "0";
 			String amountStr = "1";
 			if (itemStr.contains("*")) {
-				itemStr = itemStr.substring(0, itemStr.indexOf("*"));
-				amountStr = itemStr.substring(itemStr.indexOf("*") + 1);
+				itemStr = new String(itemStr.substring(0, itemStr.indexOf("*")));
+				amountStr = new String(itemStr.substring(itemStr.indexOf("*") + 1));
 			}
 			if (itemStr.contains(":")) {
-				itemStr = itemStr.substring(0, itemStr.indexOf(":"));
-				dataStr = itemStr.substring(itemStr.indexOf(":") + 1);
+				itemStr = new String(itemStr.substring(0, itemStr.indexOf(":")));
+				dataStr = new String(itemStr.substring(itemStr.indexOf(":") + 1));
 			}
 			type = itemStr.matches("[0-9]+") ? Material.getMaterial(Integer
 					.valueOf(itemStr)) : Material.getMaterial(itemStr
@@ -314,8 +314,8 @@ public class VirtualItem18 extends VirtualItem {
 				String pattern = pStr;
 				String dc = "";
 				if (pStr.contains(":")) {
-					dc = pStr.substring(pStr.indexOf(":") + 1);
-					pattern = pStr.substring(0, pStr.indexOf(":"));
+					dc = new String(pStr.substring(pStr.indexOf(":") + 1));
+					pattern = new String(pStr.substring(0, pStr.indexOf(":")));
 				}
 				
 				PatternType pType = PatternType.getByIdentifier(pattern

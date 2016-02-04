@@ -43,7 +43,7 @@ public class Timer {
 	public Timer (Param params2){
 		this.timesIngame = new HashSet<String>();
 		this.params=params2;
-		this.timerType = !params2.getParam("timer-type", "ingame").equalsIgnoreCase("server");
+		this.timerType = params2.getParam("timer-type", "ingame").equalsIgnoreCase("ingame");
 		this.pause = params2.getParam("paused", false);
 		params2.set("paused", String.valueOf(this.pause));
 		this.parseTime();
@@ -64,7 +64,7 @@ public class Timer {
 	public void parseTime(){
 		if (this.timerType){
 			this.timesIngame = new HashSet<String>();
-			for (String time : params.getParam("time", "").split(",")){
+			for (String time : params.getParam("time", "").split(",\\S*")){
 				this.timesIngame.add(time);
 			}
 		} else {
