@@ -58,13 +58,6 @@ public class Task implements Runnable {
         Actions.executeActions(p, actions, isAction);
         this.isExecuted = true;
         ActionsWaiter.remove(this);
-        /*
-        Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), new Runnable(){
-			@Override
-			public void run() {
-				ActionsWaiter.remove(Task.this);
-			}
-		}, 1); */
     }
 
     public void stop() {

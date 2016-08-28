@@ -9,20 +9,11 @@ import java.io.File;
 import java.util.*;
 
 public class ActionsWaiter {
-    //private static Map<String,List<ActVal>> actions = new HashMap<String,List<ActVal>>();
-
     private static Set<Task> tasks;
 
     public static void init() {
         tasks = new HashSet<Task>();
         load();
-        /*
-        Bukkit.getScheduler().runTaskTimer(ReActions.getPlugin(), new Runnable(){
-			@Override
-			public void run() {
-				refresh();
-			}
-		}, 10, 20); */
     }
 
     public static void executeDelayed(Player player, ActVal action, boolean isAction, long time) {

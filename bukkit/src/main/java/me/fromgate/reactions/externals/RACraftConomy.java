@@ -140,7 +140,7 @@ public class RACraftConomy {
     }
 
 	/*
-	public static boolean creditAccount (String accountTo, String accountFrom, double amount, String currencyName){
+    public static boolean creditAccount (String accountTo, String accountFrom, double amount, String currencyName){
 		return creditAccount (accountTo,accountFrom,amount,currencyName, getWorldName("default"));
 	}
 
@@ -153,7 +153,7 @@ public class RACraftConomy {
 	}*/
 
 	/* 
-	 * Debit (withdraw account)
+     * Debit (withdraw account)
 	 */
 
     public static boolean debitAccount(String accountFrom, String accountTo, double amount, String currencyName, String worldName) {

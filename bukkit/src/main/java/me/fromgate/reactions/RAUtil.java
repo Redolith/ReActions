@@ -419,7 +419,7 @@ public class RAUtil extends FGUtilCore {
     }
 
 	/*
-	 * 	public static void printHelp(CommandSender sender, int page) {
+     * 	public static void printHelp(CommandSender sender, int page) {
 		List<String> helpList = new ArrayList<String>();
 		for (Cmd cmd : commands){
 			helpList.add(cmd.getFullDescription());

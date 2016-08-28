@@ -167,7 +167,7 @@ public class ItemUtil {
     }
 
 	/*
-	public static int countItemsInInventory (Inventory inventory, ItemStack item){
+    public static int countItemsInInventory (Inventory inventory, ItemStack item){
 		int count = 0;
 		ItemStack ii = item.clone();
 		ii.setAmount(1);
@@ -203,7 +203,7 @@ public class ItemUtil {
     }
 
 	/*
-	public static boolean removeItemInInventory(Player player, ItemStack item) {
+    public static boolean removeItemInInventory(Player player, ItemStack item) {
 		return removeItemInInventory (player.getInventory(), item);
 	} */
 
