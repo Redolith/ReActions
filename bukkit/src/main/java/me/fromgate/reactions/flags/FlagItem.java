@@ -58,12 +58,18 @@ public class FlagItem extends Flag {
 
     private boolean hasItemInInventory(Player player, String itemStr) {
         Param params = new Param(itemStr);
-        if (!params.isParamsExists("slot", "item")) return ItemUtil.hasItemInInventory(player, itemStr);
+
+        if (!params.isParamsExists("slot", "item")) {
+            return ItemUtil.hasItemInInventory(player, itemStr);
+        }
+
         String slotStr = params.getParam("slot", "");
         if (slotStr.isEmpty()) return false;
         int slotNum = u().isInteger(slotStr) ? Integer.parseInt(slotStr) : -1;
         if (slotNum >= player.getInventory().getSize()) return false;
+
         VirtualItem vi = null;
+
         if (slotNum < 0) {
             if (slotStr.equalsIgnoreCase("helm") || slotStr.equalsIgnoreCase("helmet"))
                 vi = ItemUtil.itemFromItemStack(player.getInventory().getHelmet());
@@ -74,8 +80,11 @@ public class FlagItem extends Flag {
             else if (slotStr.equalsIgnoreCase("boot") || slotStr.equalsIgnoreCase("boots"))
                 ItemUtil.itemFromItemStack(player.getInventory().getBoots());
         } else vi = ItemUtil.itemFromItemStack(player.getInventory().getItem(slotNum));
+
         vi = ItemUtil.itemFromItemStack(player.getInventory().getItem(slotNum));
+
         if (vi == null) return false;
+
         return vi.compare(itemStr);
     }
 

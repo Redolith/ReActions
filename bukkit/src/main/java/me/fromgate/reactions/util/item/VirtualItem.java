@@ -810,16 +810,6 @@ public class VirtualItem extends ItemStack {
         return params.get(key);
     }
 
-    /**
-     * Get value of parameter. If parameter is not exist, default value will
-     * returned
-     *
-     * @param params       - Map contained parameter (key) and it's values
-     * @param key          - Parameter id to get value
-     * @param defaultValue - Default value
-     * @return
-     */
-
     protected void setFireworkEffect(String fireworkStr) {
         if (fireworkStr == null || fireworkStr.isEmpty()) return;
         if (!(this.getItemMeta() instanceof FireworkEffectMeta)) return;
@@ -1092,7 +1082,7 @@ public class VirtualItem extends ItemStack {
 
     @SuppressWarnings("deprecation")
     public boolean compare(Map<String, String> itemMap, int amount) {
-        boolean regex = itemMap.containsKey("regex") ? itemMap.get("regex").equalsIgnoreCase("true") : true;
+        boolean regex = !itemMap.containsKey("regex") || itemMap.get("regex").equalsIgnoreCase("true");
 
         if (itemMap == null || itemMap.isEmpty()) return false;
         ItemMeta thisMeta = this.getItemMeta();
@@ -1112,10 +1102,10 @@ public class VirtualItem extends ItemStack {
 
             if (dataStr.matches("[0-9]+")) itemMap.put("data", dataStr);
             if (amountStr.matches("[0-9]+")) itemMap.put("amount", amountStr);
-            if (amount > 0) itemMap.put("amount", Integer.toString(amount));
             if (itemMap.containsKey("item")) itemMap.remove("item");
             if (itemMap.containsKey("default-param")) itemMap.remove("default-param");
         }
+        if (amount > 0) itemMap.put("amount", Integer.toString(amount));
         if (this.hasDisplayName() && !itemMap.containsKey("name")) return false;
         if (this.hasLore() && !itemMap.containsKey("lore")) return false;
         if (itemMap.containsKey("type")) {
@@ -1131,12 +1121,12 @@ public class VirtualItem extends ItemStack {
             }
             if (!compareOrMatch(this.getType().name(), typeStr.toUpperCase(), regex)) return false;
         }
+
         if (itemMap.containsKey("data")) {
             String dataStr = itemMap.get("data");
             int reqData = dataStr.matches("\\d+") ? Integer.parseInt(dataStr) : -1;
             if (reqData != (int) this.getDurability()) return false;
         }
-
         if (itemMap.containsKey("amount")) {
             String amountStr = itemMap.get("amount");
             if (amountStr.matches("\\d+") && this.getAmount() < Integer.parseInt(amountStr))
@@ -1155,6 +1145,7 @@ public class VirtualItem extends ItemStack {
             if (!compareOrMatch(thisName, ChatColor.translateAlternateColorCodes('&', itemMap.get("name")), regex))
                 return false;
         }
+
         if (itemMap.containsKey("lore")) {
             List<String> thisLore = thisMeta.hasLore() ? thisMeta.getLore() : new ArrayList<String>();
             String thisLoreStr = Joiner.on(DIVIDER).join(thisLore);

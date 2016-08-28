@@ -77,35 +77,11 @@ public class ItemUtil {
         for (ItemStack slot : inventory) {
             if (slot == null || slot.getType() == Material.AIR) continue;
             VirtualItem vi = ItemUtil.itemFromItemStack(slot);
-            if (!vi.compare(itemParams)) continue;
-            count += vi.getAmount();
+            if (!vi.compare(itemParams, 1)) continue;
+            count += slot.getAmount();
         }
         return count;
     }
-
-	/*public static boolean removeItemInInventory(Inventory inventory, ItemStack item) {
-        if (countItemsInInventory(inventory,item)<item.getAmount()) return false;
-		int amountToRemove = item.getAmount();
-		ItemStack ii = item.clone();
-		ii.setAmount(1);
-		
-		for (ItemStack slot : inventory.getContents()){
-			if (slot==null||slot.getType() == Material.AIR) continue;
-			VirtualItem vi = itemFromItemStack(slot);
-			if (!vi.compare(ii)) continue;
-			//if (!slot.isSimilar(item)) continue;
-			if (vi.getAmount()<=amountToRemove){
-				amountToRemove -=slot.getAmount();
-				slot.setType(null);
-			} else {
-				slot.setAmount(slot.getAmount()-amountToRemove);
-				amountToRemove = 0;
-			}
-			if (amountToRemove == 0) return true;
-		}
-		return false;
-	}
-	*/
 
     /**
      * @param stack   - source item
@@ -165,21 +141,6 @@ public class ItemUtil {
     public static VirtualItem itemFromItemStack(ItemStack item) {
         return itemVersion ? VirtualItem.fromItemStack(item) : VirtualItem18.fromItemStack(item);
     }
-
-	/*
-    public static int countItemsInInventory (Inventory inventory, ItemStack item){
-		int count = 0;
-		ItemStack ii = item.clone();
-		ii.setAmount(1);
-		
-		for (ItemStack i : inventory.getContents()){
-			if (i==null||i.getType() == Material.AIR) continue;
-			VirtualItem vi = itemFromItemStack(i);
-			if (vi.compare(ii)) count+=i.getAmount();
-			//if (i.isSimilar(item)) count+=i.getAmount();
-		}
-		return count;
-	} */
 
     public static ItemStack parseItemStack(String string) {
         VirtualItem vi = itemFromString(string);
