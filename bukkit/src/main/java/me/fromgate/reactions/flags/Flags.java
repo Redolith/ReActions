@@ -45,6 +45,7 @@ public enum Flags {
     ITEM("item", true, new FlagItem(0)),
     ITEM_INVENTORY("invitem", true, new FlagItem(1)),
     ITEM_WEAR("invwear", true, new FlagItem(2)),
+    ITEM_OFFHAND("itemoffhand", true, new FlagItem(3)),
     BLOCK("blockcheck", false, new FlagBlock()),
     TOWN("town", true, new FlagTown()),
     MONEY("money", false, new FlagMoney()),

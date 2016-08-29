@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2016, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -23,13 +23,13 @@
 package me.fromgate.reactions.util;
 
 import me.fromgate.reactions.ReActions;
-import org.bukkit.entity.Damageable;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityEvent;
+import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -45,10 +45,159 @@ public class BukkitCompatibilityFix {
         try {
             Method getShooter = projectile.getClass().getDeclaredMethod("getShooter");
             Object shooterObject = getShooter.invoke(projectile);
-            if (shooterObject == null) return null;
-            if (shooterObject instanceof LivingEntity) return (LivingEntity) shooterObject;
+            if (shooterObject != null && shooterObject instanceof LivingEntity) return (LivingEntity) shooterObject;
         } catch (Exception e) {
-            ReActions.util.logOnce("getShooter", "Looks like this version of BukkitAPI totally incompatible with API 1.7.x. Method \"getShooter\" is not declared in Projectile class");
+            ReActions.util.logOnce("getShooter", "Method \"getShooter\" is not declared in Projectile class");
+        }
+        return null;
+    }
+
+
+    public static void setItemInHand(Player player, ItemStack item) {
+        if (player == null) return;
+        PlayerInventory inv = player.getInventory();
+        Method setItem = null;
+        try {
+            setItem = PlayerInventory.class.getDeclaredMethod("setItemInMainHand", ItemStack.class);
+        } catch (NoSuchMethodException e) {
+            // nop
+        }
+        if (setItem == null) {
+            try {
+                setItem = PlayerInventory.class.getDeclaredMethod("setItemInHand", ItemStack.class);
+            } catch (Exception e) {
+                //nop
+            }
+        }
+        try {
+            setItem.invoke(inv, item);
+        } catch (Exception e) {
+            ReActions.util.logOnce("setItemInHand", "Methods \"setItemInHand\" and \"setItemInMainHand\" are not declared in PlayerInventory class");
+        }
+    }
+
+    public static ItemStack getItemInHand(Player player) {
+        if (player == null) return null;
+        PlayerInventory inv = player.getInventory();
+        Method getItem = null;
+        try {
+            getItem = PlayerInventory.class.getDeclaredMethod("getItemInMainHand");
+        } catch (NoSuchMethodException e) {
+            // nop
+        }
+        if (getItem == null) {
+            try {
+                getItem = PlayerInventory.class.getDeclaredMethod("getItemInHand", ItemStack.class);
+            } catch (Exception e) {
+                //nop
+            }
+        }
+        try {
+            Object itemObj = getItem.invoke(inv);
+            if (itemObj != null && itemObj instanceof ItemStack) return (ItemStack) itemObj;
+        } catch (Exception e) {
+            ReActions.util.logOnce("getItemInHand", "Methods \"getItemInHand\" and \"getItemInMainHand\" are not declared in PlayerInventory class");
+        }
+        return null;
+    }
+
+
+    public static void setItemInHand(LivingEntity entity, ItemStack item) {
+        if (entity == null) return;
+        EntityEquipment inv = entity.getEquipment();
+        Method setItem = null;
+        try {
+            setItem = EntityEquipment.class.getDeclaredMethod("setItemInMainHand", ItemStack.class);
+        } catch (NoSuchMethodException e) {
+            // nop
+        }
+        if (setItem == null) {
+            try {
+                setItem = EntityEquipment.class.getDeclaredMethod("setItemInHand", ItemStack.class);
+            } catch (Exception e) {
+                //nop
+            }
+        }
+        try {
+            setItem.invoke(inv, item);
+        } catch (Exception e) {
+            ReActions.util.logOnce("EEsetItemInHand", "Methods \"setItemInHand\" and \"setItemInMainHand\" are not declared in EntityEquipment class");
+        }
+    }
+
+    public static ItemStack getItemInHand(LivingEntity entity) {
+        if (entity == null) return null;
+        EntityEquipment inv = entity.getEquipment();
+        Method getItem = null;
+        try {
+            getItem = EntityEquipment.class.getDeclaredMethod("getItemInMainHand");
+        } catch (NoSuchMethodException e) {
+            // nop
+        }
+        if (getItem == null) {
+            try {
+                getItem = EntityEquipment.class.getDeclaredMethod("getItemInHand", ItemStack.class);
+            } catch (Exception e) {
+                //nop
+            }
+        }
+        try {
+            Object itemObj = getItem.invoke(inv);
+            if (itemObj != null && itemObj instanceof ItemStack) return (ItemStack) itemObj;
+        } catch (Exception e) {
+            ReActions.util.logOnce("EEgetItemInHand", "Methods \"getItemInHand\" and \"getItemInMainHand\" are not declared in EntityEquipment class");
+        }
+        return null;
+    }
+
+    public static void setItemInOffHand(Player player, ItemStack item) {
+        if (player == null) return;
+        PlayerInventory inv = player.getInventory();
+        Method setItem = null;
+        try {
+            setItem = PlayerInventory.class.getDeclaredMethod("setItemInOffHand", ItemStack.class);
+            setItem.invoke(inv, item);
+        } catch (Exception e) {
+            ReActions.util.logOnce("setItemInOffHand", "Method \"setItemInOffHand\" is not declared in PlayerInventory class");
+        }
+    }
+
+    public static void setItemInOffHand(LivingEntity entity, ItemStack item) {
+        if (entity == null) return;
+        EntityEquipment inv = entity.getEquipment();
+        Method setItem = null;
+        try {
+            setItem = EntityEquipment.class.getDeclaredMethod("setItemInOffHand", ItemStack.class);
+            setItem.invoke(inv, item);
+        } catch (Exception e) {
+            ReActions.util.logOnce("EEsetItemInOffHand", "Method \"setItemInOffHand\" is not declared in EntityEquipment class");
+        }
+    }
+
+    public static ItemStack getItemInOffHand(LivingEntity entity) {
+        if (entity == null) return null;
+        EntityEquipment inv = entity.getEquipment();
+        Method getItem = null;
+        try {
+            getItem = EntityEquipment.class.getDeclaredMethod("getItemInOffHand");
+            Object itemObj = getItem.invoke(inv);
+            if (itemObj != null && itemObj instanceof ItemStack) return (ItemStack) itemObj;
+        } catch (Exception e) {
+            ReActions.util.logOnce("EEgetItemInOffHand", "Method \"getItemInOffHand\" is are not declared in EntityEquipment class");
+        }
+        return null;
+    }
+
+    public static ItemStack getItemInOffHand(Player player) {
+        if (player == null) return null;
+        PlayerInventory inv = player.getInventory();
+        Method getItem = null;
+        try {
+            getItem = PlayerInventory.class.getDeclaredMethod("getItemInOffHand");
+            Object itemObj = getItem.invoke(inv);
+            if (itemObj != null && itemObj instanceof ItemStack) return (ItemStack) itemObj;
+        } catch (Exception e) {
+            ReActions.util.logOnce("getItemInOffHand", "Method \"getItemInOffHand\" is are not declared in PlayerInventory class");
         }
         return null;
     }

@@ -22,6 +22,7 @@
 
 package me.fromgate.reactions.flags;
 
+import me.fromgate.reactions.util.BukkitCompatibilityFix;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Variables;
 import me.fromgate.reactions.util.item.ItemUtil;
@@ -40,12 +41,17 @@ public class FlagItem extends Flag {
     public boolean checkFlag(Player p, String itemStr) {
         switch (flagType) {
             case 0:
-                Variables.setTempVar("item_amount", p.getItemInHand() == null ? "0" : String.valueOf(p.getItemInHand().getAmount()));
-                return ItemUtil.compareItemStr(p.getItemInHand(), itemStr, true);
+                ItemStack inHand = BukkitCompatibilityFix.getItemInHand(p);
+                Variables.setTempVar("item_amount", inHand == null ? "0" : String.valueOf(inHand.getAmount()));
+                return ItemUtil.compareItemStr(inHand, itemStr, true);
             case 1:
                 return hasItemInInventory(p, itemStr);
             case 2:
                 return isItemWeared(p, itemStr);
+            case 3:
+                ItemStack inOffhand = BukkitCompatibilityFix.getItemInOffHand(p);
+                Variables.setTempVar("item_amount", inOffhand == null ? "0" : String.valueOf(inOffhand.getAmount()));
+                return ItemUtil.compareItemStr(inOffhand, itemStr, true);
         }
         return false;
     }

@@ -71,6 +71,7 @@ public class MobSpawn {
         String helm = params.getParam("helm", "");
         String boot = params.getParam("boot", "");
         String weapon = params.getParam("weapon", "");
+        String offhand = params.getParam("offhand", "");
         boolean land = params.getParam("land", true);
         String poteff = params.getParam("potion", "");
         String name = params.getParam("name", "");
@@ -94,7 +95,7 @@ public class MobSpawn {
                 setMobHealth(le, health);
                 setMobName(le, name);
                 potionEffect(le, poteff);
-                if (equip.isEmpty()) setMobEquipment(le, helm, chest, leg, boot, weapon);
+                if (equip.isEmpty()) setMobEquipment(le, helm, chest, leg, boot, weapon, offhand);
                 else setMobEquipment(le, equip);
                 setMobDrop(le, drop);
                 setMobXP(le, xp);
@@ -232,12 +233,12 @@ public class MobSpawn {
         if (!ReActions.util.isWordInList(e.getType().name(), "zombie,skeleton")) return;
         String[] ln = equip.split(";");
         if (ln.length == 0) return;
-        String[] eq = {"", "", "", "", ""};
-        for (int i = 0; i < Math.min(ln.length, 5); i++) eq[i] = ln[i];
-        setMobEquipment(e, eq[0], eq[1], eq[2], eq[3], eq[4]);
+        String[] eq = {"", "", "", "", "", ""};
+        for (int i = 0; i < Math.min(ln.length, 6); i++) eq[i] = ln[i];
+        setMobEquipment(e, eq[0], eq[1], eq[2], eq[3], eq[4], eq[5]);
     }
 
-    public static void setMobEquipment(LivingEntity e, String helm, String chest, String leg, String boot, String weapon) {
+    public static void setMobEquipment(LivingEntity e, String helm, String chest, String leg, String boot, String weapon, String offhand) {
         // if (!ReActions.util.isWordInList(e.getType().name(), "zombie,skeleton,villager")) return;
         if (!helm.isEmpty()) {
             ItemStack item = ItemUtil.getRndItem(helm);
@@ -257,7 +258,12 @@ public class MobSpawn {
         }
         if (!weapon.isEmpty()) {
             ItemStack item = ItemUtil.getRndItem(weapon);
-            if (item != null) e.getEquipment().setItemInMainHand(item);
+            if (item != null) BukkitCompatibilityFix.setItemInHand(e, item);
+        }
+
+        if (!offhand.isEmpty()) {
+            ItemStack item = ItemUtil.getRndItem(offhand);
+            if (item != null) BukkitCompatibilityFix.setItemInOffHand(e, item);
         }
     }
 

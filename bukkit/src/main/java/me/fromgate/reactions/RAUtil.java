@@ -153,7 +153,9 @@ public class RAUtil extends FGUtilCore {
         addMSG("act_town_kick", "You was kicked from town!");
         addMSG("act_town_kickfail", "Failed to kick you from town!");
         addMSG("act_item_remove", "You lost item: %1%");
+        addMSG("act_item_remove_offhand", "You lost offhand-item: %1%");
         addMSG("act_item_removefail", "Failed to remove item: %1%");
+        addMSG("act_item_remove_offhandfail", "Failed to remove offhand-item: %1%");
         addMSG("act_item_remove_inventory", "You lost item from the inventory: %1%");
         addMSG("act_item_remove_inventoryfail", "Failed to remove item %1% from your inventory");
         addMSG("act_item_give", "You receive item(s): %1%");
@@ -225,6 +227,7 @@ public class RAUtil extends FGUtilCore {
         addMSG("action_TOWN_KICK", "Exclude player from the Towny's town. Parameters: <town name>");
         addMSG("action_ITEM_GIVE", "Give item to player. Parameter: <item>");
         addMSG("action_ITEM_REMOVE", "Remove item from the player's hand. Parameter: <item>");
+        addMSG("action_ITEM_REMOVE_OFFHAND", "Remove item from the player's offhand. Parameter: <item>");
         addMSG("action_ITEM_REMOVE_INVENTORY", "Remove item from the player's inventory. Parameter: <item>");
         addMSG("action_ITEM_DROP", "Drop items around defined location. Parameters: loc:<location> radius:<radius> scatter:<true/false> land:<true/false>");
         addMSG("action_ITEM_WEAR", "Wear item. Parameters: item:<item> slot:<auto/chestplate/helmet/leggins/boots>");
@@ -282,6 +285,7 @@ public class RAUtil extends FGUtilCore {
         addMSG("flag_ITEM", "Check item in hand. Parameter: <item>");
         addMSG("flag_ITEM_INVENTORY", "Finding item in inventory. Parameter: <item>");
         addMSG("flag_ITEM_WEAR", "Finding item in armour slot. Parameter: <item>");
+        addMSG("flag_ITEM_OFFHAND", "Check item in offhand. Parameter: <item>");
         addMSG("flag_TOWN", "Check player's town. Parameter: <town>");
         addMSG("flag_MONEY", "Check player account. Parameter: <money amount>");
         addMSG("flag_CHANCE", "Roll dice with defined chance. Parameter:<chance>");
@@ -402,7 +406,6 @@ public class RAUtil extends FGUtilCore {
             chatPage = ChatPaginator.paginate(message, 1, ReActions.getPlugin().getChatLineLength(), 10000);
         } catch (Exception ignore) {
         }
-        ;
         if (chatPage != null) {
             for (String line : chatPage.getLines())
                 sender.sendMessage(line);
@@ -410,45 +413,11 @@ public class RAUtil extends FGUtilCore {
     }
 
     @Override
-    public void printMSG(CommandSender p, Object... s) {
+    public void printMSG(CommandSender sender, Object... s) {
         String message = getMSG(s);
-        if ((!(p instanceof Player)) && (!colorconsole)) message = ChatColor.stripColor(message);
+        if ((!(sender instanceof Player)) && (!colorconsole)) message = ChatColor.stripColor(message);
         ChatPage chatPage = ChatPaginator.paginate(message, 1, ReActions.getPlugin().getChatLineLength(), 10000);
         for (String line : chatPage.getLines())
-            p.sendMessage(line);
+            sender.sendMessage(line);
     }
-
-	/*
-     * 	public static void printHelp(CommandSender sender, int page) {
-		List<String> helpList = new ArrayList<String>();
-		for (Cmd cmd : commands){
-			helpList.add(cmd.getFullDescription());
-		}
-		int pageHeight = (sender instanceof Player) ? 9 : 1000;
-
-		ReActions.getUtil().printMsg(sender, "&6&lReActions v"+ReActions.getPlugin().getDescription().getVersion()+" &r&6| "+ReActions.getUtil().getMSG("hlp_help",'6'));
-		ChatPage chatPage = paginate (helpList, page,55,pageHeight);
-
-		for (String str : chatPage.getLines())
-			sender.sendMessage(str);
-
-		if (pageHeight == 9)
-			ReActions.getUtil().printMSG(sender, "lst_footer",'e','6', chatPage.getPageNumber(),chatPage.getTotalPages());
-	}
-
-	public static ChatPage paginate(List<String> unpaginatedStrings, int pageNumber, int lineLength, int pageHeight){
-		List<String> lines = new ArrayList<String>();
-		for (String str : unpaginatedStrings){
-			lines.addAll(Arrays.asList(ChatPaginator.wordWrap(str, lineLength)));
-		}
-		int totalPages = lines.size()/ pageHeight + (lines.size() % pageHeight == 0 ? 0 : 1);
-		int actualPageNumber = pageNumber <= totalPages ? pageNumber : totalPages;
-		int from = (actualPageNumber - 1) * pageHeight;
-		int to = from + pageHeight <= lines.size()? from + pageHeight : lines.size();
-		String[] selectedLines = (String[])Java15Compat.Arrays_copyOfRange((String[])lines.toArray(new String[lines.size()]), from, to);
-		return new ChatPage(selectedLines, actualPageNumber, totalPages);
-	}
-	 */
-
-
 }

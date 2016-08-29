@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.ChatPaginator;
 import org.bukkit.util.ChatPaginator.ChatPage;
-import org.bukkit.util.Java15Compat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -90,7 +89,7 @@ public class Commander implements CommandExecutor {
         int actualPageNumber = pageNumber <= totalPages ? pageNumber : totalPages;
         int from = (actualPageNumber - 1) * pageHeight;
         int to = from + pageHeight <= lines.size() ? from + pageHeight : lines.size();
-        String[] selectedLines = (String[]) Java15Compat.Arrays_copyOfRange((String[]) lines.toArray(new String[lines.size()]), from, to);
+        String[] selectedLines = Arrays.copyOfRange(lines.toArray(new String[lines.size()]), from, to);
         return new ChatPage(selectedLines, actualPageNumber, totalPages);
     }
 

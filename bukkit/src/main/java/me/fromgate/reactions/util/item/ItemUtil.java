@@ -1,6 +1,7 @@
 package me.fromgate.reactions.util.item;
 
 import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.util.BukkitCompatibilityFix;
 import me.fromgate.reactions.util.Param;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -37,11 +38,22 @@ public class ItemUtil {
     }
 
     public static boolean removeItemInHand(Player player, String itemStr) {
-        if (player.getItemInHand() == null || player.getItemInHand().getType() == Material.AIR) return false;
-        VirtualItem hand = VirtualItem.fromItemStack(player.getItemInHand());
+        ItemStack inHand = BukkitCompatibilityFix.getItemInHand(player);
+        if (inHand == null || inHand.getType() == Material.AIR) return false;
+        VirtualItem hand = VirtualItem.fromItemStack(inHand);
         VirtualItem vi = removeItemFromStack(hand, itemStr);
         if (vi == null) return false;
-        player.setItemInHand(vi.getType() == Material.AIR ? null : vi);
+        BukkitCompatibilityFix.setItemInHand(player, vi.getType() == Material.AIR ? null : vi);
+        return true;
+    }
+
+    public static boolean removeItemInOffHand(Player player, String itemStr) {
+        ItemStack inHand = BukkitCompatibilityFix.getItemInOffHand(player);
+        if (inHand == null || inHand.getType() == Material.AIR) return false;
+        VirtualItem hand = VirtualItem.fromItemStack(inHand);
+        VirtualItem vi = removeItemFromStack(hand, itemStr);
+        if (vi == null) return false;
+        BukkitCompatibilityFix.setItemInOffHand(player, vi.getType() == Material.AIR ? null : vi);
         return true;
     }
 
@@ -107,20 +119,6 @@ public class ItemUtil {
         return 1;
     }
 
-	/*
-    public static boolean removeItemInHand(Player player, ItemStack item){
-		if (item == null||item.getType() == Material.AIR) return false;
-		ItemStack handItem = player.getItemInHand();
-		if (handItem == null || handItem.getType()==Material.AIR) return false;
-		if (!handItem.isSimilar(item)) return false;
-		int leftAmount = handItem.getAmount()-item.getAmount();
-		if (leftAmount<0) return false;
-		if (leftAmount == 0) handItem.setType(Material.AIR);
-		else handItem.setAmount(leftAmount);
-		player.setItemInHand(handItem);
-		return true;
-	} */
-
 
     public static boolean hasItemInInventory(Player player, String itemStr) {
         return hasItemInInventory(player.getInventory(), itemStr);
@@ -163,14 +161,6 @@ public class ItemUtil {
         return removeItemInInventory(player.getInventory(), itemStr);
     }
 
-	/*
-    public static boolean removeItemInInventory(Player player, ItemStack item) {
-		return removeItemInInventory (player.getInventory(), item);
-	} */
-
-
-    //////////////////////////////////
-
     public static ItemStack getRndItem(String str) {
         if (str.isEmpty()) return new ItemStack(Material.AIR);
         String[] ln = str.split(",");
@@ -182,12 +172,6 @@ public class ItemUtil {
         item.setAmount(1);
         return item;
     }
-
-
-	/*
-	public static List<ItemStack> parseRandomItems (String stacks){
-		return parseItemStacks (parseRandomItemsStr(stacks));
-	} */
 
 
     /*

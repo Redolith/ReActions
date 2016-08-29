@@ -23,6 +23,7 @@
 package me.fromgate.reactions.actions;
 
 import me.fromgate.reactions.event.EventManager;
+import me.fromgate.reactions.util.BukkitCompatibilityFix;
 import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Variables;
@@ -38,31 +39,42 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 public class ActionItems extends Action {
-    private int actionType = 0;
+    private ItemActionType actionType = ItemActionType.GIVE_ITEM;
 
-    public ActionItems(int actionType) {
+    public ActionItems(ItemActionType actionType) {
         this.actionType = actionType;
     }
 
     @Override
     public boolean execute(Player p, Param params) {
         switch (actionType) {
-            case 0:
+            case GIVE_ITEM: {
                 return giveItemPlayer(p, params.getParam("param-line", ""));
-            case 1:
+            }
+            case REMOVE_ITEM_HAND: {
                 return removeItemInHand(p, params);
-            case 2:
+            }
+            case REMOVE_ITEM_OFFHAND: {
+                return removeItemInOffand(p, params);
+            }
+            case REMOVE_ITEM_INVENTORY: {
                 return removeItemInInventory(p, params);
-            case 3:
+            }
+            case DROP_ITEM: {
                 return dropItems(p, params);
-            case 4:
+            }
+            case WEAR_ITEM: {
                 return wearItem(p, params);
-            case 5:
+            }
+            case OPEN_INVENTORY: {
                 return openInventory(p, params.getParam("param-line", ""));
-            case 6:
+            }
+            case SET_INVENTORY: {
                 return setInventorySlot(p, params);
-            case 7:
+            }
+            case UNWEAR_ITEM: {
                 return unwearItem(p, params);
+            }
         }
         return true;
     }
@@ -187,15 +199,26 @@ public class ActionItems extends Action {
     }
 
 
-    private boolean removeItemInHand(Player p, Param params) {
+    private boolean removeItemInHand(Player player, Param params) {
         String itemStr = params.getParam("param-line", "");
         if (itemStr.isEmpty()) return false;
-        Variables.setTempVar("item", ItemUtil.itemToString(p.getItemInHand()));
-        if (!ItemUtil.removeItemInHand(p, itemStr)) return false;
+        Variables.setTempVar("item", ItemUtil.itemToString(BukkitCompatibilityFix.getItemInHand(player)));
+        if (!ItemUtil.removeItemInHand(player, itemStr)) return false;
         String actionItems = ItemUtil.toDisplayString(itemStr);
         setMessageParam(actionItems);
         Variables.setTempVar("item_str", actionItems);
 
+        return true;
+    }
+
+    private boolean removeItemInOffand(Player player, Param params) {
+        String itemStr = params.getParam("param-line", "");
+        if (itemStr.isEmpty()) return false;
+        Variables.setTempVar("item", ItemUtil.itemToString(BukkitCompatibilityFix.getItemInOffHand(player)));
+        if (!ItemUtil.removeItemInOffHand(player, itemStr)) return false;
+        String actionItems = ItemUtil.toDisplayString(itemStr);
+        setMessageParam(actionItems);
+        Variables.setTempVar("item_str", actionItems);
         return true;
     }
 
@@ -318,5 +341,40 @@ public class ActionItems extends Action {
         return -1;
     }
 
+    public enum ItemActionType {
+        GIVE_ITEM,
+        REMOVE_ITEM_HAND,
+        REMOVE_ITEM_OFFHAND,
+        REMOVE_ITEM_INVENTORY,
+        DROP_ITEM,
+        WEAR_ITEM,
+        UNWEAR_ITEM,
+        OPEN_INVENTORY,
+        SET_INVENTORY;
+    }
 
+
+    /*
+        public boolean execute(Player p, Param params) {
+        switch (actionType) {
+            case 0:
+                return giveItemPlayer(p, params.getParam("param-line", ""));
+            case 1:
+                return removeItemInHand(p, params);
+            case 2:
+                return removeItemInInventory(p, params);
+            case 3:
+                return dropItems(p, params);
+            case 4:
+                return wearItem(p, params);
+            case 5:
+                return openInventory(p, params.getParam("param-line", ""));
+            case 6:
+                return setInventorySlot(p, params);
+            case 7:
+                return unwearItem(p, params);
+        }
+        return true;
+    }
+     */
 }

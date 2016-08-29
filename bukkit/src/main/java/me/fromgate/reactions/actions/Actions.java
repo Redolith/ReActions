@@ -24,6 +24,7 @@ package me.fromgate.reactions.actions;
 
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.actions.ActionItems.ItemActionType;
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.flags.Flags;
 import me.fromgate.reactions.placeholders.Placeholders;
@@ -52,13 +53,14 @@ public enum Actions {
     DAMAGE("dmg", false, new ActionDamage()),
     TOWN_SET("townset", true, new ActionTownSet()),
     TOWN_KICK("townkick", true, new ActionTownKick()),
-    ITEM_GIVE("itemgive", true, new ActionItems(0)),
-    ITEM_REMOVE("itemrmv", true, new ActionItems(1)),
-    ITEM_REMOVE_INVENTORY("invitemrmv", true, new ActionItems(2)),
-    ITEM_DROP("itemdrop", true, new ActionItems(3)),
-    ITEM_WEAR("itemdrop", true, new ActionItems(4)),
-    ITEM_UNWEAR("itemundress", true, new ActionItems(7)),
-    ITEM_SLOT("itemslot", true, new ActionItems(6)),
+    ITEM_GIVE("itemgive", true, new ActionItems(ItemActionType.GIVE_ITEM)),
+    ITEM_REMOVE("itemrmv", true, new ActionItems(ItemActionType.REMOVE_ITEM_HAND)),
+    ITEM_REMOVE_OFFHAND("itemrmvoffhand", true, new ActionItems(ItemActionType.REMOVE_ITEM_OFFHAND)),
+    ITEM_REMOVE_INVENTORY("invitemrmv", true, new ActionItems(ItemActionType.REMOVE_ITEM_INVENTORY)),
+    ITEM_DROP("itemdrop", true, new ActionItems(ItemActionType.DROP_ITEM)),
+    ITEM_WEAR("itemwear", true, new ActionItems(ItemActionType.WEAR_ITEM)),
+    ITEM_UNWEAR("itemundress", true, new ActionItems(ItemActionType.UNWEAR_ITEM)),
+    ITEM_SLOT("itemslot", true, new ActionItems(ItemActionType.SET_INVENTORY)),
     CMD("cmdplr", true, new ActionCommand(0)),
     CMD_OP("cmdop", false, new ActionCommand(1)),
     CMD_CONSOLE("cmdsrv", false, new ActionCommand(2)),
