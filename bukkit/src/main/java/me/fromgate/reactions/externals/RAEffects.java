@@ -23,7 +23,6 @@
 package me.fromgate.reactions.externals;
 
 import me.fromgate.playeffect.PlayEffect;
-import me.fromgate.playeffect.PlayEffectPlugin;
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.util.Locator;
@@ -63,7 +62,8 @@ public class RAEffects {
 
     private static boolean isPlayEffectInstalled() {
         Plugin pe = Bukkit.getServer().getPluginManager().getPlugin("PlayEffect");
-        return ((pe != null) && (pe instanceof PlayEffectPlugin));
+        if (pe == null) return false;
+        return pe.getClass().getName().matches("^(me\\.fromgate\\.playeffect\\.PlayEffect){1}(Plugin){0,1}$");
     }
 
     private static Effect getEffectByName(String name) {
