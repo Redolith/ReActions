@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2016, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -53,6 +53,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Button;
 import org.bukkit.metadata.FixedMetadataValue;
 
@@ -133,18 +134,19 @@ public class EventManager {
     }
 
     public static boolean raiseItemClickEvent(PlayerInteractEntityEvent event) {
-        if (event.getPlayer().getItemInHand() == null) return false;
-        if (event.getPlayer().getItemInHand().getType() == Material.AIR) return false;
+        ItemStack itemInHand = BukkitCompatibilityFix.getItemInHand(event.getPlayer());
+        if (itemInHand == null || itemInHand.getType() == Material.AIR) return false;
         ItemClickEvent ice = new ItemClickEvent(event.getPlayer());
         Bukkit.getServer().getPluginManager().callEvent(ice);
         return true;
     }
 
     public static boolean raiseItemClickEvent(PlayerInteractEvent event) {
-        if ((event.getAction() != Action.RIGHT_CLICK_AIR) && (event.getAction() != Action.RIGHT_CLICK_BLOCK))
+        if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return false;
-        if (event.getPlayer().getItemInHand() == null) return false;
-        if (event.getPlayer().getItemInHand().getType() == Material.AIR) return false;
+        }
+        ItemStack itemInHand = BukkitCompatibilityFix.getItemInHand(event.getPlayer());
+        if (itemInHand == null || itemInHand.getType() == Material.AIR) return false;
         ItemClickEvent ice = new ItemClickEvent(event.getPlayer());
         Bukkit.getServer().getPluginManager().callEvent(ice);
         return true;
@@ -392,15 +394,12 @@ public class EventManager {
     private static boolean setFutureItemHoldCheck(final String playerName, final String itemStr, boolean repeat) {
         @SuppressWarnings("deprecation")
         Player player = Bukkit.getPlayerExact(playerName);
-        if (player == null) return false;
-        if (!player.isOnline()) return false;
-        if (player.isDead()) return false;
-        if (player.getItemInHand() == null) return false;
-        if (player.getItemInHand().getType() == Material.AIR) return false;
+        if (player == null || !player.isOnline() || player.isDead()) return false;
+        ItemStack itemInHand = BukkitCompatibilityFix.getItemInHand(player);
+        if (itemInHand == null || itemInHand.getType() == Material.AIR) return false;
         String rg = "ih-" + itemStr;
         if (!isTimeToRaiseEvent(player, rg, plg().itemHoldRecheck, repeat)) return false;
-        if (!ItemUtil.compareItemStr(player.getItemInHand(), itemStr)) return false;
-
+        if (!ItemUtil.compareItemStr(itemInHand, itemStr)) return false;
         ItemHoldEvent ihe = new ItemHoldEvent(player);
         Bukkit.getServer().getPluginManager().callEvent(ihe);
 
