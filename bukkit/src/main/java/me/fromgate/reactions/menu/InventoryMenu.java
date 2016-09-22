@@ -19,7 +19,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class InventoryMenu implements Listener {
     private static Map<Integer, List<String>> activeMenus = new HashMap<Integer, List<String>>();

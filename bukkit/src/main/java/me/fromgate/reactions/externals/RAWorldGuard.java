@@ -22,7 +22,12 @@
 
 package me.fromgate.reactions.externals;
 
-import me.fromgate.reactions.activators.*;
+import me.fromgate.reactions.activators.Activator;
+import me.fromgate.reactions.activators.ActivatorType;
+import me.fromgate.reactions.activators.Activators;
+import me.fromgate.reactions.activators.RegionActivator;
+import me.fromgate.reactions.activators.RgEnterActivator;
+import me.fromgate.reactions.activators.RgLeaveActivator;
 import me.fromgate.reactions.module.wgbridge.WGBridge;
 import me.fromgate.reactions.module.wgbridge.WGBridge6x;
 import org.bukkit.Bukkit;

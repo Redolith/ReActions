@@ -24,7 +24,14 @@ package me.fromgate.reactions.event;
 
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.activators.*;
+import me.fromgate.reactions.activators.Activator;
+import me.fromgate.reactions.activators.ActivatorType;
+import me.fromgate.reactions.activators.Activators;
+import me.fromgate.reactions.activators.ItemHoldActivator;
+import me.fromgate.reactions.activators.ItemWearActivator;
+import me.fromgate.reactions.activators.MessageActivator;
+import me.fromgate.reactions.activators.PlayerDeathActivator;
+import me.fromgate.reactions.activators.SignActivator;
 import me.fromgate.reactions.externals.RAWorldGuard;
 import me.fromgate.reactions.util.BukkitCompatibilityFix;
 import me.fromgate.reactions.util.Param;

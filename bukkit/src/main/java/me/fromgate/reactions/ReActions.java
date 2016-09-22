@@ -25,12 +25,27 @@ package me.fromgate.reactions;
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.Activators;
 import me.fromgate.reactions.commands.Commander;
-import me.fromgate.reactions.externals.*;
+import me.fromgate.reactions.externals.Externals;
+import me.fromgate.reactions.externals.LogHandler;
+import me.fromgate.reactions.externals.RACraftConomy;
+import me.fromgate.reactions.externals.RAEffects;
+import me.fromgate.reactions.externals.RAProtocolLib;
+import me.fromgate.reactions.externals.RARacesAndClasses;
+import me.fromgate.reactions.externals.RATowny;
+import me.fromgate.reactions.externals.RAVault;
+import me.fromgate.reactions.externals.RAWorldGuard;
 import me.fromgate.reactions.menu.InventoryMenu;
 import me.fromgate.reactions.placeholders.Placeholders;
 import me.fromgate.reactions.sql.SQLManager;
 import me.fromgate.reactions.timer.Timers;
-import me.fromgate.reactions.util.*;
+import me.fromgate.reactions.util.ArmorStandListener;
+import me.fromgate.reactions.util.Delayer;
+import me.fromgate.reactions.util.FakeCmd;
+import me.fromgate.reactions.util.Locator;
+import me.fromgate.reactions.util.RADebug;
+import me.fromgate.reactions.util.Shoot;
+import me.fromgate.reactions.util.UpdateChecker;
+import me.fromgate.reactions.util.Variables;
 import me.fromgate.reactions.util.playerselector.PlayerSelectors;
 import me.fromgate.reactions.util.waiter.ActionsWaiter;
 import org.bukkit.Bukkit;
@@ -150,7 +165,6 @@ public class ReActions extends JavaPlugin {
 
 
     }
-
 
     protected void saveCfg() {
         getConfig().set("general.language", language);
