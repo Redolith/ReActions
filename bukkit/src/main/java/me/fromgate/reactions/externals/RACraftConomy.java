@@ -72,18 +72,18 @@ public class RACraftConomy {
 
     public static boolean hasAmount(String accountName, double amount, String currencyName, String worldName) {
         if (!enabled) return false;
-        Account account = craftconomy.getAccountManager().getAccount(accountName);
+        Account account = getAccount(accountName);
         if (account == null) return false;
         if (account.hasInfiniteMoney()) return true;
         Currency currency = craftconomy.getCurrencyManager().getCurrency(currencyName);
         if (currency == null) currency = craftconomy.getCurrencyManager().getDefaultCurrency();
-        return craftconomy.getAccountManager().getAccount(accountName).hasEnough(amount, getWorldName(worldName), currency.getName());
+        return getAccount(accountName).hasEnough(amount, getWorldName(worldName), currency.getName());
     }
 
     public static boolean creditAccount(String accountTo, String accountFrom, double amount, String currencyName, String worldName) {
         if (!enabled) return false;
         if (accountTo.isEmpty()) return false;
-        Account account = craftconomy.getAccountManager().getAccount(accountTo);
+        Account account = getAccount(accountTo);
         if (account == null) return false;
         Currency currency = craftconomy.getCurrencyManager().getCurrency(currencyName);
         if (currency == null) currency = craftconomy.getCurrencyManager().getDefaultCurrency();

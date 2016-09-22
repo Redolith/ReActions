@@ -415,6 +415,10 @@ public class RAUtil extends FGUtilCore {
     @Override
     public void printMSG(CommandSender sender, Object... s) {
         String message = getMSG(s);
+        if (sender == null) {
+            log("Failed to print message (recipient object is null): " + message);
+            return;
+        }
         if ((!(sender instanceof Player)) && (!colorconsole)) message = ChatColor.stripColor(message);
         ChatPage chatPage = ChatPaginator.paginate(message, 1, ReActions.getPlugin().getChatLineLength(), 10000);
         for (String line : chatPage.getLines())
