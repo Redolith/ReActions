@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2016, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -60,45 +60,16 @@ public class RACraftConomy {
         return false;
     }
 
-	/*
-     * Get Balance
-	 * 
-	 */
-
-	/*public static double getBalance(String accountName){
-        if (!enabled) return 0;
-		Account account = craftconomy.getAccountManager().getAccount(accountName);
-		for (Balance balanсe : account.getAllBalance()){
-			if (balanсe.getCurrency().equals(craftconomy.getCurrencyManager().getDefaultCurrency())) balanсe.getBalance(); 
-		}
-		return 0;
-	}
-
-	public static double getBalance(String accountName, World world){
-		if (!enabled) return 0;
-		Account account = craftconomy.getAccountManager().getAccount(accountName);
-		for (Balance balanсe : account.getAllWorldBalance(world.getName())){
-			if (balanсe.getCurrency().equals(craftconomy.getCurrencyManager().getDefaultCurrency())) balanсe.getBalance(); 
-		}
-		return 0;
-	}
-
-	public static double getBalance(String accountName, String currencyName){
-		return getBalance (accountName, currencyName,getWorldName("default"));
-	}*/
 
     public static double getBalance(String accountName, String currencyName, String worldName) {
         if (!enabled) return 0;
         Currency currency = craftconomy.getCurrencyManager().getCurrency(currencyName);
         if (currency == null) craftconomy.getCurrencyManager().getDefaultCurrency();
-        Account account = craftconomy.getAccountManager().getAccount(accountName);
+        Account account = getAccount(accountName);
         String world = getWorldName(worldName);
         return account.getBalance(world, currency.getName());
     }
 
-    /*
-     * Check amount
-     */
     public static boolean hasAmount(String accountName, double amount, String currencyName, String worldName) {
         if (!enabled) return false;
         Account account = craftconomy.getAccountManager().getAccount(accountName);
@@ -109,23 +80,6 @@ public class RACraftConomy {
         return craftconomy.getAccountManager().getAccount(accountName).hasEnough(amount, getWorldName(worldName), currency.getName());
     }
 
-	/*
-    public static boolean hasAmount (String accountName, double amount, World world){
-		if (!enabled) return false;
-		return craftconomy.getAccountManager().getAccount(accountName).hasEnough(amount, world.getName(), craftconomy.getCurrencyManager().getDefaultCurrency().getName());
-	}
-
-	public static boolean hasAmount (String accountName, double amount, String currencyName){
-		return hasAmount (accountName, amount, currencyName,"default");
-	}
-
-	public static boolean hasAmount (String accountName, double amount){
-		return hasAmount (accountName, amount, "","default");
-	}*/
-
-    /*
-     * creaditAccount (add money to accountTo. If accountFrom is defined - withdraw money from this account
-     */
     public static boolean creditAccount(String accountTo, String accountFrom, double amount, String currencyName, String worldName) {
         if (!enabled) return false;
         if (accountTo.isEmpty()) return false;
@@ -138,23 +92,6 @@ public class RACraftConomy {
         account.deposit(amount, world, currency.getName(), Cause.PLUGIN, null);
         return true;
     }
-
-	/*
-    public static boolean creditAccount (String accountTo, String accountFrom, double amount, String currencyName){
-		return creditAccount (accountTo,accountFrom,amount,currencyName, getWorldName("default"));
-	}
-
-	public static boolean creditAccount (String accountTo, String accountFrom, double amount){
-		return creditAccount (accountTo, accountFrom, amount, getDefaultCurrency());
-	}
-	
-	public static boolean creditAccount (String accountTo, double amount){
-		return creditAccount (accountTo, "", amount, getDefaultCurrency());
-	}*/
-
-	/* 
-     * Debit (withdraw account)
-	 */
 
     public static boolean debitAccount(String accountFrom, String accountTo, double amount, String currencyName, String worldName) {
         if (accountFrom.isEmpty()) return false;
@@ -172,28 +109,10 @@ public class RACraftConomy {
     }
 
 
-	/*
-     * Tools
-	 */
-	
-	/*
-	 * 	public static boolean hasAmount (String accountName, double amount, String currencyName, String worldName){
-		if (!enabled) return false;
-		Account account = craftconomy.getAccountManager().getAccount(accountName);
-		if (account == null) return false;
-		if (account.hasInfiniteMoney()) return true;
-		Currency currency  = craftconomy.getCurrencyManager().getCurrency(currencyName);
-		if (currency==null) currency = craftconomy.getCurrencyManager().getDefaultCurrency();
-		return craftconomy.getAccountManager().getAccount(accountName).hasEnough(amount, getWorldName(worldName), currency.getName());
-	}
-
-	 */
-
-
     public static boolean withdrawAccount(String accountStr, double amount, String currencyName, String worldName) {
         if (!enabled) return false;
         if (accountStr.isEmpty()) return false;
-        Account account = craftconomy.getAccountManager().getAccount(accountStr);
+        Account account = getAccount(accountStr);
         if (account == null) return false;
         if (account.hasInfiniteMoney()) return true;
         Currency currency = craftconomy.getCurrencyManager().getCurrency(currencyName);
@@ -216,7 +135,7 @@ public class RACraftConomy {
         String worldDef = Bukkit.getWorlds().get(0).getName();
         Map<String, String> balances = new HashMap<String, String>();
         if (accountStr.isEmpty()) return balances;
-        Account account = craftconomy.getAccountManager().getAccount(accountStr);
+        Account account = getAccount(accountStr);
         if (account == null) return balances;
         for (Balance balance : account.getAllBalance()) {
             String key = "money." + (balance.getWorld().equalsIgnoreCase(worldDef) ? "" : balance.getWorld() + ".") + balance.getCurrency().getName();
@@ -229,9 +148,19 @@ public class RACraftConomy {
     }
 
     public static String format(double amount, String currencyName, String worldName) {
+        if (!enabled) return Double.toString(amount);
         Currency currency = currencyName.isEmpty() ? craftconomy.getCurrencyManager().getDefaultCurrency() : craftconomy.getCurrencyManager().getCurrency(currencyName);
         if (currency == null) return Double.toString(amount);
         return craftconomy.format(getWorldName(worldName), currency, amount);
+    }
+
+    private static Account getAccount(String name, boolean bank) {
+        if (!enabled) return null;
+        return craftconomy.getAccountManager().getAccount(name, bank);
+    }
+
+    private static Account getAccount(String name) {
+        return name.startsWith("bank:") ? getAccount(name.split("bank:")[1], true) : getAccount(name, false);
     }
 }
 
