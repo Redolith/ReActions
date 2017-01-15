@@ -21,70 +21,6 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-                <version>2.5.2</version>
-                <executions>
-                    <execution>
-                        <id>install-external</id>
-                        <phase>clean</phase>
-                        <configuration>
-                            <file>${basedir}/lib/MassiveCore.jar</file>
-                            <repositoryLayout>default</repositoryLayout>
-                            <groupId>com.massivecraft.massivecore</groupId>
-                            <artifactId>massivecore</artifactId>
-                            <version>2.9.9</version>
-                            <packaging>jar</packaging>
-                            <generatePom>true</generatePom>
-                        </configuration>
-                        <goals>
-                            <goal>install-file</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-                <version>2.5.2</version>
-                <executions>
-                    <execution>
-                        <id>install-external</id>
-                        <phase>clean</phase>
-                        <configuration>
-                            <file>${basedir}/lib/Factions.jar</file>
-                            <repositoryLayout>default</repositoryLayout>
-                            <groupId>com.massivecraft.factions</groupId>
-                            <artifactId>factions</artifactId>
-                            <version>2.9.0</version>
-                            <packaging>jar</packaging>
-                            <generatePom>true</generatePom>
-                        </configuration>
-                        <goals>
-                            <goal>install-file</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>1.4.1</version>
-                <executions>
-                    <execution>
-                        <id>enforce</id>
-                        <configuration>
-                            <rules>
-                                <DependencyConvergence/>
-                            </rules>
-                        </configuration>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 
@@ -132,24 +68,11 @@
             <version>4.1.0</version>
         </dependency>
         <dependency>
-            <!-- This dependency doesn't seem to be available in public maven repos.
-                 The jar file is included with the project under the lib dir.
-                 You need to manually install it in your local maven repo.
-                 The command below should work if mvn is on your path and you are in the lib dir:
-                 mvn install:install-file -Dfile=MassiveCore.jar -DgroupId=com.massivecraft.massivecore -DartifactId=massivecore -Dversion=2.9.9 -Dpackaging=jar
-             -->
             <groupId>com.massivecraft.massivecore</groupId>
             <artifactId>massivecore</artifactId>
             <version>2.9.9</version>
         </dependency>
-
         <dependency>
-            <!-- This dependency doesn't seem to be available in public maven repos.
-                 The jar file is included with the project under the lib dir.
-                 You need to manually install it in your local maven repo.
-                 The command below should work if mvn is on your path and you are in the lib dir:
-                 mvn install:install-file -Dfile=Factions.jar -DgroupId=com.massivecraft.factions -DartifactId=factions -Dversion=2.9.0 -Dpackaging=jar
-            -->
             <groupId>com.massivecraft.factions</groupId>
             <artifactId>factions</artifactId>
             <version>2.9.0</version>
@@ -160,8 +83,4 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
-
-
-
-
 </project>
