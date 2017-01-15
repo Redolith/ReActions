@@ -23,7 +23,6 @@
 package me.fromgate.reactions.externals;
 
 import me.fromgate.reactions.ReActions;
-import net.milkbowl.vault.Vault;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
@@ -110,7 +109,7 @@ public class RAVault {
 
     private static boolean checkVault() {
         Plugin vplg = Bukkit.getServer().getPluginManager().getPlugin("Vault");
-        return ((vplg != null) && (vplg instanceof Vault));
+        return vplg != null;
     }
 
 

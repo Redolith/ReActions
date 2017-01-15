@@ -41,6 +41,10 @@
             <id>nukkit-ru</id>
             <url>http://repo.nukkit.ru</url>
         </repository>
+        <repository>
+            <id>vault-repo</id>
+            <url>http://nexus.hc.to/content/repositories/pub_releases</url>
+        </repository>
     </repositories>
     <dependencies>
         <dependency>
@@ -81,6 +85,27 @@
             <groupId>me.fromgate.playeffect</groupId>
             <artifactId>PlayEffect</artifactId>
             <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>net.milkbowl.vault</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>1.6</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.tobiyas.racesandclasses</groupId>
+            <artifactId>RacesAndClasses</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.palmergames.bukkit.towny</groupId>
+            <artifactId>Towny</artifactId>
+            <version>0.9.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.greatmancode</groupId>
+            <artifactId>craftconomy3</artifactId>
+            <version>3.3</version>
         </dependency>
     </dependencies>
 </project>
