@@ -21,49 +21,47 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.5.2</version>
+                <executions>
+                    <execution>
+                        <id>install-external</id>
+                        <phase>clean</phase>
+                        <configuration>
+                            <file>${basedir}/lib/MassiveCore.jar</file>
+                            <repositoryLayout>default</repositoryLayout>
+                            <groupId>com.massivecraft.massivecore</groupId>
+                            <artifactId>massivecore</artifactId>
+                            <version>2.9.9</version>
+                            <packaging>jar</packaging>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>install-external</id>
+                        <phase>clean</phase>
+                        <configuration>
+                            <file>${basedir}/lib/Factions.jar</file>
+                            <repositoryLayout>default</repositoryLayout>
+                            <groupId>com.massivecraft.factions</groupId>
+                            <artifactId>factions</artifactId>
+                            <version>2.9.0</version>
+                            <packaging>jar</packaging>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-
-    <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-install-plugin</artifactId>
-        <version>2.5.2</version>
-        <executions>
-            <execution>
-                <id>install-external</id>
-                <phase>clean</phase>
-                <configuration>
-                    <file>${basedir}/lib/MassiveCore.jar</file>
-                    <repositoryLayout>default</repositoryLayout>
-                    <groupId>com.massivecraft.massivecore</groupId>
-                    <artifactId>massivecore</artifactId>
-                    <version>2.9.9</version>
-                    <packaging>jar</packaging>
-                    <generatePom>true</generatePom>
-                </configuration>
-                <goals>
-                    <goal>install-file</goal>
-                </goals>
-            </execution>
-            <execution>
-                <id>install-external</id>
-                <phase>clean</phase>
-                <configuration>
-                    <file>${basedir}/lib/Factions.jar</file>
-                    <repositoryLayout>default</repositoryLayout>
-                    <groupId>com.massivecraft.factions</groupId>
-                    <artifactId>factions</artifactId>
-                    <version>2.9.0</version>
-                    <packaging>jar</packaging>
-                    <generatePom>true</generatePom>
-                </configuration>
-                <goals>
-                    <goal>install-file</goal>
-                </goals>
-            </execution>
-        </executions>
-    </plugin>
-
 
     <repositories>
         <repository>
