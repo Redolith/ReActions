@@ -31,20 +31,20 @@ public class FlagTime extends Flag {
     @Override
     public boolean checkFlag(Player p, String time) {
         saveTempVar(time);
-        Long ctime = Bukkit.getWorlds().get(0).getTime();
-        if (p != null) ctime = p.getWorld().getTime();
+        Long currentTime = Bukkit.getWorlds().get(0).getTime();
+        if (p != null) currentTime = p.getWorld().getTime();
 
         if (time.equalsIgnoreCase("day")) {
-            return ((ctime >= 0) && (ctime < 12000));
+            return ((currentTime >= 0) && (currentTime < 12000));
         } else if (time.equalsIgnoreCase("night")) {
-            return ((ctime >= 12000) && (ctime < 23999));
+            return ((currentTime >= 12000) && (currentTime < 23999));
 
         } else {
             String[] tln = time.split(",");
             if (tln.length > 0) {
                 for (int i = 0; i < tln.length; i++)
                     if (tln[i].matches("[0-9]+")) {
-                        int ct = (int) ((ctime / 1000 + 8) % 24);
+                        int ct = (int) ((currentTime / 1000 + 6) % 24);
                         if (ct == Integer.parseInt(tln[i])) return true;
                     }
             }
