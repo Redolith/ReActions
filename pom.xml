@@ -13,6 +13,8 @@
         <module>WGBridge5x</module>
         <module>bukkit</module>
     </modules>
+
+
     <build>
         <plugins>
             <plugin>
@@ -28,7 +30,7 @@
             <plugins>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-assembmcly-plugin</artifactId>
+                    <artifactId>maven-assembly-plugin</artifactId>
                     <version>2.4</version>
                     <configuration>
                         <descriptorRefs>
@@ -48,4 +50,5 @@
             </plugins>
         </pluginManagement>
     </build>
+
 </project>
