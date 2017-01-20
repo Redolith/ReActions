@@ -1,7 +1,6 @@
 checkout:
   post:
-    - gradle clean
-    - gradle build
+    - gradlew
     - cp -R ./build/libs/ReActions-1.0-SNAPSHOT.jar $CIRCLE_ARTIFACTS
 
 machine:
