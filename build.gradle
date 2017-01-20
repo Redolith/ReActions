@@ -1,0 +1,63 @@
+defaultTasks 'clean', 'build'
+
+version = "1.0-SNAPSHOT"
+group = "me.fromgate.reactions"
+apply plugin: 'java'
+compileJava.options.encoding = 'UTF-8'
+
+
+repositories {
+//    mavenLocal()
+    mavenCentral()
+    maven { url "http://repo.maven.apache.org/maven2" }
+    maven { url "https://hub.spigotmc.org/nexus/content/repositories/snapshots/" }
+    maven { url "http://maven.sk89q.com/repo/" }
+    maven { url "http://repo.dmulloy2.net/content/groups/public/" }
+    maven { url "http://repo.nukkit.ru" }
+    maven { url "http://nexus.hc.to/content/repositories/pub_releases" }
+}
+
+
+dependencies {
+    compile group: 'com.comphenix.protocol', name: 'ProtocolLib-API', version: '4.1.0'
+    compile group: 'com.massivecraft.massivecore', name: 'massivecore', version: '2.9.9'
+    compile group: 'com.massivecraft.factions', name: 'factions', version: '2.9.0'
+    compile group: 'me.fromgate.playeffect', name: 'PlayEffect', version: '1.0-SNAPSHOT'
+    compile group: 'de.tobiyas.racesandclasses', name: 'RacesAndClasses', version: '1.2.1'
+    compile group: 'com.palmergames.bukkit.towny', name: 'Towny', version: '0.9.1'
+    compile group: 'com.greatmancode', name: 'craftconomy3', version: '3.3', ext: 'jar'
+    compile group: 'org.bukkit', name: 'bukkit', version: '1.11-R0.1-SNAPSHOT'
+    compile group: 'com.sk89q', name: 'worldedit', version: '6.0.0-SNAPSHOT'
+    compile group: 'com.sk89q', name: 'worldguard', version: '6.1.1-SNAPSHOT'
+    compile group: 'net.milkbowl.vault', name: 'VaultAPI', version: '1.6'
+}
+
+
+sourceSets.all { set ->
+    def jarTask = task("${set.name}Jar", type: Jar) {
+        baseName = "ReActions" + "-$set.name"
+        from set.output
+    }
+
+    artifacts { archives jarTask }
+}
+
+sourceSets {
+    core
+    WGBridge5x
+    main {
+        java {
+            srcDir 'core/src/main/java'
+            srcDir 'WGBridge5x/src/main/java'
+        }
+    }
+    test {
+        java { srcDir 'src/test/java' }
+    }
+}
+
+
+jar {
+    from sourceSets.core.output
+    from sourceSets.WGBridge5x.output
+}

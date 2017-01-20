@@ -1,0 +1,17 @@
+apply plugin: 'java'
+
+compileJava.options.encoding = 'UTF-8'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "https://hub.spigotmc.org/nexus/content/repositories/snapshots/" }
+    maven { url "http://maven.sk89q.com/repo/" }
+}
+
+dependencies {
+    compile project(':core')
+    compile group: 'org.bukkit', name: 'bukkit', version: '1.11.2-R0.1-SNAPSHOT'
+    compile group: 'com.sk89q', name: 'worldedit', version:'5.6.4-SNAPSHOT'
+    compile group: 'com.sk89q', name: 'worldguard', version:'5.9.1-SNAPSHOT'
+}
