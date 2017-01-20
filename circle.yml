@@ -1,8 +1,7 @@
 checkout:
   post:
-    - mvn clean
-    - mvn package
-    - cp -R ./target/ReActions-1.0-SNAPSHOT.jar $CIRCLE_ARTIFACTS
+    - gradlew
+    - cp -R ./build/libs/ReActions-1.0-SNAPSHOT.jar $CIRCLE_ARTIFACTS
 
 machine:
   java:
