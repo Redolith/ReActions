@@ -48,10 +48,11 @@ sourceSets {
             srcDir 'core/src/main/java'
             srcDir 'WGBridge5x/src/main/java'
         }
+        resources {
+            srcDirs = ['core/src/main/resources']
+        }
     }
-    test {
-        java { srcDir 'src/test/java' }
-    }
+
 }
 
 
