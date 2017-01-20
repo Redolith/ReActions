@@ -24,5 +24,5 @@ dependencies {
     compile group: 'org.bukkit', name: 'bukkit', version:'1.11-R0.1-SNAPSHOT'
     compile group: 'com.sk89q', name: 'worldedit', version:'6.0.0-SNAPSHOT'
     compile group: 'com.sk89q', name: 'worldguard', version:'6.1.1-SNAPSHOT'
-    compile group: 'net.milkbowl.vault', name: 'VaultAPI', version:'1.6'
+    provided group: 'net.milkbowl.vault', name: 'VaultAPI', version:'1'
 }
