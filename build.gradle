@@ -7,7 +7,6 @@ compileJava.options.encoding = 'UTF-8'
 
 
 repositories {
-//    mavenLocal()
     mavenCentral()
     maven { url "http://repo.maven.apache.org/maven2" }
     maven { url "https://hub.spigotmc.org/nexus/content/repositories/snapshots/" }
@@ -16,7 +15,6 @@ repositories {
     maven { url "http://repo.nukkit.ru" }
     maven { url "http://nexus.hc.to/content/repositories/pub_releases" }
 }
-
 
 dependencies {
     compile group: 'com.comphenix.protocol', name: 'ProtocolLib-API', version: '4.1.0'
@@ -29,7 +27,7 @@ dependencies {
     compile group: 'org.bukkit', name: 'bukkit', version: '1.11-R0.1-SNAPSHOT'
     compile group: 'com.sk89q', name: 'worldedit', version: '6.0.0-SNAPSHOT'
     compile group: 'com.sk89q', name: 'worldguard', version: '6.1.1-SNAPSHOT'
-    compile group: 'net.milkbowl.vault', name: 'VaultAPI', version: '1.6'
+    compile group: 'net.milkbowl.vault', name: 'Vault', version: '1.6.6'
 }
 
 
