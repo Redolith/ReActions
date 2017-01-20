@@ -26,7 +26,7 @@ dependencies {
     compile group: 'de.tobiyas.racesandclasses', name: 'RacesAndClasses', version: '1.2.1'
     compile group: 'com.palmergames.bukkit.towny', name: 'Towny', version: '0.9.1'
     compile group: 'com.greatmancode', name: 'craftconomy3', version: '3.3', ext: 'jar'
-    compile group: 'org.bukkit', name: 'bukkit', version: '1.11-R0.1-SNAPSHOT'
+    compile group: 'org.bukkit', name: 'bukkit', version: '1.11.2-R0.1-SNAPSHOT'
     compile group: 'com.sk89q', name: 'worldedit', version: '6.0.0-SNAPSHOT'
     compile group: 'com.sk89q', name: 'worldguard', version: '6.1.1-SNAPSHOT'
     compile group: 'net.milkbowl.vault', name: 'VaultAPI', version: '1.6'
