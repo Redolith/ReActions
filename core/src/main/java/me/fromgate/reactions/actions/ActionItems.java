@@ -83,33 +83,33 @@ public class ActionItems extends Action {
     /**
      * Реализует действие ITEM_SLOT - установить предмет в определенный слот
      *
-     * @param p
+     * @param player
      * @param params - параметры: item - предмет
      *               slot - слот (Номер слота или helmet, chestplate...)
      *               exist - что делаем с уже надетым предметов (remove, undress, drop, keep)
      * @return
      */
-    private boolean setInventorySlot(Player p, Param params) {
+    private boolean setInventorySlot(Player player, Param params) {
         String itemStr = params.getParam("item", "");
         if (itemStr.isEmpty()) return false;
         String slotStr = params.getParam("slot", "");
         if (slotStr.isEmpty()) return false;
-        if (!u().isInteger(slotStr)) return wearItem(p, params);
+        if (!u().isInteger(slotStr)) return wearItem(player, params);
         int slotNum = Integer.parseInt(slotStr);
-        if (slotNum >= p.getInventory().getSize()) return false;
+        if (slotNum >= player.getInventory().getSize()) return false;
         String existStr = params.getParam("exist", "remove");
-        ItemStack oldItem = p.getInventory().getItem(slotNum).clone();
+        ItemStack oldItem = player.getInventory().getItem(slotNum) == null ? null : player.getInventory().getItem(slotNum).clone();
         if (itemStr.equalsIgnoreCase("AIR") || itemStr.equalsIgnoreCase("NULL")) {
-            p.getInventory().setItem(slotNum, null);
+            player.getInventory().setItem(slotNum, null);
         } else {
             VirtualItem vi = ItemUtil.itemFromString(itemStr);
             if (vi == null) return false;
-            p.getInventory().setItem(slotNum, vi);
+            player.getInventory().setItem(slotNum, vi);
         }
         if (oldItem == null || oldItem.getType() == Material.AIR) return true;
-        if (existStr.equalsIgnoreCase("drop")) p.getWorld().dropItemNaturally(p.getLocation(), oldItem);
-        else if (existStr.equalsIgnoreCase("undress")) ItemUtil.giveItemOrDrop(p, oldItem);
-        else if (existStr.equalsIgnoreCase("keep")) p.getInventory().setItem(slotNum, oldItem);
+        if (existStr.equalsIgnoreCase("drop")) player.getWorld().dropItemNaturally(player.getLocation(), oldItem);
+        else if (existStr.equalsIgnoreCase("undress")) ItemUtil.giveItemOrDrop(player, oldItem);
+        else if (existStr.equalsIgnoreCase("keep")) player.getInventory().setItem(slotNum, oldItem);
         String actionItems = ItemUtil.toDisplayString(itemStr);
         setMessageParam(actionItems);
         Variables.setTempVar("item_str", actionItems);
