@@ -1,6 +1,5 @@
 package me.fromgate.reactions.util.item;
 
-import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.util.BukkitCompatibilityFix;
 import me.fromgate.reactions.util.Param;
 import org.bukkit.Bukkit;
@@ -10,11 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class ItemUtil {
 
@@ -146,7 +141,7 @@ public class ItemUtil {
 
     public static ItemStack parseItemStack(String string) {
         VirtualItem vi = itemFromString(string);
-        ReActions.getUtil().logOnce(string, "Failed to parse item: " + string);
+        // ReActions.getUtil().logOnce(string, "Failed to parse item: " + string);
         return vi == null ? null : vi;
     }
 
@@ -217,7 +212,7 @@ public class ItemUtil {
     }
 
     public static List<ItemStack> parseItemsSet(Param params) {
-        List<ItemStack> items = new ArrayList<ItemStack>();
+        List<ItemStack> items = new ArrayList<>();
         for (String key : params.keySet()) {
             if (key.matches("item\\d+|ITEM\\d+")) {
                 String itemStr = params.getParam(key, "");
