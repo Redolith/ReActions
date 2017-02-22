@@ -42,10 +42,13 @@ public class ActionHeal extends Action {
         if (player == null) return false;
         double health = BukkitCompatibilityFix.getEntityHealth(player);
         double healthMax = BukkitCompatibilityFix.getEntityMaxHealth(player);
-        if ((hp > 0) && (health < healthMax))
-            BukkitCompatibilityFix.setEntityHealth(player, Math.max(hp + health, healthMax));
-        if (playhearts && RAEffects.isPlayEffectConnected())
+        if (health < healthMax && hp >= 0) {
+            BukkitCompatibilityFix
+                    .setEntityHealth(player, hp == 0 ? healthMax : Math.min(hp + health, healthMax));
+        }
+        if (playhearts && RAEffects.isPlayEffectConnected()) {
             RAEffects.playEffect(player.getEyeLocation(), "HEART", "offset:0.5 num:4 speed:0.7");
+        }
         setMessageParam(Double.toString(hp));
         return true;
     }
