@@ -55,8 +55,8 @@ public class ActionCommand extends Action {
     }
 
     public static void dispatchCommand(final boolean setOp, final CommandSender sender, final String commandLine) {
+        final boolean isOp = sender.isOp();
         if (Bukkit.isPrimaryThread()) {
-            boolean isOp = sender.isOp();
             if (setOp) {
                 sender.setOp(true);
             }
@@ -68,7 +68,13 @@ public class ActionCommand extends Action {
             Bukkit.getScheduler().runTask(ReActions.getPlugin(), new Runnable() {
                 @Override
                 public void run() {
-                    dispatchCommand(setOp, sender, commandLine);
+                    if (setOp) {
+                        sender.setOp(true);
+                    }
+                    Bukkit.getServer().dispatchCommand(sender, commandLine);
+                    if (setOp) {
+                        sender.setOp(isOp);
+                    }
                 }
             });
         }
