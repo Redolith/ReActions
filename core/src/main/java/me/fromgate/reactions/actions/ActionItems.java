@@ -154,13 +154,17 @@ public class ActionItems extends Action {
 
     private boolean setArmourItem(Player player, int slot, ItemStack item, int existDrop) {
         ItemStack[] armour = player.getInventory().getArmorContents().clone();
-        ItemStack oldItem = armour[slot].clone();
-        if (oldItem != null && oldItem.getType() != Material.AIR && (existDrop == 3))
+        ItemStack oldItem = armour[slot] == null ? null : armour[slot].clone();
+        if (oldItem != null && oldItem.getType() != Material.AIR && (existDrop == 3)) {
             return false; // сохраняем и уходим
+        }
         armour[slot] = item;
         player.getInventory().setArmorContents(armour);
-        if (existDrop == 1) ItemUtil.giveItemOrDrop(player, oldItem);
-        else if (existDrop == 2) player.getWorld().dropItemNaturally(player.getLocation(), oldItem);
+        if (existDrop == 1) {
+            ItemUtil.giveItemOrDrop(player, oldItem);
+        } else if (existDrop == 2) {
+            player.getWorld().dropItemNaturally(player.getLocation(), oldItem);
+        }
         EventManager.raiseItemWearEvent(player);
         return true;
     }
