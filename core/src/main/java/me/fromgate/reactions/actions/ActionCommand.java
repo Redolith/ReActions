@@ -55,28 +55,26 @@ public class ActionCommand extends Action {
     }
 
     public static void dispatchCommand(final boolean setOp, final CommandSender sender, final String commandLine) {
-        final boolean isOp = sender.isOp();
         if (Bukkit.isPrimaryThread()) {
-            if (setOp) {
-                sender.setOp(true);
-            }
-            Bukkit.getServer().dispatchCommand(sender, commandLine);
-            if (setOp) {
-                sender.setOp(isOp);
-            }
+            dispatchCmd(setOp, sender, commandLine);
         } else {
             Bukkit.getScheduler().runTask(ReActions.getPlugin(), new Runnable() {
                 @Override
                 public void run() {
-                    if (setOp) {
-                        sender.setOp(true);
-                    }
-                    Bukkit.getServer().dispatchCommand(sender, commandLine);
-                    if (setOp) {
-                        sender.setOp(isOp);
-                    }
+                    dispatchCmd(setOp, sender, commandLine);
                 }
             });
+        }
+    }
+
+    private static void dispatchCmd(final boolean setOp, final CommandSender sender, final String commandLine) {
+        boolean isOp = sender.isOp();
+        if (setOp) {
+            sender.setOp(true);
+        }
+        Bukkit.getServer().dispatchCommand(sender, commandLine);
+        if (setOp) {
+            sender.setOp(isOp);
         }
     }
 
