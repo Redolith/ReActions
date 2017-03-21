@@ -22,9 +22,11 @@
 
 package me.fromgate.reactions.actions;
 
+import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.util.Param;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class ActionCommand extends Action {
@@ -35,24 +37,41 @@ public class ActionCommand extends Action {
     }
 
     @Override
-    public boolean execute(Player p, Param params) {
-        if (commandAs != 2 && p == null) return false;
+    public boolean execute(Player player, Param params) {
+        if (commandAs != 2 && player == null) return false;
         String commandLine = ChatColor.translateAlternateColorCodes('&', params.getParam("param-line"));
         switch (commandAs) {
             case 0:
-                plg().getServer().dispatchCommand(p, commandLine);
+                dispatchCommand(false, player, commandLine);
                 break;
             case 1:
-                boolean isop = p.isOp();
-                p.setOp(true);
-                plg().getServer().dispatchCommand(p, commandLine);
-                p.setOp(isop);
+                dispatchCommand(true, player, commandLine);
                 break;
             case 2:
-                plg().getServer().dispatchCommand(Bukkit.getConsoleSender(), commandLine);
+                dispatchCommand(false, Bukkit.getConsoleSender(), commandLine);
                 break;
         }
         return true;
+    }
+
+    public static void dispatchCommand(final boolean setOp, final CommandSender sender, final String commandLine) {
+        if (Bukkit.isPrimaryThread()) {
+            boolean isOp = sender.isOp();
+            if (setOp) {
+                sender.setOp(true);
+            }
+            Bukkit.getServer().dispatchCommand(sender, commandLine);
+            if (setOp) {
+                sender.setOp(isOp);
+            }
+        } else {
+            Bukkit.getScheduler().runTask(ReActions.getPlugin(), new Runnable() {
+                @Override
+                public void run() {
+                    dispatchCommand(setOp, sender, commandLine);
+                }
+            });
+        }
     }
 
 }
