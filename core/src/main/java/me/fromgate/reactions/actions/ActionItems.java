@@ -160,10 +160,12 @@ public class ActionItems extends Action {
         }
         armour[slot] = item;
         player.getInventory().setArmorContents(armour);
-        if (existDrop == 1) {
-            ItemUtil.giveItemOrDrop(player, oldItem);
-        } else if (existDrop == 2) {
-            player.getWorld().dropItemNaturally(player.getLocation(), oldItem);
+        if (oldItem != null) {
+            if (existDrop == 1) {
+                ItemUtil.giveItemOrDrop(player, oldItem);
+            } else if (existDrop == 2) {
+                player.getWorld().dropItemNaturally(player.getLocation(), oldItem);
+            }
         }
         EventManager.raiseItemWearEvent(player);
         return true;

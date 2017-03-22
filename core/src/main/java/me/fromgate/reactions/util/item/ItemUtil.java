@@ -26,8 +26,9 @@ public class ItemUtil {
     }
 
     public static void giveItemOrDrop(Player player, ItemStack item) {
-        for (ItemStack i : player.getInventory().addItem(item).values())
-            player.getWorld().dropItemNaturally(player.getLocation(), i);
+        for (ItemStack itemDrop : player.getInventory().addItem(item).values()) {
+            player.getWorld().dropItemNaturally(player.getLocation(), itemDrop);
+        }
     }
 
     public static VirtualItem itemFromString(String itemStr) {
