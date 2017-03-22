@@ -58,6 +58,7 @@ public class MobDamageActivator extends Activator {
         return result;
     }
 
+    @SuppressWarnings("deprecation")
     private boolean checkItem(Player player) {
         if (this.itemStr.isEmpty()) return true;
         return ItemUtil.compareItemStr(player.getItemInHand(), this.itemStr, true);

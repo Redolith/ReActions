@@ -60,6 +60,7 @@ public class PlaceholderPlayer extends Placeholder {
     }
 
 
+    @SuppressWarnings("deprecation")
     private String getPlayerItemInHand(Player player) {
         VirtualItem vi = ItemUtil.itemFromItemStack(player.getItemInHand()); //VirtualItem.fromItemStack(player.getItemInHand());
         if (vi == null) return "";
