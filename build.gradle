@@ -13,9 +13,12 @@ repositories {
     maven { url "http://repo.maven.apache.org/maven2" }
     maven { url "https://hub.spigotmc.org/nexus/content/repositories/snapshots/" }
     maven { url "http://maven.sk89q.com/repo/" }
-    maven { url "http://repo.dmulloy2.net/content/groups/public/" }
     maven { url "http://repo.nukkit.ru" }
     maven { url "http://nexus.hc.to/content/repositories/pub_releases" }
+    maven { url "http://repo.dmulloy2.net/nexus/repository/public/" }
+    // ProtoclLib repo broken, try to look here too
+    maven { url "http://mvn.yawk.at/" }
+    maven { url "http://cnaude.org/repo/" }
 }
 
 dependencies {
