@@ -28,41 +28,42 @@ import org.bukkit.entity.Player;
 public class FlagState extends Flag {
 
     @Override
-    public boolean checkFlag(Player p, String param) {
+    public boolean checkFlag(Player player, String param) {
         Posture pt = Posture.getByName(param);
         if (pt == null) return false;
         switch (pt) {
             case SNEAK:
-                return p.isSneaking();
+                return player.isSneaking();
             case FLY:
-                return p.isFlying();
+                return player.isFlying();
             case SPRINT:
-                return p.isSprinting();
+                return player.isSprinting();
             case VEHICLE:
-                return p.isInsideVehicle();
+                return player.isInsideVehicle();
             case STAND:
-                if (p.isSleeping()) return false;
-                if (p.isSneaking()) return false;
-                if (p.isSprinting()) return false;
-                if (p.isFlying()) return false;
-                if (p.isInsideVehicle()) return false;
+                if (player.isSleeping()) return false;
+                if (player.isSneaking()) return false;
+                if (player.isSprinting()) return false;
+                if (player.isFlying()) return false;
+                if (player.isInsideVehicle()) return false;
                 return true;
             case OP:
-                return p.isOp();
+                return player.isOp();
             case VEHICLE_BOAT:
-                if (!p.isInsideVehicle()) return false;
-                return p.getVehicle().getType() == EntityType.BOAT;
+                if (!player.isInsideVehicle()) return false;
+                return player.getVehicle().getType() == EntityType.BOAT;
             case VEHICLE_HORSE:
-                if (!p.isInsideVehicle()) return false;
-                return p.getVehicle().getType() == EntityType.HORSE;
+                if (!player.isInsideVehicle()) return false;
+                return player.getVehicle().getType() == EntityType.HORSE;
             case VEHICLE_MINECART:
-                if (!p.isInsideVehicle()) return false;
-                return p.getVehicle().getType() == EntityType.MINECART;
+                if (!player.isInsideVehicle()) return false;
+                return player.getVehicle().getType() == EntityType.MINECART;
             case VEHICLE_PIG:
-                if (!p.isInsideVehicle()) return false;
-                return p.getVehicle().getType() == EntityType.PIG;
+                if (!player.isInsideVehicle()) return false;
+                return player.getVehicle().getType() == EntityType.PIG;
             case SPECTATOR_TARGET:
-                if (p.getSpectatorTarget() != null) return true;        }
+                if (player.getSpectatorTarget() != null) return true;
+        }
         return false;
     }
 
