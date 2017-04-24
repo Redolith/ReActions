@@ -69,7 +69,7 @@ public class ActionMessage extends Action {
         if (annoymentTime.isEmpty()) return true;
         long time = u().parseTime(annoymentTime);
         if (time == 0) return false;
-        String key = new StringBuilder("reactions-msg-").append(this.getActivatorName()).append(message.hashCode()).append((this.isAction() ? "act" : "react")).toString();
+        String key = new StringBuilder("reactions-msg-")/*.append(this.getActivatorName())*/.append(message.hashCode()).append((this.isAction() ? "act" : "react")).toString();
         if (player.hasMetadata(key)) {
             Long until = player.getMetadata(key).get(0).asLong();
             Long now = System.currentTimeMillis();

@@ -61,7 +61,8 @@ public class FlagState extends Flag {
             case VEHICLE_PIG:
                 if (!p.isInsideVehicle()) return false;
                 return p.getVehicle().getType() == EntityType.PIG;
-        }
+            case SPECTATOR_TARGET:
+                if (p.getSpectatorTarget() != null) return true;        }
         return false;
     }
 
@@ -75,7 +76,8 @@ public class FlagState extends Flag {
         VEHICLE_PIG,
         VEHICLE_HORSE,
         FLY,
-        OP;
+        OP,
+        SPECTATOR_TARGET;
 
         public static Posture getByName(String name) {
             for (Posture pt : Posture.values())

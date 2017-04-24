@@ -102,7 +102,8 @@ public enum Actions {
     ACTION_DELAYED("actdelay", false, new ActionDelayed()),
     MENU_ITEM("itemmenu", true, new ActionMenuItem()),
     FCT_POWER_ADD("factaddpower", false, new ActionFactionsPowerAdd()),
-    WAIT("wait", false, new ActionWait());
+    WAIT("wait", false, new ActionWait()),
+    LOG("log", false, new ActionLog());
 
     private String alias;
     private boolean requireplayer;
