@@ -134,6 +134,7 @@ public enum Flags {
     public static boolean checkFlag(Player p, String flag, String param, boolean not) {
         Flags ft = Flags.getByName(flag);
         if (ft == null) return false;
+        Variables.setTempVar(new StringBuilder(flag).append("_flag").toString().toUpperCase(), param);
         boolean check = ft.check(p, param);
         if (not) return !check;
         return check;
