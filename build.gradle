@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    compile group: 'com.comphenix.protocol', name: 'ProtocolLib-API', version: '4.1.0'
+    compile group: 'com.comphenix.protocol', name: 'ProtocolLib-API', version: '4.2.1'
     compile group: 'com.massivecraft.massivecore', name: 'massivecore', version: '2.9.9'
     compile group: 'com.massivecraft.factions', name: 'factions', version: '2.9.0'
     compile group: 'me.fromgate.playeffect', name: 'PlayEffect', version: '1.0-SNAPSHOT'
