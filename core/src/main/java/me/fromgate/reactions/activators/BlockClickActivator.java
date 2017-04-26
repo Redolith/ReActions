@@ -25,10 +25,8 @@ public class BlockClickActivator extends Activator {
         this.blockType = param;
         this.blockLocation = "";
         Param params = new Param(param);
-        if (params.isParamsExists("type")) {
-            this.blockType = params.getParam("type");
-            this.blockLocation = params.getParam("loc");
-        }
+        this.blockType = params.getParam("type", "");
+        this.blockLocation = params.getParam("loc", "");
         this.click = ClickType.getByName(params.getParam("click", "ANY"));
     }
 
