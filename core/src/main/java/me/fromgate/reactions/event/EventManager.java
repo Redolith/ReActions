@@ -457,4 +457,14 @@ public class EventManager {
         event.setQuitMessage(qu.getQuitMessage() == null || qu.getQuitMessage().isEmpty() ? null : ChatColor.translateAlternateColorCodes('&', qu.getQuitMessage()));
     }
 
+    public static boolean raiseBlockClickEvent(PlayerInteractEvent event) {
+        Boolean leftClick;
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) leftClick = false;
+        else if (event.getAction() == Action.LEFT_CLICK_BLOCK) leftClick = true;
+        else return false;
+        BlockClickEvent e = new BlockClickEvent(event.getPlayer(), event.getClickedBlock(), leftClick);
+        Bukkit.getServer().getPluginManager().callEvent(e);
+        return e.isCancelled();
+    }
+    
 }
