@@ -45,6 +45,7 @@ import me.fromgate.reactions.event.MobDamageEvent;
 import me.fromgate.reactions.event.MobKillEvent;
 import me.fromgate.reactions.event.PVPKillEvent;
 import me.fromgate.reactions.event.PlateEvent;
+import me.fromgate.reactions.event.PlayerInventoryClickEvent;
 import me.fromgate.reactions.event.PlayerRespawnedEvent;
 import me.fromgate.reactions.event.PlayerWasKilledEvent;
 import me.fromgate.reactions.event.QuitEvent;
@@ -92,6 +93,7 @@ public enum ActivatorType {
     FCT_DISBAND("fctdisband", FactionDisbandActivator.class, FactionDisbandEvent.class),
     SIGN("sign", SignActivator.class, SignEvent.class, true),
     BLOCK_CLICK("blockclick", BlockClickActivator.class, BlockClickEvent.class, true),
+    INVENTORY_CLICK("inventoryclick", InventoryClickActivator.class, PlayerInventoryClickEvent.class),
     VARIABLE("var", VariableActivator.class, VariableEvent.class);
 
     private String alias;
