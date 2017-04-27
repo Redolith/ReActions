@@ -255,6 +255,14 @@ public class Locator {
         return lstr;
     }
 
+    public static String locationToString(Block block) {
+        if (block == null) return "";
+        return block.getWorld().getName()
+                + "," + block.getX()
+                + "," + block.getY()
+                + "," + block.getZ();
+    }
+
     public static String locationToString(Location loc) {
         if (loc == null) return "";
         return loc.getWorld().getName() + "," +

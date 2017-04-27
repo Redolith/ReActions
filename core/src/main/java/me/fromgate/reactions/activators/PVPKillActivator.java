@@ -1,3 +1,25 @@
+/*
+ *  ReActions, Minecraft bukkit plugin
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
+ *  http://dev.bukkit.org/server-mods/reactions/
+ *
+ *  This file is part of ReActions.
+ *
+ *  ReActions is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  ReActions is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with ReActions.  If not, see <http://www.gnorg/licenses/>.
+ *
+ */
+
 package me.fromgate.reactions.activators;
 
 import me.fromgate.reactions.actions.Actions;
@@ -8,8 +30,12 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
 
 public class PVPKillActivator extends Activator {
-    public PVPKillActivator(String name) {
+    PVPKillActivator(String name) {
         super(name, "activators");
+    }
+
+    public PVPKillActivator(String name, String param) {
+        this(name);
     }
 
     public PVPKillActivator(String name, String group, YamlConfiguration cfg) {
@@ -40,6 +66,11 @@ public class PVPKillActivator extends Activator {
     @Override
     public ActivatorType getType() {
         return ActivatorType.PVP_KILL;
+    }
+
+    @Override
+    public boolean isValid() {
+        return true;
     }
 
     /*

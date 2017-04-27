@@ -466,5 +466,5 @@ public class EventManager {
         Bukkit.getServer().getPluginManager().callEvent(e);
         return e.isCancelled();
     }
-    
+
 }

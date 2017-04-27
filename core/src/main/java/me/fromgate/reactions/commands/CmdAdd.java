@@ -5,34 +5,6 @@ import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.ActivatorType;
 import me.fromgate.reactions.activators.Activators;
-import me.fromgate.reactions.activators.ButtonActivator;
-import me.fromgate.reactions.activators.CommandActivator;
-import me.fromgate.reactions.activators.DoorActivator;
-import me.fromgate.reactions.activators.ExecActivator;
-import me.fromgate.reactions.activators.FactionActivator;
-import me.fromgate.reactions.activators.FactionCreateActivator;
-import me.fromgate.reactions.activators.FactionRelationActivator;
-import me.fromgate.reactions.activators.ItemClickActivator;
-import me.fromgate.reactions.activators.ItemConsumeActivator;
-import me.fromgate.reactions.activators.ItemHoldActivator;
-import me.fromgate.reactions.activators.ItemWearActivator;
-import me.fromgate.reactions.activators.JoinActivator;
-import me.fromgate.reactions.activators.LeverActivator;
-import me.fromgate.reactions.activators.MessageActivator;
-import me.fromgate.reactions.activators.MobClickActivator;
-import me.fromgate.reactions.activators.MobDamageActivator;
-import me.fromgate.reactions.activators.MobKillActivator;
-import me.fromgate.reactions.activators.PVPKillActivator;
-import me.fromgate.reactions.activators.PlateActivator;
-import me.fromgate.reactions.activators.PlayerDeathActivator;
-import me.fromgate.reactions.activators.PlayerRespawnActivator;
-import me.fromgate.reactions.activators.QuitActivator;
-import me.fromgate.reactions.activators.RegionActivator;
-import me.fromgate.reactions.activators.RgEnterActivator;
-import me.fromgate.reactions.activators.RgLeaveActivator;
-import me.fromgate.reactions.activators.SignActivator;
-import me.fromgate.reactions.activators.BlockClickActivator;
-import me.fromgate.reactions.activators.VariableActivator;
 import me.fromgate.reactions.externals.RAWorldGuard;
 import me.fromgate.reactions.flags.Flags;
 import me.fromgate.reactions.menu.InventoryMenu;
@@ -43,7 +15,6 @@ import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Util;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -137,133 +108,17 @@ public class CmdAdd extends Cmd {
     private boolean addActivator(CommandSender sender, Player player, String type, String name, String param, Block targetBlock) {
         ActivatorType at = ActivatorType.getByName(type);
         if (at == null) return false;
-        Activator activator = null;
-
-        switch (at) {
-            case BUTTON:
-                if (targetBlock == null) return false;
-                if ((targetBlock.getType() == Material.STONE_BUTTON) || (targetBlock.getType() == Material.WOOD_BUTTON)) {
-                    activator = new ButtonActivator(name, targetBlock);
-                } else ReActions.getUtil().printMSG(sender, "cmd_addbreqbut");
-                break;
-            case COMMAND:
-                Param cmdParam = new Param(param);
-                String command = param;
-                boolean override = true;
-                boolean regex = false;
-                if (cmdParam.isParamsExists("command")) {
-                    command = cmdParam.getParam("command");
-                    override = cmdParam.getParam("override", true);
-                    regex = cmdParam.getParam("regex", false);
-                }
-                activator = new CommandActivator(name, command, override, regex);
-                break;
-            case MESSAGE:
-                activator = new MessageActivator(name, param);
-                break;
-            case EXEC:
-                activator = new ExecActivator(name);
-                break;
-            case PLATE:
-                if (targetBlock == null) return false;
-                if ((targetBlock.getType() == Material.STONE_PLATE) || (targetBlock.getType() == Material.WOOD_PLATE)) {
-                    activator = new PlateActivator(name, targetBlock);
-                } else ReActions.getUtil().printMSG(sender, "cmd_addbreqbut");
-                break;
-            case PLAYER_RESPAWN:
-                activator = new PlayerRespawnActivator(name, param);
-                break;
-            case PVP_KILL:
-                activator = new PVPKillActivator(name);
-                break;
-            case PLAYER_DEATH:
-                activator = new PlayerDeathActivator(name, param);
-                break;
-            case REGION:
-                if (param.isEmpty()) ReActions.getUtil().printMSG(sender, "msg_needregion", 'c');
-                else activator = new RegionActivator(name, param);
-                break;
-            case REGION_ENTER:
-                if (param.isEmpty()) ReActions.getUtil().printMSG(sender, "msg_needregion", 'c');
-                else activator = new RgEnterActivator(name, param);
-                break;
-            case REGION_LEAVE:
-                if (param.isEmpty()) ReActions.getUtil().printMSG(sender, "msg_needregion", 'c');
-                else activator = new RgLeaveActivator(name, param);
-                break;
-            case LEVER:
-                if (targetBlock == null) return false;
-                if (targetBlock.getType() == Material.LEVER) {
-                    activator = new LeverActivator(name, param, targetBlock);
-                } else ReActions.getUtil().printMSG(sender, "cmd_addbreqbut");
-                break;
-            case DOOR:
-                if (targetBlock == null) return false;
-                if (Util.isDoorBlock(targetBlock)) {
-                    activator = new DoorActivator(name, param, Util.getDoorBottomBlock(targetBlock));
-                } else ReActions.getUtil().printMSG(sender, "cmd_addbreqbut");
-                break;
-            case JOIN:
-                activator = new JoinActivator(name, param);
-                break;
-            case QUIT:
-                activator = new QuitActivator(name);
-                break;
-            case MOB_CLICK:
-                activator = new MobClickActivator(name, param.replace("%here%", Locator.locationToString(player.getLocation())));
-                break;
-            case MOB_KILL:
-                activator = new MobKillActivator(name, param);
-            case MOB_DAMAGE:
-                activator = new MobDamageActivator(name, param);
-                break;
-            case ITEM_CLICK:
-                if (!param.isEmpty()) activator = new ItemClickActivator(name, param);
-                break;
-            case ITEM_CONSUME:
-                if (!param.isEmpty()) activator = new ItemConsumeActivator(name, param);
-                break;
-            case ITEM_HOLD:
-                if (!param.isEmpty()) activator = new ItemHoldActivator(name, param);
-                break;
-            case ITEM_WEAR:
-                if (!param.isEmpty()) activator = new ItemWearActivator(name, param);
-                break;
-            case FCT_CHANGE:
-                activator = new FactionActivator(name, param);
-                break;
-            case FCT_RELATION:
-                activator = new FactionRelationActivator(name, param);
-                break;
-            case FCT_CREATE:
-                activator = new FactionCreateActivator(name, param);
-                break;
-            case FCT_DISBAND:
-                activator = new FactionCreateActivator(name, param);
-                break;
-            case SIGN:
-                Sign sign = null;
-                if (targetBlock != null && (targetBlock.getType() == Material.SIGN_POST || targetBlock.getType() == Material.WALL_SIGN))
-                    sign = (Sign) targetBlock.getState();
-                if (sign != null) activator = new SignActivator(name, param, sign);
-                else activator = new SignActivator(name, param);
-                break;
-            case BLOCK_CLICK:
-
-                activator = BlockClickActivator.create(targetBlock, name, param);
-                break;
-            case VARIABLE:
-                activator = new VariableActivator(name, param);
-                break;
-
-            default:
-                break;
+        Activator activator = at.create(name, targetBlock, param);
+        if (activator == null || !activator.isValid()) {
+            ReActions.getUtil().printMSG(sender, "cmd_notaddbaddedsyntax", name, type);
+            return true;
         }
-        if (activator == null) return false;
         if (Activators.addActivator(activator)) {
             Activators.saveActivators();
             ReActions.getUtil().printMSG(sender, "cmd_addbadded", activator.toString());
-        } else ReActions.getUtil().printMSG(sender, "cmd_notaddbadded", activator.toString());
+        } else {
+            ReActions.getUtil().printMSG(sender, "cmd_notaddbadded", activator.toString());
+        }
         FakeCmd.updateAllCommands();
         RAWorldGuard.updateRegionCache();
         return true;

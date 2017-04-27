@@ -1,8 +1,8 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2013, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
- *   * 
+ *
  *  This file is part of ReActions.
  *  
  *  ReActions is free software: you can redistribute it and/or modify
@@ -24,7 +24,9 @@ package me.fromgate.reactions.activators;
 
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.PlateEvent;
+import me.fromgate.reactions.util.Util;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
@@ -39,20 +41,18 @@ public class PlateActivator extends Activator {
         super(name, group, cfg);
     }
 
-    public PlateActivator(String name, String group, Block b) {
-        super(name, group);
-        this.world = b.getWorld().getName();
-        this.x = b.getX();
-        this.y = b.getY();
-        this.z = b.getZ();
+    PlateActivator(String name, Block targetBlock) {
+        super(name, "activators");
+        if (targetBlock != null && (targetBlock.getType() == Material.STONE_PLATE) || (targetBlock.getType() == Material.WOOD_PLATE)) {
+            this.world = targetBlock.getWorld().getName();
+            this.x = targetBlock.getX();
+            this.y = targetBlock.getY();
+            this.z = targetBlock.getZ();
+        }
     }
 
-    public PlateActivator(String name, Block b) {
-        super(name, "activators");
-        this.world = b.getWorld().getName();
-        this.x = b.getX();
-        this.y = b.getY();
-        this.z = b.getZ();
+    public PlateActivator(String name, Block targetBlock, String param) {
+        this(name, targetBlock);
     }
 
 
@@ -95,6 +95,11 @@ public class PlateActivator extends Activator {
     @Override
     public ActivatorType getType() {
         return ActivatorType.PLATE;
+    }
+
+    @Override
+    public boolean isValid() {
+        return !Util.emptySting(world);
     }
 
     @Override

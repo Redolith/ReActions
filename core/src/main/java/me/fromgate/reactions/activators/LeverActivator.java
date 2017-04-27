@@ -1,8 +1,32 @@
+/*
+ *  ReActions, Minecraft bukkit plugin
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
+ *  http://dev.bukkit.org/server-mods/reactions/
+ *
+ *  This file is part of ReActions.
+ *
+ *  ReActions is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  ReActions is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with ReActions.  If not, see <http://www.gnorg/licenses/>.
+ *
+ */
+
 package me.fromgate.reactions.activators;
 
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.LeverEvent;
+import me.fromgate.reactions.util.Util;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
@@ -20,15 +44,17 @@ public class LeverActivator extends Activator {
         super(name, group, cfg);
     }
 
-    public LeverActivator(String name, String param, Block b) {
+    public LeverActivator(String name, Block targetBlock, String param) {
         super(name, "activators");
-        this.state = "ANY";
-        if (param.equalsIgnoreCase("on")) state = "ON";
-        if (param.equalsIgnoreCase("off")) state = "OFF";
-        this.world = b.getWorld().getName();
-        this.x = b.getX();
-        this.y = b.getY();
-        this.z = b.getZ();
+        if (targetBlock != null && targetBlock.getType() == Material.LEVER) {
+            this.state = "ANY";
+            if (param.equalsIgnoreCase("on")) state = "ON";
+            if (param.equalsIgnoreCase("off")) state = "OFF";
+            this.world = targetBlock.getWorld().getName();
+            this.x = targetBlock.getX();
+            this.y = targetBlock.getY();
+            this.z = targetBlock.getZ();
+        }
     }
 
     @Override
@@ -73,6 +99,11 @@ public class LeverActivator extends Activator {
     @Override
     public ActivatorType getType() {
         return ActivatorType.LEVER;
+    }
+
+    @Override
+    public boolean isValid() {
+        return !Util.emptySting(world);
     }
 
     @Override
