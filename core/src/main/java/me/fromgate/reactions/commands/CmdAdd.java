@@ -134,16 +134,16 @@ public class CmdAdd extends Cmd {
         return false;
     }
 
-    private boolean addActivator(CommandSender sender, Player player, String type, String name, String param, Block b) {
+    private boolean addActivator(CommandSender sender, Player player, String type, String name, String param, Block targetBlock) {
         ActivatorType at = ActivatorType.getByName(type);
         if (at == null) return false;
         Activator activator = null;
 
         switch (at) {
             case BUTTON:
-                if (b == null) return false;
-                if ((b.getType() == Material.STONE_BUTTON) || (b.getType() == Material.WOOD_BUTTON)) {
-                    activator = new ButtonActivator(name, b);
+                if (targetBlock == null) return false;
+                if ((targetBlock.getType() == Material.STONE_BUTTON) || (targetBlock.getType() == Material.WOOD_BUTTON)) {
+                    activator = new ButtonActivator(name, targetBlock);
                 } else ReActions.getUtil().printMSG(sender, "cmd_addbreqbut");
                 break;
             case COMMAND:
@@ -165,9 +165,9 @@ public class CmdAdd extends Cmd {
                 activator = new ExecActivator(name);
                 break;
             case PLATE:
-                if (b == null) return false;
-                if ((b.getType() == Material.STONE_PLATE) || (b.getType() == Material.WOOD_PLATE)) {
-                    activator = new PlateActivator(name, b);
+                if (targetBlock == null) return false;
+                if ((targetBlock.getType() == Material.STONE_PLATE) || (targetBlock.getType() == Material.WOOD_PLATE)) {
+                    activator = new PlateActivator(name, targetBlock);
                 } else ReActions.getUtil().printMSG(sender, "cmd_addbreqbut");
                 break;
             case PLAYER_RESPAWN:
@@ -192,15 +192,15 @@ public class CmdAdd extends Cmd {
                 else activator = new RgLeaveActivator(name, param);
                 break;
             case LEVER:
-                if (b == null) return false;
-                if (b.getType() == Material.LEVER) {
-                    activator = new LeverActivator(name, param, b);
+                if (targetBlock == null) return false;
+                if (targetBlock.getType() == Material.LEVER) {
+                    activator = new LeverActivator(name, param, targetBlock);
                 } else ReActions.getUtil().printMSG(sender, "cmd_addbreqbut");
                 break;
             case DOOR:
-                if (b == null) return false;
-                if (Util.isDoorBlock(b)) {
-                    activator = new DoorActivator(name, param, Util.getDoorBottomBlock(b));
+                if (targetBlock == null) return false;
+                if (Util.isDoorBlock(targetBlock)) {
+                    activator = new DoorActivator(name, param, Util.getDoorBottomBlock(targetBlock));
                 } else ReActions.getUtil().printMSG(sender, "cmd_addbreqbut");
                 break;
             case JOIN:
@@ -243,13 +243,14 @@ public class CmdAdd extends Cmd {
                 break;
             case SIGN:
                 Sign sign = null;
-                if (b != null && (b.getType() == Material.SIGN_POST || b.getType() == Material.WALL_SIGN))
-                    sign = (Sign) b.getState();
+                if (targetBlock != null && (targetBlock.getType() == Material.SIGN_POST || targetBlock.getType() == Material.WALL_SIGN))
+                    sign = (Sign) targetBlock.getState();
                 if (sign != null) activator = new SignActivator(name, param, sign);
                 else activator = new SignActivator(name, param);
                 break;
             case BLOCK_CLICK:
-                activator = new BlockClickActivator(name, param);
+
+                activator = BlockClickActivator.create(targetBlock, name, param);
                 break;
             case VARIABLE:
                 activator = new VariableActivator(name, param);

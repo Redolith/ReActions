@@ -5,16 +5,25 @@ import me.fromgate.reactions.event.BlockClickEvent;
 import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Variables;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
-import org.bukkit.block.Block;
 
 public class BlockClickActivator extends Activator {
     private String blockType;
     private String blockLocation;
     private ClickType click;
+
+
+    public static BlockClickActivator create(Block targetBlock, String name, String param) {
+        BlockClickActivator activator = new BlockClickActivator(name, param);
+        if (!activator.isValid() && targetBlock == null) {
+            return null;
+        }
+        activator.blockLocation = Locator.locationToString(targetBlock.getLocation());
+        return activator;
+    }
 
     public BlockClickActivator(String name, String group, YamlConfiguration cfg) {
         super(name, group, cfg);
@@ -123,6 +132,10 @@ public class BlockClickActivator extends Activator {
         sb.append(" loc:").append(blockLocation.isEmpty() ? "-" : blockLocation);
         sb.append(")");
         return sb.toString();
+    }
+
+    public boolean isValid() {
+        return (this.blockType == null || this.blockType.isEmpty()) && (this.blockLocation == null || this.blockLocation.isEmpty());
     }
 
 }
