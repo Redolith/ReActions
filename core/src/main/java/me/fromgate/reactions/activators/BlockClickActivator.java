@@ -58,8 +58,8 @@ public class BlockClickActivator extends Activator {
 
     @Override
     public boolean activate(Event event) {
-        if (!(event instanceof BlockClickEvent )) return false;
-        BlockClickEvent  bce = (BlockClickEvent ) event;
+        if (!(event instanceof BlockClickEvent)) return false;
+        BlockClickEvent bce = (BlockClickEvent) event;
         if (bce.getBlockClick() == null) return false;
         if (!isActivatorBlock(bce.getBlockClick())) return false;
         if (!clickCheck(bce.isLeftClicked())) return false;

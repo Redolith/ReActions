@@ -22,35 +22,34 @@
 
 package me.fromgate.reactions.actions;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-
-import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.RAUtil;
 import com.google.common.base.Joiner;
+import me.fromgate.reactions.RAUtil;
+import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.playerselector.PlayerSelectors;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+
 import java.util.logging.Logger;
 
 public class ActionLog extends Action {
-    
+
     private Logger log = Logger.getLogger("Minecraft");
 
     @Override
     public boolean execute(Player p, Param params) {
         RAUtil u = ReActions.getUtil();
         if (params.hasAnyParam("prefix", "color")) {
-          String plg_name = ReActions.getPlugin().getDescription().getName();
-          Boolean prefix = params.getParam("prefix", true);
-          Boolean color = params.getParam("color", false);
-          String message = params.getParam("text", removeParams(params.getParam("param-line")));
-          if (message.isEmpty()) return false;
-          if (prefix) {
-             this.log(message, plg_name, color);
-          } else this.log(message, "", color);
+            String plg_name = ReActions.getPlugin().getDescription().getName();
+            Boolean prefix = params.getParam("prefix", true);
+            Boolean color = params.getParam("color", false);
+            String message = params.getParam("text", removeParams(params.getParam("param-line")));
+            if (message.isEmpty()) return false;
+            if (prefix) {
+                this.log(message, plg_name, color);
+            } else this.log(message, "", color);
         } else u.log(params.getParam("param-line"));
-        
+
         return true;
     }
 

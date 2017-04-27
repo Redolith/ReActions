@@ -23,7 +23,6 @@
 package me.fromgate.reactions.event;
 
 import org.bukkit.Location;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
@@ -45,7 +44,7 @@ public class BlockClickEvent extends RAEvent {
     public Location getBlockClickLocation() {
         return block.getLocation();
     }
-    
+
     public boolean isLeftClicked() {
         return leftClick;
     }
