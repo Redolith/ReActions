@@ -1,14 +1,30 @@
-package me.fromgate.reactions.activators;
-
 /*
- * TODO
- * TIME Параметры: time:10:00 repeat_time:5s (проверка на максимальное время) repeat_count:5
- * TIME_SERVER
- * TIME_REPEATER
+ *  ReActions, Minecraft bukkit plugin
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
+ *  http://dev.bukkit.org/server-mods/reactions/
+ *
+ *  This file is part of ReActions.
+ *
+ *  ReActions is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  ReActions is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with ReActions.  If not, see <http://www.gnorg/licenses/>.
+ *
  */
+
+package me.fromgate.reactions.activators;
 
 
 import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.event.BlockClickEvent;
 import me.fromgate.reactions.event.ButtonEvent;
 import me.fromgate.reactions.event.CommandEvent;
 import me.fromgate.reactions.event.DoorEvent;
@@ -37,18 +53,19 @@ import me.fromgate.reactions.event.RegionEvent;
 import me.fromgate.reactions.event.RegionLeaveEvent;
 import me.fromgate.reactions.event.SignEvent;
 import me.fromgate.reactions.event.VariableEvent;
-import me.fromgate.reactions.event.BlockClickEvent;
+import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
 public enum ActivatorType {
     // алиас, класс активатора, класс события
-    BUTTON("b", ButtonActivator.class, ButtonEvent.class),
-    PLATE("plt", PlateActivator.class, PlateEvent.class),
+    BUTTON("b", ButtonActivator.class, ButtonEvent.class, true),
+    PLATE("plt", PlateActivator.class, PlateEvent.class, true),
     REGION("rg", RegionActivator.class, RegionEvent.class),
     REGION_ENTER("rgenter", RgEnterActivator.class, RegionEnterEvent.class),
     REGION_LEAVE("rgleave", RgLeaveActivator.class, RegionLeaveEvent.class),
@@ -58,8 +75,8 @@ public enum ActivatorType {
     PVP_KILL("pvpkill", PVPKillActivator.class, PVPKillEvent.class),
     PLAYER_DEATH("PVP_DEATH", PlayerDeathActivator.class, PlayerWasKilledEvent.class),
     PLAYER_RESPAWN("PVP_RESPAWN", PlayerRespawnActivator.class, PlayerRespawnedEvent.class),
-    LEVER("lvr", LeverActivator.class, LeverEvent.class),
-    DOOR("door", DoorActivator.class, DoorEvent.class),
+    LEVER("lvr", LeverActivator.class, LeverEvent.class, true),
+    DOOR("door", DoorActivator.class, DoorEvent.class, true),
     JOIN("join", JoinActivator.class, JoinEvent.class),
     QUIT("quit", QuitActivator.class, QuitEvent.class),
     MOB_CLICK("mobclick", MobClickActivator.class, MobClickEvent.class),
@@ -73,18 +90,25 @@ public enum ActivatorType {
     FCT_RELATION("fctrelation", FactionRelationActivator.class, FactionRelationEvent.class),
     FCT_CREATE("fctcreate", FactionCreateActivator.class, FactionCreateEvent.class),
     FCT_DISBAND("fctdisband", FactionDisbandActivator.class, FactionDisbandEvent.class),
-    SIGN("sign", SignActivator.class, SignEvent.class),
-    BLOCK_CLICK("blockclick", BlockClickActivator.class, BlockClickEvent.class),
+    SIGN("sign", SignActivator.class, SignEvent.class, true),
+    BLOCK_CLICK("blockclick", BlockClickActivator.class, BlockClickEvent.class, true),
     VARIABLE("var", VariableActivator.class, VariableEvent.class);
 
     private String alias;
     private Class<? extends Activator> aclass;
     private Class<? extends Event> eclass;
+    private boolean needTargetBlock;
 
-    ActivatorType(String alias, Class<? extends Activator> actclass, Class<? extends Event> evntclass) {
+
+    ActivatorType(String alias, Class<? extends Activator> actclass, Class<? extends Event> evntclass, boolean needTargetBlock) {
         this.alias = alias;
         this.aclass = actclass;
         this.eclass = evntclass;
+        this.needTargetBlock = needTargetBlock;
+    }
+
+    ActivatorType(String alias, Class<? extends Activator> actclass, Class<? extends Event> evntclass) {
+        this(alias, actclass, evntclass, false);
     }
 
     public Class<? extends Activator> getActivatorClass() {
@@ -93,6 +117,27 @@ public enum ActivatorType {
 
     public Class<? extends Event> getEventClass() {
         return eclass;
+    }
+
+    public Activator create(String name, String param) {
+        return create(name, null, param);
+    }
+
+    public Activator create(String name, Block targetBlock, String param) {
+        Constructor<? extends Activator> constructor;
+        Activator activator = null;
+        try {
+            if (this.needTargetBlock) {
+                constructor = aclass.getConstructor(String.class, Block.class, String.class);
+                activator = constructor.newInstance(name, targetBlock, param);
+            } else {
+                constructor = aclass.getConstructor(String.class, String.class);
+                activator = constructor.newInstance(name, param);
+            }
+        } catch (Exception ignore) {
+            ignore.printStackTrace();
+        }
+        return activator;
     }
 
 

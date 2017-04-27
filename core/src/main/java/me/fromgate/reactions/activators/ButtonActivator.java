@@ -1,10 +1,10 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2013, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
- *   * 
+ *
  *  This file is part of ReActions.
- *  
+ *
  *  ReActions is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -17,14 +17,17 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with ReActions.  If not, see <http://www.gnorg/licenses/>.
- * 
+ *
  */
+
 
 package me.fromgate.reactions.activators;
 
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.ButtonEvent;
+import me.fromgate.reactions.util.Util;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
@@ -47,12 +50,19 @@ public class ButtonActivator extends Activator {
         this.z = b.getZ();
     }
 
-    public ButtonActivator(String name, Block b) {
+    ButtonActivator(String name, Block targetBlock) {
         super(name, "activators");
-        this.world = b.getWorld().getName();
-        this.x = b.getX();
-        this.y = b.getY();
-        this.z = b.getZ();
+        if (targetBlock != null &&
+                (targetBlock.getType() == Material.STONE_BUTTON || targetBlock.getType() == Material.WOOD_BUTTON)) {
+            this.world = targetBlock.getWorld().getName();
+            this.x = targetBlock.getX();
+            this.y = targetBlock.getY();
+            this.z = targetBlock.getZ();
+        }
+    }
+
+    public ButtonActivator(String name, Block b, String param) {
+        this(name, b);
     }
 
     @Override
@@ -92,6 +102,11 @@ public class ButtonActivator extends Activator {
     @Override
     public ActivatorType getType() {
         return ActivatorType.BUTTON;
+    }
+
+    @Override
+    public boolean isValid() {
+        return !Util.emptySting(world);
     }
 
     @Override

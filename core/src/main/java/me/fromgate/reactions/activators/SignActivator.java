@@ -1,10 +1,10 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
- *    
+ *
  *  This file is part of ReActions.
- *  
+ *
  *  ReActions is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -17,7 +17,7 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with ReActions.  If not, see <http://www.gnorg/licenses/>.
- * 
+ *
  */
 
 package me.fromgate.reactions.activators;
@@ -28,6 +28,8 @@ import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Variables;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
@@ -43,28 +45,27 @@ public class SignActivator extends Activator {
         super(name, group, cfg);
     }
 
-    public SignActivator(String name, String param, Sign sign) {
+    public SignActivator(String name, Block targetBlock, String param) {
         super(name, "activators");
+        Sign sign = null;
+        if (targetBlock != null && (targetBlock.getType() == Material.SIGN_POST || targetBlock.getType() == Material.WALL_SIGN)) {
+            sign = (Sign) targetBlock.getState();
+        }
         Param params = new Param(param);
-        maskLines = new ArrayList<String>();
-        maskLines.add(params.getParam("line1", sign.getLine(0)));
-        maskLines.add(params.getParam("line2", sign.getLine(1)));
-        maskLines.add(params.getParam("line3", sign.getLine(2)));
-        maskLines.add(params.getParam("line4", sign.getLine(3)));
         click = ClickType.getByName(params.getParam("click", "RIGHT"));
-    }
-
-    public SignActivator(String name, String param) {
-        super(name, "activators");
-        Param params = new Param(param);
         maskLines = new ArrayList<String>();
-        maskLines.add(params.getParam("line1", ""));
-        maskLines.add(params.getParam("line2", ""));
-        maskLines.add(params.getParam("line3", ""));
-        maskLines.add(params.getParam("line4", ""));
-        click = ClickType.getByName(params.getParam("click", "RIGHT"));
+        if (sign == null) {
+            maskLines.add(params.getParam("line1", sign.getLine(0)));
+            maskLines.add(params.getParam("line2", sign.getLine(1)));
+            maskLines.add(params.getParam("line3", sign.getLine(2)));
+            maskLines.add(params.getParam("line4", sign.getLine(3)));
+        } else {
+            maskLines.add(params.getParam("line1", ""));
+            maskLines.add(params.getParam("line2", ""));
+            maskLines.add(params.getParam("line3", ""));
+            maskLines.add(params.getParam("line4", ""));
+        }
     }
-
 
     public boolean checkMask(String[] sign) {
         if (maskLines.isEmpty()) return false;
@@ -74,8 +75,10 @@ public class SignActivator extends Activator {
                 emptyLines++;
                 continue;
             }
-            if (!ChatColor.translateAlternateColorCodes('&', maskLines.get(i)).equalsIgnoreCase(ChatColor.translateAlternateColorCodes('&', sign[i])))
+            if (!ChatColor.translateAlternateColorCodes('&', maskLines.get(i))
+                    .equalsIgnoreCase(ChatColor.translateAlternateColorCodes('&', sign[i]))) {
                 return false;
+            }
         }
         if (emptyLines >= 4) return false;
         return true;
@@ -114,6 +117,21 @@ public class SignActivator extends Activator {
     @Override
     public ActivatorType getType() {
         return ActivatorType.SIGN;
+    }
+
+    @Override
+    public boolean isValid() {
+        if (maskLines == null || maskLines.isEmpty()) {
+            return false;
+        }
+        int emptyLines = 0;
+        for (int i = 0; i < Math.min(4, maskLines.size()); i++) {
+            if (maskLines.get(i).isEmpty()) {
+                emptyLines++;
+                continue;
+            }
+        }
+        return emptyLines > 0;
     }
 
     enum ClickType {

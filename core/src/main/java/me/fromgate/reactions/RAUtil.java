@@ -45,6 +45,7 @@ public class RAUtil extends FGUtilCore {
         addMSG("cmd_addbadded", "Activator %1% successfully defined");
         addMSG("cmd_delayset", "New delay value saved. Id: %1% Delay time: %2%");
         addMSG("cmd_notaddbadded", "Failed to create activator %1%");
+        addMSG("cmd_notaddbaddedsyntax", "Failed to create activator %1% (%2%). Please check syntax and try again.");
         addMSG("cmd_addbreqbut", "You need to look at button to create new button-activator");
         addMSG("cmd_addtpadded", "Location %1% added");
         addMSG("cmd_addmenuadded", "New inventory menu created: %1%");

@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -248,5 +248,6 @@ public abstract class Activator {
         return ((getType().name().equalsIgnoreCase(str)) || (getType().getAlias().equalsIgnoreCase(str)));
     }
 
+    public abstract boolean isValid();
 
 }

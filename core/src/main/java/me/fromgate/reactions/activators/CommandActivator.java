@@ -1,9 +1,33 @@
+/*
+ *  ReActions, Minecraft bukkit plugin
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
+ *  http://dev.bukkit.org/server-mods/reactions/
+ *
+ *  This file is part of ReActions.
+ *
+ *  ReActions is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  ReActions is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with ReActions.  If not, see <http://www.gnorg/licenses/>.
+ *
+ */
+
+
 package me.fromgate.reactions.activators;
 
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.CommandEvent;
 import me.fromgate.reactions.util.FakeCmd;
 import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.Variables;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -36,14 +60,16 @@ public class CommandActivator extends Activator {
         init();
     }
 
-    public CommandActivator(String name, String command, boolean override, boolean useRegex) {
+    public CommandActivator(String name, String param) {
         super(name, "activators");
-        this.command = command;
-        this.override = override;
-        this.useRegex = useRegex;
+        Param cmdParam = new Param(param);
+        if (cmdParam.isParamsExists("command")) {
+            command = cmdParam.getParam("command");
+            override = cmdParam.getParam("override", true);
+            useRegex = cmdParam.getParam("regex", false);
+        }
         init();
     }
-
 
     private boolean checkLine(String line) {
         if (this.useRegex) return line.matches(command);
@@ -142,6 +168,11 @@ public class CommandActivator extends Activator {
     @Override
     public ActivatorType getType() {
         return ActivatorType.COMMAND;
+    }
+
+    @Override
+    public boolean isValid() {
+        return !Util.emptySting(command);
     }
 
     @Override

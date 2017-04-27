@@ -276,4 +276,8 @@ public class Util {
         return sb.toString();
     }
 
+    public static boolean emptySting(String str) {
+        return str == null || str.isEmpty();
+    }
+
 }
