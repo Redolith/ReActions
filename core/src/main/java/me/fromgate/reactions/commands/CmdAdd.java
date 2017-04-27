@@ -31,6 +31,7 @@ import me.fromgate.reactions.activators.RegionActivator;
 import me.fromgate.reactions.activators.RgEnterActivator;
 import me.fromgate.reactions.activators.RgLeaveActivator;
 import me.fromgate.reactions.activators.SignActivator;
+import me.fromgate.reactions.activators.BlockClickActivator;
 import me.fromgate.reactions.activators.VariableActivator;
 import me.fromgate.reactions.externals.RAWorldGuard;
 import me.fromgate.reactions.flags.Flags;
@@ -246,6 +247,9 @@ public class CmdAdd extends Cmd {
                     sign = (Sign) b.getState();
                 if (sign != null) activator = new SignActivator(name, param, sign);
                 else activator = new SignActivator(name, param);
+                break;
+            case BLOCK_CLICK:
+                activator = new BlockClickActivator(name, param);
                 break;
             case VARIABLE:
                 activator = new VariableActivator(name, param);

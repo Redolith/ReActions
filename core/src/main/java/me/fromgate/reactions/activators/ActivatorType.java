@@ -37,6 +37,7 @@ import me.fromgate.reactions.event.RegionEvent;
 import me.fromgate.reactions.event.RegionLeaveEvent;
 import me.fromgate.reactions.event.SignEvent;
 import me.fromgate.reactions.event.VariableEvent;
+import me.fromgate.reactions.event.BlockClickEvent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -73,6 +74,7 @@ public enum ActivatorType {
     FCT_CREATE("fctcreate", FactionCreateActivator.class, FactionCreateEvent.class),
     FCT_DISBAND("fctdisband", FactionDisbandActivator.class, FactionDisbandEvent.class),
     SIGN("sign", SignActivator.class, SignEvent.class),
+    BLOCK_CLICK("blockclick", BlockClickActivator.class, BlockClickEvent.class),
     VARIABLE("var", VariableActivator.class, VariableEvent.class);
 
     private String alias;

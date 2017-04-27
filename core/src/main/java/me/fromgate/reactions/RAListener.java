@@ -39,6 +39,7 @@ import me.fromgate.reactions.event.FactionDisbandEvent;
 import me.fromgate.reactions.event.FactionEvent;
 import me.fromgate.reactions.event.FactionRelationEvent;
 import me.fromgate.reactions.event.ItemClickEvent;
+import me.fromgate.reactions.event.BlockClickEvent;
 import me.fromgate.reactions.event.ItemConsumeEvent;
 import me.fromgate.reactions.event.ItemHoldEvent;
 import me.fromgate.reactions.event.ItemWearEvent;
@@ -345,6 +346,7 @@ public class RAListener implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         EventManager.raiseItemClickEvent(event);
         EventManager.raiseItemWearEvent(event.getPlayer());
+        if (EventManager.raiseBlockClickEvent(event)) event.setCancelled(true);
         if (EventManager.raiseButtonEvent(event)) event.setCancelled(true);
         EventManager.raisePlateEvent(event);
         if (EventManager.raiseLeverEvent(event)) event.setCancelled(true);
@@ -519,6 +521,11 @@ public class RAListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onMessageEvent(MessageEvent event) {
+        event.setCancelled(Activators.activate(event));
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onBlockClickActivator(BlockClickEvent event) {
         event.setCancelled(Activators.activate(event));
     }
 
