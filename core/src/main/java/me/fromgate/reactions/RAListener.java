@@ -51,6 +51,7 @@ import me.fromgate.reactions.event.MobDamageEvent;
 import me.fromgate.reactions.event.MobKillEvent;
 import me.fromgate.reactions.event.PVPKillEvent;
 import me.fromgate.reactions.event.PlateEvent;
+import me.fromgate.reactions.event.PlayerInventoryClickEvent;
 import me.fromgate.reactions.event.PlayerRespawnedEvent;
 import me.fromgate.reactions.event.PlayerWasKilledEvent;
 import me.fromgate.reactions.event.QuitEvent;
@@ -88,6 +89,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -369,6 +371,11 @@ public class RAListener implements Listener {
         Teleporter.stopTeleport(event.getPlayer());
     }
 
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onPlayerInventoryClick(InventoryClickEvent event) {
+        if (EventManager.raiseInventoryClickEvent(event)) event.setCancelled(true);
+    }
+
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
     public void onPlayerJoinActivators(PlayerJoinEvent event) {
@@ -526,6 +533,11 @@ public class RAListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onBlockClickActivator(BlockClickEvent event) {
+        event.setCancelled(Activators.activate(event));
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onInventoryClickActivator(PlayerInventoryClickEvent event) {
         event.setCancelled(Activators.activate(event));
     }
 

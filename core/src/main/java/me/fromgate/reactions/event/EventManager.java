@@ -49,6 +49,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -463,6 +464,13 @@ public class EventManager {
         else if (event.getAction() == Action.LEFT_CLICK_BLOCK) leftClick = true;
         else return false;
         BlockClickEvent e = new BlockClickEvent(event.getPlayer(), event.getClickedBlock(), leftClick);
+        Bukkit.getServer().getPluginManager().callEvent(e);
+        return e.isCancelled();
+    }
+    
+    public static boolean raiseInventoryClickEvent(InventoryClickEvent event) {
+        Player p = (Player) event.getWhoClicked();
+        PlayerInventoryClickEvent e = new PlayerInventoryClickEvent(p, event.getAction(), event.getClick(), event.getSlotType(), event.getCurrentItem(), event.getHotbarButton());
         Bukkit.getServer().getPluginManager().callEvent(e);
         return e.isCancelled();
     }
