@@ -2,7 +2,6 @@ package me.fromgate.reactions.activators;
 
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.PlayerInventoryClickEvent;
-import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Variables;
 import org.bukkit.Location;
@@ -72,19 +71,13 @@ public class InventoryClickActivator extends Activator {
         WINDOW_BORDER_RIGHT;
 
         public static ClickType getByName(String clickStr) {
-            if (clickStr.equalsIgnoreCase("CONTROL_DROP")) return ClickType.CONTROL_DROP;
-            if (clickStr.equalsIgnoreCase("CREATIVE")) return ClickType.CREATIVE;
-            if (clickStr.equalsIgnoreCase("DROP")) return ClickType.DROP;
-            if (clickStr.equalsIgnoreCase("DOUBLE_CLICK")) return ClickType.DOUBLE_CLICK;
-            if (clickStr.equalsIgnoreCase("LEFT")) return ClickType.LEFT;
-            if (clickStr.equalsIgnoreCase("MIDDLE")) return ClickType.MIDDLE;
-            if (clickStr.equalsIgnoreCase("NUMBER_KEY")) return ClickType.NUMBER_KEY;
-            if (clickStr.equalsIgnoreCase("RIGHT")) return ClickType.RIGHT;
-            if (clickStr.equalsIgnoreCase("SHIFT_LEFT")) return ClickType.SHIFT_LEFT;
-            if (clickStr.equalsIgnoreCase("SHIFT_RIGHT")) return ClickType.SHIFT_RIGHT;
-            if (clickStr.equalsIgnoreCase("WINDOW_BORDER_LEFT")) return ClickType.WINDOW_BORDER_LEFT;
-            if (clickStr.equalsIgnoreCase("WINDOW_BORDER_RIGHT")) return ClickType.WINDOW_BORDER_RIGHT;
-            if (clickStr.equalsIgnoreCase("UNKNOWN")) return ClickType.UNKNOWN;
+            if (clickStr != null) {
+                for (ClickType clickType : values()) {
+                    if (clickStr.equalsIgnoreCase(clickType.name())) {
+                        return clickType;
+                    }
+                }
+            }
             return ClickType.ANY;
         }
     }
