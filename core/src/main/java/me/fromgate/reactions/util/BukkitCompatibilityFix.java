@@ -80,6 +80,7 @@ public class BukkitCompatibilityFix {
         }
     }
 
+    @SuppressWarnings("deprecation")
     public static ItemStack getItemInHand(Player player) {
         if (player == null) return null;
         PlayerInventory inv = player.getInventory();
@@ -98,9 +99,12 @@ public class BukkitCompatibilityFix {
         }
         try {
             Object itemObj = getItem.invoke(inv);
-            if (itemObj != null && itemObj instanceof ItemStack) return (ItemStack) itemObj;
+            if (itemObj != null && itemObj instanceof ItemStack) {
+                return (ItemStack) itemObj;
+            }
         } catch (Exception e) {
-            ReActions.util.logOnce("getItemInHand", "Methods \"getItemInHand\" and \"getItemInMainHand\" are not declared in PlayerInventory class");
+            ReActions.util.logOnce("getItemInHand", "Methods \"getItemInHand\" and \"getItemInMainHand\" are not declared in PlayerInventory class (Old server?!)");
+            return player.getItemInHand();
         }
         return null;
     }
