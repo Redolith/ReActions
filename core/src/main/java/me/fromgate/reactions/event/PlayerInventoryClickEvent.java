@@ -34,7 +34,7 @@ public class PlayerInventoryClickEvent extends RAEvent {
     private ClickType click;
     private SlotType slot;
     private ItemStack item;
-    Integer numberKey;
+    private Integer numberKey;
 
     public PlayerInventoryClickEvent(Player p, InventoryAction action, ClickType click, SlotType slot, ItemStack item, Integer numberKey) {
         super(p);
