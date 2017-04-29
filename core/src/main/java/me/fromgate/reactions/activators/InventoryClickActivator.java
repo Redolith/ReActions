@@ -11,11 +11,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class InventoryClickActivator extends Activator {
     private ClickType click;
     private InventoryAction action;
+    private InventoryType inventory;
     private SlotType slot;
     private String itemStr;
 
@@ -25,6 +27,7 @@ public class InventoryClickActivator extends Activator {
         Param params = new Param(param);
         this.click = ClickType.getByName(params.getParam("click", "ANY"));
         this.action = InventoryAction.getByName(params.getParam("action", "ANY"));
+        this.inventory = InventoryType.getByName(params.getParam("inventory", "ANY"));
         this.slot = SlotType.getByName(params.getParam("slot", "ANY"));
         this.itemStr = params.getParam("item");
     }
@@ -41,11 +44,13 @@ public class InventoryClickActivator extends Activator {
         if (pice.getClickType() == null) return false;
         if (!clickCheck(pice.getClickType())) return false;
         if (!actionCheck(pice.getAction())) return false;
+        if (!inventoryCheck(pice.getInventoryType())) return false;
         if (!slotCheck(pice.getSlotType())) return false;
         if (!checkItem(pice.getItemStack())) return false;
         Variables.setTempVar("click", pice.getClickType().toString());
         Variables.setTempVar("action", pice.getAction().toString());
         Variables.setTempVar("slot", pice.getSlotType().toString());
+        Variables.setTempVar("inventory", pice.getInventoryType().toString());
         return Actions.executeActivator(pice.getPlayer(), this);
     }
 
@@ -59,6 +64,7 @@ public class InventoryClickActivator extends Activator {
     public void save(String root, YamlConfiguration cfg) {
         cfg.set(root + ".click-type", click.name());
         cfg.set(root + ".action-type", action.name());
+        cfg.set(root + ".inventory-type", inventory.name());
         cfg.set(root + ".slot-type", slot.name());
         cfg.set(root + ".item", this.itemStr);
     }
@@ -67,6 +73,7 @@ public class InventoryClickActivator extends Activator {
     public void load(String root, YamlConfiguration cfg) {
         this.click = ClickType.getByName(cfg.getString(root + ".click-type", "ANY"));
         this.action = InventoryAction.getByName(cfg.getString(root + ".action-type", "ANY"));
+        this.inventory = InventoryType.getByName(cfg.getString(root + ".inventory-type", "ANY"));
         this.slot = SlotType.getByName(cfg.getString(root + ".slot-type", "ANY"));
         this.itemStr = cfg.getString(root + ".item", "");
     }
@@ -139,6 +146,36 @@ public class InventoryClickActivator extends Activator {
     }
 
 
+    enum InventoryType {
+        ANY,
+        ANVIL,
+        BEACON,
+        BREWING,
+        CHEST,
+        CRAFTING,
+        CREATIVE,
+        DISPENSER,
+        DROPPER,
+        ENCHANTING,
+        ENDER_CHEST,
+        HOPPER,
+        MERCHANT,
+        PLAYER,
+        SHULKER_BOX,
+        WORKBENCH;
+
+        public static InventoryType getByName(String inventoryStr) {
+            if (inventoryStr != null) {
+                for (InventoryType inventoryType : values()) {
+                    if (inventoryStr.equalsIgnoreCase(inventoryType.name())) {
+                        return inventoryType;
+                    }
+                }
+            }
+            return InventoryType.ANY;
+        }
+    }
+
     enum SlotType {
         ANY,
         ARMOR,
@@ -171,6 +208,11 @@ public class InventoryClickActivator extends Activator {
         return act.name().equals(action.name());
     }
 
+    private boolean inventoryCheck(org.bukkit.event.inventory.InventoryType it) {
+        if (inventory.name().equals("ANY")) return true;
+        return it.name().equals(inventory.name());
+    }
+
     private boolean slotCheck(org.bukkit.event.inventory.InventoryType.SlotType sl) {
         if (slot.name().equals("ANY")) return true;
         return sl.name().equals(slot.name());
@@ -190,6 +232,7 @@ public class InventoryClickActivator extends Activator {
         sb.append(" (");
         sb.append("click:").append(this.click.name());
         sb.append(" action:").append(this.action.name());
+        sb.append(" inventory:").append(this.inventory.name());
         sb.append(" slot:").append(this.slot.name());
         sb.append(")");
         return sb.toString();
