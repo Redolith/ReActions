@@ -31,7 +31,9 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -354,4 +356,11 @@ public class BukkitCompatibilityFix {
         return (EntityEvent) event;
     }
 
+    public static boolean isHandSlot(PlayerInteractEntityEvent event) {
+        try {
+            return event.getHand() == EquipmentSlot.HAND;
+        } catch (NoSuchMethodError error) {
+        }
+        return true;
+    }
 }

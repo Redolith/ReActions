@@ -88,8 +88,8 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -104,7 +104,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.server.ServerCommandEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 
@@ -182,11 +181,7 @@ public class RAListener implements Listener {
         EventManager.raiseItemClickEvent(event);
         if (event.getRightClicked() == null) return;
         if (!(event.getRightClicked() instanceof LivingEntity)) return;
-
-        if (event.getHand() != EquipmentSlot.HAND) {
-            return;
-        }
-
+        if (!BukkitCompatibilityFix.isHandSlot(event)) return;
         EventManager.raiseMobClickEvent(event.getPlayer(), (LivingEntity) event.getRightClicked());
     }
 

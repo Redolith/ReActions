@@ -27,7 +27,7 @@ dependencies {
     compile group: 'com.palmergames.bukkit.towny', name: 'Towny', version: '0.9.1'
     compile group: 'com.greatmancode', name: 'craftconomy3', version: '3.3', ext: 'jar'
     compile group: 'org.bukkit', name: 'bukkit', version: '1.11-R0.1-SNAPSHOT'
-    compile group: 'com.sk89q', name: 'worldedit', version: '6.0.0-SNAPSHOT'
-    compile group: 'com.sk89q', name: 'worldguard', version: '6.1.1-SNAPSHOT'
+    compile group: 'com.sk89q', name: 'worldedit', version: '5.6.4-SNAPSHOT'
+    compile group: 'com.sk89q', name: 'worldguard', version: '5.8.1-SNAPSHOT'
     compile group: 'net.milkbowl.vault', name: 'Vault', version: '1.6.6'
 }
