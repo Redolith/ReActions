@@ -1,0 +1,6 @@
+language: java
+jdk:
+  - oraclejdk7
+install:
+  - gradle clean
+  - gradle build
