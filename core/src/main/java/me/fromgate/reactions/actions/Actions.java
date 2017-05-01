@@ -99,6 +99,7 @@ public enum Actions {
     SQL_UPDATE("sqlupdate", false, new ActionSQL(2)),
     SQL_INSERT("sqlinsert", false, new ActionSQL(1)),
     SQL_DELETE("sqldelete", false, new ActionSQL(3)),
+    REGEX("regex", false, new ActionRegex()),
     ACTION_DELAYED("actdelay", false, new ActionDelayed()),
     MENU_ITEM("itemmenu", true, new ActionMenuItem()),
     FCT_POWER_ADD("factaddpower", false, new ActionFactionsPowerAdd()),
