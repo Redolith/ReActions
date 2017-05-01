@@ -12,8 +12,10 @@ public class ArmorStandListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
     public void onPlayerInteractAtEntityEvent(PlayerInteractAtEntityEvent event) {
-        if (event.getRightClicked() instanceof LivingEntity)
+        if (!BukkitCompatibilityFix.isHandSlot(event)) return;
+        if (event.getRightClicked() instanceof LivingEntity) {
             EventManager.raiseMobClickEvent(event.getPlayer(), (LivingEntity) event.getRightClicked());
+        }
     }
 
 }

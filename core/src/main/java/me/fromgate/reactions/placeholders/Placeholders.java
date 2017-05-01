@@ -49,7 +49,10 @@ public class Placeholders {
         Matcher matcher = pattern.matcher(result);
         StringBuffer sb = new StringBuffer();
         while (matcher.find()) {
-            String group = new StringBuilder("%").append(replacePlaceholders(player, matcher.group().replaceAll("^%", "").replaceAll("%$", ""))).append("%").toString();
+            String group = new StringBuilder("%")
+                    .append(replacePlaceholders(player, matcher.group()
+                            .replaceAll("^%", "").replaceAll("%$", "")))
+                    .append("%").toString();
             String replacement = replacePlaceholder(player, group);
             matcher.appendReplacement(sb, Matcher.quoteReplacement(replacement == null ? group : replacement));
         }
