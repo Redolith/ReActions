@@ -42,7 +42,6 @@ import me.fromgate.reactions.util.ArmorStandListener;
 import me.fromgate.reactions.util.Delayer;
 import me.fromgate.reactions.util.FakeCmd;
 import me.fromgate.reactions.util.Locator;
-import me.fromgate.reactions.util.RADebug;
 import me.fromgate.reactions.util.Shoot;
 import me.fromgate.reactions.util.UpdateChecker;
 import me.fromgate.reactions.util.Variables;
@@ -66,9 +65,7 @@ public class ReActions extends JavaPlugin {
     public int worlduardRecheck = 2;
     public int itemHoldRecheck = 2;
     public int itemWearRecheck = 2;
-    public int sameMessagesDelay = 10;
     public boolean horizontalPushback = false;
-    boolean enableProfiler = true;
     int chatLength = 55;
 
     public static ReActions instance;
@@ -88,14 +85,11 @@ public class ReActions extends JavaPlugin {
     RAUtil u;
     Logger log = Logger.getLogger("Minecraft");
     //private CmdOld cmd;
-    private RAListener l;
-    private boolean towny_conected = false;
+    private boolean townyConected = false;
 
     public boolean isTownyConnected() {
-        return towny_conected;
+        return townyConected;
     }
-
-    RADebug debug = new RADebug();
 
     public Activator getActivator(String id) {
         return Activators.get(id);
@@ -109,9 +103,8 @@ public class ReActions extends JavaPlugin {
         UpdateChecker.init(this, "ReActions", "61726", "me/fromgate/reactions", this.checkUpdates);
 
         if (!getDataFolder().exists()) getDataFolder().mkdirs();
-        l = new RAListener(this);
         PluginManager pm = this.getServer().getPluginManager();
-        pm.registerEvents(l, this);
+        pm.registerEvents(new RAListener(this), this);
         pm.registerEvents(new InventoryMenu(), this);
 
         instance = this;
@@ -136,7 +129,7 @@ public class ReActions extends JavaPlugin {
         RACraftConomy.init();
         RAWorldGuard.init();
         ActionsWaiter.init();
-        if (Bukkit.getPluginManager().getPlugin("Towny") != null) towny_conected = RATowny.init();
+        if (Bukkit.getPluginManager().getPlugin("Towny") != null) townyConected = RATowny.init();
         if (Bukkit.getPluginManager().getPlugin("ProtocolLib") != null) RAProtocolLib.connectProtocolLib();
 
         Delayer.load();
@@ -152,8 +145,9 @@ public class ReActions extends JavaPlugin {
 
 
         try {
-            if (Class.forName("org.bukkit.event.player.PlayerInteractAtEntityEvent") != null)
+            if (Class.forName("org.bukkit.event.player.PlayerInteractAtEntityEvent") != null) {
                 Bukkit.getPluginManager().registerEvents(new ArmorStandListener(), this);
+            }
         } catch (Throwable t) {
         }
 
