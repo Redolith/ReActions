@@ -325,7 +325,6 @@ public class RAListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         ActionsWaiter.refresh();
         RADebug.offPlayerDebug(event.getPlayer());
-        //plg.u.updateMsg(event.getPlayer());
         UpdateChecker.updateMsg(event.getPlayer());
     }
 
