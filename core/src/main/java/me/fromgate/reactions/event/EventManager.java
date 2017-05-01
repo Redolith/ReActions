@@ -44,16 +44,14 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Button;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -472,6 +470,15 @@ public class EventManager {
         Player p = (Player) event.getWhoClicked();
         PlayerInventoryClickEvent e = new PlayerInventoryClickEvent(p, event.getAction(), event.getClick(), event.getInventory(), event.getSlotType(), event.getCurrentItem(), event.getHotbarButton());
         Bukkit.getServer().getPluginManager().callEvent(e);
+        return e.isCancelled();
+    }
+
+    public static boolean raiseDropEvent(PlayerDropItemEvent event) {
+        Item item = event.getItemDrop();
+        double pickupDelay = BukkitCompatibilityFix.getItemPickupDelay(item);
+        DropEvent e = new DropEvent(event.getPlayer(), event.getItemDrop(), pickupDelay);
+        Bukkit.getServer().getPluginManager().callEvent(e);
+        BukkitCompatibilityFix.setItemPickupDelay(item, e.getPickupDelay());
         return e.isCancelled();
     }
 
