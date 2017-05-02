@@ -7,11 +7,7 @@ import me.fromgate.reactions.util.Variables;
 import me.fromgate.reactions.util.item.ItemUtil;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.event.inventory.InventoryAction;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class InventoryClickActivator extends Activator {
@@ -39,8 +35,8 @@ public class InventoryClickActivator extends Activator {
 
     @Override
     public boolean activate(Event event) {
-        if (!(event instanceof PlayerInventoryClickEvent )) return false;
-        PlayerInventoryClickEvent pice = (PlayerInventoryClickEvent ) event;
+        if (!(event instanceof PlayerInventoryClickEvent)) return false;
+        PlayerInventoryClickEvent pice = (PlayerInventoryClickEvent) event;
         if (pice.getClickType() == null) return false;
         if (!clickCheck(pice.getClickType())) return false;
         if (!actionCheck(pice.getAction())) return false;

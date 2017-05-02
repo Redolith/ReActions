@@ -14,7 +14,7 @@ import org.bukkit.inventory.ItemStack;
 /**
  * Created by MaxDikiy on 2017-05-01.
  */
-public class DropActivator extends Activator  {
+public class DropActivator extends Activator {
     private String itemStr;
 
     public DropActivator(String name, String param) {
@@ -29,8 +29,8 @@ public class DropActivator extends Activator  {
 
     @Override
     public boolean activate(Event event) {
-        if (!(event instanceof DropEvent )) return false;
-        DropEvent de = (DropEvent ) event;
+        if (!(event instanceof DropEvent)) return false;
+        DropEvent de = (DropEvent) event;
         if (!checkItem(de.getItemStack())) return false;
         Variables.setTempVar("droplocation", Locator.locationToString(de.getPlayer().getLocation()));
         Variables.setTempVar("pickupDelay", Double.toString(de.getPickupDelay()));
