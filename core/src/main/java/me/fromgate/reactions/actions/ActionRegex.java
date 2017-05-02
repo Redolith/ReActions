@@ -18,7 +18,7 @@ public class ActionRegex extends Action {
     public boolean execute(Player p, Param params) {
         String prefix = params.getParam("prefix", "");
         String regex = params.getParam("regex", "");
-        String input =  params.getParam("input", removeParams(params.getParam("param-line")));
+        String input = params.getParam("input", removeParams(params.getParam("param-line")));
 
         if (input.isEmpty()) return false;
 
@@ -27,7 +27,7 @@ public class ActionRegex extends Action {
         int count = -1;
         String group = "";
 
-        while(m.find()) {
+        while (m.find()) {
             count++;
             for (int i = 0; i <= m.groupCount(); i++) {
                 if (m.group(i) != null) group = m.group(i);

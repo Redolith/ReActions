@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 /**
  * Created by MaxDikiy on 2017-05-01.
  */
-public class DropEvent extends RAEvent  {
+public class DropEvent extends RAEvent {
     private ItemStack itemStack;
     private Double pickupDelay;
 
