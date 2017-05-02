@@ -29,37 +29,7 @@ import me.fromgate.reactions.activators.ActivatorType;
 import me.fromgate.reactions.activators.Activators;
 import me.fromgate.reactions.activators.MessageActivator;
 import me.fromgate.reactions.activators.SignActivator;
-import me.fromgate.reactions.event.BlockClickEvent;
-import me.fromgate.reactions.event.ButtonEvent;
-import me.fromgate.reactions.event.CommandEvent;
-import me.fromgate.reactions.event.DoorEvent;
-import me.fromgate.reactions.event.EventManager;
-import me.fromgate.reactions.event.ExecEvent;
-import me.fromgate.reactions.event.FactionCreateEvent;
-import me.fromgate.reactions.event.FactionDisbandEvent;
-import me.fromgate.reactions.event.FactionEvent;
-import me.fromgate.reactions.event.FactionRelationEvent;
-import me.fromgate.reactions.event.ItemClickEvent;
-import me.fromgate.reactions.event.ItemConsumeEvent;
-import me.fromgate.reactions.event.ItemHoldEvent;
-import me.fromgate.reactions.event.ItemWearEvent;
-import me.fromgate.reactions.event.JoinEvent;
-import me.fromgate.reactions.event.LeverEvent;
-import me.fromgate.reactions.event.MessageEvent;
-import me.fromgate.reactions.event.MobClickEvent;
-import me.fromgate.reactions.event.MobDamageEvent;
-import me.fromgate.reactions.event.MobKillEvent;
-import me.fromgate.reactions.event.PVPKillEvent;
-import me.fromgate.reactions.event.PlateEvent;
-import me.fromgate.reactions.event.PlayerInventoryClickEvent;
-import me.fromgate.reactions.event.PlayerRespawnedEvent;
-import me.fromgate.reactions.event.PlayerWasKilledEvent;
-import me.fromgate.reactions.event.QuitEvent;
-import me.fromgate.reactions.event.RegionEnterEvent;
-import me.fromgate.reactions.event.RegionEvent;
-import me.fromgate.reactions.event.RegionLeaveEvent;
-import me.fromgate.reactions.event.SignEvent;
-import me.fromgate.reactions.event.VariableEvent;
+import me.fromgate.reactions.event.*;
 import me.fromgate.reactions.externals.RAEconomics;
 import me.fromgate.reactions.externals.RAVault;
 import me.fromgate.reactions.util.BukkitCompatibilityFix;
@@ -91,18 +61,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -370,6 +329,11 @@ public class RAListener implements Listener {
         if (EventManager.raiseInventoryClickEvent(event)) event.setCancelled(true);
     }
 
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onDrop(PlayerDropItemEvent event) {
+        if (EventManager.raiseDropEvent(event)) event.setCancelled(true);
+    }
+
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
     public void onPlayerJoinActivators(PlayerJoinEvent event) {
@@ -532,6 +496,11 @@ public class RAListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onInventoryClickActivator(PlayerInventoryClickEvent event) {
+        event.setCancelled(Activators.activate(event));
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onDropActivator(DropEvent event) {
         event.setCancelled(Activators.activate(event));
     }
 

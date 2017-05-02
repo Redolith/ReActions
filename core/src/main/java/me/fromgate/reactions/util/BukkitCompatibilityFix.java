@@ -23,11 +23,7 @@
 package me.fromgate.reactions.util;
 
 import me.fromgate.reactions.ReActions;
-import org.bukkit.entity.Damageable;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityEvent;
@@ -268,6 +264,22 @@ public class BukkitCompatibilityFix {
      */
     public static double getEventDamage(EntityDamageEvent event) {
         return getDoubleMethod("getDamage", event, EntityDamageEvent.class);
+    }
+
+    /*
+     *  Fix damage (double/int) compatibility issue
+     *  Works nice in 1.5.2
+     */
+    public static void setItemPickupDelay(Item item, double pickupDelay) {
+        executeMethodObjectDouble("setPickupDelay", item, Item.class, pickupDelay);
+    }
+
+    /*
+     *  Fix damage (double/int) compatibility issue
+     *  Works nice in 1.5.2
+     */
+    public static double getItemPickupDelay(Item item) {
+        return getDoubleMethod("getPickupDelay", item, Item.class);
     }
 
 
