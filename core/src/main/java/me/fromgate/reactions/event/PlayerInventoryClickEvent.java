@@ -23,8 +23,8 @@
 package me.fromgate.reactions.event;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.Inventory;
@@ -56,7 +56,7 @@ public class PlayerInventoryClickEvent extends RAEvent {
     public ClickType getClickType() {
         return this.click;
     }
-    
+
     public InventoryType getInventoryType() {
         return this.inventory;
     }
