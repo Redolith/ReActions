@@ -334,6 +334,11 @@ public class RAListener implements Listener {
         if (EventManager.raiseDropEvent(event)) event.setCancelled(true);
     }
 
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onFlight(PlayerToggleFlightEvent event) {
+        if (EventManager.raiseFlightEvent(event)) event.setCancelled(true);
+    }
+
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
     public void onPlayerJoinActivators(PlayerJoinEvent event) {
@@ -501,6 +506,11 @@ public class RAListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onDropActivator(DropEvent event) {
+        event.setCancelled(Activators.activate(event));
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onFlightActivator(FlightEvent event) {
         event.setCancelled(Activators.activate(event));
     }
 

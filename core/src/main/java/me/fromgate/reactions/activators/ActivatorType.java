@@ -66,6 +66,7 @@ public enum ActivatorType {
     BLOCK_CLICK("blockclick", BlockClickActivator.class, BlockClickEvent.class, true),
     INVENTORY_CLICK("inventoryclick", InventoryClickActivator.class, PlayerInventoryClickEvent.class),
     DROP("drop", DropActivator.class, DropEvent.class),
+    FLIGHT("flight", FlightActivator.class, FlightEvent.class),
     VARIABLE("var", VariableActivator.class, VariableEvent.class);
 
     private String alias;

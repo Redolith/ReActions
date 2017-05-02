@@ -482,4 +482,10 @@ public class EventManager {
         return e.isCancelled();
     }
 
+    public static boolean raiseFlightEvent(PlayerToggleFlightEvent event) {
+        FlightEvent e = new FlightEvent(event.getPlayer(), event.isFlying());
+        Bukkit.getServer().getPluginManager().callEvent(e);
+        return e.isCancelled();
+    }
+
 }
