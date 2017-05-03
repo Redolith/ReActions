@@ -13,7 +13,7 @@ public class FlightEvent extends RAEvent {
         this.isFlying = isFlying;
     }
 
-    public Boolean getFlight(){
+    public Boolean getFlight() {
         return this.isFlying;
     }
 
