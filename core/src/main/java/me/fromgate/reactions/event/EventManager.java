@@ -51,11 +51,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Button;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -483,6 +479,12 @@ public class EventManager {
         DropEvent e = new DropEvent(event.getPlayer(), event.getItemDrop(), pickupDelay);
         Bukkit.getServer().getPluginManager().callEvent(e);
         BukkitCompatibilityFix.setItemPickupDelay(item, e.getPickupDelay());
+        return e.isCancelled();
+    }
+
+    public static boolean raiseFlightEvent(PlayerToggleFlightEvent event) {
+        FlightEvent e = new FlightEvent(event.getPlayer(), event.isFlying());
+        Bukkit.getServer().getPluginManager().callEvent(e);
         return e.isCancelled();
     }
 
