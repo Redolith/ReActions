@@ -91,7 +91,9 @@ public enum Flags {
     FCT_IS_REL_PLAYER_AROUND("isfactionrelplayeraround", true, new FlagIsFactionRelPlayerAround()),
     FCT_ARE_PLAYERS_IN_REL("areplayersinfactionsrel", false, new FlagPlayersInRel()),
     SQL_CHECK("sqlcheck", false, new FlagSQL(true)),
-    SQL_RESULT("sqlhasresult", false, new FlagSQL(false));
+    SQL_RESULT("sqlhasresult", false, new FlagSQL(false)),
+    FLY_SPEED("flyspeed", true, new FlagFlySpeed()),
+    WALK_SPEED("walkspeed", true, new FlagWalkSpeed());
 
 
     private String alias;
