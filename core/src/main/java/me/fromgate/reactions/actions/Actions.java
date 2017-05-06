@@ -104,7 +104,8 @@ public enum Actions {
     MENU_ITEM("itemmenu", true, new ActionMenuItem()),
     FCT_POWER_ADD("factaddpower", false, new ActionFactionsPowerAdd()),
     WAIT("wait", false, new ActionWait()),
-    LOG("log", false, new ActionLog());
+    LOG("log", false, new ActionLog()),
+    PLAYER_ID("log", false, new ActionPlayerID());
 
     private String alias;
     private boolean requireplayer;
