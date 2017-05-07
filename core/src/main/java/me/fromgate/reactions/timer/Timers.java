@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *   * 
  *  This file is part of ReActions.
@@ -22,7 +22,6 @@
 
 package me.fromgate.reactions.timer;
 
-import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.event.EventManager;
 import me.fromgate.reactions.util.Param;
@@ -80,10 +79,6 @@ public class Timers {
     private static BukkitTask ingameTimer = null;
     private static String currentIngameTime;
     private static BukkitTask serverTimer = null;
-
-    private static RAUtil u() {
-        return ReActions.util;
-    }
 
     private static Map<String, Timer> timers;
     private static Set<String> timersIngame;

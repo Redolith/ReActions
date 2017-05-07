@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2016, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -22,7 +22,6 @@
 
 package me.fromgate.reactions.event;
 
-import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.ActivatorType;
@@ -69,10 +68,6 @@ import java.util.Set;
 public class EventManager {
     private static ReActions plg() {
         return ReActions.instance;
-    }
-
-    private static RAUtil u() {
-        return ReActions.util;
     }
 
     public static boolean raiseFactionEvent(Player p, String oldFaction, String newFaction) {

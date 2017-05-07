@@ -22,7 +22,6 @@
 
 package me.fromgate.reactions.activators;
 
-import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.event.RAEvent;
 import me.fromgate.reactions.externals.RAWorldGuard;
@@ -46,11 +45,6 @@ public class Activators {
     private static ReActions plg() {
         return ReActions.instance;
     }
-
-    private static RAUtil u() {
-        return ReActions.util;
-    }
-
     private static List<Activator> act;
     private static Set<String> stopexec;
 

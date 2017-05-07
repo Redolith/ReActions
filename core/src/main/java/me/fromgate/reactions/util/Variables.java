@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -22,7 +22,6 @@
 
 package me.fromgate.reactions.util;
 
-import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.event.EventManager;
 import me.fromgate.reactions.util.message.M;
@@ -39,9 +38,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Variables {
-    static RAUtil u() {
-        return ReActions.util;
-    }
 
     private static Map<String, String> vars = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
     private static Map<String, String> tempvars = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);

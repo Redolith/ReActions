@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -70,20 +70,15 @@ public class ReActions extends JavaPlugin {
     int chatLength = 55;
 
     public static ReActions instance;
-    public static RAUtil util;
 
 
     public static ReActions getPlugin() {
         return instance;
     }
 
-    public static RAUtil getUtil() {
-        return util;
-    }
 
 
     //разные переменные
-    RAUtil u;
     private boolean townyConected = false;
 
     public boolean isTownyConnected() {
@@ -98,7 +93,6 @@ public class ReActions extends JavaPlugin {
     public void onEnable() {
         loadCfg();
         saveCfg();
-        u = new RAUtil();
         UpdateChecker.init(this, "ReActions", "61726", "reactions", this.checkUpdates);
         M.init("ReActions", new BukkitMessenger(this), language, false, languageSave);
 
@@ -108,7 +102,6 @@ public class ReActions extends JavaPlugin {
         pm.registerEvents(new InventoryMenu(), this);
 
         instance = this;
-        util = u;
         Commander.init(this);
         Timers.init();
         Activators.init();
@@ -191,10 +184,6 @@ public class ReActions extends JavaPlugin {
         horizontalPushback = getConfig().getBoolean("reactions.horizontal-pushback-action", false);
         Shoot.actionShootBreak = getConfig().getString("actions.shoot.break-block", Shoot.actionShootBreak);
         Shoot.actionShootThrough = getConfig().getString("actions.shoot.penetrable", Shoot.actionShootThrough);
-    }
-
-    public RAUtil getUtils() {
-        return this.u;
     }
 
     public boolean isCenterTpLocation() {

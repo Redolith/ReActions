@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -22,7 +22,6 @@
 
 package me.fromgate.reactions.actions;
 
-import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.actions.ActionItems.ItemActionType;
 import me.fromgate.reactions.activators.Activator;
@@ -122,10 +121,6 @@ public enum Actions {
 
     static ReActions plg() {
         return ReActions.instance;
-    }
-
-    static RAUtil u() {
-        return ReActions.util;
     }
 
     public String getAlias() {

@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -23,8 +23,6 @@
 package me.fromgate.reactions.externals;
 
 import me.fromgate.playeffect.PlayEffect;
-import me.fromgate.reactions.RAUtil;
-import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Util;
@@ -39,9 +37,6 @@ import org.bukkit.plugin.Plugin;
 
 public class RAEffects {
 
-    private static RAUtil u() {
-        return ReActions.util;
-    }
 
     private static String efftypes = "smoke,flame,ender,potion";
     private static boolean use_play_effects = false;
