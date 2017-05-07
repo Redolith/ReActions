@@ -1,10 +1,10 @@
 package me.fromgate.reactions.commands;
 
-import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.activators.ActivatorType;
 import me.fromgate.reactions.flags.Flags;
 import me.fromgate.reactions.placeholders.Placeholders;
+import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.message.M;
 import org.bukkit.command.CommandSender;
 
