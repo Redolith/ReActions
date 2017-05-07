@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -31,7 +31,7 @@ import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownyUniverse;
-import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -45,7 +45,7 @@ public class RATowny {
 
     public static boolean init() {
         connected = connectToTowny();
-        if (connected) ReActions.util.log("Towny found");
+        if (connected) M.logMessage("Towny found");
         return connected;
     }
 

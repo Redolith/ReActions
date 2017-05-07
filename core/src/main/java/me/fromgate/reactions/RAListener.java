@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2015, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -71,6 +71,7 @@ import me.fromgate.reactions.util.RADebug;
 import me.fromgate.reactions.util.Teleporter;
 import me.fromgate.reactions.util.UpdateChecker;
 import me.fromgate.reactions.util.Util;
+import me.fromgate.reactions.util.message.M;
 import me.fromgate.reactions.util.mob.MobSpawn;
 import me.fromgate.reactions.util.waiter.ActionsWaiter;
 import org.bukkit.Bukkit;
@@ -137,7 +138,7 @@ public class RAListener implements Listener {
             SignActivator signAct = (SignActivator) activator;
             if (!signAct.checkMask(event.getLines())) continue;
             if (event.getPlayer().hasPermission("reactions.sign." + signAct.getName().toLowerCase())) return;
-            plg.u.printMSG(event.getPlayer(), "msg_signforbidden", '4', 'c', signAct.getName());
+            M.MSG_SIGNFORBIDDEN.print(event.getPlayer(), '4', 'c', signAct.getName());
             event.setCancelled(true);
             return;
         }
@@ -216,7 +217,7 @@ public class RAListener implements Listener {
             if (killer != null) {
                 int money = Util.getMinMaxRandom(event.getEntity().getMetadata("ReActions-money").get(0).asString());
                 RAEconomics.creditAccount(killer.getName(), "", Double.toString(money), "", "");
-                plg.u.printMSG(killer, "msg_mobbounty", 'e', '6', RAEconomics.format(money, "", ""), event.getEntity().getType().name());
+                M.MSG_MOBBOUNTY.print(killer, 'e', '6', RAEconomics.format(money, "", ""), event.getEntity().getType().name());
             }
         }
 

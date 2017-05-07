@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -22,7 +22,6 @@
 
 package me.fromgate.reactions.actions;
 
-import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.actions.ActionItems.ItemActionType;
 import me.fromgate.reactions.activators.Activator;
@@ -30,6 +29,8 @@ import me.fromgate.reactions.flags.Flags;
 import me.fromgate.reactions.placeholders.Placeholders;
 import me.fromgate.reactions.util.ActVal;
 import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.Util;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -122,10 +123,6 @@ public enum Actions {
         return ReActions.instance;
     }
 
-    static RAUtil u() {
-        return ReActions.util;
-    }
-
     public String getAlias() {
         return this.alias;
     }
@@ -170,7 +167,7 @@ public enum Actions {
                 ActionWait aw = (ActionWait) at.action;
                 Param param = new Param(Placeholders.replacePlaceholders(player, av.value), "time");
                 String timeStr = param.getParam("time", "0");
-                long time = u().parseTime(timeStr);
+                long time = Util.parseTime(timeStr);
                 if (time == 0) continue;
                 List<ActVal> futureList = new ArrayList<ActVal>();
                 futureList.addAll(actions.subList(i + 1, actions.size()));
@@ -197,14 +194,18 @@ public enum Actions {
     }
 
     public static void listActions(CommandSender sender, int pageNum) {
-        List<String> actionList = new ArrayList<String>();
+        List<String> actionList = new ArrayList<>();
         for (Actions actionType : Actions.values()) {
             String name = actionType.name();
             String alias = actionType.getAlias().equalsIgnoreCase(name) ? " " : " (" + actionType.getAlias() + ") ";
-            String description = ReActions.util.getMSGnc("action_" + name);
-            actionList.add("&6" + name + "&e" + alias + "&3: &a" + description);
+            M msg = M.getByName("action_" + name);
+            if (msg == null) {
+                M.LNG_FAIL_ACTION_DESC.log(name);
+            } else {
+                actionList.add("&6" + name + "&e" + alias + "&3: &a" + msg.getText("NOCOLOR"));
+            }
         }
-        ReActions.util.printPage(sender, actionList, pageNum, "msg_actionlisttitle", "", false, sender instanceof Player ? 10 : 1000);
+        Util.printPage(sender, actionList, M.MSG_ACTIONLISTTITLE, pageNum);
     }
 
 

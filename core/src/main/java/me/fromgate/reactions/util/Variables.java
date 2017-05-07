@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -22,9 +22,9 @@
 
 package me.fromgate.reactions.util;
 
-import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.event.EventManager;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -38,9 +38,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Variables {
-    static RAUtil u() {
-        return ReActions.util;
-    }
 
     private static Map<String, String> vars = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
     private static Map<String, String> tempvars = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
@@ -256,13 +253,15 @@ public class Variables {
         return defvar;
     }
 
-    public static void printList(CommandSender sender, int page, String mask) {
-        int maxPage = (sender instanceof Player) ? 15 : 10000;
+    public static void printList(CommandSender sender, int pageNum, String mask) {
+        int linesPerPage = (sender instanceof Player) ? 15 : 10000;
         List<String> varList = new ArrayList<String>();
-        for (String key : vars.keySet())
-            if (mask.isEmpty() || key.contains(mask))
+        for (String key : vars.keySet()) {
+            if (mask.isEmpty() || key.contains(mask)) {
                 varList.add(key + " : " + vars.get(key));
-        u().printPage(sender, varList, page, "msg_varlist", "", false, maxPage);
+            }
+        }
+        M.printPage(sender, varList, M.MSG_VARLIST, pageNum, linesPerPage);
     }
 
 

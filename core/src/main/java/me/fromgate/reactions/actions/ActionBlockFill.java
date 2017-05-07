@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -25,7 +25,9 @@ package me.fromgate.reactions.actions;
 import me.fromgate.reactions.externals.RAWorldGuard;
 import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.item.ItemUtil;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -45,7 +47,7 @@ public class ActionBlockFill extends Action {
         if (!itemParam.getParam("type", "AIR").equalsIgnoreCase("air")) {
             item = ItemUtil.itemFromMap(itemParam);
             if ((item == null) || ((!item.getType().isBlock()))) {
-                u().logOnce("wrongblockfill" + params.getParam("block"), "Failed to execute action BLOCK_FILL. Wrong block " + params.getParam("block"));
+                M.logOnce("wrongblockfill" + params.getParam("block"), "Failed to execute action BLOCK_FILL. Wrong block " + params.getParam("block"));
                 return false;
             }
         }
@@ -85,7 +87,7 @@ public class ActionBlockFill extends Action {
         for (int x = min.getBlockX(); x <= max.getBlockX(); x++)
             for (int y = min.getBlockY(); y <= max.getBlockY(); y++)
                 for (int z = min.getBlockZ(); z <= max.getBlockZ(); z++)
-                    if (u().rollDiceChance(chance)) {
+                    if (Util.rollDiceChance(chance)) {
                         Block block = min.getWorld().getBlockAt(x, y, z);
                         if (block.getType() != Material.AIR && drop) block.breakNaturally();
                         if (blockItem != null && blockItem.getType() != Material.AIR) {

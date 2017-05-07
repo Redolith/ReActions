@@ -1,17 +1,17 @@
 package me.fromgate.reactions.commands;
 
-import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.Activators;
 import me.fromgate.reactions.menu.InventoryMenu;
 import me.fromgate.reactions.util.Locator;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@CmdDefine(command = "react", description = "cmd_info", permission = "reactions.config",
+@CmdDefine(command = "react", description = M.CMD_INFO, permission = "reactions.config",
         subCommands = {"info"}, allowConsole = true, shortDescription = "&3/react info <activator> [f|a|r]")
 public class CmdInfo extends Cmd {
     @Override
@@ -23,16 +23,16 @@ public class CmdInfo extends Cmd {
             printActInfo(sender, id, far);
         } else if (id.equalsIgnoreCase("menu")) {
             InventoryMenu.printMenu(sender, far);
-        } else ReActions.getUtil().printMSG(sender, "cmd_unknownbutton", id);
+        } else M.printMSG(sender, "cmd_unknownbutton", id);
         return true;
     }
 
 
-    private void printActInfo(CommandSender p, String actname, String far) {
-        Activator act = Activators.get(actname);
-        boolean f = false;
-        boolean a = false;
-        boolean r = false;
+    private void printActInfo(CommandSender sender, String activatorName, String far) {
+        Activator act = Activators.get(activatorName);
+        boolean f;
+        boolean a;
+        boolean r;
         if (far.isEmpty()) {
             f = true;
             a = true;
@@ -43,17 +43,18 @@ public class CmdInfo extends Cmd {
             r = far.contains("r") || far.equalsIgnoreCase("reaction") || far.equalsIgnoreCase("me/fromgate/reactions");
         }
 
-        ReActions.getUtil().printMsg(p, "&5☆ &d&l" + ReActions.getUtil().getMSGnc("msg_actinfotitle") + " &r&5☆");
-        ReActions.getUtil().printMSG(p, "msg_actinfo", act.getName(), act.getType(), act.getGroup());
-        ReActions.getUtil().printMSG(p, "msg_actinfo2", act.getFlags().size(), act.getActions().size(), act.getReactions().size());
+        M.printMSG(sender, "&5☆ &d&l" + M.MSG_ACTINFOTITLE.getText("NOCOLOR") + " &r&5☆");
+        M.printMSG(sender, "msg_actinfo", act.getName(), act.getType(), act.getGroup());
+        M.printMSG(sender, "msg_actinfo2", act.getFlags().size(), act.getActions().size(), act.getReactions().size());
         if (f && (!act.getFlags().isEmpty())) {
-            List<String> flg = new ArrayList<String>();
-            for (int i = 0; i < act.getFlags().size(); i++)
+            List<String> flg = new ArrayList<>();
+            for (int i = 0; i < act.getFlags().size(); i++) {
                 flg.add((act.getFlags().get(i).not ? "&4! &e" : "  &e") + act.getFlags().get(i).flag + " &3= &a" + act.getFlags().get(i).value);
-            ReActions.getUtil().printPage(p, flg, 1, "lst_flags", "", true, 100);
+            }
+            M.printPage(sender, flg, M.LST_FLAGS, 1, 100, true);
         }
         if (a && (!act.getActions().isEmpty())) {
-            List<String> flg = new ArrayList<String>();
+            List<String> flg = new ArrayList<>();
             for (int i = 0; i < act.getActions().size(); i++) {
                 String action = act.getActions().get(i).flag;
                 String param = act.getActions().get(i).value;
@@ -63,10 +64,10 @@ public class CmdInfo extends Cmd {
                 }
                 flg.add("  &e" + action + " &3= &a" + param);
             }
-            ReActions.getUtil().printPage(p, flg, 1, "lst_actions", "", true, 100);
+            M.printPage(sender, flg, M.LST_ACTIONS, 1, 100, true);
         }
         if (r && (!act.getReactions().isEmpty())) {
-            List<String> flg = new ArrayList<String>();
+            List<String> flg = new ArrayList<>();
             for (int i = 0; i < act.getReactions().size(); i++) {
                 String action = act.getReactions().get(i).flag;
                 String param = act.getReactions().get(i).value;
@@ -76,7 +77,7 @@ public class CmdInfo extends Cmd {
                 }
                 flg.add("  &e" + action + " &3= &a" + param);
             }
-            ReActions.getUtil().printPage(p, flg, 1, "lst_reactions", "", true, 100);
+            M.printPage(sender, flg, M.LST_REACTIONS, 1, 100, true);
         }
     }
 }

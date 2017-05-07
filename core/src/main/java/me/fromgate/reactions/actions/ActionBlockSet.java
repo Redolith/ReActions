@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -25,6 +25,7 @@ package me.fromgate.reactions.actions;
 import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.item.ItemUtil;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -44,7 +45,7 @@ public class ActionBlockSet extends Action {
         if (!itemParam.getParam("type", "AIR").equalsIgnoreCase("air")) {
             item = ItemUtil.itemFromMap(itemParam);
             if ((item == null) || ((!item.getType().isBlock()))) {
-                u().logOnce("wrongblock" + params.getParam("block"), "Failed to execute action BLOCK_FILL. Wrong block " + params.getParam("block"));
+                M.logOnce("wrongblock" + params.getParam("block"), "Failed to execute action BLOCK_FILL. Wrong block " + params.getParam("block"));
                 return false;
             }
         }

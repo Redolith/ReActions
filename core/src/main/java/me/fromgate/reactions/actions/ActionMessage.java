@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2015, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -24,6 +24,8 @@ package me.fromgate.reactions.actions;
 
 import com.google.common.base.Joiner;
 import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.Util;
+import me.fromgate.reactions.util.message.M;
 import me.fromgate.reactions.util.playerselector.PlayerSelectors;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -49,7 +51,7 @@ public class ActionMessage extends Action {
     }
 
     private void sendMessage(Player player, Param params) {
-        Set<Player> players = new HashSet<Player>();
+        Set<Player> players = new HashSet<>();
         if (params.hasAnyParam(PlayerSelectors.getAllKeys())) {
             players.addAll(PlayerSelectors.getPlayerList(params));
             if (players.isEmpty() && params.isParamsExists("player"))
@@ -60,14 +62,17 @@ public class ActionMessage extends Action {
         String message = params.getParam("text", removeParams(params.getParam("param-line")));
         if (message.isEmpty()) return;
         String annoymentTime = params.getParam("hide");
-        for (Player p : players)
-            if (showMessage(p, message, annoymentTime)) u().printMsg(p, message);
+        for (Player p : players) {
+            if (showMessage(p, message, annoymentTime)) {
+                M.printMessage(p, message);
+            }
+        }
     }
 
 
     private boolean showMessage(Player player, String message, String annoymentTime) {
         if (annoymentTime.isEmpty()) return true;
-        long time = u().parseTime(annoymentTime);
+        long time = Util.parseTime(annoymentTime);
         if (time == 0) return false;
         String key = new StringBuilder("reactions-msg-")/*.append(this.getActivatorName())*/.append(message.hashCode()).append((this.isAction() ? "act" : "react")).toString();
         if (player.hasMetadata(key)) {

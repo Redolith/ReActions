@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2016, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -28,7 +28,7 @@ import com.greatmancode.craftconomy3.account.Account;
 import com.greatmancode.craftconomy3.account.Balance;
 import com.greatmancode.craftconomy3.currency.Currency;
 import com.greatmancode.craftconomy3.tools.interfaces.Loader;
-import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
@@ -41,7 +41,7 @@ public class RACraftConomy {
 
     public static void init() {
         enabled = isCraftconomyInstalled();
-        if (enabled) ReActions.util.log("CraftConomy connected");
+        if (enabled) M.logMessage("CraftConomy connected");
     }
 
     public static boolean isEnabled() {

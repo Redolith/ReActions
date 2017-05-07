@@ -1,16 +1,14 @@
 package me.fromgate.reactions.commands;
 
 import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.util.Util;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.ChatPaginator;
-import org.bukkit.util.ChatPaginator.ChatPage;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Commander implements CommandExecutor {
@@ -64,33 +62,13 @@ public class Commander implements CommandExecutor {
     }
 
     public static void printHelp(CommandSender sender, int page) {
-        List<String> helpList = new ArrayList<String>();
+        List<String> helpList = new ArrayList<>();
         for (Cmd cmd : commands) {
             helpList.add(cmd.getFullDescription());
         }
-        int pageHeight = (sender instanceof Player) ? 9 : 1000;
-
-        ReActions.getUtil().printMsg(sender, "&6&lReActions v" + ReActions.getPlugin().getDescription().getVersion() + " &r&6| " + ReActions.getUtil().getMSG("hlp_help", '6'));
-        ChatPage chatPage = paginate(helpList, page, ReActions.getPlugin().getChatLineLength(), pageHeight);
-
-        for (String str : chatPage.getLines())
-            sender.sendMessage(str);
-
-        if (pageHeight == 9)
-            ReActions.getUtil().printMSG(sender, "lst_footer", 'e', '6', chatPage.getPageNumber(), chatPage.getTotalPages());
+        M.printMessage(sender, "&6&lReActions v" + ReActions.getPlugin().getDescription().getVersion() + " &r&6| " + M.HLP_HELP.getText("NO_COLOR"));
+        Util.printPage(sender, helpList, null, page);
     }
 
-    public static ChatPage paginate(List<String> unpaginatedStrings, int pageNumber, int lineLength, int pageHeight) {
-        List<String> lines = new ArrayList<String>();
-        for (String str : unpaginatedStrings) {
-            lines.addAll(Arrays.asList(ChatPaginator.wordWrap(str, lineLength)));
-        }
-        int totalPages = lines.size() / pageHeight + (lines.size() % pageHeight == 0 ? 0 : 1);
-        int actualPageNumber = pageNumber <= totalPages ? pageNumber : totalPages;
-        int from = (actualPageNumber - 1) * pageHeight;
-        int to = from + pageHeight <= lines.size() ? from + pageHeight : lines.size();
-        String[] selectedLines = Arrays.copyOfRange(lines.toArray(new String[lines.size()]), from, to);
-        return new ChatPage(selectedLines, actualPageNumber, totalPages);
-    }
 
 }

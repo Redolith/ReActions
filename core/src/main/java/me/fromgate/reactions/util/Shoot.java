@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -83,7 +83,7 @@ public class Shoot {
     @SuppressWarnings("deprecation")
     private static boolean isEmpty(Block b, LivingEntity shooter) {
         if (!b.getType().isSolid()) return true;
-        if (ReActions.util.isItemInList(b.getType().getId(), b.getData(), actionShootThrough)) return true;
+        if (Util.isItemInList(b.getType().getId(), b.getData(), actionShootThrough)) return true;
         if ((shooter instanceof Player) && (isShotAndBreak(b, (Player) shooter))) {
             b.getWorld().playEffect(b.getLocation(), Effect.STEP_SOUND, b.getType());
             b.breakNaturally();
@@ -101,7 +101,7 @@ public class Shoot {
 
     @SuppressWarnings("deprecation")
     private static boolean isShotAndBreak(Block b, Player p) {
-        if (ReActions.util.isItemInList(b.getType().getId(), b.getData(), actionShootBreak)) return breakBlock(b, p);
+        if (Util.isItemInList(b.getType().getId(), b.getData(), actionShootBreak)) return breakBlock(b, p);
         return false;
     }
 

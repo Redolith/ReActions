@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -22,6 +22,7 @@
 
 package me.fromgate.reactions.flags;
 
+import me.fromgate.reactions.util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -29,7 +30,7 @@ public class FlagOnline extends Flag {
 
     @Override
     public boolean checkFlag(Player p, String param) {
-        if (!u().isIntegerGZ(param)) return false;
+        if (!Util.isIntegerGZ(param)) return false;
         int reqplayer = Integer.parseInt(param);
         return (reqplayer <= Bukkit.getOnlinePlayers().size());
     }

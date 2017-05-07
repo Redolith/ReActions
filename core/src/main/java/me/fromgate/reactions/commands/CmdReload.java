@@ -8,9 +8,10 @@ import me.fromgate.reactions.util.Delayer;
 import me.fromgate.reactions.util.FakeCmd;
 import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.Variables;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.command.CommandSender;
 
-@CmdDefine(command = "react", description = "cmd_reload", permission = "reactions.config",
+@CmdDefine(command = "react", description = M.CMD_RELOAD, permission = "reactions.config",
         subCommands = {"reload"}, allowConsole = true, shortDescription = "&3/react reload")
 public class CmdReload extends Cmd {
 
@@ -26,7 +27,7 @@ public class CmdReload extends Cmd {
         Timers.init();
         InventoryMenu.load();
         FakeCmd.updateAllCommands();
-        ReActions.getUtil().printMSG(sender, "msg_cmdreload", Activators.size(), Locator.sizeTpLoc());
+        M.MSG_CMDRELOAD.print(sender, Activators.size(), Locator.sizeTpLoc());
         return true;
     }
 

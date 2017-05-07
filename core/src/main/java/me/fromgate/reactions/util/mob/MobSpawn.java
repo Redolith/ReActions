@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -30,6 +30,7 @@ import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.item.ItemUtil;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -54,7 +55,7 @@ public class MobSpawn {
     public static void mobSpawn(Player p, Param params) {
         String mob = params.getParam("type", "").toUpperCase();
         if (mob.isEmpty()) {
-            ReActions.getUtil().log("Failed to spawn mob: " + params.getParam("param-line"));
+            M.logMessage("Failed to spawn mob: " + params.getParam("param-line"));
             return;
         }
         String locstr = params.getParam("loc", "");
@@ -131,18 +132,18 @@ public class MobSpawn {
             if (mbs.equalsIgnoreCase("wither")) et = MobWither.getWitherType();
 
             if (et == null) {
-                ReActions.util.logOnce("mobspawnunknowntype_" + mobstr, "Unknown mob type " + mbs + " (" + mobstr + ")");
+                M.logOnce("mobspawnunknowntype_" + mobstr, "Unknown mob type " + mbs + " (" + mobstr + ")");
                 continue;
             }
             Entity e = loc.getWorld().spawnEntity(loc, et);
             if (e == null) {
-                ReActions.util.logOnce("mobspawnfail_" + mobstr, "Cannot spawn mob " + mbs + " (" + mobstr + ")");
+                M.logOnce("mobspawnfail_" + mobstr, "Cannot spawn mob " + mbs + " (" + mobstr + ")");
                 continue;
             }
 
             if (!(e instanceof LivingEntity)) {
                 e.remove();
-                ReActions.util.logOnce("mobspawnnotmob_" + mobstr, "Cannot spawn mob " + mbs + " (" + mobstr + ")");
+                M.logOnce("mobspawnnotmob_" + mobstr, "Cannot spawn mob " + mbs + " (" + mobstr + ")");
                 continue;
             }
 
@@ -230,7 +231,7 @@ public class MobSpawn {
 
     public static void setMobEquipment(LivingEntity e, String equip) {
         if (equip.isEmpty()) return;
-        if (!ReActions.util.isWordInList(e.getType().name(), "zombie,skeleton")) return;
+        if (!Util.isWordInList(e.getType().name(), "zombie,skeleton")) return;
         String[] ln = equip.split(";");
         if (ln.length == 0) return;
         String[] eq = {"", "", "", "", "", ""};
@@ -239,7 +240,7 @@ public class MobSpawn {
     }
 
     public static void setMobEquipment(LivingEntity e, String helm, String chest, String leg, String boot, String weapon, String offhand) {
-        // if (!ReActions.util.isWordInList(e.getType().name(), "zombie,skeleton,villager")) return;
+        // if (!Util.isWordInList(e.getType().name(), "zombie,skeleton,villager")) return;
         if (!helm.isEmpty()) {
             ItemStack item = ItemUtil.getRndItem(helm);
             if (item != null) e.getEquipment().setHelmet(item);
@@ -277,7 +278,7 @@ public class MobSpawn {
             pef = ln[0];
             PotionEffectType pet = Util.parsePotionEffect(pef);
             if (pet == null) continue;
-            if ((ln.length == 2) && ReActions.util.isInteger(ln[1])) level = Integer.parseInt(ln[1]);
+            if ((ln.length == 2) && Util.isInteger(ln[1])) level = Integer.parseInt(ln[1]);
             PotionEffect pe = new PotionEffect(pet, Integer.MAX_VALUE, level, true);
             e.addPotionEffect(pe);
         }

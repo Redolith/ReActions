@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -22,10 +22,11 @@
 
 package me.fromgate.reactions.actions;
 
-import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.Util;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.entity.Player;
 
 
@@ -37,10 +38,6 @@ public abstract class Action {
 
     ReActions plg() {
         return ReActions.instance;
-    }
-
-    RAUtil u() {
-        return ReActions.util;
     }
 
 
@@ -60,19 +57,20 @@ public abstract class Action {
         return this.activator.getName();
     }
 
-	/*
-    public Activator getActivator(){
-		return this.activator;
-	} */
-
-    public boolean executeAction(Player p,/* Activator a,*/ boolean action, Param params) {
+    public boolean executeAction(Player player, boolean action, Param params) {
         this.actionExecuting = action;
         //this.activator = a;
         if (!params.hasAnyParam("param-line")) params.set("param-line", "");
         setMessageParam(params.getParam("param-line"));
-        boolean actionFailed = (!execute(p, params));
-        if ((p != null) && (printAction()))
-            u().printMSG(p, actionFailed ? "act_" + type.name().toLowerCase() + "fail" : "act_" + type.name().toLowerCase(), messageParam);
+        boolean actionFailed = (!execute(player, params));
+        if ((player != null) && (printAction())) {
+            M msg = M.getByName(("ACT_" + type.name() + (actionFailed ? "FAIL" : "")).toUpperCase());
+            if (msg == null) {
+                M.LNG_FAIL_ACTION_MSG.print(type.name());
+            } else {
+                msg.print(params, messageParam);
+            }
+        }
         //Залипухи, но похоже по другому - никак...
         //if (a==null) return true;
         //if ((a.getType() == ActivatorType.COMMAND)&&(!((CommandActivator) a).isCommandRegistered())) return true;
@@ -81,7 +79,7 @@ public abstract class Action {
     }
 
     private boolean printAction() {
-        return (u().isWordInList(this.type.name(), plg().getActionMsg()) || u().isWordInList(this.type.getAlias(), plg().getActionMsg()));
+        return (Util.isWordInList(this.type.name(), plg().getActionMsg()) || Util.isWordInList(this.type.getAlias(), plg().getActionMsg()));
     }
 
     public abstract boolean execute(Player p, Param params);

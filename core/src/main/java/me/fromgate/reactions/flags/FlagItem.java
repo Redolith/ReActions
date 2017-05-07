@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -24,6 +24,7 @@ package me.fromgate.reactions.flags;
 
 import me.fromgate.reactions.util.BukkitCompatibilityFix;
 import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.Variables;
 import me.fromgate.reactions.util.item.ItemUtil;
 import me.fromgate.reactions.util.item.VirtualItem;
@@ -71,7 +72,7 @@ public class FlagItem extends Flag {
 
         String slotStr = params.getParam("slot", "");
         if (slotStr.isEmpty()) return false;
-        int slotNum = u().isInteger(slotStr) ? Integer.parseInt(slotStr) : -1;
+        int slotNum = Util.isInteger(slotStr) ? Integer.parseInt(slotStr) : -1;
         if (slotNum >= player.getInventory().getSize()) return false;
 
         VirtualItem vi = null;

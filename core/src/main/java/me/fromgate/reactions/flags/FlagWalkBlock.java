@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -22,6 +22,7 @@
 
 package me.fromgate.reactions.flags;
 
+import me.fromgate.reactions.util.item.ItemUtil;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -35,7 +36,7 @@ public class FlagWalkBlock extends Flag {
     public boolean checkFlag(Player p, String param) {
         Block walk = p.getLocation().getBlock();
         if (walk.getType() == Material.AIR) walk = walk.getRelative(BlockFace.DOWN);
-        return u().compareItemStr(new ItemStack(walk.getType(), 1, walk.getData()), param);
+        return ItemUtil.compareItemStr(new ItemStack(walk.getType(), 1, walk.getData()), param);
     }
 
 }

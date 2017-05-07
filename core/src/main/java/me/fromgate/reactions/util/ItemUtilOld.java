@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -22,7 +22,7 @@
 
 package me.fromgate.reactions.util;
 
-import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -84,7 +84,7 @@ public class ItemUtilOld {
                 else {
                     Material m = Material.getMaterial(ti[0].toUpperCase());
                     if (m == null) {
-                        ReActions.util.logOnce("wrongitem" + ti[0], "Could not parse item material name (id) " + ti[0]);
+                        M.logOnce("wrongitem" + ti[0], "Could not parse item material name (id) " + ti[0]);
                         return null;
                     }
                     id = m.getId();

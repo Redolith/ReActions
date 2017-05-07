@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2016, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -22,7 +22,6 @@
 
 package me.fromgate.reactions.event;
 
-import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.ActivatorType;
@@ -37,6 +36,7 @@ import me.fromgate.reactions.util.BukkitCompatibilityFix;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.item.ItemUtil;
+import me.fromgate.reactions.util.message.M;
 import me.fromgate.reactions.util.playerselector.PlayerSelectors;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -68,10 +68,6 @@ import java.util.Set;
 public class EventManager {
     private static ReActions plg() {
         return ReActions.instance;
-    }
-
-    private static RAUtil u() {
-        return ReActions.util;
     }
 
     public static boolean raiseFactionEvent(Player p, String oldFaction, String newFaction) {
@@ -234,16 +230,16 @@ public class EventManager {
         if (id.isEmpty()) return false;
         Activator act = plg().getActivator(id);
         if (act == null) {
-            u().logOnce("wrongact_" + id, "Failed to run exec activator " + id + ". Activator not found.");
+            M.logOnce("wrongact_" + id, "Failed to run exec activator " + id + ". Activator not found.");
             return false;
         }
         if (act.getType() != ActivatorType.EXEC) {
-            u().logOnce("wrongactype_" + id, "Failed to run exec activator " + id + ". Wrong activator type.");
+            M.logOnce("wrongactype_" + id, "Failed to run exec activator " + id + ". Wrong activator type.");
             return false;
         }
         int repeat = Math.min(param.getParam("repeat", 1), 1);
 
-        long delay = u().timeToTicks(u().parseTime(param.getParam("delay", "1t")));
+        long delay = Util.timeToTicks(Util.parseTime(param.getParam("delay", "1t")));
 
         final Set<Player> target = new HashSet<Player>();
 

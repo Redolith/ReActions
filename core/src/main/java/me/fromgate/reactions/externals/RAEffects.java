@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -23,11 +23,10 @@
 package me.fromgate.reactions.externals;
 
 import me.fromgate.playeffect.PlayEffect;
-import me.fromgate.reactions.RAUtil;
-import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Util;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -38,9 +37,6 @@ import org.bukkit.plugin.Plugin;
 
 public class RAEffects {
 
-    private static RAUtil u() {
-        return ReActions.util;
-    }
 
     private static String efftypes = "smoke,flame,ender,potion";
     private static boolean use_play_effects = false;
@@ -48,11 +44,11 @@ public class RAEffects {
     //ENDER_SIGNAL  POTION_BREAK MOBSPAWNER_FLAMES  SMOKE 
     public static void init() {
         use_play_effects = isPlayEffectInstalled();
-        if (use_play_effects) u().log("PlayEffect found");
+        if (use_play_effects) M.logMessage("PlayEffect found");
         else {
-            u().log("PlayEffect plugin is not found at your system");
-            u().log("If you need more effects please download PlayEffect from:");
-            u().log("http://dev.bukkit.org/bukkit-plugins/playeffect/");
+            M.logMessage("PlayEffect plugin is not found at your system");
+            M.logMessage("If you need more effects please download PlayEffect from:");
+            M.logMessage("http://dev.bukkit.org/bukkit-plugins/playeffect/");
         }
     }
 
@@ -109,7 +105,7 @@ public class RAEffects {
         if (eff.equalsIgnoreCase("smoke")) {
             if (mod < 0) mod = 0;
             if (mod > 8) mod = 8;
-            if (data == 10) mod = u().tryChance(9);
+            if (data == 10) mod = Util.tryChance(9);
             if (data == 9) {
                 for (int i = 0; i < 9; i++)
                     w.playEffect(loc, Effect.SMOKE, i);
@@ -137,7 +133,7 @@ public class RAEffects {
         } else {
             int modifier = 0;
             int radius = 0;
-            if (!u().isWordInList(eff, efftypes)) return;
+            if (!Util.isWordInList(eff, efftypes)) return;
             if (eff.equalsIgnoreCase("SMOKE")) modifier = parseSmokeDirection(params.getParam("dir", "random"));
             else modifier = Util.getMinMaxRandom(params.getParam("data", "0"));
             radius = params.getParam("radius", 0);

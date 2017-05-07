@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -24,6 +24,7 @@ package me.fromgate.reactions.util;
 
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.timer.Time;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -98,7 +99,7 @@ public class Delayer {
         setDelay(playerName + "." + id, delayTime, add);
     }
 
-    public static void printDelayList(CommandSender p, int page, int lpp) {
+    public static void printDelayList(CommandSender sender, int pageNum, int linePerPage) {
         List<String> lst = new ArrayList<String>();
         for (String key : delays.keySet()) {
             long delaytime = delays.get(key);
@@ -108,7 +109,7 @@ public class Delayer {
             lst.add("[" + ln[0] + "] " + ln[1] + ": " + Time.fullTimeToString(delays.get(key)));
         }
         Collections.sort(lst);
-        ReActions.util.printPage(p, lst, page, "msg_listdelay", "", true, lpp);
+        M.printPage(sender, lst, M.MSG_LISTDELAY, pageNum, linePerPage, true);
     }
 
     public static String[] getStringTime(String playerName, String id) {

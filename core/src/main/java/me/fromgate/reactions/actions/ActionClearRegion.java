@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -66,6 +66,6 @@ public class ActionClearRegion extends Action {
         } else {
             if (type.equalsIgnoreCase("item") || type.equalsIgnoreCase("items")) return true;
         }
-        return (u().isWordInList(e.getType().name().toLowerCase(), type.toLowerCase()));
+        return (Util.isWordInList(e.getType().name().toLowerCase(), type.toLowerCase()));
     }
 }

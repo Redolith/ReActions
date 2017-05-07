@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -24,6 +24,7 @@ package me.fromgate.reactions.actions;
 
 import me.fromgate.reactions.util.Delayer;
 import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.Variables;
 import org.bukkit.entity.Player;
 
@@ -59,7 +60,7 @@ public class ActionDelay extends Action {
 
         if (timeStr.isEmpty()) return false;
         if (variableId.isEmpty()) return false;
-        setDelay(playerName, variableId, u().parseTime(timeStr), add);
+        setDelay(playerName, variableId, Util.parseTime(timeStr), add);
         Delayer.setTempPlaceholders(playerName, variableId);
         setMessageParam(Variables.getTempVar("delay-left-hms", timeStr));
         return true;

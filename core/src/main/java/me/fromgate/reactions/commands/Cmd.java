@@ -1,6 +1,6 @@
 package me.fromgate.reactions.commands;
 
-import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -10,7 +10,7 @@ public abstract class Cmd {
     private String[] subCommands;
     private String permission;
     private boolean allowConsole;
-    private String description;
+    private M description;
     private String shortDescription;
 
 
@@ -69,7 +69,7 @@ public abstract class Cmd {
     }
 
     public String getFullDescription() {
-        return ReActions.getUtil().getMSG(this.description, this.shortDescription);
+        return this.description.getText(this.shortDescription);
 
     }
 

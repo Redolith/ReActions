@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -28,6 +28,7 @@ import com.massivecraft.factions.entity.FactionColl;
 import com.massivecraft.factions.entity.MPlayer;
 import com.massivecraft.massivecore.ps.PS;
 import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -50,7 +51,7 @@ public class RAFactions {
         try {
             listener = new FactionListener();
             Bukkit.getPluginManager().registerEvents(listener, ReActions.instance);
-            ReActions.util.log("Factions found");
+            M.logMessage("Factions found");
             enabled = true;
         } catch (Throwable t) {
             enabled = false;

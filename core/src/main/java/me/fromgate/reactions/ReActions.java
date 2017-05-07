@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -45,6 +45,8 @@ import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.Shoot;
 import me.fromgate.reactions.util.UpdateChecker;
 import me.fromgate.reactions.util.Variables;
+import me.fromgate.reactions.util.message.BukkitMessenger;
+import me.fromgate.reactions.util.message.M;
 import me.fromgate.reactions.util.playerselector.PlayerSelectors;
 import me.fromgate.reactions.util.waiter.ActionsWaiter;
 import org.bukkit.Bukkit;
@@ -52,7 +54,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 
 public class ReActions extends JavaPlugin {
@@ -69,22 +70,15 @@ public class ReActions extends JavaPlugin {
     int chatLength = 55;
 
     public static ReActions instance;
-    public static RAUtil util;
 
 
     public static ReActions getPlugin() {
         return instance;
     }
 
-    public static RAUtil getUtil() {
-        return util;
-    }
 
 
     //разные переменные
-    RAUtil u;
-    Logger log = Logger.getLogger("Minecraft");
-    //private CmdOld cmd;
     private boolean townyConected = false;
 
     public boolean isTownyConnected() {
@@ -99,8 +93,8 @@ public class ReActions extends JavaPlugin {
     public void onEnable() {
         loadCfg();
         saveCfg();
-        u = new RAUtil(this, languageSave, language, "react");
         UpdateChecker.init(this, "ReActions", "61726", "reactions", this.checkUpdates);
+        M.init("ReActions", new BukkitMessenger(this), language, false, languageSave);
 
         if (!getDataFolder().exists()) getDataFolder().mkdirs();
         PluginManager pm = this.getServer().getPluginManager();
@@ -108,7 +102,6 @@ public class ReActions extends JavaPlugin {
         pm.registerEvents(new InventoryMenu(), this);
 
         instance = this;
-        util = u;
         Commander.init(this);
         Timers.init();
         Activators.init();
@@ -191,10 +184,6 @@ public class ReActions extends JavaPlugin {
         horizontalPushback = getConfig().getBoolean("reactions.horizontal-pushback-action", false);
         Shoot.actionShootBreak = getConfig().getString("actions.shoot.break-block", Shoot.actionShootBreak);
         Shoot.actionShootThrough = getConfig().getString("actions.shoot.penetrable", Shoot.actionShootThrough);
-    }
-
-    public RAUtil getUtils() {
-        return this.u;
     }
 
     public boolean isCenterTpLocation() {

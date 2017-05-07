@@ -1,9 +1,9 @@
 package me.fromgate.reactions.placeholders;
 
-import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.util.BukkitCompatibilityFix;
 import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.PlayerRespawner;
+import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.item.ItemUtil;
 import me.fromgate.reactions.util.item.VirtualItem;
 import org.bukkit.Location;
@@ -69,7 +69,7 @@ public class PlaceholderPlayer extends Placeholder {
 
     private String getPlayerInventory(Player player, String value) {
         VirtualItem vi = null;
-        if (ReActions.util.isInteger(value)) {
+        if (Util.isInteger(value)) {
             int slotNum = Integer.parseInt(value);
             if (slotNum < 0 || slotNum >= player.getInventory().getSize()) return "";
             vi = ItemUtil.itemFromItemStack(player.getInventory().getItem(slotNum));

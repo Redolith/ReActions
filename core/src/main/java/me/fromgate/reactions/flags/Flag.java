@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -22,7 +22,6 @@
 
 package me.fromgate.reactions.flags;
 
-import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import org.bukkit.entity.Player;
 
@@ -31,10 +30,6 @@ public abstract class Flag {
 
     ReActions plg() {
         return ReActions.instance;
-    }
-
-    RAUtil u() {
-        return ReActions.util;
     }
 
     public abstract boolean checkFlag(Player p, String param);

@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -22,6 +22,7 @@
 
 package me.fromgate.reactions.event;
 
+import me.fromgate.reactions.util.BukkitCompatibilityFix;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -31,7 +32,7 @@ public class ItemHoldEvent extends RAEvent {
     }
 
     public ItemStack getItem() {
-        return this.getPlayer().getItemInHand();
+        return BukkitCompatibilityFix.getItemInHand(this.getPlayer());
     }
 
 }

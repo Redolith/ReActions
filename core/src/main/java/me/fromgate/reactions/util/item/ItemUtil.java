@@ -146,9 +146,9 @@ public class ItemUtil {
 
     public static ItemStack parseItemStack(String string) {
         VirtualItem vi = itemFromString(string);
-        // ReActions.getUtil().logOnce(string, "Failed to parse item: " + string);
         return vi == null ? null : vi;
     }
+
 
     public static boolean compareItemStr(ItemStack item, String itemStr) {
         if (item == null || item.getType() == Material.AIR) return false;

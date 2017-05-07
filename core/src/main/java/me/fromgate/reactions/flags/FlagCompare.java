@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -24,6 +24,7 @@
 package me.fromgate.reactions.flags;
 
 import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.Util;
 import org.bukkit.entity.Player;
 
 public class FlagCompare extends Flag {
@@ -37,7 +38,7 @@ public class FlagCompare extends Flag {
         for (String valueKey : params.keySet()) {
             if (!((valueKey.toLowerCase()).startsWith("value"))) continue;
             String value = params.getParam(valueKey);
-            if (u().isIntegerSigned(value, paramValue) && (Integer.parseInt(value) == Integer.parseInt(paramValue)))
+            if (Util.isIntegerSigned(value, paramValue) && (Integer.parseInt(value) == Integer.parseInt(paramValue)))
                 return true;
             else if (paramValue.equalsIgnoreCase(value)) return true;
         }

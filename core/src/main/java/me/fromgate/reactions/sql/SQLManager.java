@@ -1,6 +1,6 @@
 /*  
  *  ReActions, Minecraft bukkit plugin
- *  (c)2012-2014, fromgate, fromgate@gmail.com
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
  *    
  *  This file is part of ReActions.
@@ -24,7 +24,9 @@ package me.fromgate.reactions.sql;
 
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.Variables;
+import me.fromgate.reactions.util.message.M;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -49,7 +51,7 @@ public class SQLManager {
             Class.forName("com.mysql.jdbc.Driver");
             enabled = true;
         } catch (ClassNotFoundException e) {
-            ReActions.util.logOnce("mysqlinitfail", "MySQL JDBC Driver not found!");
+            M.logOnce("mysqlinitfail", "MySQL JDBC Driver not found!");
             enabled = false;
             return;
         }
@@ -89,7 +91,7 @@ public class SQLManager {
 
     public static boolean compareSelect(String value, String query, int column, Param params) {
         String result = executeSelect(query, column, params);
-        if (ReActions.util.isInteger(result, value)) return (Integer.parseInt(result) == Integer.parseInt(value));
+        if (Util.isInteger(result, value)) return (Integer.parseInt(result) == Integer.parseInt(value));
         return result.equalsIgnoreCase(value);
     }
 
@@ -117,7 +119,7 @@ public class SQLManager {
         try {
             connection = DriverManager.getConnection(connectionLine, prop);
         } catch (Exception e) {
-            ReActions.util.logOnce("sqlconnect", "Failed to connect to database: " + connectionLine + " user: " + userName);
+            M.logOnce("sqlconnect", "Failed to connect to database: " + connectionLine + " user: " + userName);
         }
         return connection;
     }
@@ -139,7 +141,7 @@ public class SQLManager {
                 if (column > 0 && column <= columns) resultStr = result.getString(column);
             }
         } catch (Exception e) {
-            ReActions.util.logOnce(query, "Failed to execute query: " + query);
+            M.logOnce(query, "Failed to execute query: " + query);
         }
         try {
             if (result != null) result.close();
@@ -163,8 +165,8 @@ public class SQLManager {
             statement.executeUpdate(query);
             ok = true;
         } catch (Exception e) {
-            ReActions.util.logOnce(query, "Failed to execute query: " + query);
-            if (e.getMessage() != null) ReActions.util.logOnce(query + e.getMessage(), e.getMessage());
+            M.logOnce(query, "Failed to execute query: " + query);
+            if (e.getMessage() != null) M.logOnce(query + e.getMessage(), e.getMessage());
             e.printStackTrace();
         }
         try {
@@ -194,8 +196,8 @@ public class SQLManager {
             result = selectStmt.executeQuery(query);
             resultBool = result.next();
         } catch (Exception e) {
-            ReActions.util.logOnce(query, "Failed to execute query: " + query);
-            if (e.getMessage() != null) ReActions.util.logOnce(query + e.getMessage(), e.getMessage());
+            M.logOnce(query, "Failed to execute query: " + query);
+            if (e.getMessage() != null) M.logOnce(query + e.getMessage(), e.getMessage());
         }
         try {
             if (result != null) result.close();
