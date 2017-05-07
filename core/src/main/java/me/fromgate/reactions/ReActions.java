@@ -45,6 +45,8 @@ import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.Shoot;
 import me.fromgate.reactions.util.UpdateChecker;
 import me.fromgate.reactions.util.Variables;
+import me.fromgate.reactions.util.message.BukkitMessenger;
+import me.fromgate.reactions.util.message.M;
 import me.fromgate.reactions.util.playerselector.PlayerSelectors;
 import me.fromgate.reactions.util.waiter.ActionsWaiter;
 import org.bukkit.Bukkit;
@@ -101,6 +103,7 @@ public class ReActions extends JavaPlugin {
         saveCfg();
         u = new RAUtil(this, languageSave, language, "react");
         UpdateChecker.init(this, "ReActions", "61726", "reactions", this.checkUpdates);
+        M.init("ReActions", new BukkitMessenger(this), language, false, languageSave);
 
         if (!getDataFolder().exists()) getDataFolder().mkdirs();
         PluginManager pm = this.getServer().getPluginManager();
