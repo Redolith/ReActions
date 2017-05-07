@@ -106,7 +106,8 @@ public enum Actions {
     FCT_POWER_ADD("factaddpower", false, new ActionFactionsPowerAdd()),
     WAIT("wait", false, new ActionWait()),
     LOG("log", false, new ActionLog()),
-    PLAYER_ID("log", false, new ActionPlayerID());
+    PLAYER_ID("playerid", false, new ActionPlayerID()),
+    FILE("file", false, new ActionFile());
 
     private String alias;
     private boolean requireplayer;
