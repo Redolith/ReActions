@@ -22,16 +22,24 @@
 
 package me.fromgate.reactions.event;
 
+import me.fromgate.reactions.util.Param;
 import org.bukkit.entity.Player;
 
 public class ExecEvent extends RAEvent {
     private String activator;
     private Player targetPlayer;
+    private Param tempVars;
 
-    public ExecEvent(Player p, Player targetPlayer, String activator) {
-        super(p);
+    public ExecEvent(Player player, Player targetPlayer, String activator) {
+        super(player);
         this.targetPlayer = targetPlayer;
         this.activator = activator;
+        this.tempVars = null;
+    }
+
+    public ExecEvent(Player p, Player targetPlayer, String activator, Param tempVars) {
+        this(p, targetPlayer, activator);
+        this.tempVars = tempVars;
     }
 
     public String getActivatorId() {
@@ -40,5 +48,9 @@ public class ExecEvent extends RAEvent {
 
     public Player getTargetPlayer() {
         return this.targetPlayer;
+    }
+
+    public Param getTempVars() {
+        return this.tempVars;
     }
 }

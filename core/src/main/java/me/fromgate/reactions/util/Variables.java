@@ -232,6 +232,12 @@ public class Variables {
         return newStr;
     }
 
+    public static void setTempVars(Param params) {
+        if (params == null || params.isEmpty()) return;
+        for (String key : params.keySet()) {
+            setTempVar(key, params.getParam(key));
+        }
+    }
     public static void setTempVar(String varId, String value) {
         tempvars.put(varId, value);
     }

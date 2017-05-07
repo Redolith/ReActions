@@ -141,18 +141,11 @@ public enum Actions {
         return name;
     }
 
-    public static boolean executeActivator(Player p, Activator act) {
-        boolean isAction = Flags.checkFlags(p, act);
+    public static boolean executeActivator(Player player, Activator act) {
+        boolean isAction = Flags.checkFlags(player, act);
         List<ActVal> actions = isAction ? act.getActions() : act.getReactions();
         if (actions.isEmpty()) return false;
-        return executeActions(p, actions, isAction);
-        /*boolean cancelParentEvent = false;
-        for (ActVal action : actions) {
-            if (!Actions.isValid(action.flag)) continue;
-            Actions at = Actions.getByName(action.flag);
-            if (at.performAction(p,  isAction, new Param (Placeholders.replacePlaceholders(p, action.value)))) cancelParentEvent = true;
-        }
-        return cancelParentEvent; */
+        return executeActions(player, actions, isAction);
     }
 
     public static boolean executeActions(Player player, List<ActVal> actions, boolean isAction) {

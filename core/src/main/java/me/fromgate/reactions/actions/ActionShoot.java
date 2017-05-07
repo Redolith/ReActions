@@ -29,8 +29,8 @@ import org.bukkit.entity.Player;
 public class ActionShoot extends Action {
 
     @Override
-    public boolean execute(Player p, Param params) {
-        Shoot.shoot(p, params);
+    public boolean execute(Player player, Param params) {
+        Shoot.shoot(player, params);
         return true;
     }
 

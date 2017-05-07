@@ -224,11 +224,15 @@ public class EventManager {
     }
 
     public static boolean raiseExecEvent(CommandSender sender, Param param) {
+        return raiseExecEvent(sender, param, null);
+    }
+
+    public static boolean raiseExecEvent(CommandSender sender, Param param, final Param tempVars) {
         if (param.isEmpty()) return false;
         final Player senderPlayer = (sender instanceof Player) ? (Player) sender : null;
         final String id = param.getParam("activator", param.getParam("exec"));
         if (id.isEmpty()) return false;
-        Activator act = plg().getActivator(id);
+        Activator act = Activators.get(id);
         if (act == null) {
             M.logOnce("wrongact_" + id, "Failed to run exec activator " + id + ". Activator not found.");
             return false;
@@ -237,14 +241,16 @@ public class EventManager {
             M.logOnce("wrongactype_" + id, "Failed to run exec activator " + id + ". Wrong activator type.");
             return false;
         }
+
         int repeat = Math.min(param.getParam("repeat", 1), 1);
 
         long delay = Util.timeToTicks(Util.parseTime(param.getParam("delay", "1t")));
 
-        final Set<Player> target = new HashSet<Player>();
+        final Set<Player> target = new HashSet<>();
 
-        if (param.isParamsExists("player"))
+        if (param.isParamsExists("player")) {
             target.addAll(PlayerSelectors.getPlayerList(new Param(param.getParam("player"), "player")));
+        }
         target.addAll(PlayerSelectors.getPlayerList(param));   // Оставляем для совместимости со старым вариантом
 
         if (target.isEmpty() && !param.hasAnyParam(PlayerSelectors.getAllKeys())) target.add(senderPlayer);
@@ -253,9 +259,9 @@ public class EventManager {
             Bukkit.getScheduler().runTaskLater(plg(), new Runnable() {
                 @Override
                 public void run() {
-                    for (Player p : target) {
-                        if (Activators.isStopped(p, id, true)) continue;
-                        ExecEvent ce = new ExecEvent(senderPlayer, p, id);
+                    for (Player player : target) {
+                        if (Activators.isStopped(player, id, true)) continue;
+                        ExecEvent ce = new ExecEvent(senderPlayer, player, id, tempVars);
                         Bukkit.getServer().getPluginManager().callEvent(ce);
                     }
                 }

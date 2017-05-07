@@ -54,9 +54,12 @@ public class ActionMessage extends Action {
         Set<Player> players = new HashSet<>();
         if (params.hasAnyParam(PlayerSelectors.getAllKeys())) {
             players.addAll(PlayerSelectors.getPlayerList(params));
-            if (players.isEmpty() && params.isParamsExists("player"))
+            if (players.isEmpty() && params.isParamsExists("player")) {
                 players.addAll(PlayerSelectors.getPlayerList(new Param(params.getParam("player"))));
-        } else if (player != null) players.add(player);
+            }
+        } else if (player != null) {
+            players.add(player);
+        }
         if (players.isEmpty()) return;
 
         String message = params.getParam("text", removeParams(params.getParam("param-line")));

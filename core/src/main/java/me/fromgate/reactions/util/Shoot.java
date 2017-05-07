@@ -22,6 +22,7 @@
 
 package me.fromgate.reactions.util;
 
+import me.fromgate.reactions.event.EventManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.block.Block;
@@ -49,8 +50,35 @@ public class Shoot {
         int distance = params.getParam("distance", 100);
         for (LivingEntity le : getEntityBeam(shooter, getBeam(shooter, distance), onehit)) {
             double damage = (double) Util.getMinMaxRandom(params.getParam("damage", "1"));
-            damageEntity(shooter, le, damage);
+            if (damage > 0) {
+                damageEntity(shooter, le, damage);
+            }
+            if (params.hasAnyParam("run")) {
+                executeActivator(shooter instanceof Player ? (Player) shooter : null, le, params.getParam("run"));
+            }
         }
+    }
+
+    private static String getMobName(LivingEntity mob) {
+        if (mob.getCustomName() == null) return mob.getType().name();
+        return mob.getCustomName();
+    }
+
+    private static void executeActivator(Player shooter, LivingEntity target, String paramStr) {
+        Param param = Param.parseParams(paramStr);
+        if (param.isEmpty() || !param.hasAnyParam("activator", "exec")) return;
+        Player player = target instanceof Player ? (Player) target : null;
+        if (player == null && param.getParam("onlyplayer", true)) return;
+        param.set("player", player == null ? "null" : player.getName());
+        Param tempVars = new Param();
+        tempVars.set("targettype", target.getType().name());
+        tempVars.set("targetname", getMobName(target));
+        tempVars.set("targetloc", Locator.locationToString(target.getLocation()));
+        if (shooter != null) {
+            tempVars.set("shooter", shooter.getName());
+            tempVars.set("shooterloc", Locator.locationToString(shooter.getLocation()));
+        }
+        EventManager.raiseExecEvent(shooter, param, tempVars);
     }
 
     private static List<Block> getBeam(LivingEntity p, int distance) {

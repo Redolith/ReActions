@@ -118,8 +118,9 @@ public class Param {
     }
 
     public boolean hasAnyParam(String... keys) {
-        for (String key : keys)
+        for (String key : keys) {
             if (params.containsKey(key)) return true;
+        }
         return false;
     }
 

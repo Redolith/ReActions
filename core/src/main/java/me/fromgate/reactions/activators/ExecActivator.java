@@ -26,6 +26,7 @@ package me.fromgate.reactions.activators;
 
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.ExecEvent;
+import me.fromgate.reactions.util.Variables;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
@@ -48,8 +49,10 @@ public class ExecActivator extends Activator {
     public boolean activate(Event event) {
         if (event instanceof ExecEvent) {
             ExecEvent ce = (ExecEvent) event;
-            if (ce.getActivatorId().equalsIgnoreCase(this.getName()))
+            if (ce.getActivatorId().equalsIgnoreCase(this.getName())) {
+                Variables.setTempVars(ce.getTempVars());
                 return Actions.executeActivator(ce.getTargetPlayer(), this);
+            }
         }
         return false;
     }
