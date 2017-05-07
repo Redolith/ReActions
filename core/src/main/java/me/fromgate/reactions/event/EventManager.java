@@ -37,6 +37,7 @@ import me.fromgate.reactions.util.BukkitCompatibilityFix;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.item.ItemUtil;
+import me.fromgate.reactions.util.message.M;
 import me.fromgate.reactions.util.playerselector.PlayerSelectors;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -234,11 +235,11 @@ public class EventManager {
         if (id.isEmpty()) return false;
         Activator act = plg().getActivator(id);
         if (act == null) {
-            u().logOnce("wrongact_" + id, "Failed to run exec activator " + id + ". Activator not found.");
+            M.logOnce("wrongact_" + id, "Failed to run exec activator " + id + ". Activator not found.");
             return false;
         }
         if (act.getType() != ActivatorType.EXEC) {
-            u().logOnce("wrongactype_" + id, "Failed to run exec activator " + id + ". Wrong activator type.");
+            M.logOnce("wrongactype_" + id, "Failed to run exec activator " + id + ". Wrong activator type.");
             return false;
         }
         int repeat = Math.min(param.getParam("repeat", 1), 1);

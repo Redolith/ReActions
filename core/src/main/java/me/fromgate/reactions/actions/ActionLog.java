@@ -23,9 +23,9 @@
 package me.fromgate.reactions.actions;
 
 import com.google.common.base.Joiner;
-import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.message.M;
 import me.fromgate.reactions.util.playerselector.PlayerSelectors;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -38,7 +38,6 @@ public class ActionLog extends Action {
 
     @Override
     public boolean execute(Player p, Param params) {
-        RAUtil u = ReActions.getUtil();
         if (params.hasAnyParam("prefix", "color")) {
             String plg_name = ReActions.getPlugin().getDescription().getName();
             Boolean prefix = params.getParam("prefix", true);
@@ -48,7 +47,7 @@ public class ActionLog extends Action {
             if (prefix) {
                 this.log(message, plg_name, color);
             } else this.log(message, "", color);
-        } else u.log(params.getParam("param-line"));
+        } else M.logMessage(params.getParam("param-line"));
 
         return true;
     }

@@ -2,6 +2,7 @@ package me.fromgate.reactions.actions;
 
 import me.fromgate.reactions.util.ActVal;
 import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.message.M;
 import me.fromgate.reactions.util.waiter.ActionsWaiter;
 import org.bukkit.entity.Player;
 
@@ -23,7 +24,7 @@ public class ActionDelayed extends Action {
         }
 
         if (!Actions.isValid(actionStr)) {
-            u().logOnce(actionSource, "Failed to execute delayed action: " + actionSource);
+            M.logOnce(actionSource, "Failed to execute delayed action: " + actionSource);
             return false;
         }
 
@@ -36,7 +37,7 @@ public class ActionDelayed extends Action {
 		/*
         final Actions action = Actions.getByName(actionStr);
 		if (action==null) {
-			u().logOnce(actionSource, "Failed to execute delayed action: "+actionSource);
+			M.logOnce(actionSource, "Failed to execute delayed action: "+actionSource);
 			return false;
 		}
 		

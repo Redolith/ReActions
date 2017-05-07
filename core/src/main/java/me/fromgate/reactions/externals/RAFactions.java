@@ -28,6 +28,7 @@ import com.massivecraft.factions.entity.FactionColl;
 import com.massivecraft.factions.entity.MPlayer;
 import com.massivecraft.massivecore.ps.PS;
 import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -50,7 +51,7 @@ public class RAFactions {
         try {
             listener = new FactionListener();
             Bukkit.getPluginManager().registerEvents(listener, ReActions.instance);
-            ReActions.util.log("Factions found");
+            M.logMessage("Factions found");
             enabled = true;
         } catch (Throwable t) {
             enabled = false;

@@ -22,7 +22,7 @@
 
 package me.fromgate.reactions.util;
 
-import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -84,7 +84,7 @@ public class ItemUtilOld {
                 else {
                     Material m = Material.getMaterial(ti[0].toUpperCase());
                     if (m == null) {
-                        ReActions.util.logOnce("wrongitem" + ti[0], "Could not parse item material name (id) " + ti[0]);
+                        M.logOnce("wrongitem" + ti[0], "Could not parse item material name (id) " + ti[0]);
                         return null;
                     }
                     id = m.getId();

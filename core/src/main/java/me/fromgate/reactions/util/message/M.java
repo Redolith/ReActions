@@ -25,9 +25,11 @@ package me.fromgate.reactions.util.message;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public enum M {
 
@@ -429,6 +431,7 @@ public enum M {
     private static char c1 = 'a';
     private static char c2 = '2';
     private static String pluginName;
+    private static Set onceLog = new HashSet();
 
 
     public static String colorize(String text) {
@@ -775,10 +778,23 @@ public enum M {
     public static boolean printMSG(Object sender, String key, Object... s) {
         M m = getByName(key.toUpperCase());
         if (m == null) {
-            M.LNG_PRINT_FAIL_M.print(sender, key);
-            return M.LNG_PRINT_FAIL_M.log(sender, key);
+            LNG_PRINT_FAIL_M.print(sender, key);
+            return LNG_PRINT_FAIL_M.log(sender, key);
         } else {
             return m.print(sender, s);
+        }
+    }
+
+
+    public static void logOnce(String key, Object... s) {
+        if (onceLog.contains(key.toLowerCase())) return;
+        onceLog.add(key.toLowerCase());
+        M.logMessage(s);
+    }
+
+    public static void printMessage(Object sender, String message) {
+        if (messenger.isValidSender(sender)) {
+            messenger.print(sender, colorize(message));
         }
     }
 }

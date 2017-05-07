@@ -23,14 +23,16 @@
 package me.fromgate.reactions.actions;
 
 import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.entity.Player;
 
 public class ActionBroadcast extends Action {
 
     @Override
     public boolean execute(Player p, Param params) {
-        for (Player pl : plg().getServer().getOnlinePlayers())
-            u().printMsg(pl, params.getParam("param-line"));
+        for (Player pl : plg().getServer().getOnlinePlayers()) {
+            M.printMessage(pl, params.getParam("param-line"));
+        }
         return true;
     }
 

@@ -30,6 +30,7 @@ import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.item.ItemUtil;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -54,7 +55,7 @@ public class MobSpawn {
     public static void mobSpawn(Player p, Param params) {
         String mob = params.getParam("type", "").toUpperCase();
         if (mob.isEmpty()) {
-            ReActions.getUtil().log("Failed to spawn mob: " + params.getParam("param-line"));
+            M.logMessage("Failed to spawn mob: " + params.getParam("param-line"));
             return;
         }
         String locstr = params.getParam("loc", "");
@@ -131,18 +132,18 @@ public class MobSpawn {
             if (mbs.equalsIgnoreCase("wither")) et = MobWither.getWitherType();
 
             if (et == null) {
-                ReActions.util.logOnce("mobspawnunknowntype_" + mobstr, "Unknown mob type " + mbs + " (" + mobstr + ")");
+                M.logOnce("mobspawnunknowntype_" + mobstr, "Unknown mob type " + mbs + " (" + mobstr + ")");
                 continue;
             }
             Entity e = loc.getWorld().spawnEntity(loc, et);
             if (e == null) {
-                ReActions.util.logOnce("mobspawnfail_" + mobstr, "Cannot spawn mob " + mbs + " (" + mobstr + ")");
+                M.logOnce("mobspawnfail_" + mobstr, "Cannot spawn mob " + mbs + " (" + mobstr + ")");
                 continue;
             }
 
             if (!(e instanceof LivingEntity)) {
                 e.remove();
-                ReActions.util.logOnce("mobspawnnotmob_" + mobstr, "Cannot spawn mob " + mbs + " (" + mobstr + ")");
+                M.logOnce("mobspawnnotmob_" + mobstr, "Cannot spawn mob " + mbs + " (" + mobstr + ")");
                 continue;
             }
 

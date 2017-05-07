@@ -54,7 +54,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 
 public class ReActions extends JavaPlugin {
@@ -85,8 +84,6 @@ public class ReActions extends JavaPlugin {
 
     //разные переменные
     RAUtil u;
-    Logger log = Logger.getLogger("Minecraft");
-    //private CmdOld cmd;
     private boolean townyConected = false;
 
     public boolean isTownyConnected() {
@@ -101,7 +98,7 @@ public class ReActions extends JavaPlugin {
     public void onEnable() {
         loadCfg();
         saveCfg();
-        u = new RAUtil(this, languageSave, language, "react");
+        u = new RAUtil();
         UpdateChecker.init(this, "ReActions", "61726", "reactions", this.checkUpdates);
         M.init("ReActions", new BukkitMessenger(this), language, false, languageSave);
 

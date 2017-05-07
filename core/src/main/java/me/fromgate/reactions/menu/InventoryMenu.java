@@ -45,7 +45,7 @@ public class InventoryMenu implements Listener {
         try {
             cfg.save(f);
         } catch (Exception e) {
-            ReActions.util.log("Failed to save menu configuration file");
+            M.logMessage("Failed to save menu configuration file");
         }
     }
 
@@ -61,7 +61,7 @@ public class InventoryMenu implements Listener {
                 menu.put(key, vi);
             }
         } catch (Exception e) {
-            ReActions.util.log("Failed to load menu configuration file");
+            M.logMessage("Failed to load menu configuration file");
         }
     }
 

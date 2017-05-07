@@ -5,7 +5,7 @@ import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -38,7 +38,7 @@ public class WGBridge5x extends WGBridge {
         try {
             rset = worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc);
         } catch (Exception e) {
-            ReActions.util.log("Failed to get region list!");
+            M.logMessage("Failed to get region list!");
             e.printStackTrace();
         }
         if ((rset == null) || (rset.size() == 0)) return rgs;

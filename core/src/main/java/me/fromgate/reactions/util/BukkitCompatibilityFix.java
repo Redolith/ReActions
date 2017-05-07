@@ -22,7 +22,7 @@
 
 package me.fromgate.reactions.util;
 
-import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -54,7 +54,7 @@ public class BukkitCompatibilityFix {
             Object shooterObject = getShooter.invoke(projectile);
             if (shooterObject != null && shooterObject instanceof LivingEntity) return (LivingEntity) shooterObject;
         } catch (Exception e) {
-            ReActions.util.logOnce("getShooter", "Method \"getShooter\" is not declared in Projectile class");
+            M.logOnce("getShooter", "Method \"getShooter\" is not declared in Projectile class");
         }
         return null;
     }
@@ -79,7 +79,7 @@ public class BukkitCompatibilityFix {
         try {
             setItem.invoke(inv, item);
         } catch (Exception e) {
-            ReActions.util.logOnce("setItemInHand", "Methods \"setItemInHand\" and \"setItemInMainHand\" are not declared in PlayerInventory class");
+            M.logOnce("setItemInHand", "Methods \"setItemInHand\" and \"setItemInMainHand\" are not declared in PlayerInventory class");
         }
     }
 
@@ -106,7 +106,7 @@ public class BukkitCompatibilityFix {
                 return (ItemStack) itemObj;
             }
         } catch (Exception e) {
-            ReActions.util.logOnce("getItemInHand", "Methods \"getItemInHand\" and \"getItemInMainHand\" are not declared in PlayerInventory class (Old server?!)");
+            M.logOnce("getItemInHand", "Methods \"getItemInHand\" and \"getItemInMainHand\" are not declared in PlayerInventory class (Old server?!)");
             return player.getItemInHand();
         }
         return null;
@@ -132,7 +132,7 @@ public class BukkitCompatibilityFix {
         try {
             setItem.invoke(inv, item);
         } catch (Exception e) {
-            ReActions.util.logOnce("EEsetItemInHand", "Methods \"setItemInHand\" and \"setItemInMainHand\" are not declared in EntityEquipment class");
+            M.logOnce("EEsetItemInHand", "Methods \"setItemInHand\" and \"setItemInMainHand\" are not declared in EntityEquipment class");
         }
     }
 
@@ -156,7 +156,7 @@ public class BukkitCompatibilityFix {
             Object itemObj = getItem.invoke(inv);
             if (itemObj != null && itemObj instanceof ItemStack) return (ItemStack) itemObj;
         } catch (Exception e) {
-            ReActions.util.logOnce("EEgetItemInHand", "Methods \"getItemInHand\" and \"getItemInMainHand\" are not declared in EntityEquipment class");
+            M.logOnce("EEgetItemInHand", "Methods \"getItemInHand\" and \"getItemInMainHand\" are not declared in EntityEquipment class");
         }
         return null;
     }
@@ -169,7 +169,7 @@ public class BukkitCompatibilityFix {
             setItem = PlayerInventory.class.getDeclaredMethod("setItemInOffHand", ItemStack.class);
             setItem.invoke(inv, item);
         } catch (Exception e) {
-            ReActions.util.logOnce("setItemInOffHand", "Method \"setItemInOffHand\" is not declared in PlayerInventory class");
+            M.logOnce("setItemInOffHand", "Method \"setItemInOffHand\" is not declared in PlayerInventory class");
         }
     }
 
@@ -181,7 +181,7 @@ public class BukkitCompatibilityFix {
             setItem = EntityEquipment.class.getDeclaredMethod("setItemInOffHand", ItemStack.class);
             setItem.invoke(inv, item);
         } catch (Exception e) {
-            ReActions.util.logOnce("EEsetItemInOffHand", "Method \"setItemInOffHand\" is not declared in EntityEquipment class");
+            M.logOnce("EEsetItemInOffHand", "Method \"setItemInOffHand\" is not declared in EntityEquipment class");
         }
     }
 
@@ -194,7 +194,7 @@ public class BukkitCompatibilityFix {
             Object itemObj = getItem.invoke(inv);
             if (itemObj != null && itemObj instanceof ItemStack) return (ItemStack) itemObj;
         } catch (Exception e) {
-            ReActions.util.logOnce("EEgetItemInOffHand", "Method \"getItemInOffHand\" is are not declared in EntityEquipment class");
+            M.logOnce("EEgetItemInOffHand", "Method \"getItemInOffHand\" is are not declared in EntityEquipment class");
         }
         return null;
     }
@@ -208,7 +208,7 @@ public class BukkitCompatibilityFix {
             Object itemObj = getItem.invoke(inv);
             if (itemObj != null && itemObj instanceof ItemStack) return (ItemStack) itemObj;
         } catch (Exception e) {
-            ReActions.util.logOnce("getItemInOffHand", "Method \"getItemInOffHand\" is are not declared in PlayerInventory class");
+            M.logOnce("getItemInOffHand", "Method \"getItemInOffHand\" is are not declared in PlayerInventory class");
         }
         return null;
     }
@@ -301,7 +301,7 @@ public class BukkitCompatibilityFix {
             else if (method.getReturnType().equals(int.class)) returnDouble = (double) ((Integer) value).intValue();
             return returnDouble;
         } catch (Exception e) {
-            ReActions.util.logOnce("BCF" + methodName, "Looks like this version of BukkitAPI totally incompatible with API 1.7.x. Method \"" + methodName + "\" is not declared in " + object.getClass().getCanonicalName());
+            M.logOnce("BCF" + methodName, "Looks like this version of BukkitAPI totally incompatible with API 1.7.x. Method \"" + methodName + "\" is not declared in " + object.getClass().getCanonicalName());
             e.printStackTrace();
         }
         return 0;
@@ -332,7 +332,7 @@ public class BukkitCompatibilityFix {
                 e.printStackTrace();
             }
         } else
-            ReActions.util.logOnce("BCFix" + methodName, "Looks like this version of BukkitAPI totally incompatible with API 1.7.x. Method \"" + methodName + "\" is not declared in " + object.getClass().getCanonicalName() + " or not working properly");
+            M.logOnce("BCFix" + methodName, "Looks like this version of BukkitAPI totally incompatible with API 1.7.x. Method \"" + methodName + "\" is not declared in " + object.getClass().getCanonicalName() + " or not working properly");
     }
 
 
@@ -358,7 +358,7 @@ public class BukkitCompatibilityFix {
                 constructor = EntityDamageByEntityEvent.getConstructor(Entity.class, Entity.class, DamageCause.class, int.class);
                 useInt = true;
             } catch (Exception e1) {
-                ReActions.util.logOnce("BCFixEntityDamageEvent", "Failed to determine constructor for EntityDamageByEntityEvent");
+                M.logOnce("BCFixEntityDamageEvent", "Failed to determine constructor for EntityDamageByEntityEvent");
                 return null;
             }
         }
@@ -367,7 +367,7 @@ public class BukkitCompatibilityFix {
             if (useInt) event = constructor.newInstance(damager, entity, DamageCause.ENTITY_ATTACK, (int) damage);
             else event = constructor.newInstance(damager, entity, DamageCause.ENTITY_ATTACK, damage);
         } catch (Exception e) {
-            ReActions.util.logOnce("BCFixEntityDamageEvent2", "Failed to initiate EntityDamageByEntityEvent");
+            M.logOnce("BCFixEntityDamageEvent2", "Failed to initiate EntityDamageByEntityEvent");
             return null;
         }
         return (EntityEvent) event;

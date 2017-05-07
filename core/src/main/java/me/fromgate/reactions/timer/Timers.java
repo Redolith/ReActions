@@ -247,7 +247,7 @@ public class Timers {
         try {
             cfg.load(f);
         } catch (Exception e) {
-            u().log("Failed to save timers.yml file");
+            M.logMessage("Failed to save timers.yml file");
             return;
         }
         for (String timerType : cfg.getKeys(false)) {
@@ -287,7 +287,7 @@ public class Timers {
         try {
             cfg.save(f);
         } catch (IOException e) {
-            u().log("Failed to save timers.yml file");
+            M.logMessage("Failed to save timers.yml file");
         }
     }
 

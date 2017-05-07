@@ -1,6 +1,6 @@
 package me.fromgate.reactions.module.wgbridge;
 
-import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -20,8 +20,8 @@ public abstract class WGBridge {
         setVersion("[" + this.getClass().getSimpleName() + "]");
         init();
         if (connected) {
-            ReActions.util.log("WorldGuard " + wgPlugin.getDescription().getVersion() + " found. Bridge loaded: " + getVersion());
-        } else ReActions.util.log("Worlguard not found...");
+            M.logMessage("WorldGuard " + wgPlugin.getDescription().getVersion() + " found. Bridge loaded: " + getVersion());
+        } else M.logMessage("Worlguard not found...");
     }
 
     protected void setVersion(String version) {

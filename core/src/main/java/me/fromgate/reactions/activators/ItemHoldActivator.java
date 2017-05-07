@@ -22,13 +22,13 @@
 
 package me.fromgate.reactions.activators;
 
-import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.ItemHoldEvent;
 import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.Variables;
 import me.fromgate.reactions.util.item.ItemUtil;
 import me.fromgate.reactions.util.item.VirtualItem;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
@@ -49,7 +49,7 @@ public class ItemHoldActivator extends Activator {
     @Override
     public boolean activate(Event event) {
         if (item.isEmpty() || (ItemUtil.parseItemStack(item) == null)) {
-            ReActions.util.logOnce(this.name + "activatorholdempty", "Failed to parse item of activator " + this.name);
+            M.logOnce(this.name + "activatorholdempty", "Failed to parse item of activator " + this.name);
             return false;
         }
         if (event instanceof ItemHoldEvent) {

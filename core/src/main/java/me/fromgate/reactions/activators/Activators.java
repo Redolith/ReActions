@@ -29,6 +29,7 @@ import me.fromgate.reactions.externals.RAWorldGuard;
 import me.fromgate.reactions.timer.Timers;
 import me.fromgate.reactions.util.ActVal;
 import me.fromgate.reactions.util.FlagVal;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -191,7 +192,7 @@ public class Activators {
             if (f.exists()) f.delete();
             f.createNewFile();
         } catch (Exception e) {
-            u().log("Failed to create configuration to file " + f.getAbsolutePath());
+            M.logMessage("Failed to create configuration to file " + f.getAbsolutePath());
             e.printStackTrace();
             return;
         }
@@ -203,7 +204,7 @@ public class Activators {
         try {
             cfg.save(f);
         } catch (Exception e) {
-            u().log("Failed to save configuration to file " + f.getAbsolutePath());
+            M.logMessage("Failed to save configuration to file " + f.getAbsolutePath());
             e.printStackTrace();
             return;
         }
@@ -216,7 +217,7 @@ public class Activators {
         try {
             cfg.load(f);
         } catch (Exception e) {
-            u().log("Failed to load configuration from file " + f.getAbsolutePath());
+            M.logMessage("Failed to load configuration from file " + f.getAbsolutePath());
             e.printStackTrace();
             return;
         }
@@ -228,13 +229,13 @@ public class Activators {
             for (String name : cs.getKeys(false)) {
                 ActivatorType at = ActivatorType.getByName(type);
                 if (at == null) {
-                    u().logOnce("cannotcreate" + type + name, "Failed to create new activator. Type: " + type + " Name: " + name);
+                    M.logOnce("cannotcreate" + type + name, "Failed to create new activator. Type: " + type + " Name: " + name);
                     continue;
                 }
 
                 Activator a = createActivator(at, name, group, cfg);
                 if (a == null) {
-                    u().logOnce("cannotcreate2" + type + name, "Failed to create new activator. Type: " + type + " Name: " + name);
+                    M.logOnce("cannotcreate2" + type + name, "Failed to create new activator. Type: " + type + " Name: " + name);
                     continue;
                 }
                 addActivator(a);
@@ -247,7 +248,7 @@ public class Activators {
             Activator a = type.getActivatorClass().getDeclaredConstructor(String.class, String.class, YamlConfiguration.class).newInstance(name, group, cfg);
             return a;
         } catch (Exception e) {
-            u().logOnce("cannotcreate" + name, "Failed to create new activator. Name: " + name);
+            M.logOnce("cannotcreate" + name, "Failed to create new activator. Name: " + name);
             e.printStackTrace();
         }
         return null;

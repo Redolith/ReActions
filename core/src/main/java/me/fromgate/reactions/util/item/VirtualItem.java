@@ -31,7 +31,7 @@
 package me.fromgate.reactions.util.item;
 
 import com.google.common.base.Joiner;
-import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -1180,9 +1180,9 @@ public class VirtualItem extends ItemStack {
             try {
                 return str.matches(toStr);
             } catch (Exception e) {
-                ReActions.getUtil().logOnce(toStr + "0", "Failed to check items matches:");
-                ReActions.getUtil().logOnce(toStr + "1", "Item 1: " + str);
-                ReActions.getUtil().logOnce(toStr + "2", "Item 2: " + toStr);
+                M.logOnce(toStr + "0", "Failed to check items matches:");
+                M.logOnce(toStr + "1", "Item 1: " + str);
+                M.logOnce(toStr + "2", "Item 2: " + toStr);
                 return false;
             }
         }
