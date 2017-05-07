@@ -22,7 +22,6 @@
 
 package me.fromgate.reactions.util;
 
-import me.fromgate.reactions.ReActions;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.block.Block;

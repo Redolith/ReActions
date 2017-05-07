@@ -12,7 +12,7 @@ import java.util.UUID;
 /**
  * Created by MaxDikiy on 5/6/2017.
  */
-public class ActionPlayerID extends Action  {
+public class ActionPlayerID extends Action {
     private Boolean isOnline;
 
     @Override
@@ -38,7 +38,7 @@ public class ActionPlayerID extends Action  {
             } else {
                 player = Bukkit.getPlayer(uniqueID);
             }
-            if (player != null){
+            if (player != null) {
                 if (uniqueID == null) uniqueID = getUUID(player, player.getName());
                 Variables.setVar(playerName, varID, uniqueID.toString());
                 Variables.setVar(playerName, varName, player.getName());
@@ -65,7 +65,7 @@ public class ActionPlayerID extends Action  {
         }
     }
 
-    public UUID getUUID (Player p, String playerName){
+    public UUID getUUID(Player p, String playerName) {
         if (!isOnline) //noinspection unused
         {
             UUID uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + playerName).getBytes(Charsets.UTF_8));
@@ -74,7 +74,7 @@ public class ActionPlayerID extends Action  {
         return p.getUniqueId();
     }
 
-    public UUID getOfflineUUID (OfflinePlayer p, String playerName){
+    public UUID getOfflineUUID(OfflinePlayer p, String playerName) {
         if (!isOnline) //noinspection unused
         {
             UUID uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + playerName).getBytes(Charsets.UTF_8));

@@ -1,6 +1,5 @@
 package me.fromgate.reactions.placeholders;
 
-import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.util.Util;
 import org.bukkit.entity.Player;
 

@@ -45,6 +45,7 @@ public class Activators {
     private static ReActions plg() {
         return ReActions.instance;
     }
+
     private static List<Activator> act;
     private static Set<String> stopexec;
 

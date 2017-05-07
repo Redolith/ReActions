@@ -77,7 +77,6 @@ public class ReActions extends JavaPlugin {
     }
 
 
-
     //разные переменные
     private boolean townyConected = false;
 
