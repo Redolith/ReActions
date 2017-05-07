@@ -68,7 +68,7 @@ public class Shoot {
         Param param = Param.parseParams(paramStr);
         if (param.isEmpty() || !param.hasAnyParam("activator", "exec")) return;
         Player player = target instanceof Player ? (Player) target : null;
-        if (player == null && param.getParam("onlyplayer", true)) return;
+        if (player == null && param.getParam("playeronly", true)) return;
         param.set("player", player == null ? "null" : player.getName());
         Param tempVars = new Param();
         tempVars.set("targettype", target.getType().name());
