@@ -30,6 +30,7 @@ import me.fromgate.reactions.flags.Flags;
 import me.fromgate.reactions.placeholders.Placeholders;
 import me.fromgate.reactions.util.ActVal;
 import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -197,14 +198,18 @@ public enum Actions {
     }
 
     public static void listActions(CommandSender sender, int pageNum) {
-        List<String> actionList = new ArrayList<String>();
+        List<String> actionList = new ArrayList<>();
         for (Actions actionType : Actions.values()) {
             String name = actionType.name();
             String alias = actionType.getAlias().equalsIgnoreCase(name) ? " " : " (" + actionType.getAlias() + ") ";
-            String description = ReActions.util.getMSGnc("action_" + name);
-            actionList.add("&6" + name + "&e" + alias + "&3: &a" + description);
+            M msg = M.getByName("action_" + name);
+            if (msg == null) {
+                M.LNG_FAIL_ACTION_DESC.log(name);
+            } else {
+                actionList.add("&6" + name + "&e" + alias + "&3: &a" + msg.getText("NOCOLOR"));
+            }
         }
-        ReActions.util.printPage(sender, actionList, pageNum, "msg_actionlisttitle", "", false, sender instanceof Player ? 10 : 1000);
+        M.printPage(sender, actionList, M.MSG_ACTIONLISTTITLE, pageNum, sender instanceof Player ? 10 : 1000);
     }
 
 

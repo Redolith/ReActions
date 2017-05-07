@@ -26,6 +26,7 @@ package me.fromgate.reactions.util;
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.externals.RAWorldGuard;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -152,9 +153,9 @@ public class Locator {
                         if (loc.distance(center) <= radius) locs.add(loc);
                     }
         } else {
-            int x = u().getRandomInt(radius * 2 + 1) - radius;
-            int y = u().getRandomInt(radius * 2 + 1) - radius;
-            int z = u().getRandomInt(radius * 2 + 1) - radius;
+            int x;
+            int y;
+            int z;
             do {
                 x = u().getRandomInt(radius * 2 + 1) - radius;
                 y = u().getRandomInt(radius * 2 + 1) - radius;
@@ -174,7 +175,7 @@ public class Locator {
     }
 
     public static Location parseCoordinates(String strloc) {
-        Location loc = null;
+        Location loc;
         if (strloc.isEmpty()) return null;
         String[] ln = strloc.split(",");
         if (!((ln.length == 4) || (ln.length == 6))) return null;
@@ -237,7 +238,7 @@ public class Locator {
         if (minmax.isEmpty()) return null;
         int x = minmax.get(0).getBlockX() + ReActions.util.getRandomInt(minmax.get(1).getBlockX() - minmax.get(0).getBlockX() + 1);
         int z = minmax.get(0).getBlockZ() + ReActions.util.getRandomInt(minmax.get(1).getBlockZ() - minmax.get(0).getBlockZ() + 1);
-        List<Location> locations = new ArrayList<Location>();
+        List<Location> locations = new ArrayList<>();
         for (int y = minmax.get(0).getBlockY(); y <= minmax.get(1).getBlockY(); y++) {
             locations.add(new Location(minmax.get(0).getWorld(), x, y, z));
         }
@@ -296,7 +297,7 @@ public class Locator {
                 }
                 lcs.save(f);
             }
-        } catch (Exception e) {
+        } catch (Exception ignore) {
         }
     }
 
@@ -315,7 +316,7 @@ public class Locator {
                             (float) lcs.getDouble(key + ".yaw"),
                             (float) lcs.getDouble(key + ".pitch")));
             }
-        } catch (Exception e) {
+        } catch (Exception ignore) {
         }
 
     }
@@ -347,12 +348,12 @@ public class Locator {
         return true;
     }
 
-    public static void printLocList(CommandSender p, int page, int lpp) {
-        List<String> lst = new ArrayList<String>();
+    public static void printLocList(CommandSender sender, int pageNum, int linesPerPage) {
+        List<String> locList = new ArrayList<>();
         for (String loc : tports.keySet()) {
-            lst.add("&3" + loc + " &a" + tports.get(loc).toString());
+            locList.add("&3" + loc + " &a" + tports.get(loc).toString());
         }
-        u().printPage(p, lst, page, "msg_listloc", "", true);
+        M.printPage(sender, locList, M.MSG_LISTLOC, pageNum, linesPerPage, true);
     }
 
 

@@ -22,7 +22,6 @@
 
 package me.fromgate.reactions.flags;
 
-import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.flags.factions.FlagAtFactionZoneRel;
 import me.fromgate.reactions.flags.factions.FlagFaction;
@@ -32,6 +31,7 @@ import me.fromgate.reactions.placeholders.Placeholders;
 import me.fromgate.reactions.util.FlagVal;
 import me.fromgate.reactions.util.RADebug;
 import me.fromgate.reactions.util.Variables;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -176,10 +176,15 @@ public enum Flags {
         for (Flags flagType : Flags.values()) {
             String flagName = flagType.name();
             String alias = flagType.getAlias().equalsIgnoreCase(flagName) ? " " : " (" + flagType.getAlias() + ") ";
-            String description = ReActions.util.getMSGnc("flag_" + flagName);
-            flagList.add("&6" + flagName + "&e" + alias + "&3: &a" + description);
+
+            M msg = M.getByName("flag_" + flagName);
+            if (msg == null) {
+                M.LNG_FAIL_FLAG_DESC.log(flagName);
+            } else {
+                flagList.add("&6" + flagName + "&e" + alias + "&3: &a" + msg.getText("NOCOLOR"));
+            }
         }
-        ReActions.util.printPage(sender, flagList, pageNum, "msg_flaglisttitle", "", false, sender instanceof Player ? 10 : 1000);
+        M.printPage(sender, flagList, M.MSG_FLAGLISTTITLE, pageNum, sender instanceof Player ? 10 : 1000);
     }
 
 

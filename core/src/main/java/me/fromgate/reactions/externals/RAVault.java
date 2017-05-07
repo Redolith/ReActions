@@ -75,18 +75,21 @@ public class RAVault {
 
 
     @Deprecated
+    @SuppressWarnings("deprecation")
     public static double getBalance(String account) {
         if (!isEconomyConected()) return 0;
         return economy.getBalance(account);
     }
 
     @Deprecated
+    @SuppressWarnings("deprecation")
     public static void withdrawPlayer(String account, double amount) {
         if (!isEconomyConected()) return;
         economy.withdrawPlayer(account, amount);
     }
 
     @Deprecated
+    @SuppressWarnings("deprecation")
     public static void depositPlayer(String account, double amount) {
         if (!isEconomyConected()) return;
         economy.depositPlayer(account, amount);
@@ -113,11 +116,13 @@ public class RAVault {
     }
 
 
+    @SuppressWarnings("deprecation")
     private static void depositAccount(String account, String worldName, double amount) {
         if (worldName.isEmpty()) economy.depositPlayer(account, amount);
         else economy.depositPlayer(account, worldName, amount);
     }
 
+    @SuppressWarnings("deprecation")
     private static void withdrawAccount(String account, String worldName, double amount) {
         if (worldName.isEmpty()) economy.withdrawPlayer(account, amount);
         else economy.withdrawPlayer(account, worldName, amount);
@@ -127,6 +132,7 @@ public class RAVault {
     /*
      * New method 
      */
+    @SuppressWarnings("deprecation")
     public static boolean hasMoney(String account, String worldName, double amount) {
         if (!RAVault.isEconomyConected()) return false;
         if (worldName.isEmpty()) return economy.has(account, amount);
@@ -168,7 +174,7 @@ public class RAVault {
         return economy.format(Double.parseDouble(value)); // Integer???
     }
 
-
+    @SuppressWarnings("deprecation")
     public static Map<String, String> getAllBalances(String name) {
         Map<String, String> bals = new HashMap<String, String>();
         for (World world : Bukkit.getWorlds()) {

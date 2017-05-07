@@ -26,6 +26,7 @@ import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.event.EventManager;
 import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -87,13 +88,15 @@ public class Timers {
     private static Map<String, Timer> timers;
     private static Set<String> timersIngame;
 
+    private static final int LINES_PER_PAGE_15 = 15;
+
 
     public static boolean addTimer(String name, Param params) {
         return addTimer(null, name, params, false);
     }
 
-    public static void listTimers(CommandSender sender, int page) {
-        List<String> timerList = new ArrayList<String>();
+    public static void listTimers(CommandSender sender, int pageNum) {
+        List<String> timerList = new ArrayList<>();
         Map<String, Timer> timers = getIngameTimers();
         for (String id : timers.keySet()) {
             Timer timer = timers.get(id);
@@ -104,29 +107,50 @@ public class Timers {
             Timer timer = timers.get(id);
             timerList.add((timer.isPaused() ? "&c" : "&2") + id + " &a" + timer.toString());
         }
-        u().printPage(sender, timerList, page, "msg_timerlist", "", true, 15);
+        M.printPage(sender, timerList, M.MSG_TIMERLIST, pageNum, LINES_PER_PAGE_15, true);
     }
 
     public static boolean removeTimer(CommandSender sender, String name) {
-        if (name.isEmpty()) return u().returnMSG(false, sender, "msg_timerneedname");
-        if (!timers.containsKey(name)) return u().returnMSG(false, sender, "msg_timerunknownname", name);
+        if (name.isEmpty()) {
+            M.MSG_TIMERNEEDNAME.print(sender);
+            return false;
+        }
+        if (!timers.containsKey(name)) {
+            M.MSG_TIMERUNKNOWNNAME.print(sender, name);
+            return false;
+        }
         timers.remove(name);
         save();
-        return u().returnMSG(true, sender, "msg_timerremoved", name);
+        return M.MSG_TIMERREMOVED.print(sender, name);
     }
 
     public static boolean addTimer(CommandSender sender, String name, Param params, boolean save) {
         if (name.isEmpty()) return false;
-        if (timers.containsKey(name)) return u().returnMSG(false, sender, "msg_timerexist", name);
-        if (params.isEmpty()) return u().returnMSG(false, sender, "msg_timerneedparams");
-        if (params.getParam("activator", "").isEmpty()) return u().returnMSG(false, sender, "msg_timerneedactivator");
-        if (!params.isParamsExists("timer-type")) return u().returnMSG(false, sender, "msg_timerneedtype");
-        if (!params.isParamsExists("time")) return u().returnMSG(false, sender, "msg_timerneedtime");
+        if (timers.containsKey(name)) {
+            M.MSG_TIMEREXIST.print(sender, name);
+            return false;
+        }
+        if (params.isEmpty()) {
+            M.MSG_TIMERNEEDPARAMS.print(sender);
+            return false;
+        }
+        if (params.getParam("activator", "").isEmpty()) {
+            M.MSG_TIMERNEEDACTIVATOR.print(sender);
+            return false;
+        }
+        if (!params.isParamsExists("timer-type")) {
+            M.MSG_TIMERNEEDTYPE.print(sender);
+            return false;
+        }
+        if (!params.isParamsExists("time")) {
+            M.MSG_TIMERNEEDTIME.print(sender);
+            return false;
+        }
         Timer timer = new Timer(params);
         timers.put(name, timer);
         updateIngameTimers();
         if (save) save();
-        return u().returnMSG(true, sender, "msg_timeradded", name);
+        return M.MSG_TIMERADDED.print(sender, name);
     }
 
     public static Map<String, Timer> getIngameTimers() {

@@ -32,7 +32,8 @@ public class ActionPlayerID extends Action  {
             Player player = null;
             String[] components = playerName.split("-");
             if (components.length == 5) uniqueID = UUID.fromString(playerName);
-            if (uniqueID == null) { //noinspection deprecation
+            if (uniqueID == null) {
+                //noinspection deprecation
                 player = Bukkit.getPlayer(playerName);
             } else {
                 player = Bukkit.getPlayer(uniqueID);
@@ -47,7 +48,8 @@ public class ActionPlayerID extends Action  {
 
             } else {
                 OfflinePlayer offPlayer = null;
-                if (uniqueID == null){ //noinspection deprecation
+                if (uniqueID == null) {
+                    //noinspection deprecation
                     offPlayer = Bukkit.getOfflinePlayer(playerName);
                 } else {
                     offPlayer = Bukkit.getOfflinePlayer(uniqueID);

@@ -126,6 +126,7 @@ public class WGBridge5x extends WGBridge {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public boolean isPlayerIsMemberOrOwner(Player p, String region) {
         if (!connected) return false;
         LocalPlayer localPlayer = p != null ? worldguard.wrapPlayer(p) : null;
@@ -139,6 +140,7 @@ public class WGBridge5x extends WGBridge {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public boolean isPlayerIsOwner(Player p, String region) {
         if (!connected) return false;
         LocalPlayer localPlayer = p != null ? worldguard.wrapPlayer(p) : null;
@@ -152,6 +154,7 @@ public class WGBridge5x extends WGBridge {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public boolean isPlayerIsMember(Player p, String region) {
         if (!connected) return false;
         LocalPlayer localPlayer = p != null ? worldguard.wrapPlayer(p) : null;

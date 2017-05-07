@@ -414,7 +414,12 @@ public enum M {
     PLACEHOLDER_CALC("Calculates the expression and provide it's result. For example: \"%CALC:1+2%\" will be replaced to \"3\""),
     PLACEHOLDER_SIGNACT("Activator-based placeholders. Provides SIGN activator locations and text-lines"),
     PLACEHOLDER_COMMANDACT("Activator-based placeholders. Provides COMMAND activator parameters (arguments)"),
-    MSG_NEEDVDMID("You need to define id of element (variable, delay or menu)");
+    MSG_NEEDVDMID("You need to define id of element (variable, delay or menu)"),
+    LNG_MISSED_ACTIVATOR_DESC("Activator description undefined: %1%"),
+    LNG_FAIL_ACTION_MSG("Action message undefined: %1%"),
+    LNG_FAIL_ACTION_DESC("Action description undefined: %1%"),
+    LNG_FAIL_FLAG_DESC("Flag description undefined: %1%"),
+    LNG_FAIL_PLACEHOLDER_DESC("Placeholder description undefined: %1%");
 
     private static Messenger messenger;
 

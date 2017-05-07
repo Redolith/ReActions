@@ -23,7 +23,6 @@
 package me.fromgate.reactions.activators;
 
 
-import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.event.BlockClickEvent;
 import me.fromgate.reactions.event.ButtonEvent;
 import me.fromgate.reactions.event.CommandEvent;
@@ -56,6 +55,7 @@ import me.fromgate.reactions.event.RegionEvent;
 import me.fromgate.reactions.event.RegionLeaveEvent;
 import me.fromgate.reactions.event.SignEvent;
 import me.fromgate.reactions.event.VariableEvent;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -168,14 +168,18 @@ public enum ActivatorType {
     }
 
     public static void listActivators(CommandSender sender, int pageNum) {
-        List<String> activatorList = new ArrayList<String>();
+        List<String> activatorList = new ArrayList<>();
         for (ActivatorType activatorType : ActivatorType.values()) {
             String name = activatorType.name();
             String alias = activatorType.getAlias().equalsIgnoreCase(name) ? " " : " (" + activatorType.getAlias() + ") ";
-            String description = ReActions.util.getMSGnc("activator_" + name);
-            activatorList.add("&6" + name + "&e" + alias + "&3: &a" + description);
+            M activatorDesc = M.getByName("ACTIVATOR_" + name);
+            if (activatorDesc == null) {
+                M.LNG_MISSED_ACTIVATOR_DESC.log(name);
+            } else {
+                activatorList.add("&6" + name + "&e" + alias + "&3: &a" + activatorDesc.getText("NOCOLOR"));
+            }
         }
-        ReActions.util.printPage(sender, activatorList, pageNum, "msg_activatorlisttitle", "", false, sender instanceof Player ? 10 : 1000);
+        M.printPage(sender, activatorList, M.MSG_ACTIVATORLISTTITLE, pageNum, sender instanceof Player ? 10 : 1000, false);
     }
 
 
