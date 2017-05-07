@@ -24,12 +24,14 @@ package me.fromgate.reactions.util;
 
 import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -41,8 +43,11 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Openable;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.ChatPaginator;
+import org.bukkit.util.ChatPaginator.ChatPage;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -280,4 +285,30 @@ public class Util {
         return str == null || str.isEmpty();
     }
 
+
+    public static void printPage(CommandSender sender, List<String> list, M title, int page) {
+        int pageHeight = (sender instanceof Player) ? 9 : 1000;
+        if (title != null) title.print(sender);
+        ChatPage chatPage = paginate(list, page, ReActions.getPlugin().getChatLineLength(), pageHeight);
+        for (String str : chatPage.getLines()) {
+            M.printMessage(sender, str);
+        }
+
+        if (pageHeight == 9) {
+            M.LST_FOOTER.print(sender, 'e', '6', chatPage.getPageNumber(), chatPage.getTotalPages());
+        }
+    }
+
+    public static ChatPage paginate(List<String> unpaginatedStrings, int pageNumber, int lineLength, int pageHeight) {
+        List<String> lines = new ArrayList<>();
+        for (String str : unpaginatedStrings) {
+            lines.addAll(Arrays.asList(ChatPaginator.wordWrap(str, lineLength)));
+        }
+        int totalPages = lines.size() / pageHeight + (lines.size() % pageHeight == 0 ? 0 : 1);
+        int actualPageNumber = pageNumber <= totalPages ? pageNumber : totalPages;
+        int from = (actualPageNumber - 1) * pageHeight;
+        int to = from + pageHeight <= lines.size() ? from + pageHeight : lines.size();
+        String[] selectedLines = Arrays.copyOfRange(lines.toArray(new String[lines.size()]), from, to);
+        return new ChatPage(selectedLines, actualPageNumber, totalPages);
+    }
 }

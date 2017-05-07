@@ -30,6 +30,7 @@ import me.fromgate.reactions.flags.factions.FlagPlayersInRel;
 import me.fromgate.reactions.placeholders.Placeholders;
 import me.fromgate.reactions.util.FlagVal;
 import me.fromgate.reactions.util.RADebug;
+import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.Variables;
 import me.fromgate.reactions.util.message.M;
 import org.bukkit.command.CommandSender;
@@ -184,7 +185,7 @@ public enum Flags {
                 flagList.add("&6" + flagName + "&e" + alias + "&3: &a" + msg.getText("NOCOLOR"));
             }
         }
-        M.printPage(sender, flagList, M.MSG_FLAGLISTTITLE, pageNum, sender instanceof Player ? 10 : 1000);
+        Util.printPage(sender, flagList, M.MSG_FLAGLISTTITLE, pageNum);
     }
 
 

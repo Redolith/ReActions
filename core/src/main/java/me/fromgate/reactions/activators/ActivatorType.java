@@ -55,10 +55,10 @@ import me.fromgate.reactions.event.RegionEvent;
 import me.fromgate.reactions.event.RegionLeaveEvent;
 import me.fromgate.reactions.event.SignEvent;
 import me.fromgate.reactions.event.VariableEvent;
+import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.message.M;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
 import java.lang.reflect.Constructor;
@@ -179,7 +179,7 @@ public enum ActivatorType {
                 activatorList.add("&6" + name + "&e" + alias + "&3: &a" + activatorDesc.getText("NOCOLOR"));
             }
         }
-        M.printPage(sender, activatorList, M.MSG_ACTIVATORLISTTITLE, pageNum, sender instanceof Player ? 10 : 1000, false);
+        Util.printPage(sender, activatorList, M.MSG_ACTIVATORLISTTITLE, pageNum);
     }
 
 
