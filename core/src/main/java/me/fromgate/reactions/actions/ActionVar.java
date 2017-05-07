@@ -23,6 +23,7 @@
 package me.fromgate.reactions.actions;
 
 import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.Variables;
 import org.bukkit.entity.Player;
 
@@ -65,10 +66,10 @@ public class ActionVar extends Action {
                 Variables.clearVar(player, var);
                 return true;
             case 2: //VAR_INC, VAR_PLAYER_INC
-                int incValue = value.isEmpty() || !(u().isInteger(value)) ? 1 : Integer.parseInt(value);
+                int incValue = value.isEmpty() || !(Util.isInteger(value)) ? 1 : Integer.parseInt(value);
                 return Variables.incVar(player, var, incValue);
             case 3: //VAR_DEC, VAR_PLAYER_DEC
-                int decValue = value.isEmpty() || !(u().isInteger(value)) ? 1 : Integer.parseInt(value);
+                int decValue = value.isEmpty() || !(Util.isInteger(value)) ? 1 : Integer.parseInt(value);
                 return Variables.decVar(player, var, decValue);
             case 4:  //VAR_TEMP_SET
                 Variables.setTempVar(var, value);

@@ -25,6 +25,7 @@ package me.fromgate.reactions.actions;
 import me.fromgate.reactions.externals.RAWorldGuard;
 import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.item.ItemUtil;
 import me.fromgate.reactions.util.message.M;
 import org.bukkit.Location;
@@ -86,7 +87,7 @@ public class ActionBlockFill extends Action {
         for (int x = min.getBlockX(); x <= max.getBlockX(); x++)
             for (int y = min.getBlockY(); y <= max.getBlockY(); y++)
                 for (int z = min.getBlockZ(); z <= max.getBlockZ(); z++)
-                    if (u().rollDiceChance(chance)) {
+                    if (Util.rollDiceChance(chance)) {
                         Block block = min.getWorld().getBlockAt(x, y, z);
                         if (block.getType() != Material.AIR && drop) block.breakNaturally();
                         if (blockItem != null && blockItem.getType() != Material.AIR) {

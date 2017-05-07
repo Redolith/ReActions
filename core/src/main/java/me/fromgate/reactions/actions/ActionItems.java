@@ -26,6 +26,7 @@ import me.fromgate.reactions.event.EventManager;
 import me.fromgate.reactions.util.BukkitCompatibilityFix;
 import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.Variables;
 import me.fromgate.reactions.util.item.ItemUtil;
 import me.fromgate.reactions.util.item.VirtualItem;
@@ -94,7 +95,7 @@ public class ActionItems extends Action {
         if (itemStr.isEmpty()) return false;
         String slotStr = params.getParam("slot", "");
         if (slotStr.isEmpty()) return false;
-        if (!u().isInteger(slotStr)) return wearItem(player, params);
+        if (!Util.isInteger(slotStr)) return wearItem(player, params);
         int slotNum = Integer.parseInt(slotStr);
         if (slotNum >= player.getInventory().getSize()) return false;
         String existStr = params.getParam("exist", "remove");

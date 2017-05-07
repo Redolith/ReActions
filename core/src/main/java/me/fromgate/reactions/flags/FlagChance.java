@@ -22,6 +22,7 @@
 
 package me.fromgate.reactions.flags;
 
+import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.Variables;
 import org.bukkit.entity.Player;
 
@@ -31,9 +32,9 @@ public class FlagChance extends Flag {
     public boolean checkFlag(Player p, String param) {
         Variables.setTempVar("CHANCE", param + "%");
         int d = 50;
-        if (u().isInteger(param)) d = Integer.parseInt(param);
+        if (Util.isInteger(param)) d = Integer.parseInt(param);
         d = Math.max(Math.min(d, 100), 0);
-        return u().rollDiceChance(d);
+        return Util.rollDiceChance(d);
     }
 
 }

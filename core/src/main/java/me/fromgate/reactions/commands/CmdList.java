@@ -1,11 +1,11 @@
 package me.fromgate.reactions.commands;
 
-import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activators;
 import me.fromgate.reactions.menu.InventoryMenu;
 import me.fromgate.reactions.timer.Timers;
 import me.fromgate.reactions.util.Delayer;
 import me.fromgate.reactions.util.Locator;
+import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.Variables;
 import me.fromgate.reactions.util.message.M;
 import org.bukkit.command.CommandSender;
@@ -27,13 +27,13 @@ public class CmdList extends Cmd {
         String arg1 = args.length >= 2 ? args[1] : "";
         String arg2 = args.length >= 3 ? args[2] : "";
         String arg3 = args.length >= 4 ? args[3] : "";
-        if (ReActions.getUtil().isIntegerGZ(arg1)) printAct(sender, 1, lpp);
+        if (Util.isIntegerGZ(arg1)) printAct(sender, 1, lpp);
         else {
             String mask = "";
-            if (ReActions.getUtil().isIntegerGZ(arg2)) {
+            if (Util.isIntegerGZ(arg2)) {
                 page = Integer.parseInt(arg2);
                 mask = arg3;
-            } else if (ReActions.getUtil().isIntegerGZ(arg3)) {
+            } else if (Util.isIntegerGZ(arg3)) {
                 page = Integer.parseInt(arg3);
                 mask = arg2;
             }

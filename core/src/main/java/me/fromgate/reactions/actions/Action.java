@@ -22,10 +22,10 @@
 
 package me.fromgate.reactions.actions;
 
-import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.message.M;
 import org.bukkit.entity.Player;
 
@@ -38,10 +38,6 @@ public abstract class Action {
 
     ReActions plg() {
         return ReActions.instance;
-    }
-
-    RAUtil u() {
-        return ReActions.util;
     }
 
 
@@ -83,7 +79,7 @@ public abstract class Action {
     }
 
     private boolean printAction() {
-        return (u().isWordInList(this.type.name(), plg().getActionMsg()) || u().isWordInList(this.type.getAlias(), plg().getActionMsg()));
+        return (Util.isWordInList(this.type.name(), plg().getActionMsg()) || Util.isWordInList(this.type.getAlias(), plg().getActionMsg()));
     }
 
     public abstract boolean execute(Player p, Param params);

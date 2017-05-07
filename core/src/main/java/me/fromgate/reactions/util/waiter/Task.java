@@ -29,7 +29,7 @@ public class Task implements Runnable {
         this.isAction = isAction;
         this.isExecuted = false;
         this.executionTime = System.currentTimeMillis() + time;
-        task = Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), this, ReActions.getUtil().timeToTicks(time));
+        task = Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), this, Util.timeToTicks(time));
     }
 
     public String getId() {
@@ -42,7 +42,7 @@ public class Task implements Runnable {
         long time = this.executionTime - System.currentTimeMillis();
         if (time < 0) this.execute();
         else
-            task = Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), this, ReActions.getUtil().timeToTicks(time));
+            task = Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), this, Util.timeToTicks(time));
     }
 
     @Override

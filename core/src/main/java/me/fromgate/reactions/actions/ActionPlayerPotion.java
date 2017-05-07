@@ -52,13 +52,13 @@ public class ActionPlayerPotion extends Action {
                 String[] prm = param.split("/");
                 if (prm.length > 1) {
                     peffstr = prm[0];
-                    if (u().isIntegerGZ(prm[1])) duration = Integer.parseInt(prm[1]);
-                    if ((prm.length > 2) && u().isIntegerGZ(prm[2])) amplifier = Integer.parseInt(prm[2]);
+                    if (Util.isIntegerGZ(prm[1])) duration = Integer.parseInt(prm[1]);
+                    if ((prm.length > 2) && Util.isIntegerGZ(prm[2])) amplifier = Integer.parseInt(prm[2]);
                 }
             } else peffstr = param;
         } else {
             peffstr = params.getParam("type", "");
-            duration = u().safeLongToInt(u().timeToTicks(u().parseTime(params.getParam("time", "3s"))));
+            duration = Util.safeLongToInt(Util.timeToTicks(Util.parseTime(params.getParam("time", "3s"))));
             amplifier = Math.max(params.getParam("level", 1) - 1, 0);
             ambient = params.getParam("ambient", false);
         }

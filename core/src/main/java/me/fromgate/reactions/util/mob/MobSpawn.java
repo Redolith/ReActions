@@ -231,7 +231,7 @@ public class MobSpawn {
 
     public static void setMobEquipment(LivingEntity e, String equip) {
         if (equip.isEmpty()) return;
-        if (!ReActions.util.isWordInList(e.getType().name(), "zombie,skeleton")) return;
+        if (!Util.isWordInList(e.getType().name(), "zombie,skeleton")) return;
         String[] ln = equip.split(";");
         if (ln.length == 0) return;
         String[] eq = {"", "", "", "", "", ""};
@@ -240,7 +240,7 @@ public class MobSpawn {
     }
 
     public static void setMobEquipment(LivingEntity e, String helm, String chest, String leg, String boot, String weapon, String offhand) {
-        // if (!ReActions.util.isWordInList(e.getType().name(), "zombie,skeleton,villager")) return;
+        // if (!Util.isWordInList(e.getType().name(), "zombie,skeleton,villager")) return;
         if (!helm.isEmpty()) {
             ItemStack item = ItemUtil.getRndItem(helm);
             if (item != null) e.getEquipment().setHelmet(item);
@@ -278,7 +278,7 @@ public class MobSpawn {
             pef = ln[0];
             PotionEffectType pet = Util.parsePotionEffect(pef);
             if (pet == null) continue;
-            if ((ln.length == 2) && ReActions.util.isInteger(ln[1])) level = Integer.parseInt(ln[1]);
+            if ((ln.length == 2) && Util.isInteger(ln[1])) level = Integer.parseInt(ln[1]);
             PotionEffect pe = new PotionEffect(pet, Integer.MAX_VALUE, level, true);
             e.addPotionEffect(pe);
         }

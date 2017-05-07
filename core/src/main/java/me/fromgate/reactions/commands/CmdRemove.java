@@ -1,12 +1,12 @@
 package me.fromgate.reactions.commands;
 
-import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.Activators;
 import me.fromgate.reactions.menu.InventoryMenu;
 import me.fromgate.reactions.timer.Timers;
 import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.Variables;
 import me.fromgate.reactions.util.message.M;
 import org.bukkit.command.CommandSender;
@@ -48,7 +48,7 @@ public class CmdRemove extends Cmd {
             else M.printMSG(sender, "msg_removemenufail", 'c', '4', arg2);
         } else if (Activators.contains(arg1)) {
             Activator act = Activators.get(arg1);
-            if (ReActions.getUtil().isIntegerGZ(arg3)) {
+            if (Util.isIntegerGZ(arg3)) {
                 int num = Integer.parseInt(arg3);
                 if (arg2.equalsIgnoreCase("f") || arg2.equalsIgnoreCase("flag")) {
                     if (act.removeFlag(num - 1))

@@ -172,7 +172,7 @@ public enum Actions {
                 ActionWait aw = (ActionWait) at.action;
                 Param param = new Param(Placeholders.replacePlaceholders(player, av.value), "time");
                 String timeStr = param.getParam("time", "0");
-                long time = u().parseTime(timeStr);
+                long time = Util.parseTime(timeStr);
                 if (time == 0) continue;
                 List<ActVal> futureList = new ArrayList<ActVal>();
                 futureList.addAll(actions.subList(i + 1, actions.size()));

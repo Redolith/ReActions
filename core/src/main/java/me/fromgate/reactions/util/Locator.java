@@ -23,7 +23,6 @@
 
 package me.fromgate.reactions.util;
 
-import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.externals.RAWorldGuard;
 import me.fromgate.reactions.util.message.M;
@@ -46,10 +45,6 @@ import java.util.TreeMap;
 public class Locator {
     private static Map<String, TpLoc> tports = new TreeMap<String, TpLoc>(String.CASE_INSENSITIVE_ORDER);
 
-
-    private static RAUtil u() {
-        return ReActions.util;
-    }
 
     /**
      * Returns location defined by group of parameter:
@@ -157,9 +152,9 @@ public class Locator {
             int y;
             int z;
             do {
-                x = u().getRandomInt(radius * 2 + 1) - radius;
-                y = u().getRandomInt(radius * 2 + 1) - radius;
-                z = u().getRandomInt(radius * 2 + 1) - radius;
+                x = Util.getRandomInt(radius * 2 + 1) - radius;
+                y = Util.getRandomInt(radius * 2 + 1) - radius;
+                z = Util.getRandomInt(radius * 2 + 1) - radius;
             } while (radius < Math.sqrt(
                     (double) x * (double) x +
                             (double) z * (double) z +
@@ -219,7 +214,7 @@ public class Locator {
 
     private static Location getRandomLocation(List<Location> locs) {
         if (locs.isEmpty()) return null;
-        return locs.get(ReActions.util.getRandomInt(locs.size()));
+        return locs.get(Util.getRandomInt(locs.size()));
     }
 
     private static Location getEmptyOrLandedLocations(List<Location> locs, boolean land) {
@@ -236,8 +231,8 @@ public class Locator {
 
     private static Location getMinMaxLocation(List<Location> minmax, boolean land) {
         if (minmax.isEmpty()) return null;
-        int x = minmax.get(0).getBlockX() + ReActions.util.getRandomInt(minmax.get(1).getBlockX() - minmax.get(0).getBlockX() + 1);
-        int z = minmax.get(0).getBlockZ() + ReActions.util.getRandomInt(minmax.get(1).getBlockZ() - minmax.get(0).getBlockZ() + 1);
+        int x = minmax.get(0).getBlockX() + Util.getRandomInt(minmax.get(1).getBlockX() - minmax.get(0).getBlockX() + 1);
+        int z = minmax.get(0).getBlockZ() + Util.getRandomInt(minmax.get(1).getBlockZ() - minmax.get(0).getBlockZ() + 1);
         List<Location> locations = new ArrayList<>();
         for (int y = minmax.get(0).getBlockY(); y <= minmax.get(1).getBlockY(); y++) {
             locations.add(new Location(minmax.get(0).getWorld(), x, y, z));

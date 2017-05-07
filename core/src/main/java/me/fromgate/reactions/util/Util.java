@@ -22,9 +22,10 @@
 
 package me.fromgate.reactions.util;
 
-import me.fromgate.reactions.RAUtil;
 import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.util.item.ItemUtil;
 import me.fromgate.reactions.util.message.M;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -40,6 +41,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Openable;
 import org.bukkit.potion.PotionEffectType;
@@ -51,13 +53,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Util {
 
-    private static RAUtil u() {
-        return ReActions.util;
-    }
+    static Random random = new Random();
 
     public static int getMinMaxRandom(String minmaxstr) {
         int min = 0;
@@ -72,7 +75,7 @@ public class Util {
         if (strmin.matches("[1-9]+[0-9]*")) min = Integer.parseInt(strmin);
         max = min;
         if (strmax.matches("[1-9]+[0-9]*")) max = Integer.parseInt(strmax);
-        if (max > min) return min + u().tryChance(1 + max - min);
+        if (max > min) return min + tryChance(1 + max - min);
         else return min;
     }
 
@@ -310,5 +313,157 @@ public class Util {
         int to = from + pageHeight <= lines.size() ? from + pageHeight : lines.size();
         String[] selectedLines = Arrays.copyOfRange(lines.toArray(new String[lines.size()]), from, to);
         return new ChatPage(selectedLines, actualPageNumber, totalPages);
+    }
+
+
+    /* Функция проверяет входит ли число (int)
+     * в список чисел представленных в виде строки вида n1,n2,n3,...nN
+     */
+    public static boolean isIdInList(int id, String str) {
+        if (!str.isEmpty()) {
+            String[] ln = str.split(",");
+            if (ln.length > 0)
+                for (int i = 0; i < ln.length; i++)
+                    if ((!ln[i].isEmpty()) && ln[i].matches("[0-9]*") && (Integer.parseInt(ln[i]) == id)) return true;
+        }
+        return false;
+    }
+
+    /*
+     * Функция проверяет входит ли слово (String) в список слов
+     * представленных в виде строки вида n1,n2,n3,...nN
+     */
+    public static boolean isWordInList(String word, String str) {
+        String[] ln = str.split(",");
+        if (ln.length > 0)
+            for (int i = 0; i < ln.length; i++)
+                if (ln[i].equalsIgnoreCase(word)) return true;
+        return false;
+    }
+
+    /*
+     * Функция проверяет входит есть ли item (блок) с заданным id и data в списке,
+     * представленным в виде строки вида id1:data1,id2:data2,MATERIAL_NAME:data
+     * При этом если data может быть опущена
+     */
+    public static boolean isItemInList(int id, int data, String str) {
+        String[] ln = str.split(",");
+        if (ln.length > 0)
+            for (int i = 0; i < ln.length; i++)
+                if (compareItemIdDataStr(id, data, ln[i])) return true;
+
+        return false;
+    }
+
+    @SuppressWarnings("deprecation")
+    public static boolean compareItemIdDataStr(int id, int data, String itemStr) {
+        ItemStack item = ItemUtil.parseItemStack(itemStr);
+        if (item == null) return false;
+        if (item.getTypeId() != id) return false;
+        if (data < 0) return true;
+        return data == item.getDurability();
+    }
+
+    public static boolean rollDiceChance(int chance) {
+        return (random.nextInt(100) < chance);
+    }
+
+    public static int tryChance(int chance) {
+        return random.nextInt(chance);
+    }
+
+
+    public static int getRandomInt(int maxvalue) {
+        return random.nextInt(maxvalue);
+    }
+
+    public static boolean isIntegerSigned(String... str) {
+        if (str.length == 0) return false;
+        for (String s : str)
+            if (!s.matches("-?[0-9]+[0-9]*")) return false;
+        return true;
+    }
+
+    public static boolean isInteger(String str) {
+        return (str.matches("[0-9]+[0-9]*"));
+    }
+
+    public static boolean isInteger(String... str) {
+        if (str.length == 0) return false;
+        for (String s : str)
+            if (!s.matches("[0-9]+[0-9]*")) return false;
+        return true;
+    }
+
+
+    public static boolean isIntegerGZ(String str) {
+        return (str.matches("[1-9]+[0-9]*"));
+    }
+
+    public static boolean isIntegerGZ(String... str) {
+        if (str.length == 0) return false;
+        for (String s : str)
+            if (!s.matches("[1-9]+[0-9]*")) return false;
+        return true;
+    }
+
+    public static Long timeToTicks(Long time) {
+        //1000 ms = 20 ticks
+        return Math.max(1, (time / 50));
+    }
+
+    public static Long parseTime(String time) {
+        int dd = 0; // дни
+        int hh = 0; // часы
+        int mm = 0; // минуты
+        int ss = 0; // секунды
+        int tt = 0; // тики
+        int ms = 0; // миллисекунды
+        if (isInteger(time)) {
+            ss = Integer.parseInt(time);
+        } else if (time.matches("^[0-5][0-9]:[0-5][0-9]$")) {
+            String[] ln = time.split(":");
+            if (isInteger(ln[0])) mm = Integer.parseInt(ln[0]);
+            if (isInteger(ln[1])) ss = Integer.parseInt(ln[1]);
+        } else if (time.matches("^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$")) {
+            String[] ln = time.split(":");
+            if (isInteger(ln[0])) hh = Integer.parseInt(ln[0]);
+            if (isInteger(ln[1])) mm = Integer.parseInt(ln[1]);
+            if (isInteger(ln[2])) ss = Integer.parseInt(ln[2]);
+        } else {
+            Pattern pattern = Pattern.compile("\\d+(ms|d|h|m|s)");
+            Matcher matcher = pattern.matcher(time);
+            while (matcher.find()) {
+                String foundTime = matcher.group();
+                if (foundTime.matches("^\\d+ms")) {
+                    ms = Integer.parseInt(time.replace("ms", ""));
+                } else if (foundTime.matches("^\\d+d")) {
+                    dd = Integer.parseInt(time.replace("d", ""));
+                } else if (foundTime.matches("^\\d+h")) {
+                    hh = Integer.parseInt(time.replace("h", ""));
+                } else if (foundTime.matches("^\\d+m$")) {
+                    mm = Integer.parseInt(time.replace("m", ""));
+                } else if (foundTime.matches("^\\d+s$")) {
+                    ss = Integer.parseInt(time.replace("s", ""));
+                } else if (foundTime.matches("^\\d+t$")) {
+                    tt = Integer.parseInt(time.replace("t", ""));
+                }
+            }
+        }
+        return (dd * 86400000L) + (hh * 3600000L) + (mm * 60000L) + (ss * 1000L) + (tt * 50L) + ms;
+    }
+
+    public static String itemToString(ItemStack item) {
+        String str = "";
+        String n = item.getItemMeta().hasDisplayName() ? ChatColor.stripColor(item.getItemMeta().getDisplayName()) : item.getType().name();
+        String a = item.getAmount() > 1 ? "*" + item.getAmount() : "";
+        str = n + a;
+        return str;
+    }
+
+    public static int safeLongToInt(long l) {
+        if (l < Integer.MIN_VALUE) return Integer.MIN_VALUE;
+        if (l > Integer.MAX_VALUE) return Integer.MAX_VALUE;
+        return (int) l;
     }
 }

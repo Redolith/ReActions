@@ -14,12 +14,12 @@ public class PlaceholderRandom extends Placeholder {
 
 
     private String random(String rndStr) {
-        if (rndStr.matches("\\d+")) return Integer.toString(ReActions.getUtil().getRandomInt(Integer.parseInt(rndStr)));
+        if (rndStr.matches("\\d+")) return Integer.toString(Util.getRandomInt(Integer.parseInt(rndStr)));
         if (rndStr.matches("\\d+\\-\\d+")) return Integer.toString(Util.getMinMaxRandom(rndStr));
         if (rndStr.matches("[\\S,]*[\\S]")) {
             String[] ln = rndStr.split(",");
             if (ln.length == 0) return rndStr;
-            return ln[ReActions.getUtil().getRandomInt(ln.length)];
+            return ln[Util.getRandomInt(ln.length)];
         }
         return rndStr;
     }

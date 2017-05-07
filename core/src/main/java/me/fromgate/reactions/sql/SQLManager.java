@@ -24,6 +24,7 @@ package me.fromgate.reactions.sql;
 
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.Variables;
 import me.fromgate.reactions.util.message.M;
 
@@ -90,7 +91,7 @@ public class SQLManager {
 
     public static boolean compareSelect(String value, String query, int column, Param params) {
         String result = executeSelect(query, column, params);
-        if (ReActions.util.isInteger(result, value)) return (Integer.parseInt(result) == Integer.parseInt(value));
+        if (Util.isInteger(result, value)) return (Integer.parseInt(result) == Integer.parseInt(value));
         return result.equalsIgnoreCase(value);
     }
 

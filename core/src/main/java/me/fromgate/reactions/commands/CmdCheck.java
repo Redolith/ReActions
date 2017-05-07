@@ -1,8 +1,8 @@
 package me.fromgate.reactions.commands;
 
-import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.Activators;
+import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.message.M;
 import org.bukkit.entity.Player;
 
@@ -17,7 +17,7 @@ public class CmdCheck extends Cmd {
 
     @Override
     public boolean execute(Player player, String[] args) {
-        int radius = args.length > 1 && ReActions.getUtil().isIntegerGZ(args[1]) ? Integer.parseInt(args[1]) : 8;
+        int radius = args.length > 1 && Util.isIntegerGZ(args[1]) ? Integer.parseInt(args[1]) : 8;
         printActivatorsAround(player, radius);
         return true;
     }

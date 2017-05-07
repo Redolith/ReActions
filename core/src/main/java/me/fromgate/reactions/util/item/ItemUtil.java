@@ -149,6 +149,7 @@ public class ItemUtil {
         return vi == null ? null : vi;
     }
 
+
     public static boolean compareItemStr(ItemStack item, String itemStr) {
         if (item == null || item.getType() == Material.AIR) return false;
         return itemFromItemStack(item).compare(itemStr);

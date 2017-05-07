@@ -18,7 +18,7 @@ public class CmdHelp extends Cmd {
 
         if (args.length > 1)
             for (int i = 1; i < Math.min(args.length, 3); i++) {
-                if (ReActions.getUtil().isIntegerGZ(args[i])) page = Integer.parseInt(args[i]);
+                if (Util.isIntegerGZ(args[i])) page = Integer.parseInt(args[i]);
                 else arg1 = args[i];
             }
         if (arg1.equalsIgnoreCase("flag") || arg1.equalsIgnoreCase("flags")) {

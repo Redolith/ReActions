@@ -24,6 +24,7 @@ package me.fromgate.reactions.actions;
 
 import com.google.common.base.Joiner;
 import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.message.M;
 import me.fromgate.reactions.util.playerselector.PlayerSelectors;
 import org.bukkit.entity.Player;
@@ -71,7 +72,7 @@ public class ActionMessage extends Action {
 
     private boolean showMessage(Player player, String message, String annoymentTime) {
         if (annoymentTime.isEmpty()) return true;
-        long time = u().parseTime(annoymentTime);
+        long time = Util.parseTime(annoymentTime);
         if (time == 0) return false;
         String key = new StringBuilder("reactions-msg-")/*.append(this.getActivatorName())*/.append(message.hashCode()).append((this.isAction() ? "act" : "react")).toString();
         if (player.hasMetadata(key)) {

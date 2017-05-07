@@ -244,7 +244,7 @@ public class EventManager {
         }
         int repeat = Math.min(param.getParam("repeat", 1), 1);
 
-        long delay = u().timeToTicks(u().parseTime(param.getParam("delay", "1t")));
+        long delay = Util.timeToTicks(Util.parseTime(param.getParam("delay", "1t")));
 
         final Set<Player> target = new HashSet<Player>();
 

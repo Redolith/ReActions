@@ -25,6 +25,7 @@ package me.fromgate.reactions.actions;
 
 import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.Variables;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -58,7 +59,7 @@ public class ActionSignSet extends Action {
         if (!clear.isEmpty()) {
             String[] ln = clear.split(",");
             for (String cl : ln) {
-                if (!u().isInteger(cl)) continue;
+                if (!Util.isInteger(cl)) continue;
                 int num = Integer.parseInt(cl) - 1;
                 if (num < 0) continue;
                 if (num >= 4) continue;

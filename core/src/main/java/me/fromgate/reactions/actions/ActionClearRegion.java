@@ -66,6 +66,6 @@ public class ActionClearRegion extends Action {
         } else {
             if (type.equalsIgnoreCase("item") || type.equalsIgnoreCase("items")) return true;
         }
-        return (u().isWordInList(e.getType().name().toLowerCase(), type.toLowerCase()));
+        return (Util.isWordInList(e.getType().name().toLowerCase(), type.toLowerCase()));
     }
 }

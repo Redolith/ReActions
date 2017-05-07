@@ -24,6 +24,7 @@ package me.fromgate.reactions.flags;
 
 import me.fromgate.reactions.util.BukkitCompatibilityFix;
 import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.Variables;
 import me.fromgate.reactions.util.item.ItemUtil;
 import me.fromgate.reactions.util.item.VirtualItem;
@@ -71,7 +72,7 @@ public class FlagItem extends Flag {
 
         String slotStr = params.getParam("slot", "");
         if (slotStr.isEmpty()) return false;
-        int slotNum = u().isInteger(slotStr) ? Integer.parseInt(slotStr) : -1;
+        int slotNum = Util.isInteger(slotStr) ? Integer.parseInt(slotStr) : -1;
         if (slotNum >= player.getInventory().getSize()) return false;
 
         VirtualItem vi = null;

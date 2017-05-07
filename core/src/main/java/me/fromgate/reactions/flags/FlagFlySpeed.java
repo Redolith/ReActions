@@ -1,5 +1,6 @@
 package me.fromgate.reactions.flags;
 
+import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.Variables;
 import org.bukkit.entity.Player;
 
@@ -9,7 +10,7 @@ import org.bukkit.entity.Player;
 public class FlagFlySpeed extends Flag {
     @Override
     public boolean checkFlag(Player p, String param) {
-        if (!u().isInteger(param)) return false;
+        if (!Util.isInteger(param)) return false;
         long flySpeed = Math.round(p.getFlySpeed() * 10);
         Variables.setTempVar("flyspeed", Integer.toString((int) flySpeed));
         return flySpeed >= Integer.parseInt(param);

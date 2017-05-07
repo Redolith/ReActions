@@ -1,6 +1,5 @@
 package me.fromgate.reactions.commands;
 
-import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.ActivatorType;
@@ -52,7 +51,7 @@ public class CmdAdd extends Cmd {
             return Timers.addTimer(sender, arg2, params, true);
         } else if (arg1.equalsIgnoreCase("menu")) {
             // /react add menu id size sdjkf
-            if (InventoryMenu.add(arg2, ReActions.getUtil().isInteger(arg3) ? Integer.parseInt(arg3) : 9, ((ReActions.getUtil().isInteger(arg3) ? "" : arg3 + " ") + (arg4.isEmpty() ? "" : arg4)).trim())) {
+            if (InventoryMenu.add(arg2, Util.isInteger(arg3) ? Integer.parseInt(arg3) : 9, ((Util.isInteger(arg3) ? "" : arg3 + " ") + (arg4.isEmpty() ? "" : arg4)).trim())) {
                 M.CMD_ADDMENUADDED.print(sender, arg2);
             } else {
                 M.CMD_ADDMENUADDFAIL.print(sender, arg2);

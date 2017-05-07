@@ -110,7 +110,7 @@ public class RAEffects {
         if (eff.equalsIgnoreCase("smoke")) {
             if (mod < 0) mod = 0;
             if (mod > 8) mod = 8;
-            if (data == 10) mod = u().tryChance(9);
+            if (data == 10) mod = Util.tryChance(9);
             if (data == 9) {
                 for (int i = 0; i < 9; i++)
                     w.playEffect(loc, Effect.SMOKE, i);
@@ -138,7 +138,7 @@ public class RAEffects {
         } else {
             int modifier = 0;
             int radius = 0;
-            if (!u().isWordInList(eff, efftypes)) return;
+            if (!Util.isWordInList(eff, efftypes)) return;
             if (eff.equalsIgnoreCase("SMOKE")) modifier = parseSmokeDirection(params.getParam("dir", "random"));
             else modifier = Util.getMinMaxRandom(params.getParam("data", "0"));
             radius = params.getParam("radius", 0);

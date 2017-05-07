@@ -22,6 +22,7 @@
 
 package me.fromgate.reactions.flags;
 
+import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.Variables;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -58,7 +59,7 @@ public class FlagTime extends Flag {
             String[] ln = time.split(",");
             if (ln.length > 0)
                 for (int i = 0; i < ln.length; i++) {
-                    if (!u().isInteger(ln[i])) continue;
+                    if (!Util.isInteger(ln[i])) continue;
                     String tmp = String.format("%02d:00", Integer.parseInt(ln[i]));
                     if (i == 0) result = tmp;
                     else result = result + ", " + tmp;
