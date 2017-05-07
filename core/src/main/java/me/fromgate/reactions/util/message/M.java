@@ -284,6 +284,7 @@ public enum M {
     ACTION_SHOOT("Shoot (without projectile) in player view direction. Parameters: distance:<distance> singlehit:<true/false> damage:<damage amount>"),
     ACTION_VAR_SET("Create global variable. Parameters: id:<id> value:<value>"),
     ACTION_VAR_PLAYER_SET("Create personal variable. Parameters: id:<id> value:<value>"),
+    ACTION_VAR_TEMP_SET("Create temporary variable. Parameters: id:<id> value:<value>"),
     ACTION_VAR_CLEAR("Remove global varibale. Parameter: id:<id>"),
     ACTION_VAR_PLAYER_CLEAR("Remove personal varibale. Parameter: id:<id>"),
     ACTION_VAR_INC("Increase global variable value. Parameters: id:<id> value:<value>"),
@@ -305,6 +306,10 @@ public enum M {
     ACTION_ACTION_DELAYED("Execute another action after delay. Parameters: time:<time> action:{<another action with parameters>}"),
     ACTION_WAIT("Wait some time before exucute another actions. Parameter: time:<time>"),
     ACTION_MENU_ITEM("Create and show GUI (item menu) to player. Parameters: menu:<MenuId>"),
+    ACTION_ITEM_SLOT("Place item into provided inventory slot. Parameters: item:<Item> slot:<Number:0..35> [exist:<drop | undress | keep>]"),
+    ACTION_REGEX("This action is used when you need to pull out point data from the text"),
+    ACTION_LOG("Write message into server log file. You can use it as additional debug tool for your activators."),
+    ACTION_PLAYER_ID("This action is used when it is necessary to get the UUID of the player by its nickname and vice versa - the nickname of the player by its UUID."),
 
     /*
     DESCRIPTION MESSAGES
@@ -363,9 +368,11 @@ public enum M {
     FLAG_FCT_AT_ZONE_REL("Check is player in faction with defined relation"),
     FLAG_FCT_IS_REL_PLAYER_AROUND("Check is there anyone with defined relation around the player"),
     FLAG_FCT_ARE_PLAYERS_IN_REL("Check is players are in defined relations. Parameters: <player1> <player2> <relation>. Where <realtion> could be: LEADER, OFFICER, MEMBER, RECRUIT, ALLY, TRUCE, NEUTRAL or ENEMY"),
+    FLAG_FLY_SPEED("Check is player fly speed higher then provided value or not"),
+    FLAG_WALK_SPEED("Check is player walk speed higher then provided value or not"),
 
     /*
-    VATORS!
+            ACTIVATORS!
      */
     MSG_ACTIVATORLISTTITLE("Activators"),
     ACTIVATOR_BUTTON("This activator is linked to stone or wooden button. Command to create:  /react add button <id>"),
@@ -397,6 +404,13 @@ public enum M {
     ACTIVATOR_FCT_CREATE("This activator is initiates when someone creates a new faction /react add fct_create <id>"),
     ACTIVATOR_FCT_DISBAND("This activator is initiates when faction is disbanded /react add fct_disband <id>"),
     ACTIVATOR_VARIABLE("This activator is initiates when variable value is changed /react add variable id:<VariableId> personal:<false/true>. Local variables provided by this activator: %var_id%, %var_old%, %var_new%"),
+    ACTIVATOR_PLAYER_DEATH("This activator is activating after player death. All flags and actions will bound to the \"dead player\". Activator may be linked to different reason of player death: PVP, PVE or OTHER"),
+    ACTIVATOR_PLAYER_RESPAWN("This activator is activating after respawn of dead player. All flags and actions will bound to the \"deadplayer\" player."),
+    ACTIVATOR_MOB_DAMAGE("This activator executing when player left-clicking or shooting mob. You can define mob type (name supported too) and item (in player's hand) for this activators"),
+    ACTIVATOR_BLOCK_CLICK("This activator works when the player clicks on the block with the left or right mouse button."),
+    ACTIVATOR_INVENTORY_CLICK("This activator works when the player performs actions with the inventory using the mouse or keys"),
+    ACTIVATOR_DROP("This activator initiates when player drop out items"),
+    ACTIVATOR_FLIGHT("This activators initiates when player's flight-mode changed"),
     MSG_PLACEHOLDERLISTTITLE("Placeholders"),
     PLACEHOLDER_TIME_SERVER("Server (system) time"),
     PLACEHOLDER_TIME_INGAME("In-game time. If player is unknonw will show time in default world"),
