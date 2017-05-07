@@ -467,7 +467,7 @@ public enum M {
      * return Message.ERROR_MESSAGE.log(variable1); // print in log and return value true
      */
     public boolean log(Object... s) {
-        messenger.log(getText(s));
+        M.logMessage(getText(s));
         return true;
     }
 
