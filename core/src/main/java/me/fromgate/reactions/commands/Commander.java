@@ -71,7 +71,8 @@ public class Commander implements CommandExecutor {
         }
         int pageHeight = (sender instanceof Player) ? 9 : 1000;
 
-        M.printMSG(sender, "&6&lReActions v" + ReActions.getPlugin().getDescription().getVersion() + " &r&6| " + M.HLP_HELP.getText('6'));
+        M.printMessage(sender, "&6&lReActions v" + ReActions.getPlugin().getDescription().getVersion() + " &r&6| " + M.HLP_HELP.getText("NO_COLOR"));
+
         ChatPage chatPage = paginate(helpList, page, ReActions.getPlugin().getChatLineLength(), pageHeight);
 
         for (String str : chatPage.getLines()) {
@@ -79,7 +80,7 @@ public class Commander implements CommandExecutor {
         }
 
         if (pageHeight == 9) {
-            M.printMSG(sender, "lst_footer", 'e', '6', chatPage.getPageNumber(), chatPage.getTotalPages());
+            M.LST_FOOTER.print(sender, 'e', '6', chatPage.getPageNumber(), chatPage.getTotalPages());
         }
     }
 
