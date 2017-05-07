@@ -36,6 +36,8 @@ public enum M {
     LNG_SAVE_FAIL("Failed to save lang file"),
     LNG_PRINT_FAIL("Failed to print message %1%. Sender object is null."),
     LNG_CONFIG("[MESSAGES] Messages: %1% Language: %2% Save translate file: %1% Debug mode: %3%"),
+    LNG_PRINT_FAIL_M("Failed to print message. Unknown key %2%"),
+
     WORD_UNKNOWN("Unknown"),
     WRONG_PERMISSION("You have not enough permissions to execute this command"),
     PERMISSION_FAIL("You have not enough permissions to execute this command", 'c'),
@@ -103,6 +105,7 @@ public enum M {
     CMD_DEBUG("%1% - switches debug mode (all checks - true, all checks - false, disabled)"),
     CMD_CHECK("%1% - check is you looking at block (button) with bounded activator, or find activators around you (radius)"),
     CMD_RELOAD("%1% - reload stored locations and activators from configuration files"),
+    CMD_EXEC("%1% - execute EXEC-activator"),
     CMD_DEBUGTRUE("Debug mode enabled (always - true)"),
     CMD_DEBUGFALSE("Debug mode enabled (always - false)"),
     CMD_DEBUGOFF("Debug mode disabled"),
@@ -718,10 +721,19 @@ public enum M {
     }
 
     public static void printPage(Object sender, List<String> lines, M title, int pageNum, int linesPerPage) {
-        printPage(sender, lines, title, null, pageNum, linesPerPage);
+        printPage(sender, lines, title, pageNum, linesPerPage, false);
+    }
+
+    public static void printPage(Object sender, List<String> lines, M title, int pageNum, int linesPerPage, boolean showNum) {
+        printPage(sender, lines, title, null, pageNum, linesPerPage, showNum);
     }
 
     public static void printPage(Object sender, List<String> lines, M title, M footer, int pageNum, int linesPerPage) {
+        printPage(sender, lines, title, footer, pageNum, linesPerPage, false);
+
+    }
+
+    public static void printPage(Object sender, List<String> lines, M title, M footer, int pageNum, int linesPerPage, boolean showNum) {
         if (lines == null || lines.isEmpty()) return;
         List<String> page = new ArrayList<>();
         if (title != null) page.add(title.getText('e', '6', pluginName));
@@ -732,7 +744,7 @@ public enum M {
         int num = pageNum <= pageCount ? pageNum : 1;
 
         for (int i = linesPerPage * (num - 1); i < Math.min(lines.size(), num * linesPerPage); i++) {
-            page.add(lines.get(i));
+            page.add((showNum ? (i + 1) : "") + lines.get(i));
         }
         if (footer != null) page.add(footer.getText('e', 'e', num, pageCount));
         printLines(sender, page);
@@ -753,5 +765,15 @@ public enum M {
 
     public static String enDis(boolean value) {
         return value ? M.ENABLED.toString() : M.DISABLED.toString();
+    }
+
+    public static boolean printMSG(Object sender, String key, Object... s) {
+        M m = getByName(key.toUpperCase());
+        if (m == null) {
+            M.LNG_PRINT_FAIL_M.print(sender, key);
+            return M.LNG_PRINT_FAIL_M.log(sender, key);
+        } else {
+            return m.print(sender, s);
+        }
     }
 }

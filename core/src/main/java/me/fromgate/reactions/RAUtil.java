@@ -35,7 +35,7 @@ public class RAUtil extends FGUtilCore {
         super(plugin, savelng, language, plgcmd, "me/fromgate/reactions");
         this.plg = plugin;
         FillMSG();
-        if (savelng) this.SaveMSG();
+        //   if (savelng) this.SaveMSG();
     }
 
     public void FillMSG() {
@@ -412,7 +412,7 @@ public class RAUtil extends FGUtilCore {
                 sender.sendMessage(line);
         } else sender.sendMessage(message);
     }
-
+/*
     @Override
     public void printMSG(CommandSender sender, Object... s) {
         String message = getMSG(s);
@@ -425,4 +425,5 @@ public class RAUtil extends FGUtilCore {
         for (String line : chatPage.getLines())
             sender.sendMessage(line);
     }
+    */
 }

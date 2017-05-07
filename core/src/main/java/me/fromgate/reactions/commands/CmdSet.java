@@ -7,13 +7,14 @@ import me.fromgate.reactions.timer.Time;
 import me.fromgate.reactions.util.Delayer;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Variables;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
 
-@CmdDefine(command = "react", description = "cmd_set", permission = "reactions.config", subCommands = {"set"}, allowConsole = true, shortDescription = "&3/react set delay player:<player> delay:<time> id:<id>")
+@CmdDefine(command = "react", description = M.CMD_SET, permission = "reactions.config", subCommands = {"set"}, allowConsole = true, shortDescription = "&3/react set delay player:<player> delay:<time> id:<id>")
 public class CmdSet extends Cmd {
 
 
@@ -29,7 +30,7 @@ public class CmdSet extends Cmd {
         Player p = (sender instanceof Player) ? (Player) sender : null;
         Param params = new Param(param, "id");
         String id = params.getParam("id", "");
-        if (id.isEmpty()) return ReActions.getUtil().returnMSG(true, sender, "msg_needvdmid", 'c');
+        if (id.isEmpty()) return M.MSG_NEEDVDMID.print(sender, 'c');
         if (var.equalsIgnoreCase("delay") || var.equalsIgnoreCase("d")) {
             boolean add = params.getParam("add", false);
             String player = params.getParam("player", "");
@@ -37,16 +38,16 @@ public class CmdSet extends Cmd {
             Long time = /*System.currentTimeMillis()+*/ReActions.getUtil().parseTime(params.getParam("delay", "3s")); //дефолтная задержка три секунды
             if (player.isEmpty()) Delayer.setDelay(id, time, add);
             else Delayer.setPersonalDelay(player, id, time, add);
-            ReActions.getUtil().printMSG(sender, "cmd_delayset", player.isEmpty() ? id : player + "." + id, Time.fullTimeToString(System.currentTimeMillis() + time));
+            M.printMSG(sender, "cmd_delayset", player.isEmpty() ? id : player + "." + id, Time.fullTimeToString(System.currentTimeMillis() + time));
         } else if (var.equalsIgnoreCase("var") || var.equalsIgnoreCase("variable") || var.equalsIgnoreCase("v")) {
             String value = params.getParam("value", "");
             String player = params.getParam("player", "");
             Variables.setVar(player, id, value);
-            return ReActions.getUtil().returnMSG(true, sender, "cmd_varset", player.isEmpty() ? id : player + "." + id, Variables.getVar(player, id, ""));
+            return M.CMD_VARSET.print(sender, player.isEmpty() ? id : player + "." + id, Variables.getVar(player, id, ""));
         } else if (var.equalsIgnoreCase("menu") || var.equalsIgnoreCase("m")) {
             if (InventoryMenu.set(id, params))
-                return ReActions.getUtil().returnMSG(true, sender, "msg_menuparamset", id);
-            else return ReActions.getUtil().returnMSG(true, sender, "msg_menusetfail", 'c', '4', id);
+                return M.MSG_MENUPARAMSET.print(sender, id);
+            else return M.MSG_MENUSETFAIL.print(sender, 'c', '4', id);
         } else return false;
         return true;
     }

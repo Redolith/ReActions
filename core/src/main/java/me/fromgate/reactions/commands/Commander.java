@@ -1,6 +1,7 @@
 package me.fromgate.reactions.commands;
 
 import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -70,18 +71,20 @@ public class Commander implements CommandExecutor {
         }
         int pageHeight = (sender instanceof Player) ? 9 : 1000;
 
-        ReActions.getUtil().printMsg(sender, "&6&lReActions v" + ReActions.getPlugin().getDescription().getVersion() + " &r&6| " + ReActions.getUtil().getMSG("hlp_help", '6'));
+        M.printMSG(sender, "&6&lReActions v" + ReActions.getPlugin().getDescription().getVersion() + " &r&6| " + M.HLP_HELP.getText('6'));
         ChatPage chatPage = paginate(helpList, page, ReActions.getPlugin().getChatLineLength(), pageHeight);
 
-        for (String str : chatPage.getLines())
+        for (String str : chatPage.getLines()) {
             sender.sendMessage(str);
+        }
 
-        if (pageHeight == 9)
-            ReActions.getUtil().printMSG(sender, "lst_footer", 'e', '6', chatPage.getPageNumber(), chatPage.getTotalPages());
+        if (pageHeight == 9) {
+            M.printMSG(sender, "lst_footer", 'e', '6', chatPage.getPageNumber(), chatPage.getTotalPages());
+        }
     }
 
     public static ChatPage paginate(List<String> unpaginatedStrings, int pageNumber, int lineLength, int pageHeight) {
-        List<String> lines = new ArrayList<String>();
+        List<String> lines = new ArrayList<>();
         for (String str : unpaginatedStrings) {
             lines.addAll(Arrays.asList(ChatPaginator.wordWrap(str, lineLength)));
         }

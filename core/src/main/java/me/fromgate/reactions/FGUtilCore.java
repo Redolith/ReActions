@@ -31,7 +31,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -43,20 +42,9 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -104,14 +92,15 @@ public abstract class FGUtilCore {
         this.plg = plg;
         this.des = plg.getDescription();
         this.language = lng;
-        this.InitMsgFile();
-        this.initStdMsg();
-        this.fillLoadedMessages();
+        //   this.InitMsgFile();
+        //   this.initStdMsg();
+        //   this.fillLoadedMessages();
         this.savelng = savelng;
         this.plgcmd = plgcmd;
         this.px = ChatColor.translateAlternateColorCodes('&', "&3[" + des.getName() + "]&f ");
     }
 
+    /*
     public void initUpdateChecker(String plugin_name, String project_id, String bukkit_dev_name, boolean enable) {
         this.project_id = project_id;
         this.project_curse_url = "https://api.curseforge.com/servermods/files?projectIds=" + this.project_id;
@@ -129,23 +118,24 @@ public abstract class FGUtilCore {
                 }
             }, (40 + getRandomInt(20)) * 1200, 60 * 1200);
         }
-
-    }
-
+    }  */
     /* Вывод сообщения о выходе новой версии, вызывать из
      * обработчика события PlayerJoinEvent
      */
+    /*
     public void updateMsg(Player p) {
         if (isUpdateRequired() && p.hasPermission(this.version_info_perm)) {
             printMSG(p, "msg_outdated", 'e', '6', "&6" + project_name + " v" + des.getVersion());
             printMSG(p, "msg_pleasedownload", 'e', '6', this.project_current_version);
             printMsg(p, "&3" + this.project_bukkitdev);
         }
-    }
+    } */
 
     /* Вызывается автоматом при старте плагина,
      * пишет сообщение о выходе новой версии в лог-файл
      */
+
+    /*
     public void updateMsg() {
         plg.getServer().getScheduler().runTaskAsynchronously(plg, new Runnable() {
             public void run() {
@@ -156,8 +146,9 @@ public abstract class FGUtilCore {
                 }
             }
         });
-    }
+    } */
 
+    /*
     private void updateLastVersion() {
         if (!this.project_check_version) return;
         URL url = null;
@@ -185,9 +176,9 @@ public abstract class FGUtilCore {
         } catch (Exception e) {
             this.log("Failed to check last version");
         }
-    }
+    } */
 
-
+/*
     private boolean isUpdateRequired() {
         if (!project_check_version) return false;
         if (project_id.isEmpty()) return false;
@@ -198,12 +189,12 @@ public abstract class FGUtilCore {
         double last_version = Double.parseDouble(project_last_version.replaceFirst("\\.", "").replace("/", ""));
         return (last_version > current_version);
     }
-
+*/
 
     /* 
      * Инициализация стандартных сообщений
      */
-    private void initStdMsg() {
+  /*  private void initStdMsg() {
         addMSG("msg_outdated", "%1% is outdated!");
         addMSG("msg_pleasedownload", "Please download new version (%1%) from ");
         addMSG("hlp_help", "Help");
@@ -228,17 +219,18 @@ public abstract class FGUtilCore {
         addMSG("cfgmsg_general_check-updates", "Check updates: %1%");
         addMSG("cfgmsg_general_language", "Language: %1%");
         addMSG("cfgmsg_general_language-save", "Save translation file: %1%");
-    }
+    } */
 
-
+/*
     public void setConsoleColored(boolean colorconsole) {
         this.colorconsole = colorconsole;
     }
 
     public boolean isConsoleColored() {
         return this.colorconsole;
-    }
+    } */
 
+    /*
     public void addCmd(String cmd, String perm, String desc_id, String desc_key) {
         addCmd(cmd, perm, desc_id, desc_key, this.c1, this.c2, false);
     }
@@ -264,7 +256,7 @@ public abstract class FGUtilCore {
         cmds.put(cmd, new Cmd(this.permprefix + perm, desc, console));
         if (cmdlist.isEmpty()) cmdlist = cmd;
         else cmdlist = cmdlist + ", " + cmd;
-    }
+    } */
 
     /* 
      * Проверка пермишенов и наличия команды
@@ -298,7 +290,7 @@ public abstract class FGUtilCore {
             this.console = console;
         }
     }
-
+/*
     public class PageList {
         private List<String> ln;
         private int lpp = 15;
@@ -340,7 +332,7 @@ public abstract class FGUtilCore {
         public void printPage(CommandSender p, int pnum) {
             printPage(p, pnum, this.lpp);
         }
-
+/*
         public void printPage(CommandSender p, int pnum, int linesperpage) {
             if (ln.size() > 0) {
 
@@ -365,17 +357,17 @@ public abstract class FGUtilCore {
             } else printMSG(p, "lst_listisempty", 'c');
         }
 
-    }
-
+    } */
+/*
     public void printPage(CommandSender p, List<String> ln, int pnum, String title, String footer, boolean shownum) {
         PageList pl = new PageList(ln, title, footer, shownum);
         pl.printPage(p, pnum);
-    }
-
+    } */
+/*
     public void printPage(CommandSender p, List<String> ln, int pnum, String title, String footer, boolean shownum, int lineperpage) {
         PageList pl = new PageList(ln, title, footer, shownum);
         pl.printPage(p, pnum, lineperpage);
-    }
+    } */
 
 
     /*
@@ -669,19 +661,22 @@ public abstract class FGUtilCore {
     /*
      * Бродкаст сообщения, использую при отладке 
      */
+    /*
     public void BC(String msg) {
         plg.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', px + msg));
-    }
+    } */
 
+    /*
     public void broadcastMSG(String perm, Object... s) {
         for (Player p : Bukkit.getOnlinePlayers())
             if (p.hasPermission(permprefix + perm)) printMSG(p, s);
-    }
+    } */
 
+    /*
     public void broadcastMsg(String perm, String msg) {
         for (Player p : Bukkit.getOnlinePlayers())
             if (p.hasPermission(permprefix + perm)) printMsg(p, msg);
-    }
+    } */
 
     /*
      * 	public void printMSG (CommandSender p, Object... s){
@@ -722,6 +717,7 @@ public abstract class FGUtilCore {
     /*
      *  Инициализация файла с сообщениями
      */
+    /*
     public void InitMsgFile() {
         try {
             lng = new YamlConfiguration();
@@ -734,7 +730,7 @@ public abstract class FGUtilCore {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    } */
 
     public void fillLoadedMessages() {
         if (lng == null) return;
@@ -760,6 +756,7 @@ public abstract class FGUtilCore {
     /*
      * Сохранение сообщений в файл 
      */
+    /*
     public void SaveMSG() {
         String[] keys = this.msglist.split(",");
         try {
@@ -772,11 +769,12 @@ public abstract class FGUtilCore {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    } */
 
     /*
      *  getMSG (String id, [char color1, char color2], Object param1, Object param2, Object param3... )
      */
+    /*
     public String getMSG(Object... s) {
         String str = "&4Unknown message";
         String color1 = "&" + this.c1;
@@ -812,16 +810,18 @@ public abstract class FGUtilCore {
         }
         return ChatColor.translateAlternateColorCodes('&', str);
     }
-
+    */
+/*
     public void printMSG(CommandSender p, Object... s) {
         String message = getMSG(s);
         if ((!(p instanceof Player)) && (!colorconsole)) message = ChatColor.stripColor(message);
         p.sendMessage(message);
-    }
+    } */
 
     /* 
      * Печать справки
      */
+    /*
     public void PrintHLP(Player p) {
         printMsg(p, "&6&l" + this.project_name + " v" + des.getVersion() + " &r&6| " + getMSG("hlp_help", '6'));
         printMSG(p, "hlp_thishelp", "/" + plgcmd + " help");
@@ -829,17 +829,20 @@ public abstract class FGUtilCore {
         printMSG(p, "hlp_typecmd", "/" + plgcmd + " help <" + getMSG("hlp_cmdparam_command", '2') + ">");
         printMsg(p, getMSG("hlp_commands") + " &2" + cmdlist);
     }
-
+*/
 
     /* 
      * Печать справки по команде
      */
+    /*
     public void printHLP(Player p, String cmd) {
         if (cmds.containsKey(cmd)) {
             printMsg(p, "&6&l" + this.project_name + " v" + des.getVersion() + " &r&6| " + getMSG("hlp_help", '6'));
             printMsg(p, cmds.get(cmd).desc);
         } else printMSG(p, "cmd_unknown", 'c', 'e', cmd);
-    }
+    } */
+
+    /*
 
     public void PrintHlpList(CommandSender p, int page, int lpp) {
         String title = "&6&l" + this.project_name + " v" + des.getVersion() + " &r&6| " + getMSG("hlp_help", '6');
@@ -855,15 +858,16 @@ public abstract class FGUtilCore {
                 hlp.add(cmds.get(cmd).desc);
         }
         printPage(p, hlp, page, title, "", false, lpp);
-    }
+    } */
 
     /* 
      * Возврат логической переменной в виде текста выкл./вкл.
      */
+    /*
     public String EnDis(boolean b) {
         return b ? getMSG("enabled", '2') : getMSG("disabled", 'c');
     }
-
+   */
     public String EnDis(String str, boolean b) {
         String str2 = ChatColor.stripColor(str);
         return b ? ChatColor.DARK_GREEN + str2 : ChatColor.RED + str2;
@@ -872,9 +876,11 @@ public abstract class FGUtilCore {
     /* 
      * Печать значения логической переменной 
      */
+    /*
     public void printEnDis(CommandSender p, String msg_id, boolean b) {
         p.sendMessage(getMSG(msg_id) + ": " + EnDis(b));
     }
+    */
 
 
     /* 
@@ -1030,10 +1036,11 @@ public abstract class FGUtilCore {
     /*
      *  Тоже, что и MSG, но обрезает цвет
      */
+    /*
     public String getMSGnc(Object... s) {
         return ChatColor.stripColor(getMSG(s));
     }
-
+*/
 
     /*
      * Установка блока с проверкой на приват
@@ -1105,6 +1112,7 @@ public abstract class FGUtilCore {
         return true;
     }
 
+    /*
     public void printConfig(CommandSender p, int page, int lpp, boolean section, boolean usetranslation) {
         List<String> cfgprn = new ArrayList<String>();
         if (!plg.getConfig().getKeys(true).isEmpty())
@@ -1122,6 +1130,7 @@ public abstract class FGUtilCore {
         String title = "&6&l" + this.project_current_version + " v" + des.getVersion() + " &r&6| " + getMSG("msg_config", '6');
         printPage(p, cfgprn, page, title, "", false);
     }
+    */
 
     public int getMinMaxRandom(String minmaxstr) {
         int min = 0;
@@ -1199,11 +1208,13 @@ public abstract class FGUtilCore {
         return (int) l;
     }
 
+    /*
+
     public boolean returnMSG(boolean result, CommandSender p, Object... s) {
         if (p != null) this.printMSG(p, s);
         return result;
     }
-
+ */
 
 }
 
