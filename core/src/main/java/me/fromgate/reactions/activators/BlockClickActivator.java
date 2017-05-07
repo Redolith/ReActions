@@ -41,6 +41,8 @@ public class BlockClickActivator extends Activator {
     public BlockClickActivator(String name, Block targetBlock, String param) {
         super(name, "activators");
         this.blockLocation = "";
+        this.blockType = "";
+        /*
         if (targetBlock != null && blockLocation != null && !blockLocation.isEmpty()) {
             blockLocation = Locator.locationToString(targetBlock.getLocation());
         }
@@ -48,6 +50,18 @@ public class BlockClickActivator extends Activator {
         Param params = new Param(param);
         this.blockType = params.getParam("type", "");
         this.blockLocation = params.getParam("loc", "");
+        this.click = ClickType.getByName(params.getParam("click", "ANY"));
+        */
+        Param params = new Param(param);
+        if (targetBlock != null) {
+            this.blockLocation = Locator.locationToString(targetBlock.getLocation());
+            this.blockType = (targetBlock.getType()).toString();
+        }
+        String bt = params.getParam("type", "");
+        if (this.blockType.isEmpty() || this.blockType.equals("AIR") || !bt.isEmpty() && !this.blockType.equalsIgnoreCase(bt)) {
+            this.blockType = bt;
+            this.blockLocation = params.getParam("loc", "");
+        }
         this.click = ClickType.getByName(params.getParam("click", "ANY"));
     }
 
@@ -84,7 +98,8 @@ public class BlockClickActivator extends Activator {
     @Override
     public boolean isLocatedAt(Location l) {
         if (this.blockLocation.isEmpty()) return false;
-        Location loc = Locator.parseCoordinates(this.blockLocation);
+        // Location loc = Locator.parseCoordinates(this.blockLocation);
+        Location loc = Locator.parseLocation(this.blockLocation, null);
         if (loc == null) return false;
         return l.getWorld().equals(loc.getWorld()) &&
                 l.getBlockX() == loc.getBlockX() &&
@@ -151,7 +166,8 @@ public class BlockClickActivator extends Activator {
     }
 
     public boolean isValid() {
-        return (this.blockType == null || this.blockType.isEmpty()) && (this.blockLocation == null || this.blockLocation.isEmpty());
+        // return (this.blockType == null || this.blockType.isEmpty()) && (this.blockLocation == null || this.blockLocation.isEmpty());
+        return true;
     }
 
 }
