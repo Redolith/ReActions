@@ -100,7 +100,7 @@ public class ReActions extends JavaPlugin {
         loadCfg();
         saveCfg();
         u = new RAUtil(this, languageSave, language, "react");
-        UpdateChecker.init(this, "ReActions", "61726", "me/fromgate/reactions", this.checkUpdates);
+        UpdateChecker.init(this, "ReActions", "61726", "reactions", this.checkUpdates);
 
         if (!getDataFolder().exists()) getDataFolder().mkdirs();
         PluginManager pm = this.getServer().getPluginManager();
