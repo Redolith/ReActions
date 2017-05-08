@@ -72,7 +72,7 @@ public class Shoot {
         param.set("player", player == null ? "null" : player.getName());
         Param tempVars = new Param();
         tempVars.set("targettype", target.getType().name());
-        tempVars.set("targetname", getMobName(target));
+        tempVars.set("targetname", (player == null) ? getMobName(target) : player.getName());
         tempVars.set("targetloc", Locator.locationToString(target.getLocation()));
         if (shooter != null) {
             tempVars.set("shooter", shooter.getName());
