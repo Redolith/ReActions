@@ -31,7 +31,7 @@ public class WGBridge5x extends WGBridge {
 
     @Override
     public List<String> getRegions(Location loc) {
-        List<String> rgs = new ArrayList<String>();
+        List<String> rgs = new ArrayList<>();
         if (loc == null) return rgs;
         if (!connected) return rgs;
         ApplicableRegionSet rset = null;
@@ -63,7 +63,7 @@ public class WGBridge5x extends WGBridge {
 
     @Override
     public List<Player> playersInRegion(String rg) {
-        List<Player> plrs = new ArrayList<Player>();
+        List<Player> plrs = new ArrayList<>();
         if (!connected) return plrs;
         for (Player p : Bukkit.getOnlinePlayers())
             if (isPlayerInRegion(p, rg)) plrs.add(p);
@@ -91,7 +91,7 @@ public class WGBridge5x extends WGBridge {
 
     @Override
     public List<Location> getRegionMinMaxLocations(String rg) {
-        List<Location> locs = new ArrayList<Location>();
+        List<Location> locs = new ArrayList<>();
         if (!connected) return locs;
         World world = getRegionWorld(rg);
         String regionName = getRegionName(rg);
@@ -104,7 +104,7 @@ public class WGBridge5x extends WGBridge {
 
     @Override
     public List<Location> getRegionLocations(String rg, boolean land) {
-        List<Location> locs = new ArrayList<Location>();
+        List<Location> locs = new ArrayList<>();
         if (!connected) return locs;
         World world = getRegionWorld(rg);
         String regionName = getRegionName(rg);
