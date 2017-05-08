@@ -45,8 +45,8 @@ public class ActionPlayerPotionRemove extends Action {
         else {
             String[] pefs = param.split(",");
             if (pefs.length > 0) {
-                for (int i = 0; i < pefs.length; i++) {
-                    PotionEffectType pef = Util.parsePotionEffect(pefs[i]);
+                for (String pefStr : pefs) {
+                    PotionEffectType pef = Util.parsePotionEffect(pefStr);
                     if (pef == null) continue;
                     if (p.hasPotionEffect(pef)) {
                         p.removePotionEffect(pef);

@@ -40,7 +40,7 @@ public class ActionTp extends Action {
     }
 
     private Location teleportPlayer(Player p, Param params) {
-        Location loc = null;
+        Location loc;
         int radius = 0;
         if (params.isEmpty()) return null;
         if (params.isParamsExists("param")) {
@@ -59,7 +59,7 @@ public class ActionTp extends Action {
             }
             try {
                 while (!loc.getChunk().isLoaded()) loc.getChunk().load();
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
 
             Variables.setTempVar("loc-from", Locator.locationToString(p.getLocation()));

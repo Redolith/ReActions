@@ -37,7 +37,7 @@ public class PushBack {
     }
 
     public static boolean teleportToPrev(Player p, int prev) {
-        Location loc = null;
+        Location loc;
         if (prev <= 1) loc = getPlayerPrevLoc1(p);
         else {
             loc = getPlayerPrevLoc2(p);

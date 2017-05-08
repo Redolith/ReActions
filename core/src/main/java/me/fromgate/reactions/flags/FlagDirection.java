@@ -39,7 +39,7 @@ public class FlagDirection extends Flag {
         NORTH,
         NORTHEAST,
         EAST,
-        SOUTHEAST;
+        SOUTHEAST
     }
 
 

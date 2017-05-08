@@ -81,7 +81,7 @@ public class Task implements Runnable {
         cfg.set(Util.join(this.taskId, ".player"), this.playerName == null ? "" : this.playerName);
         cfg.set(Util.join(this.taskId, ".execution-time"), this.executionTime);
         cfg.set(Util.join(this.taskId, ".actions.action"), this.isAction);
-        List<String> actionList = new ArrayList<String>();
+        List<String> actionList = new ArrayList<>();
         for (ActVal a : this.actions) {
             actionList.add(a.toString());
         }
@@ -93,7 +93,7 @@ public class Task implements Runnable {
         this.executionTime = cfg.getLong(Util.join(root, ".execution-time"), 0);
         this.isAction = cfg.getBoolean(Util.join(root, ".actions.action"), true);
         List<String> actionList = cfg.getStringList(Util.join(root, ".actions.list"));
-        this.actions = new ArrayList<ActVal>();
+        this.actions = new ArrayList<>();
         if (actionList != null)
             for (String a : actionList) {
                 if (a.contains("=")) {

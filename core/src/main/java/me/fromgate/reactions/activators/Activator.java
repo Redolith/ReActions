@@ -52,9 +52,9 @@ public abstract class Activator {
         this.group = group;
     }
 
-    private List<FlagVal> flags = new ArrayList<FlagVal>();
-    private List<ActVal> actions = new ArrayList<ActVal>();
-    private List<ActVal> reactions = new ArrayList<ActVal>();
+    private List<FlagVal> flags = new ArrayList<>();
+    private List<ActVal> actions = new ArrayList<>();
+    private List<ActVal> reactions = new ArrayList<>();
 
     public void addFlag(String flag, String param, boolean not) {
         flags.add(new FlagVal(Flags.getValidName(flag), param, not));
@@ -160,13 +160,13 @@ public abstract class Activator {
     public void saveActivator(YamlConfiguration cfg) {
         String key = getType() + "." + this.name;
         save(key, cfg);
-        List<String> flg = new ArrayList<String>();
+        List<String> flg = new ArrayList<>();
         for (FlagVal f : flags) flg.add(f.toString());
         cfg.set(key + ".flags", flg.isEmpty() && !ReActions.getPlugin().saveEmpty() ? null : flg);
-        flg = new ArrayList<String>();
+        flg = new ArrayList<>();
         for (ActVal a : actions) flg.add(a.toString());
         cfg.set(key + ".actions", flg.isEmpty() && !ReActions.getPlugin().saveEmpty() ? null : flg);
-        flg = new ArrayList<String>();
+        flg = new ArrayList<>();
         for (ActVal a : reactions) flg.add(a.toString());
         cfg.set(key + ".reactions", flg.isEmpty() && !ReActions.getPlugin().saveEmpty() ? null : flg);
     }

@@ -173,7 +173,7 @@ public enum Flags {
     }
 
     public static void listFlags(CommandSender sender, int pageNum) {
-        List<String> flagList = new ArrayList<String>();
+        List<String> flagList = new ArrayList<>();
         for (Flags flagType : Flags.values()) {
             String flagName = flagType.name();
             String alias = flagType.getAlias().equalsIgnoreCase(flagName) ? " " : " (" + flagType.getAlias() + ") ";

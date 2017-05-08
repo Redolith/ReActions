@@ -11,13 +11,12 @@ public class Players extends PlayerSelector {
 
     @Override
     public Set<Player> selectPlayers(String param) {
-        Set<Player> players = new HashSet<Player>();
+        Set<Player> players = new HashSet<>();
         if (param.isEmpty()) return players;
         if (param.equalsIgnoreCase("null")) {
             players.add(null);
         } else if (param.equalsIgnoreCase("all")) {
-            for (Player player : Bukkit.getOnlinePlayers())
-                players.add(player);
+            players.addAll(Bukkit.getOnlinePlayers());
         } else {
             String[] arrPlayers = param.split(",\\s*");
             for (String playerName : arrPlayers) {

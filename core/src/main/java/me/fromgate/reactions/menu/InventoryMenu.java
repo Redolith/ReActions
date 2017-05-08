@@ -27,8 +27,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class InventoryMenu implements Listener {
-    private static Map<Integer, List<String>> activeMenus = new HashMap<Integer, List<String>>();
-    private static Map<String, VirtualInventory> menu = new TreeMap<String, VirtualInventory>(String.CASE_INSENSITIVE_ORDER);
+    private static Map<Integer, List<String>> activeMenus = new HashMap<>();
+    private static Map<String, VirtualInventory> menu = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
     public static void init() {
         load();
@@ -114,13 +114,13 @@ public class InventoryMenu implements Listener {
         } else {
             int size = param.getParam("size", 9);
             if (size > 0) {
-                List<String> activators = new ArrayList<String>();
+                List<String> activators = new ArrayList<>();
                 for (int i = 1; i <= size; i++)
                     activators.add(param.getParam("exec" + Integer.toString(i), ""));
                 return activators;
             }
         }
-        return new ArrayList<String>();
+        return new ArrayList<>();
     }
 
     public static Inventory getInventory(Param param) {
@@ -132,7 +132,7 @@ public class InventoryMenu implements Listener {
             String title = param.getParam("title", "ReActions Menu");
             int size = param.getParam("size", 9);
             if (size <= 0) return null;
-            List<String> activators = new ArrayList<String>();
+            List<String> activators = new ArrayList<>();
             inv = Bukkit.createInventory(null, size, title);
             for (int i = 1; i <= size; i++) {
                 activators.add(param.getParam("exec" + Integer.toString(i), ""));
@@ -176,7 +176,7 @@ public class InventoryMenu implements Listener {
 
     public static List<String> getActivators(Inventory inventory) {
         if (isMenu(inventory)) return activeMenus.get(getInventoryCode(inventory));
-        return new ArrayList<String>();
+        return new ArrayList<>();
     }
 
     @EventHandler
@@ -197,7 +197,7 @@ public class InventoryMenu implements Listener {
     }
 
     public static List<String> getEmptyList(int size) {
-        List<String> l = new ArrayList<String>();
+        List<String> l = new ArrayList<>();
         for (int i = 0; i < size; i++) l.add("");
         return l;
     }

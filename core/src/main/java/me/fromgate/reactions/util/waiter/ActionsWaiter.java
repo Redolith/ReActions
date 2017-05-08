@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -17,13 +16,13 @@ public class ActionsWaiter {
     private static Set<Task> tasks;
 
     public static void init() {
-        tasks = new HashSet<Task>();
+        tasks = new HashSet<>();
         load();
     }
 
     public static void executeDelayed(Player player, ActVal action, boolean isAction, long time) {
         if (action == null) return;
-        List<ActVal> actions = new ArrayList<ActVal>();
+        List<ActVal> actions = new ArrayList<>();
         actions.add(action);
         executeDelayed(player, actions, isAction, time);
     }
@@ -62,10 +61,9 @@ public class ActionsWaiter {
     }
 
     public static void refresh() {
-        Set<Task> toRemove = new HashSet<Task>();
+        Set<Task> toRemove = new HashSet<>();
         if (tasks.isEmpty()) return;
-        for (Iterator<Task> it = tasks.iterator(); it.hasNext(); ) {
-            Task t = it.next();
+        for (Task t : tasks) {
             if (t.isTimePassed()) t.execute();
             if (t.isExecuted()) toRemove.add(t);
         }

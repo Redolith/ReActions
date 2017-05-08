@@ -45,8 +45,7 @@ public class FlagState extends Flag {
                 if (player.isSneaking()) return false;
                 if (player.isSprinting()) return false;
                 if (player.isFlying()) return false;
-                if (player.isInsideVehicle()) return false;
-                return true;
+                return !player.isInsideVehicle();
             case OP:
                 return player.isOp();
             case VEHICLE_BOAT:

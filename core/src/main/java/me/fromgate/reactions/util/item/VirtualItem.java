@@ -137,9 +137,9 @@ public class VirtualItem extends ItemStack {
     public static VirtualItem fromMap(Map<String, String> params) {
         if (params == null || params.isEmpty())
             return null;
-        Material type = null;
-        int data = 0;
-        int amount = 1;
+        Material type;
+        int data;
+        int amount;
         if (params.containsKey("item") || params.containsKey("default-param")) {
             String itemStr = params.containsKey("item") ? params.get("item")
                     : params.get("default-param");
@@ -198,7 +198,7 @@ public class VirtualItem extends ItemStack {
      * @return
      */
     public Map<String, String> toMap() {
-        Map<String, String> params = new LinkedHashMap<String, String>();
+        Map<String, String> params = new LinkedHashMap<>();
         params.put("type", this.getType().name());
         params.put("data", Integer.toString(this.getDurability()));
         params.put("amount", Integer.toString(this.getAmount()));
@@ -244,7 +244,7 @@ public class VirtualItem extends ItemStack {
         if (object == null)
             return null;
         JSONObject json = (JSONObject) object;
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         for (Object key : json.keySet()) {
             if (key instanceof String) {
                 map.put((String) key, json.get(key));
@@ -405,7 +405,7 @@ public class VirtualItem extends ItemStack {
             put(params, "book-author", bm.getAuthor().replace('§', '&'));
             put(params, "book-title", bm.getTitle().replace('§', '&'));
             if (bm.getPages() != null && !bm.getPages().isEmpty()) {
-                List<String> pages = new ArrayList<String>();
+                List<String> pages = new ArrayList<>();
                 for (String page : bm.getPages()) {
                     String newPage = page.replaceAll("§0\n", "&z");
                     newPage = newPage.replace('§', '&');
@@ -496,7 +496,7 @@ public class VirtualItem extends ItemStack {
     }
 
     protected static List<Color> parseColors(String colorStr) {
-        List<Color> colors = new ArrayList<Color>();
+        List<Color> colors = new ArrayList<>();
         String[] clrs = colorStr.split(";");
         for (String cStr : clrs) {
             Color c = parseColor(cStr.trim());
@@ -591,7 +591,7 @@ public class VirtualItem extends ItemStack {
     }
 
     public List<String> toStringList() {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         Map<String, String> map = toMap();
         for (String key : map.keySet()) {
             String value = map.get(key);
@@ -650,7 +650,7 @@ public class VirtualItem extends ItemStack {
     }
 
     protected Map<Enchantment, Integer> parseEnchantmentsString(String enchStr) {
-        Map<Enchantment, Integer> ench = new HashMap<Enchantment, Integer>();
+        Map<Enchantment, Integer> ench = new HashMap<>();
         if (enchStr == null || enchStr.isEmpty()) return ench;
         String[] ln = enchStr.split(";");
         for (String e : ln) {
@@ -683,7 +683,7 @@ public class VirtualItem extends ItemStack {
         BookMeta bm = (BookMeta) this.getItemMeta();
         if (pagesStr != null) {
             String[] ln = pagesStr.split(Pattern.quote(DIVIDER));
-            List<String> pages = new ArrayList<String>();
+            List<String> pages = new ArrayList<>();
             for (String page : ln)
                 pages.add(ChatColor.translateAlternateColorCodes('&',
                         page.replace("&z", "§0\n")));
@@ -697,7 +697,7 @@ public class VirtualItem extends ItemStack {
     }
 
     public void setLore(String loreStr) {
-        List<String> lore = new ArrayList<String>();
+        List<String> lore = new ArrayList<>();
         if (loreStr != null) {
             String[] ln = ChatColor.translateAlternateColorCodes('&', loreStr).split(Pattern.quote(DIVIDER));
             lore = Arrays.asList(ln);
@@ -767,13 +767,13 @@ public class VirtualItem extends ItemStack {
      * @return - parsed Map
      */
     protected static Map<String, String> parseParams(String param) {
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, String> params = new HashMap<>();
         Pattern pattern = Pattern.compile("\\S+:\\{[^\\{\\}]*\\}|\\S+:\\S+");
         Matcher matcher = pattern.matcher(hideBkts(param));
         while (matcher.find()) {
             String paramPart = matcher.group().trim().replace("#BKT1#", "{").replace("#BKT2#", "}");
-            String key = paramPart;
-            String value = "";
+            String key;
+            String value;
             if (paramPart.contains(":")) {
                 key = new String(paramPart.substring(0, paramPart.indexOf(":")));
                 value = new String(paramPart.substring(paramPart.indexOf(":") + 1));
@@ -834,11 +834,11 @@ public class VirtualItem extends ItemStack {
         if (!(this.getItemMeta() instanceof FireworkEffectMeta)) return;
         FireworkEffectMeta fm = (FireworkEffectMeta) this.getItemMeta();
         Map<String, String> params = parseParams(fireworkStr);
-        FireworkEffect.Type fType = null;
-        List<Color> colors = new ArrayList<Color>();
-        List<Color> fadeColors = new ArrayList<Color>();
-        boolean flicker = false;
-        boolean trail = false;
+        FireworkEffect.Type fType;
+        List<Color> colors;
+        List<Color> fadeColors;
+        boolean flicker;
+        boolean trail;
         fType = FireworkEffect.Type.valueOf(getParam(params, "type", "")
                 .toUpperCase());
         flicker = "true".equalsIgnoreCase(getParam(params, "flicker", "false"));
@@ -868,14 +868,14 @@ public class VirtualItem extends ItemStack {
         fm.setPower(power);
         if (fireworkStr != null && !fireworkStr.isEmpty()) {
             String[] fireworks = fireworkStr.split(";");
-            List<FireworkEffect> fe = new ArrayList<FireworkEffect>();
+            List<FireworkEffect> fe = new ArrayList<>();
             for (String fStr : fireworks) {
                 Map<String, String> params = parseParams(fStr);
                 FireworkEffect.Type fType = null;
-                List<Color> colors = new ArrayList<Color>();
-                List<Color> fadeColors = new ArrayList<Color>();
-                boolean flicker = false;
-                boolean trail = false;
+                List<Color> colors;
+                List<Color> fadeColors;
+                boolean flicker;
+                boolean trail;
                 for (FireworkEffect.Type ft : FireworkEffect.Type.values()) {
                     if (ft.name()
                             .equalsIgnoreCase(getParam(params, "type", "")))
@@ -909,7 +909,7 @@ public class VirtualItem extends ItemStack {
     protected List<String> fireworksToList(List<FireworkEffect> fireworks) {
         if (fireworks == null || fireworks.isEmpty())
             return null;
-        List<String> fireList = new ArrayList<String>();
+        List<String> fireList = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
         for (int j = 0; j < fireworks.size(); j++) {
             // if (j>0) sb.append("\\\\n");
@@ -954,7 +954,7 @@ public class VirtualItem extends ItemStack {
         if (numMinMaxStr.matches("\\d+"))
             return Integer.parseInt(numMinMaxStr);
         int min = 0;
-        int max = 0;
+        int max;
         String strMin = numMinMaxStr;
         String strMax = numMinMaxStr;
         if (numMinMaxStr.contains("-")) {
@@ -1003,7 +1003,7 @@ public class VirtualItem extends ItemStack {
             enchant = new String(iStr.substring(iStr.indexOf("@") + 1));
             iStr = new String(iStr.substring(0, iStr.indexOf("@")));
         }
-        int id = -1;
+        int id;
         int amount = 1;
         short data = 0;
         String[] si = iStr.split("\\*");
@@ -1064,7 +1064,7 @@ public class VirtualItem extends ItemStack {
                 if (!loreStr.isEmpty()) {
                     ItemMeta im = item.getItemMeta();
                     String[] ln = loreStr.split("@");
-                    List<String> lore = new ArrayList<String>();
+                    List<String> lore = new ArrayList<>();
                     for (String loreLine : ln)
                         lore.add(loreLine.replace("_", " "));
                     im.setLore(lore);
@@ -1133,7 +1133,7 @@ public class VirtualItem extends ItemStack {
                 Material m = null;
                 try {
                     m = Material.getMaterial(Integer.parseInt(typeStr));
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
                 if (m == null) return false;
                 typeStr = m.name();

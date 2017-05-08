@@ -23,7 +23,7 @@ public class PlaceholderDamage extends Placeholder {
         if (de == null) return null;
         LivingEntity e = Util.getDamagerEntity(de);
         String type = e.getType().name();
-        String name = (e instanceof Player) ? ((Player) e).getName() : (e.getCustomName() != null ? e.getCustomName() : type);
+        String name = (e instanceof Player) ? e.getName() : (e.getCustomName() != null ? e.getCustomName() : type);
         return damagerName ? name : type;
     }
 }

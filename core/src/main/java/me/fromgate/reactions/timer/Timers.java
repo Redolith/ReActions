@@ -149,7 +149,7 @@ public class Timers {
     }
 
     public static Map<String, Timer> getIngameTimers() {
-        Map<String, Timer> ingameTimers = new TreeMap<String, Timer>(String.CASE_INSENSITIVE_ORDER);
+        Map<String, Timer> ingameTimers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         for (String key : timers.keySet()) {
             Timer timer = timers.get(key);
             if (timer.isIngameTimer()) ingameTimers.put(key, timer);
@@ -158,7 +158,7 @@ public class Timers {
     }
 
     public static Map<String, Timer> getServerTimers() {
-        Map<String, Timer> serverTimers = new TreeMap<String, Timer>(String.CASE_INSENSITIVE_ORDER);
+        Map<String, Timer> serverTimers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         for (String key : timers.keySet()) {
             Timer timer = timers.get(key);
             if (!timer.isIngameTimer()) serverTimers.put(key, timer);
@@ -179,8 +179,8 @@ public class Timers {
 
     public static void init() {
         currentIngameTime = "";
-        timersIngame = new HashSet<String>();
-        timers = new TreeMap<String, Timer>(String.CASE_INSENSITIVE_ORDER);
+        timersIngame = new HashSet<>();
+        timers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         load();
         initIngameTimer();
         initServerTimer();

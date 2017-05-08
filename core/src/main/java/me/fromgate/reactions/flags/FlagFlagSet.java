@@ -37,7 +37,7 @@ public class FlagFlagSet extends Flag {
         List<String> flagList = parseParamsList(param);
         if (flagList.isEmpty()) return false;
         for (String flagStr : flagList) {
-            boolean negative = flagStr.startsWith("!") ? true : false;
+            boolean negative = flagStr.startsWith("!");
             if (negative) flagStr = flagStr.replaceFirst("!", "");
             String[] fnv = flagStr.split(":", 2);
             if (fnv.length != 2) continue;
@@ -49,7 +49,7 @@ public class FlagFlagSet extends Flag {
 
 
     public List<String> parseParamsList(String param) {
-        List<String> paramList = new ArrayList<String>();
+        List<String> paramList = new ArrayList<>();
         Pattern pattern = Pattern.compile("\\S+:\\{[^\\{\\}]*\\}|\\S+");
         Matcher matcher = pattern.matcher(hideBkts(param));
         while (matcher.find()) {

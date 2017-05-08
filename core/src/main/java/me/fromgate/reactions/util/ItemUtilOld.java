@@ -71,7 +71,7 @@ public class ItemUtilOld {
             enchant = istr.substring(istr.indexOf("@") + 1);
             istr = istr.substring(0, istr.indexOf("@"));
         }
-        int id = -1;
+        int id;
         int amount = 1;
         short data = 0;
         String[] si = istr.split("\\*");
@@ -103,7 +103,7 @@ public class ItemUtilOld {
                 if (!loreStr.isEmpty()) {
                     ItemMeta im = item.getItemMeta();
                     String[] ln = loreStr.split("@");
-                    List<String> lore = new ArrayList<String>();
+                    List<String> lore = new ArrayList<>();
                     for (String loreLine : ln) lore.add(loreLine.replace("_", " "));
                     im.setLore(lore);
                     item.setItemMeta(im);
@@ -183,7 +183,7 @@ public class ItemUtilOld {
     @SuppressWarnings("deprecation")
     public static boolean compareItemStrIgnoreName(int item_id, int item_data, int item_amount, String itemstr) {
         if (!itemstr.isEmpty()) {
-            int id = -1;
+            int id;
             int amount = 1;
             int data = -1;
             String[] si = itemstr.split("\\*");
@@ -440,7 +440,7 @@ public class ItemUtilOld {
 
     public static int getMinMaxRandom(String minmaxstr) {
         int min = 0;
-        int max = 0;
+        int max;
         String strmin = minmaxstr;
         String strmax = minmaxstr;
 

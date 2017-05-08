@@ -12,13 +12,13 @@ public class WorldsPlayers extends PlayerSelector {
 
     @Override
     public Set<Player> selectPlayers(String worldNames) {
-        Set<Player> players = new HashSet<Player>();
+        Set<Player> players = new HashSet<>();
         if (!worldNames.isEmpty()) {
             String[] arrWorlds = worldNames.split(",\\s*");
             for (String worldName : arrWorlds) {
                 World world = Bukkit.getWorld(worldName);
                 if (world == null) continue;
-                for (Player player : world.getPlayers()) players.add(player);
+                players.addAll(world.getPlayers());
             }
         }
         return players;

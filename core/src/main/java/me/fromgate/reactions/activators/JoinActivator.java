@@ -67,7 +67,7 @@ public class JoinActivator extends Activator {
 
     @Override
     public void load(String root, YamlConfiguration cfg) {
-        this.firstJoin = cfg.getString(root + ".join-state", "ANY").equalsIgnoreCase("first") ? true : false;
+        this.firstJoin = cfg.getString(root + ".join-state", "ANY").equalsIgnoreCase("first");
     }
 
     @Override

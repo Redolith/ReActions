@@ -13,7 +13,7 @@ import java.util.Set;
 public class LocSelector extends PlayerSelector {
     @Override
     public Set<Player> selectPlayers(String param) {
-        Set<Player> players = new HashSet<Player>();
+        Set<Player> players = new HashSet<>();
         if (param.isEmpty()) return players;
         Param params = new Param(param, "loc");
         String locStr = params.getParam("loc");

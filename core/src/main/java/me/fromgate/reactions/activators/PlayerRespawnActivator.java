@@ -55,8 +55,8 @@ public class PlayerRespawnActivator extends Activator {
         if (pe.getKiller() != null) {
             Variables.setTempVar("killer-type", pe.getKiller().getType().name());
             if (pe.getKiller().getType() == EntityType.PLAYER) {
-                Variables.setTempVar("targetplayer", ((Player) pe.getKiller()).getName());
-                Variables.setTempVar("killer-name", ((Player) pe.getKiller()).getName());
+                Variables.setTempVar("targetplayer", pe.getKiller().getName());
+                Variables.setTempVar("killer-name", pe.getKiller().getName());
             } else {
                 String mobName = pe.getKiller().getCustomName();
                 Variables.setTempVar("killer-name", mobName == null || mobName.isEmpty() ? pe.getKiller().getType().name() : mobName);

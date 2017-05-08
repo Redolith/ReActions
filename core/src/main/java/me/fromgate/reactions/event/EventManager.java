@@ -214,8 +214,7 @@ public class EventManager {
         String[] args = command.split(" ");
         CommandEvent ce = new CommandEvent(p, command, args, canceled);
         Bukkit.getServer().getPluginManager().callEvent(ce);
-        if (ce.isCancelled()) return true;
-        return false;
+        return ce.isCancelled();
     }
 
     public static boolean raiseExecEvent(CommandSender sender, String param) {

@@ -27,6 +27,7 @@ import me.fromgate.reactions.util.message.M;
 import org.quartz.CronExpression;
 
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -40,7 +41,7 @@ public class Timer {
     private boolean pause;
 
     public Timer(Param params2) {
-        this.timesIngame = new HashSet<String>();
+        this.timesIngame = new HashSet<>();
         this.params = params2;
         this.timerType = params2.getParam("timer-type", "ingame").equalsIgnoreCase("ingame");
         this.pause = params2.getParam("paused", false);
@@ -62,10 +63,8 @@ public class Timer {
 
     public void parseTime() {
         if (this.timerType) {
-            this.timesIngame = new HashSet<String>();
-            for (String time : params.getParam("time", "").split(",\\S*")) {
-                this.timesIngame.add(time);
-            }
+            this.timesIngame = new HashSet<>();
+            this.timesIngame.addAll(Arrays.asList(params.getParam("time", "").split(",\\S*")));
         } else {
             String time = params.getParam("time", "").replace("_", " ");
             try {

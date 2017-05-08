@@ -17,17 +17,15 @@ public class VelocityUtil {
         double horizDist = Math.sqrt(distanceSquared(from, to));
 
         // Height gain
-        int gain = heightGain;
 
         //double maxGain = gain > (endGain + gain) ? gain : (endGain + gain);
-        double maxGain = Math.max(gain, endGain + gain);
+        double maxGain = Math.max(heightGain, endGain + heightGain);
 
         // Solve quadratic equation for velocity
         double a = -horizDist * horizDist / (4 * maxGain);
-        double b = horizDist;
         double c = -endGain;
 
-        double slope = -b / (2 * a) - Math.sqrt(b * b - 4 * a * c) / (2 * a);
+        double slope = -horizDist / (2 * a) - Math.sqrt(horizDist * horizDist - 4 * a * c) / (2 * a);
 
         // Vertical velocity
         double vy = Math.sqrt(maxGain * gravity);

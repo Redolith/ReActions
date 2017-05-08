@@ -32,7 +32,7 @@ import java.util.Map;
 
 
 public class Teleporter {
-    private static Map<Player, PlayerTeleportEvent> events = new HashMap<Player, PlayerTeleportEvent>();
+    private static Map<Player, PlayerTeleportEvent> events = new HashMap<>();
 
     public static void startTeleport(PlayerTeleportEvent event) {
         events.put(event.getPlayer(), event);

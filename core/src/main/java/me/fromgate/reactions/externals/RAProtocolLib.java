@@ -65,7 +65,7 @@ public class RAProtocolLib {
             Object value = source.get(key);
             if (value instanceof String) {
                 if ((key instanceof String) && (!((String) key).equalsIgnoreCase("text"))) continue;
-                result = result + (String) value;
+                result = result + value;
             } else if (value instanceof JSONObject) {
                 result = result + jsonToString((JSONObject) value);
             } else if (value instanceof JSONArray) {
@@ -79,7 +79,7 @@ public class RAProtocolLib {
         String result = "";
         for (Object value : source) {
             if (value instanceof String) {
-                result = result + (String) value;
+                result = result + value;
             } else if (value instanceof JSONObject) {
                 result = result + jsonToString((JSONObject) value);
             } else if (value instanceof JSONArray) {

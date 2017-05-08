@@ -35,8 +35,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PlayerRespawner {
-    private static Map<String, LivingEntity> players = new HashMap<String, LivingEntity>();
-    private static Map<String, Location> deathpoints = new HashMap<String, Location>();
+    private static Map<String, LivingEntity> players = new HashMap<>();
+    private static Map<String, Location> deathpoints = new HashMap<>();
 
     public static void addPlayerRespawn(PlayerDeathEvent event) {
         Player deadplayer = event.getEntity();

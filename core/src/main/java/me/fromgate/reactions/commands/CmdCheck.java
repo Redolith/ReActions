@@ -26,14 +26,14 @@ public class CmdCheck extends Cmd {
         int playerX = player.getLocation().getBlockX();
         int playerY = player.getLocation().getBlockY();
         int playerZ = player.getLocation().getBlockZ();
-        Set<String> lst = new HashSet<String>();
+        Set<String> lst = new HashSet<>();
         for (int x = playerX - radius; x <= playerX + radius; x++) {
             for (int y = playerY - radius; y <= playerY + radius; y++) {
                 for (int z = playerZ - radius; z <= playerZ + radius; z++) {
                     List<Activator> found = Activators.getActivatorInLocation(player.getWorld(), x, y, z);
                     if (found.isEmpty()) continue;
-                    for (int i = 0; i < found.size(); i++) {
-                        lst.add(found.get(i).toString());
+                    for (Activator aFound : found) {
+                        lst.add(aFound.toString());
                     }
                 }
             }

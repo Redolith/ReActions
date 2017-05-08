@@ -43,7 +43,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class Locator {
-    private static Map<String, TpLoc> tports = new TreeMap<String, TpLoc>(String.CASE_INSENSITIVE_ORDER);
+    private static Map<String, TpLoc> tports = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
 
     /**
@@ -116,7 +116,7 @@ public class Locator {
 
 
     public static Location getCubeLocation(Location loc1, Location loc2, boolean land) {
-        List<Location> minmax = new ArrayList<Location>();
+        List<Location> minmax = new ArrayList<>();
         minmax.add(new Location(loc1.getWorld(), Math.min(loc1.getBlockX(), loc2.getBlockX()),
                 Math.min(loc1.getBlockY(), loc2.getBlockY()),
                 Math.min(loc1.getBlockZ(), loc2.getBlockZ())));
@@ -135,7 +135,7 @@ public class Locator {
 
 
     public static Location getRadiusLocation(Location center, int radius, boolean land) {
-        List<Location> locs = new ArrayList<Location>();
+        List<Location> locs = new ArrayList<>();
         if (radius <= 16) {
             for (int x = -radius; x <= radius; x++)
                 for (int y = -radius; y <= radius; y++)
@@ -200,16 +200,14 @@ public class Locator {
     private static boolean isEmptyLocation(Location loc) {
         Block block = loc.getBlock();
         if (!block.isEmpty()) return false;
-        if (!block.getRelative(BlockFace.UP).isEmpty()) return false;
-        return true;
+        return block.getRelative(BlockFace.UP).isEmpty();
     }
 
     private static boolean isLandedLocation(Location loc) {
         Block block = loc.getBlock();
         if (!block.isEmpty()) return false;
         if (block.getRelative(BlockFace.DOWN).isEmpty()) return false;
-        if (!block.getRelative(BlockFace.UP).isEmpty()) return false;
-        return true;
+        return block.getRelative(BlockFace.UP).isEmpty();
     }
 
     private static Location getRandomLocation(List<Location> locs) {
@@ -218,7 +216,7 @@ public class Locator {
     }
 
     private static Location getEmptyOrLandedLocations(List<Location> locs, boolean land) {
-        List<Location> landLocs = new ArrayList<Location>();
+        List<Location> landLocs = new ArrayList<>();
         for (Location loc : locs) {
             if (land) {
                 if (isLandedLocation(loc)) landLocs.add(loc);
@@ -246,7 +244,7 @@ public class Locator {
         String lstr = loc.toString();
         try {
             lstr = "[" + loc.getWorld().getName() + "] " + fmt.format(loc.getX()) + ", " + fmt.format(loc.getY()) + ", " + fmt.format(loc.getZ());
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         return lstr;
     }

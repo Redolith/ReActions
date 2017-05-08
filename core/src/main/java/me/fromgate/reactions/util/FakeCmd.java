@@ -43,7 +43,7 @@ public class FakeCmd implements CommandExecutor {
         try {
             ReActions.getPlugin().getCommand(commandStr).setExecutor(fakeCmd);
             ReActions.getPlugin().getLogger().info("Activator command registered: " + commandStr);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
 
@@ -55,10 +55,9 @@ public class FakeCmd implements CommandExecutor {
 
     private static PluginCommand findCommand(String commandStr) {
         try {
-            Constructor<PluginCommand> commandConstructor = PluginCommand.class.getDeclaredConstructor(new Class[]{String.class, Plugin.class});
+            Constructor<PluginCommand> commandConstructor = PluginCommand.class.getDeclaredConstructor(String.class, Plugin.class);
             commandConstructor.setAccessible(true);
-            PluginCommand cmd = (PluginCommand) commandConstructor.newInstance(commandStr, ReActions.getPlugin());
-            return cmd;
+            return (PluginCommand) commandConstructor.newInstance(commandStr, ReActions.getPlugin());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -70,8 +69,7 @@ public class FakeCmd implements CommandExecutor {
         try {
             Field commandField = Bukkit.getPluginManager().getClass().getDeclaredField("commandMap");
             commandField.setAccessible(true);
-            CommandMap commandMap = (CommandMap) commandField.get(Bukkit.getPluginManager());
-            return commandMap;
+            return (CommandMap) commandField.get(Bukkit.getPluginManager());
         } catch (Exception e) {
             e.printStackTrace();
         }

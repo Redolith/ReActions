@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -90,7 +91,7 @@ public class UpdateChecker {
      */
     public static void setUpdateMessage(List<String> list) {
         if (list == null || list.isEmpty()) {
-            updateMessages = new ArrayList<String>();
+            updateMessages = new ArrayList<>();
             updateMessages.add("&6%plugin% &eis outdated! Recommended version is &6v%newversion%");
             updateMessages.add("&ePlease download new version from BukkitDev:");
             updateMessages.add("&b%url%");
@@ -109,9 +110,8 @@ public class UpdateChecker {
      *            "&ePlease download new version from BukkitDev:","&b%url%");
      */
     public static void setUpdateMessage(String... str) {
-        List<String> list = new ArrayList<String>();
-        for (String s : str)
-            list.add(s);
+        List<String> list = new ArrayList<>();
+        list.addAll(Arrays.asList(str));
         setUpdateMessage(list);
     }
 
@@ -149,7 +149,7 @@ public class UpdateChecker {
 
     private static void updateLastVersion() {
         if (!enableUpdateChecker) return;
-        URL url = null;
+        URL url;
         try {
             url = new URL(projectApiUrl);
         } catch (Exception e) {

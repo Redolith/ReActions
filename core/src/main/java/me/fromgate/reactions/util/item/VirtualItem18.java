@@ -119,9 +119,9 @@ public class VirtualItem18 extends VirtualItem {
     public static VirtualItem18 fromMap(Map<String, String> params) {
         if (params == null || params.isEmpty())
             return null;
-        Material type = null;
-        int data = 0;
-        int amount = 1;
+        Material type;
+        int data;
+        int amount;
         if (params.containsKey("item") || params.containsKey("default-param")) {
             String itemStr = params.containsKey("item") ? params.get("item")
                     : params.get("default-param");
@@ -174,7 +174,7 @@ public class VirtualItem18 extends VirtualItem {
      * @return
      */
     public Map<String, String> toMap() {
-        Map<String, String> params = new LinkedHashMap<String, String>();
+        Map<String, String> params = new LinkedHashMap<>();
         params.put("type", this.getType().name());
         params.put("data", Integer.toString(this.getDurability()));
         params.put("amount", Integer.toString(this.getAmount()));
@@ -197,7 +197,7 @@ public class VirtualItem18 extends VirtualItem {
             put(params, "book-author", bm.getAuthor().replace('§', '&'));
             put(params, "book-title", bm.getTitle().replace('§', '&'));
             if (bm.getPages() != null && !bm.getPages().isEmpty()) {
-                List<String> pages = new ArrayList<String>();
+                List<String> pages = new ArrayList<>();
                 for (String page : bm.getPages()) {
                     String newPage = page.replaceAll("§0\n", "&z");
                     newPage = newPage.replace('§', '&');

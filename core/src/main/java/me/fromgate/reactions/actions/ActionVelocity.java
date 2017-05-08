@@ -38,7 +38,7 @@ public class ActionVelocity extends Action {
 
 
     private Vector setPlayerVelocity(Player p, Param params) {
-        String velstr = "";
+        String velstr;
         boolean kick = false;
         if (params.isParamsExists("param")) {
             velstr = params.getParam("param", "");

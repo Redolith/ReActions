@@ -441,9 +441,6 @@ public enum M {
 
     private static boolean debugMode = false;
     private static String language = "default";
-    private static boolean saveLanguage = false;
-    private static char c1 = 'a';
-    private static char c2 = '2';
     private static String pluginName;
     private static Set onceLog = new HashSet();
 
@@ -587,6 +584,8 @@ public enum M {
      * @return
      */
     public String getText(Object... keys) {
+        char c2 = '2';
+        char c1 = 'a';
         char[] colors = new char[]{color1 == null ? c1 : color1, color2 == null ? c2 : color2};
         if (keys.length == 0) {
             return colorize("&" + colors[0] + this.message);
@@ -599,10 +598,10 @@ public enum M {
         int count = 1;
         int c = 0;
         DecimalFormat fmt = new DecimalFormat("####0.##");
-        for (int i = 0; i < keys.length; i++) {
-            String s = messenger.toString(keys[i], fullFloat);//keys[i].toString();
-            if (c < 2 && keys[i] instanceof Character) {
-                colors[c] = (Character) keys[i];
+        for (Object key : keys) {
+            String s = messenger.toString(key, fullFloat);//keys[i].toString();
+            if (c < 2 && key instanceof Character) {
+                colors[c] = (Character) key;
                 c++;
                 continue;
             } else if (s.startsWith("prefix:")) {
@@ -617,10 +616,10 @@ public enum M {
             } else if (s.equals("FULLFLOAT")) {
                 fullFloat = true;
                 continue;
-            } else if (keys[i] instanceof Double) {
-                if (!fullFloat) s = fmt.format((Double) keys[i]);
-            } else if (keys[i] instanceof Float) {
-                if (!fullFloat) s = fmt.format((Float) keys[i]);
+            } else if (key instanceof Double) {
+                if (!fullFloat) s = fmt.format((Double) key);
+            } else if (key instanceof Float) {
+                if (!fullFloat) s = fmt.format((Float) key);
             }
 
             String from = (new StringBuilder("%").append(count).append("%")).toString();
@@ -675,7 +674,7 @@ public enum M {
         messenger = mess;
         language = lang;
         debugMode = debug;
-        saveLanguage = save;
+        boolean saveLanguage = save;
         initMessages();
         if (saveLanguage) saveMessages();
         LNG_CONFIG.debug(M.values().length, language, true, debugMode);
@@ -705,7 +704,7 @@ public enum M {
     }
 
     private static void saveMessages() {
-        Map<String, String> messages = new LinkedHashMap<String, String>();
+        Map<String, String> messages = new LinkedHashMap<>();
         for (M msg : M.values()) {
             messages.put(msg.name().toLowerCase(), msg.message);
         }
@@ -801,8 +800,8 @@ public enum M {
 
 
     public static void logOnce(String key, Object... s) {
-        if (onceLog.contains(key.toLowerCase())) return;
-        onceLog.add(key.toLowerCase());
+        if (onceLog.contains(key)) return;
+        onceLog.add(key);
         M.logMessage(s);
     }
 

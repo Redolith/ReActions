@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Commander implements CommandExecutor {
-    private static List<Cmd> commands = new ArrayList<Cmd>();
+    private static List<Cmd> commands = new ArrayList<>();
     private static JavaPlugin plugin;
     private static Commander commander;
 

@@ -37,7 +37,7 @@ import java.util.List;
 
 public class Profiler {
     private static boolean active = false;
-    private static List<ProfEl> list = new ArrayList<ProfEl>();
+    private static List<ProfEl> list = new ArrayList<>();
     private static long tick_count;
     private static BukkitTask bt = null;
     private static String date_prefix;
@@ -114,10 +114,10 @@ public class Profiler {
         else {
             ProfEl pl = null;
             long average = 0;
-            for (int i = 0; i < list.size(); i++) {
-                if (pl == null) pl = list.get(i);
-                if (pl.execution_time < list.get(i).execution_time) pl = list.get(i);
-                average += list.get(i).execution_time;
+            for (ProfEl aList : list) {
+                if (pl == null) pl = aList;
+                if (pl.execution_time < aList.execution_time) pl = aList;
+                average += aList.execution_time;
             }
             average = average / list.size();
             s.sendMessage(ChatColor.GOLD + "Profiled " + list.size() + " processes. Average executing time: " + average + " ns.");

@@ -11,7 +11,7 @@ public class PermPlayers extends PlayerSelector {
 
     @Override
     public Set<Player> selectPlayers(String param) {
-        Set<Player> players = new HashSet<Player>();
+        Set<Player> players = new HashSet<>();
         if (param.isEmpty()) return players;
         String[] perms = param.split(",\\s*");
         for (Player player : Bukkit.getOnlinePlayers())

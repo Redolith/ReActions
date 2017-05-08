@@ -40,7 +40,7 @@ public class RARacesAndClasses {
     public static void init() {
         try {
             enabled = isRacesAndClassesInstalled();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         if (enabled) M.logMessage("RacesAndClasses found");
     }

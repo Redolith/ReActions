@@ -38,7 +38,7 @@ import java.util.TreeMap;
 
 public class Delayer {
 
-    public static Map<String, Long> delays = new TreeMap<String, Long>(String.CASE_INSENSITIVE_ORDER);
+    public static Map<String, Long> delays = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
     public static void save() {
         try {
@@ -52,7 +52,7 @@ public class Delayer {
                     cfg.set(key, delaytime);
             }
             cfg.save(f);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
 
@@ -69,13 +69,13 @@ public class Delayer {
                 if (delaytime > System.currentTimeMillis())
                     delays.put(key, delaytime);
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
 
     public static boolean checkDelay(String id, long updateTime) {
         String idd = (id.contains(".") ? id : "global." + id);
-        boolean result = !delays.containsKey(idd) ? true : ((Long) delays.get(idd)).longValue() < System.currentTimeMillis();
+        boolean result = !delays.containsKey(idd) || (Long) delays.get(idd) < System.currentTimeMillis();
         if (result && updateTime > 0) Delayer.setDelay(idd, updateTime, false);
         return result;
     }
@@ -100,7 +100,7 @@ public class Delayer {
     }
 
     public static void printDelayList(CommandSender sender, int pageNum, int linePerPage) {
-        List<String> lst = new ArrayList<String>();
+        List<String> lst = new ArrayList<>();
         for (String key : delays.keySet()) {
             long delaytime = delays.get(key);
             if (delaytime < System.currentTimeMillis()) continue;

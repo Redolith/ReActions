@@ -30,19 +30,19 @@ public class ProfEl {
     String comment;
 
     //
-    private long start_time;
-    private long stop_time;
+    private long startTime;
+    private long stopTime;
 
     public ProfEl(String process, long tick_count) {
         this.process = process;
         this.tick_num = tick_count;
-        this.start_time = System.nanoTime();
+        this.startTime = System.nanoTime();
     }
 
     public void stopCount(String comment) {
         this.comment = comment;
-        this.stop_time = System.nanoTime();
-        this.execution_time = stop_time - start_time;
+        this.stopTime = System.nanoTime();
+        this.execution_time = stopTime - startTime;
     }
 
 }

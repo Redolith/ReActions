@@ -162,7 +162,7 @@ public enum Actions {
                 String timeStr = param.getParam("time", "0");
                 long time = Util.parseTime(timeStr);
                 if (time == 0) continue;
-                List<ActVal> futureList = new ArrayList<ActVal>();
+                List<ActVal> futureList = new ArrayList<>();
                 futureList.addAll(actions.subList(i + 1, actions.size()));
                 aw.executeDelayed(player, futureList, isAction, time);
                 return cancelParentEvent;

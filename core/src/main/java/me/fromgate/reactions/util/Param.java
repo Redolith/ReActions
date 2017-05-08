@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 public class Param {
     private String paramStr = "";
-    private Map<String, String> params = new HashMap<String, String>();
+    private Map<String, String> params = new HashMap<>();
 
     public Param(String param) {
         this(param, "param");
@@ -40,7 +40,7 @@ public class Param {
 
 
     public Param() {
-        this.params = new HashMap<String, String>();
+        this.params = new HashMap<>();
         this.paramStr = "";
     }
 
@@ -132,7 +132,7 @@ public class Param {
     }
 
     public static Map<String, String> parseParams(String param, String defaultKey) {
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, String> params = new HashMap<>();
         Pattern pattern = Pattern.compile("\\S+:\\{[^\\{\\}]*\\}|\\S+");
         Matcher matcher = pattern.matcher(hideBkts(param));
         while (matcher.find()) {

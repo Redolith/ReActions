@@ -9,10 +9,10 @@ import java.util.Set;
 
 public class RegionCache {
 
-    private static Set<VRegion> cache = new HashSet<VRegion>();
+    private static Set<VRegion> cache = new HashSet<>();
 
     public static List<VRegion> getRegion(Location loc) {
-        List<VRegion> foundRegions = new ArrayList<VRegion>();
+        List<VRegion> foundRegions = new ArrayList<>();
         for (VRegion vr : cache)
             if (vr.isInRegion(loc)) foundRegions.add(vr);
         return foundRegions;
@@ -72,8 +72,7 @@ public class RegionCache {
             if (loc.getZ() < minZ) return false;
             if (loc.getZ() > maxZ) return false;
             if (loc.getY() < minY) return false;
-            if (loc.getY() > maxY) return false;
-            return true;
+            return !(loc.getY() > maxY);
         }
 
 

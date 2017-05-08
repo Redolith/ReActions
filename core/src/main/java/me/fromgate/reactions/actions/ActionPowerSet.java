@@ -54,8 +54,7 @@ public class ActionPowerSet extends Action {
             if (b.getType() == Material.LEVER) {
                 Lever lever = (Lever) b.getState().getData();
                 power = lever.isPowered();
-            }
-            if (isDoorBlock(b)) {
+            } else if (isDoorBlock(b)) {
                 power = Util.isOpen(b);
             } else power = true;
         }
@@ -85,8 +84,7 @@ public class ActionPowerSet extends Action {
         if (b.getType() == Material.WOODEN_DOOR) return true;
         if (b.getType() == Material.TRAP_DOOR) return true;
         if (b.getType() == Material.FENCE_GATE) return true;
-        if (b.getType() == Material.IRON_DOOR_BLOCK) return true;
-        return false;
+        return b.getType() == Material.IRON_DOOR_BLOCK;
     }
 
 

@@ -140,13 +140,13 @@ public class ReActions extends JavaPlugin {
             if (Class.forName("org.bukkit.event.player.PlayerInteractAtEntityEvent") != null) {
                 Bukkit.getPluginManager().registerEvents(new ArmorStandListener(), this);
             }
-        } catch (Throwable t) {
+        } catch (Throwable ignored) {
         }
 
         try {
             MetricsLite metrics = new MetricsLite(this);
             metrics.start();
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
 
 
@@ -179,7 +179,6 @@ public class ReActions extends JavaPlugin {
         worlduardRecheck = getConfig().getInt("reactions.region-recheck-delay", 2);
         itemHoldRecheck = getConfig().getInt("reactions.item-hold-recheck-delay", 2);
         itemWearRecheck = getConfig().getInt("reactions.item-wear-recheck-delay", 2);
-        ;
         horizontalPushback = getConfig().getBoolean("reactions.horizontal-pushback-action", false);
         Shoot.actionShootBreak = getConfig().getString("actions.shoot.break-block", Shoot.actionShootBreak);
         Shoot.actionShootThrough = getConfig().getString("actions.shoot.penetrable", Shoot.actionShootThrough);

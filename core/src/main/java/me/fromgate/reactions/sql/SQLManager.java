@@ -53,7 +53,6 @@ public class SQLManager {
         } catch (ClassNotFoundException e) {
             M.logOnce("mysqlinitfail", "MySQL JDBC Driver not found!");
             enabled = false;
-            return;
         }
     }
 
@@ -147,7 +146,7 @@ public class SQLManager {
             if (result != null) result.close();
             if (selectStmt != null) selectStmt.close();
             if (connection != null) connection.close();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         return resultStr;
     }
@@ -172,7 +171,7 @@ public class SQLManager {
         try {
             if (statement != null) statement.close();
             if (connection != null) connection.close();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         return ok;
     }
@@ -203,7 +202,7 @@ public class SQLManager {
             if (result != null) result.close();
             if (selectStmt != null) selectStmt.close();
             if (connection != null) connection.close();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         return resultBool;
     }

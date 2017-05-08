@@ -90,8 +90,7 @@ public class BlockClickActivator extends Activator {
 
     private boolean isActivatorBlock(Block block) {
         if (!(this.blockType).isEmpty() && !(block.getType()).toString().equalsIgnoreCase(this.blockType)) return false;
-        if (!checkLocations(block)) return false;
-        return true;
+        return checkLocations(block);
     }
 
 

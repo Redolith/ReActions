@@ -49,7 +49,7 @@ public class Time {
     }
 
     public static String ingameTimeToString(long time, boolean showms) {
-        String timeStr = "";
+        String timeStr;
         int hours = (int) ((time / 1000 + 6) % 24);
         int minutes = (int) (60 * (time % 1000) / 1000);
         timeStr = String.format("%02d:%02d", hours, minutes);

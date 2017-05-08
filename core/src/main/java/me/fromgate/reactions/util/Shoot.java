@@ -82,7 +82,7 @@ public class Shoot {
     }
 
     private static List<Block> getBeam(LivingEntity p, int distance) {
-        List<Block> beam = new ArrayList<Block>();
+        List<Block> beam = new ArrayList<>();
         BlockIterator bi = new BlockIterator(p, distance);
         while (bi.hasNext()) {
             Block b = bi.next();
@@ -93,7 +93,7 @@ public class Shoot {
     }
 
     private static Set<LivingEntity> getEntityBeam(LivingEntity shooter, List<Block> beam, boolean hitSingle) {
-        Set<LivingEntity> list = new HashSet<LivingEntity>();
+        Set<LivingEntity> list = new HashSet<>();
         for (Block b : beam)
             for (Entity e : b.getChunk().getEntities()) {
                 if (!(e instanceof LivingEntity)) continue;
@@ -134,8 +134,7 @@ public class Shoot {
 
     private static boolean isEntityAffectByBeamBlock(Block b, LivingEntity le) {
         if (le.getLocation().getBlock().equals(b)) return true;
-        if (le.getEyeLocation().getBlock().equals(b)) return true;
-        return false;
+        return le.getEyeLocation().getBlock().equals(b);
     }
 
     public static boolean damageEntity(LivingEntity damager, LivingEntity entity, double damage) {

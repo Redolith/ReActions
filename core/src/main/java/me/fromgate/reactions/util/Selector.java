@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class Selector {
-    private static Map<String, Location> locs = new HashMap<String, Location>();
+    private static Map<String, Location> locs = new HashMap<>();
 
     @SuppressWarnings("deprecation")
     public static void selectLocation(Player p, Location loc) {

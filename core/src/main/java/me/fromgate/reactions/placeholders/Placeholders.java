@@ -15,7 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Placeholders {
-    private static List<Placeholder> placeholders = new ArrayList<Placeholder>();
+    private static List<Placeholder> placeholders = new ArrayList<>();
 
     public static void init() {
         add(new PlaceholderPlayer());
@@ -34,7 +34,7 @@ public class Placeholders {
     }
 
     public static Map<String, String> replacePlaceholders(Player p, Param param) {
-        Map<String, String> resultMap = new HashMap<String, String>();
+        Map<String, String> resultMap = new HashMap<>();
         for (String paramKey : param.getMap().keySet()) {
             resultMap.put(paramKey, replacePlaceholders(p, param.getParam(paramKey)));
         }
@@ -76,7 +76,7 @@ public class Placeholders {
     }
 
     public static void listPlaceholders(CommandSender sender, int pageNum) {
-        List<String> phList = new ArrayList<String>();
+        List<String> phList = new ArrayList<>();
         for (Placeholder ph : placeholders) {
             for (String phKey : ph.getKeys()) {
                 if (phKey.toLowerCase().equals(phKey)) continue;

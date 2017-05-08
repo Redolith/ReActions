@@ -39,8 +39,8 @@ import java.util.regex.Pattern;
 
 public class Variables {
 
-    private static Map<String, String> vars = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
-    private static Map<String, String> tempvars = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
+    private static Map<String, String> vars = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private static Map<String, String> tempvars = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
     private static String varId(Player player, String var) {
         return (player == null ? "general." + var : player.getName() + "." + var);
@@ -177,7 +177,7 @@ public class Variables {
             for (String key : vars.keySet())
                 cfg.set(key, vars.get(key));
             cfg.save(f);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
 
@@ -192,7 +192,7 @@ public class Variables {
                 if (!key.contains(".")) continue;
                 vars.put(key, cfg.getString(key));
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
 
@@ -261,7 +261,7 @@ public class Variables {
 
     public static void printList(CommandSender sender, int pageNum, String mask) {
         int linesPerPage = (sender instanceof Player) ? 15 : 10000;
-        List<String> varList = new ArrayList<String>();
+        List<String> varList = new ArrayList<>();
         for (String key : vars.keySet()) {
             if (mask.isEmpty() || key.contains(mask)) {
                 varList.add(key + " : " + vars.get(key));

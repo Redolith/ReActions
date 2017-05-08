@@ -164,7 +164,7 @@ public class BukkitCompatibilityFix {
     public static void setItemInOffHand(Player player, ItemStack item) {
         if (player == null) return;
         PlayerInventory inv = player.getInventory();
-        Method setItem = null;
+        Method setItem;
         try {
             setItem = PlayerInventory.class.getDeclaredMethod("setItemInOffHand", ItemStack.class);
             setItem.invoke(inv, item);
@@ -176,7 +176,7 @@ public class BukkitCompatibilityFix {
     public static void setItemInOffHand(LivingEntity entity, ItemStack item) {
         if (entity == null) return;
         EntityEquipment inv = entity.getEquipment();
-        Method setItem = null;
+        Method setItem;
         try {
             setItem = EntityEquipment.class.getDeclaredMethod("setItemInOffHand", ItemStack.class);
             setItem.invoke(inv, item);
@@ -188,7 +188,7 @@ public class BukkitCompatibilityFix {
     public static ItemStack getItemInOffHand(LivingEntity entity) {
         if (entity == null) return null;
         EntityEquipment inv = entity.getEquipment();
-        Method getItem = null;
+        Method getItem;
         try {
             getItem = EntityEquipment.class.getDeclaredMethod("getItemInOffHand");
             Object itemObj = getItem.invoke(inv);
@@ -202,7 +202,7 @@ public class BukkitCompatibilityFix {
     public static ItemStack getItemInOffHand(Player player) {
         if (player == null) return null;
         PlayerInventory inv = player.getInventory();
-        Method getItem = null;
+        Method getItem;
         try {
             getItem = PlayerInventory.class.getDeclaredMethod("getItemInOffHand");
             Object itemObj = getItem.invoke(inv);
@@ -297,8 +297,8 @@ public class BukkitCompatibilityFix {
             Method method = clazz.getDeclaredMethod(methodName);
             Object value = method.invoke(object);
             double returnDouble = 0;
-            if (method.getReturnType().equals(double.class)) returnDouble = ((Double) value).doubleValue();
-            else if (method.getReturnType().equals(int.class)) returnDouble = (double) ((Integer) value).intValue();
+            if (method.getReturnType().equals(double.class)) returnDouble = (Double) value;
+            else if (method.getReturnType().equals(int.class)) returnDouble = (double) (Integer) value;
             return returnDouble;
         } catch (Exception e) {
             M.logOnce("BCF" + methodName, "Looks like this version of BukkitAPI totally incompatible with API 1.7.x. Method \"" + methodName + "\" is not declared in " + object.getClass().getCanonicalName());
@@ -313,7 +313,7 @@ public class BukkitCompatibilityFix {
     private static void executeMethodObjectDouble(String methodName, Object object, Class<?> clazz, double param) {
         if (object == null) return;
         boolean useInt = false;
-        Method method = null;
+        Method method;
         try {
             method = clazz.getDeclaredMethod(methodName, double.class);
         } catch (Exception e) {
@@ -342,14 +342,14 @@ public class BukkitCompatibilityFix {
      * Works nice with 1.5.2
      */
     public static EntityEvent createEntityDamageByEntityEvent(Entity damager, Entity entity, DamageCause damageCause, double damage) {
-        Class<?> EntityDamageByEntityEvent = null;
+        Class<?> EntityDamageByEntityEvent;
         try {
             EntityDamageByEntityEvent = Class.forName("org.bukkit.event.entity.EntityDamageByEntityEvent");
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
-        Constructor<?> constructor = null;
+        Constructor<?> constructor;
         boolean useInt = false;
         try {
             constructor = EntityDamageByEntityEvent.getConstructor(Entity.class, Entity.class, DamageCause.class, double.class);
@@ -362,7 +362,7 @@ public class BukkitCompatibilityFix {
                 return null;
             }
         }
-        Object event = null;
+        Object event;
         try {
             if (useInt) event = constructor.newInstance(damager, entity, DamageCause.ENTITY_ATTACK, (int) damage);
             else event = constructor.newInstance(damager, entity, DamageCause.ENTITY_ATTACK, damage);
@@ -376,7 +376,7 @@ public class BukkitCompatibilityFix {
     public static boolean isHandSlot(PlayerInteractEntityEvent event) {
         try {
             return event.getHand() == EquipmentSlot.HAND;
-        } catch (NoSuchMethodError error) {
+        } catch (NoSuchMethodError ignored) {
         }
         return true;
     }

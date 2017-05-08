@@ -60,14 +60,14 @@ public class RAWorldGuard {
             try {
                 Class<?> c = Class.forName("me.fromgate.reactions.module.wgbridge.WGBridge5x");
                 return (WGBridge) c.newInstance();
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         }
         return new WGBridge6x();
     }
 
     public static void updateRegionCache() {
-        regionActivators = new HashSet<String>();
+        regionActivators = new HashSet<>();
         for (Activator a : Activators.getActivators(ActivatorType.REGION)) {
             RegionActivator r = (RegionActivator) a;
             regionActivators.add(r.getRegion());
@@ -83,7 +83,7 @@ public class RAWorldGuard {
     }
 
     public static List<String> getRegions(Location loc) {
-        List<String> regions = new ArrayList<String>();
+        List<String> regions = new ArrayList<>();
         for (String rg : regionActivators) {
             if (bridge.isLocationInRegion(loc, rg))
                 regions.add(WGBridge6x.getFullRegionName(rg));

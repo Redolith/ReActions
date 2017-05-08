@@ -12,7 +12,7 @@ public class RegionsPlayers extends PlayerSelector {
 
     @Override
     public Set<Player> selectPlayers(String regionStr) {
-        Set<Player> players = new HashSet<Player>();
+        Set<Player> players = new HashSet<>();
         if (!RAWorldGuard.isConnected()) return players;
         if (regionStr.isEmpty()) return players;
         String[] arrRegion = regionStr.split(",\\s*");

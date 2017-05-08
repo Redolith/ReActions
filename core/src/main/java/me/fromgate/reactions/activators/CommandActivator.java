@@ -80,7 +80,7 @@ public class CommandActivator extends Activator {
         if (!this.checkExact) return checkLine(line);
         String[] cmdLn = line.replaceFirst("/", "").split(" ");
         if (cmdLn.length == 0) return false;
-        Set<String> keys = new HashSet<String>();
+        Set<String> keys = new HashSet<>();
         for (int i = 0; i < cmdLn.length; i++) {
             String key = (i == 0 ? "cmd" : "arg" + i);
             keys.add(key);

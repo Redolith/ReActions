@@ -51,7 +51,7 @@ public class ActionMoneyPay extends Action {
     }
 
     private Param parseOldFormat(Player p, String mstr) {
-        Map<String, String> newParams = new HashMap<String, String>();
+        Map<String, String> newParams = new HashMap<>();
         if (p != null) newParams.put("source", p.getName());
         if (mstr.contains("/")) {
             String[] m = mstr.split("/");

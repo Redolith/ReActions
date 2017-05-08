@@ -145,8 +145,7 @@ public class ItemUtil {
     }
 
     public static ItemStack parseItemStack(String string) {
-        VirtualItem vi = itemFromString(string);
-        return vi == null ? null : vi;
+        return itemFromString(string);
     }
 
 
@@ -183,7 +182,7 @@ public class ItemUtil {
      *
      */
     public static List<ItemStack> parseItemStacksOld(String items) {
-        List<ItemStack> stacks = new ArrayList<ItemStack>();
+        List<ItemStack> stacks = new ArrayList<>();
         String[] ln = items.split(";"); // ВОТ ЭТО ЛОМАЕТ К ЧЕРТЯМ НОВЫЙ ФОРМАТ!!!
         for (String item : ln) {
             VirtualItem vi = itemFromString(item);
@@ -240,7 +239,7 @@ public class ItemUtil {
     public static List<ItemStack> parseRandomItemsStr(String items) {
         Param params = new Param(items);
         if (params.matchAnyParam("set\\d+|SET\\d+")) {
-            Map<List<ItemStack>, Integer> sets = new HashMap<List<ItemStack>, Integer>();
+            Map<List<ItemStack>, Integer> sets = new HashMap<>();
             int maxChance = 0;
             int nochcount = 0;
             for (String key : params.keySet()) {
@@ -266,7 +265,7 @@ public class ItemUtil {
         } else {
             VirtualItem vi = itemFromString(items);
             if (vi != null) {
-                List<ItemStack> iList = new ArrayList<ItemStack>();
+                List<ItemStack> iList = new ArrayList<>();
                 iList.add(vi);
                 return iList;
             }
@@ -280,7 +279,7 @@ public class ItemUtil {
     public static String parseRandomItemsStrOld(String items) {
         if (items.isEmpty()) return "";
         String[] loots = items.split("/");
-        Map<String, Integer> drops = new HashMap<String, Integer>();
+        Map<String, Integer> drops = new HashMap<>();
         int maxchance = 0;
         int nochcount = 0;
         for (String loot : loots) {

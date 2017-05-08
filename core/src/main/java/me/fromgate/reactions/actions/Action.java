@@ -74,8 +74,7 @@ public abstract class Action {
         //Залипухи, но похоже по другому - никак...
         //if (a==null) return true;
         //if ((a.getType() == ActivatorType.COMMAND)&&(!((CommandActivator) a).isCommandRegistered())) return true;
-        if ((this.type == Actions.CANCEL_EVENT) && (!actionFailed)) return true;
-        return false;
+        return (this.type == Actions.CANCEL_EVENT) && (!actionFailed);
     }
 
     private boolean printAction() {

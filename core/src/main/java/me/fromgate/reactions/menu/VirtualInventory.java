@@ -73,8 +73,8 @@ public class VirtualInventory {
         title = params.getParam("title", "&4Re&6Actions &eMenu");
         size = params.getParam("size", 9);
         size = (size % 9 == 0) ? size : ((size / 9) + 1) * 9;
-        slots = new ArrayList<String>();
-        execs = new ArrayList<String>();
+        slots = new ArrayList<>();
+        execs = new ArrayList<>();
         for (int i = 1; i <= size; i++) {
             execs.add(params.getParam("exec" + Integer.toString(i), ""));
             slots.add(params.getParam("exec" + Integer.toString(i), ""));

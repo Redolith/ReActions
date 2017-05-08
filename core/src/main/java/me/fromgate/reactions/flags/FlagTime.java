@@ -43,10 +43,10 @@ public class FlagTime extends Flag {
         } else {
             String[] tln = time.split(",");
             if (tln.length > 0) {
-                for (int i = 0; i < tln.length; i++)
-                    if (tln[i].matches("[0-9]+")) {
+                for (String timeStr : tln)
+                    if (timeStr.matches("[0-9]+")) {
                         int ct = (int) ((currentTime / 1000 + 6) % 24);
-                        if (ct == Integer.parseInt(tln[i])) return true;
+                        if (ct == Integer.parseInt(timeStr)) return true;
                     }
             }
         }

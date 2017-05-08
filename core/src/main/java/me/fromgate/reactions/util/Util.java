@@ -64,7 +64,7 @@ public class Util {
 
     public static int getMinMaxRandom(String minmaxstr) {
         int min = 0;
-        int max = 0;
+        int max;
         String strmin = minmaxstr;
         String strmax = minmaxstr;
 
@@ -125,7 +125,7 @@ public class Util {
         Sound snd = null;
         try {
             snd = Sound.valueOf(param.toUpperCase());
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         if (snd == null) snd = Sound.UI_BUTTON_CLICK;
         return snd;
@@ -133,7 +133,7 @@ public class Util {
 
 
     public static List<Entity> getEntities(Location l1, Location l2) {
-        List<Entity> entities = new ArrayList<Entity>();
+        List<Entity> entities = new ArrayList<>();
         if (!l1.getWorld().equals(l2.getWorld())) return entities;
         int x1 = Math.min(l1.getBlockX(), l2.getBlockX());
         int x2 = Math.max(l1.getBlockX(), l2.getBlockX());
@@ -165,9 +165,9 @@ public class Util {
         Location targetBlock = null;
         try {
             targetBlock = p.getTargetBlock((Set<Material>) null, 100).getLocation();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
-        Map<String, Location> locs = new HashMap<String, Location>();
+        Map<String, Location> locs = new HashMap<>();
         locs.put("%here%", p.getLocation());
         locs.put("%eye%", p.getEyeLocation());
         locs.put("%head%", p.getEyeLocation());
@@ -189,7 +189,7 @@ public class Util {
         PotionEffectType pef = null;
         try {
             pef = PotionEffectType.getByName(name);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         return pef;
     }
@@ -202,7 +202,7 @@ public class Util {
                 Projectile prj = (Projectile) evdmg.getDamager();
                 LivingEntity shooterEntity = BukkitCompatibilityFix.getShooter(prj);
                 if (shooterEntity == null) return null;
-                if (shooterEntity instanceof LivingEntity) return (LivingEntity) shooterEntity;
+                if (shooterEntity instanceof LivingEntity) return shooterEntity;
             }
         }
         return null;
@@ -273,8 +273,7 @@ public class Util {
     public static boolean isDoorBlock(Block b) {
         if (b.getType() == Material.WOODEN_DOOR) return true;
         if (b.getType() == Material.TRAP_DOOR) return true;
-        if (b.getType() == Material.FENCE_GATE) return true;
-        return false;
+        return b.getType() == Material.FENCE_GATE;
     }
 
     public static String join(String... s) {
@@ -323,8 +322,11 @@ public class Util {
         if (!str.isEmpty()) {
             String[] ln = str.split(",");
             if (ln.length > 0)
-                for (int i = 0; i < ln.length; i++)
-                    if ((!ln[i].isEmpty()) && ln[i].matches("[0-9]*") && (Integer.parseInt(ln[i]) == id)) return true;
+                for (String numStrInList : ln) {
+                    if ((!numStrInList.isEmpty()) && numStrInList.matches("[0-9]*") && (Integer.parseInt(numStrInList) == id)) {
+                        return true;
+                    }
+                }
         }
         return false;
     }
@@ -336,8 +338,9 @@ public class Util {
     public static boolean isWordInList(String word, String str) {
         String[] ln = str.split(",");
         if (ln.length > 0)
-            for (int i = 0; i < ln.length; i++)
-                if (ln[i].equalsIgnoreCase(word)) return true;
+            for (String wordInList : ln) {
+                if (wordInList.equalsIgnoreCase(word)) return true;
+            }
         return false;
     }
 
@@ -349,8 +352,9 @@ public class Util {
     public static boolean isItemInList(int id, int data, String str) {
         String[] ln = str.split(",");
         if (ln.length > 0)
-            for (int i = 0; i < ln.length; i++)
-                if (compareItemIdDataStr(id, data, ln[i])) return true;
+            for (String itemInList : ln) {
+                if (compareItemIdDataStr(id, data, itemInList)) return true;
+            }
 
         return false;
     }
@@ -454,7 +458,7 @@ public class Util {
     }
 
     public static String itemToString(ItemStack item) {
-        String str = "";
+        String str;
         String n = item.getItemMeta().hasDisplayName() ? ChatColor.stripColor(item.getItemMeta().getDisplayName()) : item.getType().name();
         String a = item.getAmount() > 1 ? "*" + item.getAmount() : "";
         str = n + a;

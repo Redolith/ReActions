@@ -29,7 +29,7 @@ public class ActionPlayerID extends Action {
             return true;
         } else {
             UUID uniqueID = null;
-            Player player = null;
+            Player player;
             String[] components = playerName.split("-");
             if (components.length == 5) uniqueID = UUID.fromString(playerName);
             if (uniqueID == null) {
@@ -47,7 +47,7 @@ public class ActionPlayerID extends Action {
                 return true;
 
             } else {
-                OfflinePlayer offPlayer = null;
+                OfflinePlayer offPlayer;
                 if (uniqueID == null) {
                     //noinspection deprecation
                     offPlayer = Bukkit.getOfflinePlayer(playerName);
@@ -68,8 +68,7 @@ public class ActionPlayerID extends Action {
     public UUID getUUID(Player p, String playerName) {
         if (!isOnline) //noinspection unused
         {
-            UUID uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + playerName).getBytes(Charsets.UTF_8));
-            return uuid;
+            return UUID.nameUUIDFromBytes(("OfflinePlayer:" + playerName).getBytes(Charsets.UTF_8));
         }
         return p.getUniqueId();
     }
@@ -77,8 +76,7 @@ public class ActionPlayerID extends Action {
     public UUID getOfflineUUID(OfflinePlayer p, String playerName) {
         if (!isOnline) //noinspection unused
         {
-            UUID uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + playerName).getBytes(Charsets.UTF_8));
-            return uuid;
+            return UUID.nameUUIDFromBytes(("OfflinePlayer:" + playerName).getBytes(Charsets.UTF_8));
         }
         return p.getUniqueId();
     }

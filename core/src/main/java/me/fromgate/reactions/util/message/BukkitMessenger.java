@@ -38,8 +38,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-;
-
 public class BukkitMessenger implements Messenger {
 
     JavaPlugin plugin;
@@ -100,7 +98,7 @@ public class BukkitMessenger implements Messenger {
 
     @Override
     public boolean broadcast(String permission, String text) {
-        List<Player> playerList = new ArrayList<Player>();
+        List<Player> playerList = new ArrayList<>();
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (permission == null || permission.isEmpty() || player.hasPermission(permission)) {
                 player.sendMessage(text);
@@ -127,7 +125,7 @@ public class BukkitMessenger implements Messenger {
     @SuppressWarnings("deprecation")
     @Override
     public Map<String, String> load(String language) {
-        Map<String, String> msg = new HashMap<String, String>();
+        Map<String, String> msg = new HashMap<>();
         YamlConfiguration lng = new YamlConfiguration();
         File f = new File(plugin.getDataFolder() + File.separator + language + ".lng");
         try {

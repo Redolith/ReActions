@@ -48,7 +48,7 @@ public class FactionRelationActivator extends Activator {
 
     public FactionRelationActivator(String name, String param) {
         super(name, "activators");
-        this.factions = new HashSet<String>();
+        this.factions = new HashSet<>();
         Param params = new Param(param, "newrelation");
         this.factions.add(params.getParam("faction", params.getParam("faction1", "ANY")).toUpperCase());
         this.factions.add(params.getParam("faction2", params.getParam("otherfaction", "ANY")).toUpperCase());
@@ -98,8 +98,8 @@ public class FactionRelationActivator extends Activator {
 
     @Override
     public void save(String root, YamlConfiguration cfg) {
-        List<String> factionList = new ArrayList<String>();
-        for (String faction : this.factions) factionList.add(faction);
+        List<String> factionList = new ArrayList<>();
+        factionList.addAll(this.factions);
         cfg.set(root + ".factions", factionList);
         cfg.set(root + ".old-relation", this.oldRelation);
         cfg.set(root + ".new-relation", this.newRelation);
@@ -107,7 +107,7 @@ public class FactionRelationActivator extends Activator {
 
     @Override
     public void load(String root, YamlConfiguration cfg) {
-        this.factions = new HashSet<String>();
+        this.factions = new HashSet<>();
         this.factions.addAll(cfg.getStringList(root + ".factions"));
         this.oldRelation = cfg.getString(root + ".old-relation", "ANY");
         this.newRelation = cfg.getString(root + ".new-relation", "ANY");

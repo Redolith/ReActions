@@ -33,8 +33,7 @@ public class RAEconomics {
 
     public static boolean isEconomyFound() {
         if (RACraftConomy.isEnabled()) return true;
-        if (RAVault.isEconomyConected()) return true;
-        return false;
+        return RAVault.isEconomyConected();
     }
 
     public static boolean hasMoney(String account, double amount, String currencyName, String worldName) {
@@ -80,7 +79,7 @@ public class RAEconomics {
     public static Map<String, String> getBalances(Player p) {
         if (RACraftConomy.isEnabled()) return RACraftConomy.getAllBalances(p.getName());
         else if (RAVault.isEconomyConected()) return RAVault.getAllBalances(p.getName());
-        return new HashMap<String, String>();
+        return new HashMap<>();
     }
 
     public static String format(double amount, String currencyName, String worldName) {

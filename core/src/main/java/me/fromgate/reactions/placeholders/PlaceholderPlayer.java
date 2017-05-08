@@ -9,7 +9,6 @@ import me.fromgate.reactions.util.item.VirtualItem;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.Set;
@@ -24,7 +23,7 @@ public class PlaceholderPlayer extends Placeholder {
         if (k == null) return null;
         switch (k) {
             case HEALTH:
-                return Double.toString(BukkitCompatibilityFix.getEntityHealth((LivingEntity) player));
+                return Double.toString(BukkitCompatibilityFix.getEntityHealth(player));
             case PLAYER_INV:
             case INVPLAYER:
                 return getPlayerInventory(player, param);

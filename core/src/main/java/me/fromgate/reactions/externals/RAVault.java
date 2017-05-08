@@ -176,7 +176,7 @@ public class RAVault {
 
     @SuppressWarnings("deprecation")
     public static Map<String, String> getAllBalances(String name) {
-        Map<String, String> bals = new HashMap<String, String>();
+        Map<String, String> bals = new HashMap<>();
         for (World world : Bukkit.getWorlds()) {
             String key = "money." + world.getName();
             String amount = format(economy.getBalance(name, world.getName()), world.getName());

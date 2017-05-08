@@ -38,7 +38,7 @@ import org.bukkit.plugin.Plugin;
 public class RAEffects {
 
 
-    private static String efftypes = "smoke,flame,ender,potion";
+    private static String effTypes = "smoke,flame,ender,potion";
     private static boolean use_play_effects = false;
 
     //ENDER_SIGNAL  POTION_BREAK MOBSPAWNER_FLAMES  SMOKE 
@@ -131,9 +131,9 @@ public class RAEffects {
         if (use_play_effects) {
             playPlayEffect(eff, params);
         } else {
-            int modifier = 0;
-            int radius = 0;
-            if (!Util.isWordInList(eff, efftypes)) return;
+            int modifier;
+            int radius;
+            if (!Util.isWordInList(eff, effTypes)) return;
             if (eff.equalsIgnoreCase("SMOKE")) modifier = parseSmokeDirection(params.getParam("dir", "random"));
             else modifier = Util.getMinMaxRandom(params.getParam("data", "0"));
             radius = params.getParam("radius", 0);
@@ -148,55 +148,42 @@ public class RAEffects {
         if (dir_str.equalsIgnoreCase("n")) {
             d = 7;
         }
-        ;
         if (dir_str.equalsIgnoreCase("nw")) {
             d = 8;
         }
-        ;
         if (dir_str.equalsIgnoreCase("ne")) {
             d = 6;
         }
-        ;
         if (dir_str.equalsIgnoreCase("s")) {
             d = 1;
         }
-        ;
         if (dir_str.equalsIgnoreCase("sw")) {
             d = 2;
         }
-        ;
         if (dir_str.equalsIgnoreCase("se")) {
             d = 0;
         }
-        ;
         if (dir_str.equalsIgnoreCase("w")) {
             d = 5;
         }
-        ;
         if (dir_str.equalsIgnoreCase("e")) {
             d = 3;
         }
-        ;
         if (dir_str.equalsIgnoreCase("calm")) {
             d = 4;
         }
-        ;
         if (dir_str.equalsIgnoreCase("up")) {
             d = 4;
         }
-        ;
         if (dir_str.equalsIgnoreCase("all")) {
             d = 9;
         }
-        ;
         if (dir_str.equalsIgnoreCase("rnd")) {
             d = 10;
         }
-        ;
         if (dir_str.equalsIgnoreCase("random")) {
             d = 10;
         }
-        ;
         return d;
     }
 

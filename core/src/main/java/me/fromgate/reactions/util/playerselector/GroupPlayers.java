@@ -12,7 +12,7 @@ public class GroupPlayers extends PlayerSelector {
 
     @Override
     public Set<Player> selectPlayers(String param) {
-        Set<Player> players = new HashSet<Player>();
+        Set<Player> players = new HashSet<>();
         if (!RAVault.isPermissionConected()) return players;
         if (param.isEmpty()) return players;
         String[] group = param.split(",\\s*");

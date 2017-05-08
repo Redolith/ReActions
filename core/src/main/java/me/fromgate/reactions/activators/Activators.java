@@ -51,8 +51,8 @@ public class Activators {
 
 
     public static void init() {
-        act = new ArrayList<Activator>();
-        stopexec = new HashSet<String>();
+        act = new ArrayList<>();
+        stopexec = new HashSet<>();
         loadActivators();
     }
 
@@ -67,7 +67,7 @@ public class Activators {
     }
 
     private static List<String> findGroupsInDir() {
-        List<String> grps = new ArrayList<String>();
+        List<String> grps = new ArrayList<>();
         File dir = new File(plg().getDataFolder() + File.separator + "Activators" + File.separator);
         if (!dir.exists()) dir.mkdirs();
         for (String fstr : dir.list())
@@ -98,7 +98,7 @@ public class Activators {
     }
 
     public static List<Activator> getActivatorInLocation(Location loc) {
-        List<Activator> found = new ArrayList<Activator>();
+        List<Activator> found = new ArrayList<>();
         for (Activator a : act)
             if (a.isLocatedAt(loc))
                 found.add(a);
@@ -175,7 +175,7 @@ public class Activators {
     }
 
     public static Set<String> findGroupsFromActivators() {
-        Set<String> grps = new HashSet<String>();
+        Set<String> grps = new HashSet<>();
         for (Activator a : act)
             grps.add(a.getGroup());
         return grps;
@@ -201,7 +201,6 @@ public class Activators {
         } catch (Exception e) {
             M.logMessage("Failed to save configuration to file " + f.getAbsolutePath());
             e.printStackTrace();
-            return;
         }
     }
 
@@ -240,8 +239,7 @@ public class Activators {
 
     private static Activator createActivator(ActivatorType type, String name, String group, YamlConfiguration cfg) {
         try {
-            Activator a = type.getActivatorClass().getDeclaredConstructor(String.class, String.class, YamlConfiguration.class).newInstance(name, group, cfg);
-            return a;
+            return type.getActivatorClass().getDeclaredConstructor(String.class, String.class, YamlConfiguration.class).newInstance(name, group, cfg);
         } catch (Exception e) {
             M.logOnce("cannotcreate" + name, "Failed to create new activator. Name: " + name);
             e.printStackTrace();
@@ -250,7 +248,7 @@ public class Activators {
     }
 
     public static List<String> getActivatorsList() {
-        List<String> lst = new ArrayList<String>();
+        List<String> lst = new ArrayList<>();
         for (Activator a : act)
             if (!act.isEmpty())
                 lst.add("&a" + a.toString());
@@ -258,20 +256,24 @@ public class Activators {
     }
 
     public static List<String> getActivatorsList(String type) {
-        List<String> lst = new ArrayList<String>();
+        List<String> lst = new ArrayList<>();
         if (!act.isEmpty())
-            for (int i = 0; i < act.size(); i++)
-                if (type.isEmpty() || act.get(i).isTypeOf(type))
-                    lst.add("&a" + act.get(i).toString());
+            for (Activator anAct : act) {
+                if (type.isEmpty() || anAct.isTypeOf(type)) {
+                    lst.add("&a" + anAct.toString());
+                }
+            }
         return lst;
     }
 
     public static List<String> getActivatorsListGroup(String group) {
-        List<String> lst = new ArrayList<String>();
+        List<String> lst = new ArrayList<>();
         if (!act.isEmpty())
-            for (int i = 0; i < act.size(); i++)
-                if (group.isEmpty() || act.get(i).getGroup().equalsIgnoreCase(group))
-                    lst.add("&a" + act.get(i).toString());
+            for (Activator anAct : act) {
+                if (group.isEmpty() || anAct.getGroup().equalsIgnoreCase(group)) {
+                    lst.add("&a" + anAct.toString());
+                }
+            }
         return lst;
     }
 
@@ -346,14 +348,14 @@ public class Activators {
     }
 
     public static List<ItemHoldActivator> getItemHoldActivatos() {
-        List<ItemHoldActivator> ihold = new ArrayList<ItemHoldActivator>();
+        List<ItemHoldActivator> ihold = new ArrayList<>();
         for (Activator a : act)
             if (a.getType() == ActivatorType.ITEM_HOLD) ihold.add((ItemHoldActivator) a);
         return ihold;
     }
 
     public static List<MessageActivator> getMessageActivators() {
-        List<MessageActivator> list = new ArrayList<MessageActivator>();
+        List<MessageActivator> list = new ArrayList<>();
         for (Activator a : act)
             if (a.getType() == ActivatorType.MESSAGE) list.add((MessageActivator) a);
         return list;
@@ -361,14 +363,14 @@ public class Activators {
 
 
     public static List<ItemWearActivator> getItemWearActivatos() {
-        List<ItemWearActivator> iwear = new ArrayList<ItemWearActivator>();
+        List<ItemWearActivator> iwear = new ArrayList<>();
         for (Activator a : act)
             if (a.getType() == ActivatorType.ITEM_WEAR) iwear.add((ItemWearActivator) a);
         return iwear;
     }
 
     public static List<Activator> getActivators(ActivatorType type) {
-        List<Activator> activators = new ArrayList<Activator>();
+        List<Activator> activators = new ArrayList<>();
         for (Activator activator : act)
             if (activator.getType() == type) activators.add(activator);
         return activators;

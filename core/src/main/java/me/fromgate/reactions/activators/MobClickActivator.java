@@ -86,8 +86,7 @@ public class MobClickActivator extends Activator {
             if (!ChatColor.translateAlternateColorCodes('&', mobName.replace("_", " ")).equals(getMobName(mob)))
                 return false;
         } else if (!getMobName(mob).isEmpty()) return false;
-        if (!checkLocations(mob)) return false;
-        return true;
+        return checkLocations(mob);
     }
 
 

@@ -95,7 +95,7 @@ public class RATowny {
                 if (rsd.hasTown()) {
                     if (rsd.isMayor()) return;
 
-                    Town twn = null;
+                    Town twn;
                     try {
                         twn = rsd.getTown();
                         townRemoveResident(twn, rsd);

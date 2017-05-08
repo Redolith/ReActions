@@ -55,7 +55,7 @@ public class RACraftConomy {
                 craftconomy = (Common) ((Loader) plugin).getCommon();
                 return (craftconomy != null);
             }
-        } catch (Throwable e) {
+        } catch (Throwable ignored) {
         }
         return false;
     }
@@ -133,7 +133,7 @@ public class RACraftConomy {
 
     public static Map<String, String> getAllBalances(String accountStr) {
         String worldDef = Bukkit.getWorlds().get(0).getName();
-        Map<String, String> balances = new HashMap<String, String>();
+        Map<String, String> balances = new HashMap<>();
         if (accountStr.isEmpty()) return balances;
         Account account = getAccount(accountStr);
         if (account == null) return balances;

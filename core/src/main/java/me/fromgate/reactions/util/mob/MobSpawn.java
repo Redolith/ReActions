@@ -49,7 +49,7 @@ import java.util.Map;
 
 public class MobSpawn {
 
-    private static Map<LivingEntity, List<ItemStack>> drops = new HashMap<LivingEntity, List<ItemStack>>();
+    private static Map<LivingEntity, List<ItemStack>> drops = new HashMap<>();
 
 
     public static void mobSpawn(Player p, Param params) {
@@ -114,7 +114,7 @@ public class MobSpawn {
 
     @SuppressWarnings("deprecation")
     private static List<LivingEntity> spawnMob(Location loc, String mobstr) {
-        List<LivingEntity> mobs = new ArrayList<LivingEntity>();
+        List<LivingEntity> mobs = new ArrayList<>();
         String[] ln = mobstr.split(":");
         if (ln.length < 1) return mobs;
 
@@ -272,7 +272,7 @@ public class MobSpawn {
         if (potion.isEmpty()) return;
         String[] pts = potion.split(",");
         for (String pot : pts) {
-            String pef = "";
+            String pef;
             int level = 1;
             String[] ln = pot.split(":");
             pef = ln[0];
@@ -291,7 +291,7 @@ public class MobSpawn {
             drops.remove(le);
             return drop;
         } else {
-            List<LivingEntity> deadMobs = new ArrayList<LivingEntity>();
+            List<LivingEntity> deadMobs = new ArrayList<>();
             for (LivingEntity l : drops.keySet())
                 if (l.isDead()) deadMobs.add(l);
             for (LivingEntity l : deadMobs)

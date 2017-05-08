@@ -33,7 +33,7 @@ public class ActionHeal extends Action {
     @SuppressWarnings("deprecation")
     @Override
     public boolean execute(Player p, Param params) {
-        Player player = p;
+        Player player;
         double hp = params.getParam("hp", 0);
         boolean playhearts = params.getParam("hearts", true);
         if (params.isParamsExists("params")) hp = params.getParam("params", 0);

@@ -357,7 +357,7 @@ public class ActionItems extends Action {
         WEAR_ITEM,
         UNWEAR_ITEM,
         OPEN_INVENTORY,
-        SET_INVENTORY;
+        SET_INVENTORY
     }
 
 

@@ -43,14 +43,12 @@ import static java.lang.Math.min;
 public class RAFactions {
 
     private static boolean enabled = false;
-    private static FactionListener listener;
 
     protected static boolean init() {
         Plugin pf = Bukkit.getServer().getPluginManager().getPlugin("Factions");
         if (pf == null) return false;
         try {
-            listener = new FactionListener();
-            Bukkit.getPluginManager().registerEvents(listener, ReActions.instance);
+            Bukkit.getPluginManager().registerEvents(new FactionListener(), ReActions.instance);
             M.logMessage("Factions found");
             enabled = true;
         } catch (Throwable t) {
@@ -72,7 +70,7 @@ public class RAFactions {
     }
 
     public static List<Player> playersInFaction(String factionName) {
-        List<Player> players = new ArrayList<Player>();
+        List<Player> players = new ArrayList<>();
         if (!enabled) return players;
         Faction faction = getFactionByName(factionName);
         if (faction == null) return players;

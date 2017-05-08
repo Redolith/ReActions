@@ -13,7 +13,7 @@ public class PlayerSelectors {
     private static List<PlayerSelector> selectors;
 
     public static void init() {
-        selectors = new ArrayList<PlayerSelector>();
+        selectors = new ArrayList<>();
         addSelector(new Players());
         addSelector(new WorldsPlayers());
         addSelector(new LocSelector());
@@ -30,7 +30,7 @@ public class PlayerSelectors {
     }
 
     public static Set<Player> getPlayerList(Param param) {
-        Set<Player> players = new HashSet<Player>();
+        Set<Player> players = new HashSet<>();
         for (PlayerSelector selector : selectors) {
             String selectorParam = param.getParam(selector.getKey());
             if (selector.getKey().equalsIgnoreCase("loc") && param.isParamsExists("radius"))

@@ -164,8 +164,8 @@ public class RAListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerPickupItemEvent(PlayerPickupItemEvent event) {
-        EventManager.raiseItemHoldEvent((Player) event.getPlayer());
-        EventManager.raiseItemWearEvent((Player) event.getPlayer());
+        EventManager.raiseItemHoldEvent(event.getPlayer());
+        EventManager.raiseItemWearEvent(event.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -302,7 +302,7 @@ public class RAListener implements Listener {
         Player target = (Player) event.getEntity();
         if (!(event instanceof EntityDamageByEntityEvent)) return;
         EntityDamageByEntityEvent evdmg = (EntityDamageByEntityEvent) event;
-        Player damager = null;
+        Player damager;
         if (evdmg.getDamager().getType() == EntityType.PLAYER) {
             damager = (Player) evdmg.getDamager();
         } else if (evdmg.getDamager() instanceof Projectile) {

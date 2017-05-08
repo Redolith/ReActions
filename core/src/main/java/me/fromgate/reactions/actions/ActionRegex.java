@@ -25,7 +25,7 @@ public class ActionRegex extends Action {
         Pattern pattern = Pattern.compile(regex);
         Matcher m = pattern.matcher(input);
         int count = -1;
-        String group = "";
+        String group;
 
         while (m.find()) {
             count++;

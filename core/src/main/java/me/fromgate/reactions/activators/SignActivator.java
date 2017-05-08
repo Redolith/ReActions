@@ -53,7 +53,7 @@ public class SignActivator extends Activator {
         }
         Param params = new Param(param);
         click = ClickType.getByName(params.getParam("click", "RIGHT"));
-        maskLines = new ArrayList<String>();
+        maskLines = new ArrayList<>();
         if (sign == null) {
             maskLines.add(params.getParam("line1", sign.getLine(0)));
             maskLines.add(params.getParam("line2", sign.getLine(1)));
@@ -128,7 +128,6 @@ public class SignActivator extends Activator {
         for (int i = 0; i < Math.min(4, maskLines.size()); i++) {
             if (maskLines.get(i).isEmpty()) {
                 emptyLines++;
-                continue;
             }
         }
         return emptyLines > 0;
