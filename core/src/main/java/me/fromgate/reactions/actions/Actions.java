@@ -107,7 +107,8 @@ public enum Actions {
     WAIT("wait", false, new ActionWait()),
     LOG("log", false, new ActionLog()),
     PLAYER_ID("playerid", false, new ActionPlayerID()),
-    FILE("file", false, new ActionFile());
+    FILE("file", false, new ActionFile()),
+    GLIDE("glide", false, new ActionGlide());
 
     private String alias;
     private boolean requireplayer;

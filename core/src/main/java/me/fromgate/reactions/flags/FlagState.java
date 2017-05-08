@@ -62,6 +62,8 @@ public class FlagState extends Flag {
                 return player.getVehicle().getType() == EntityType.PIG;
             case SPECTATOR_TARGET:
                 if (player.getSpectatorTarget() != null) return true;
+            case GLIDE:
+                if (player.isGliding()) return true;
         }
         return false;
     }
@@ -77,7 +79,8 @@ public class FlagState extends Flag {
         VEHICLE_HORSE,
         FLY,
         OP,
-        SPECTATOR_TARGET;
+        SPECTATOR_TARGET,
+        GLIDE;
 
         public static Posture getByName(String name) {
             for (Posture pt : Posture.values())
