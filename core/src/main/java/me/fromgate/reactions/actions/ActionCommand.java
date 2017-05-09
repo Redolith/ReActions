@@ -32,7 +32,11 @@ import org.bukkit.entity.Player;
 
 public class ActionCommand extends Action {
 
-    private int commandAs = 0; //0 - normal, 1 - op, 2 - console
+    public final static int NORMAL = 0;
+    public final static int OP = 1;
+    public final static int CONSOLE = 2;
+
+    private int commandAs = NORMAL;
 
 
     public ActionCommand(int commandAs) {
@@ -41,16 +45,16 @@ public class ActionCommand extends Action {
 
     @Override
     public boolean execute(Player player, Param params) {
-        if (commandAs != 2 && player == null) return false;
+        if (commandAs != CONSOLE && player == null) return false;
         String commandLine = ChatColor.translateAlternateColorCodes('&', params.getParam("param-line"));
         switch (commandAs) {
-            case 0:
+            case NORMAL:
                 dispatchCommand(false, player, commandLine);
                 break;
-            case 1:
+            case OP:
                 dispatchCommand(true, player, commandLine);
                 break;
-            case 2:
+            case CONSOLE:
                 dispatchCommand(false, Bukkit.getConsoleSender(), commandLine);
                 break;
         }
