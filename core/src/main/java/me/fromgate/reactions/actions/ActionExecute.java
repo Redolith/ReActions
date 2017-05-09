@@ -24,20 +24,21 @@ package me.fromgate.reactions.actions;
 
 import me.fromgate.reactions.event.EventManager;
 import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.Variables;
 import org.bukkit.entity.Player;
 
 public class ActionExecute extends Action {
 
     @Override
-    public boolean execute(Player p, Param params) {
-        return execActivator(p, params);
+    public boolean execute(Player player, Param params) {
+        return execActivator(player, params);
     }
 
-    public boolean execActivator(Player p, Param params) {
+    public boolean execActivator(Player player, Param params) {
         String id = params.getParam("activator", "");
         if (id.isEmpty()) return false;
         setMessageParam(id);
-        return EventManager.raiseExecEvent(p, params);
+        return EventManager.raiseExecEvent(player, params, Variables.getTempVars());
     }
 
 }

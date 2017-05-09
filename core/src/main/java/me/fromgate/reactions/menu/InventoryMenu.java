@@ -188,8 +188,9 @@ public class InventoryMenu implements Listener {
         List<String> activators = getActivators(event.getInventory());
         if (activators.size() > clickedSlot) {
             String activator = activators.get(clickedSlot);
-            if (!activator.isEmpty())
+            if (!activator.isEmpty()) {
                 EventManager.raiseExecEvent(player, new Param(activator, "activator"));
+            }
         }
         event.setCancelled(true);
         InventoryMenu.removeInventory(event.getInventory());

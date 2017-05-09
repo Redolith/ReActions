@@ -285,4 +285,7 @@ public class Variables {
         return varValue.matches(value);
     }
 
+    public static Param getTempVars() {
+        return new Param(tempvars);
+    }
 }

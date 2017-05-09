@@ -198,8 +198,9 @@ public class Timers {
                 Map<String, Timer> timers = getIngameTimers();
                 for (String key : timers.keySet()) {
                     Timer timer = timers.get(key);
-                    if (timer.isTimeToRun())
+                    if (timer.isTimeToRun()) {
                         EventManager.raiseExecEvent(null, timer.getParams());
+                    }
                 }
             }
         }, 1, 4); //1 По идее так не упустим, хотя.... ;)
@@ -210,16 +211,11 @@ public class Timers {
         serverTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(ReActions.instance, new Runnable() {
             @Override
             public void run() {
-                for (Timer timer : getServerTimers().values())
-                    if (timer.isTimeToRun())
+                for (Timer timer : getServerTimers().values()) {
+                    if (timer.isTimeToRun()) {
                         EventManager.raiseExecEvent(null, timer.getParams());
-                /*
-                Map<String,Timer> timers = getServerTimers();
-				for (String key : timers.keySet()){
-					Timer timer = timers.get(key);
-					if (timer.isTimeToRun())
-						EventManager.raiseExecEvent(null, timer.getParams());					
-				}*/
+                    }
+                }
             }
         }, 1, 20);
     }
