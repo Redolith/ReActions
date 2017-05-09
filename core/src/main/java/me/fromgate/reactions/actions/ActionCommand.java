@@ -24,13 +24,16 @@ package me.fromgate.reactions.actions;
 
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.TempOp;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class ActionCommand extends Action {
+
     private int commandAs = 0; //0 - normal, 1 - op, 2 - console
+
 
     public ActionCommand(int commandAs) {
         this.commandAs = commandAs;
@@ -68,14 +71,9 @@ public class ActionCommand extends Action {
     }
 
     private static void dispatchCmd(final boolean setOp, final CommandSender sender, final String commandLine) {
-        boolean isOp = sender.isOp();
-        if (setOp) {
-            sender.setOp(true);
-        }
+        TempOp.setTempOp(sender);
         Bukkit.getServer().dispatchCommand(sender, commandLine);
-        if (setOp) {
-            sender.setOp(isOp);
-        }
+        TempOp.removeTempOp(sender);
     }
 
 }

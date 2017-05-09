@@ -69,6 +69,7 @@ import me.fromgate.reactions.util.PlayerRespawner;
 import me.fromgate.reactions.util.PushBack;
 import me.fromgate.reactions.util.RADebug;
 import me.fromgate.reactions.util.Teleporter;
+import me.fromgate.reactions.util.TempOp;
 import me.fromgate.reactions.util.UpdateChecker;
 import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.message.M;
@@ -328,6 +329,7 @@ public class RAListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
     public void onPlayerJoin(PlayerJoinEvent event) {
+        TempOp.removeTempOp(event.getPlayer());
         ActionsWaiter.refresh();
         RADebug.offPlayerDebug(event.getPlayer());
         UpdateChecker.updateMsg(event.getPlayer());
@@ -396,6 +398,7 @@ public class RAListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerQuitActivators(PlayerQuitEvent event) {
+        TempOp.removeTempOp(event.getPlayer());
         EventManager.raiseQuitEvent(event);
     }
 

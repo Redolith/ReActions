@@ -138,14 +138,14 @@ public class Shoot {
     }
 
     public static boolean damageEntity(LivingEntity damager, LivingEntity entity, double damage) {
-        //EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(damager, entity, DamageCause.ENTITY_ATTACK, Math.max(damage, 0));
         EntityEvent event = BukkitCompatibilityFix.createEntityDamageByEntityEvent(damager, entity, DamageCause.ENTITY_ATTACK, damage);
 
         if (event == null) return false;
 
         Bukkit.getServer().getPluginManager().callEvent(event);
-        if (!((Cancellable) event).isCancelled()) //e.damage(event.getDamage(), event.getDamager());
+        if (!((Cancellable) event).isCancelled()) {
             BukkitCompatibilityFix.damageEntity(entity, damage);
+        }
         return !((Cancellable) event).isCancelled();
     }
 
