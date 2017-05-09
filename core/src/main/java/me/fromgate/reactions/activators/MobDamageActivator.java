@@ -72,7 +72,9 @@ public class MobDamageActivator extends Activator {
         Variables.setTempVar("moblocation", Locator.locationToString(me.getMob().getLocation()));
         Variables.setTempVar("mobdamager", me.getPlayer() == null ? "" : me.getPlayer().getName());
         Variables.setTempVar("mobtype", me.getMob().getType().name());
-        String mobName = me.getMob().getCustomName();
+        LivingEntity mob = me.getMob();
+        Player player = mob instanceof Player ? (Player) mob : null;
+        String mobName = (player == null) ? me.getMob().getCustomName() : player.getName();
         Variables.setTempVar("mobname", mobName != null && !mobName.isEmpty() ? mobName : me.getMob().getType().name());
         Variables.setTempVar("damage", Double.toString(me.getDamage()));
         boolean result = Actions.executeActivator(me.getPlayer(), this);
