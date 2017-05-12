@@ -1,20 +1,20 @@
 package me.fromgate.reactions.placeholders;
 
 import me.fromgate.reactions.flags.Flags;
-import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Variables;
 import me.fromgate.reactions.util.message.M;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Placeholders {
+    private final static Pattern PATTERN_RAW = Pattern.compile("%raw:((%\\w+%)|(%\\w+:\\w+%)|(%\\w+:\\S+%))%");
+    private final static Pattern PATTERN_ANY = Pattern.compile("(%\\w+%)|(%\\w+:\\w+%)|(%\\w+:\\S+%)");
+
     private static List<Placeholder> placeholders = new ArrayList<>();
 
     public static void init() {
@@ -33,27 +33,41 @@ public class Placeholders {
         return true;
     }
 
-    public static Map<String, String> replacePlaceholders(Player p, Param param) {
-        Map<String, String> resultMap = new HashMap<>();
-        for (String paramKey : param.getMap().keySet()) {
-            resultMap.put(paramKey, replacePlaceholders(p, param.getParam(paramKey)));
+    public static String replacePlaceholderButRaw(Player player, String string) {
+        String result = string;
+        List<String> raws = new ArrayList<>();
+        Matcher matcher = PATTERN_RAW.matcher(result);
+        StringBuffer sb = new StringBuffer();
+        int count = 0;
+        while (matcher.find()) {
+            raws.add(matcher.group().replaceAll("(^%raw:)|(%$)", ""));
+            matcher.appendReplacement(sb, "~~~[[[RAW" + count + "]]]~~~");
+            count++;
         }
-        return resultMap;
+        matcher.appendTail(sb);
+        result = replacePlaceholders(player, sb.toString());
+        if (!raws.isEmpty()) {
+            for (int i = 0; i < raws.size(); i++) {
+                result = result.replace("~~~[[[RAW" + i + "]]]~~~", raws.get(i));
+            }
+        }
+        return result;
     }
 
-    public static String replacePlaceholders(Player player, String string) {
+    private static String replacePlaceholders(Player player, String string) {
         String result = string;
         result = Variables.replaceTempVars(result);
         result = Variables.replacePlaceholders(player, result);
-        Pattern pattern = Pattern.compile("(%\\w+%)|(%\\w+:\\w+%)|(%\\w+:\\S+%)");
-        Matcher matcher = pattern.matcher(result);
+        Matcher matcher = PATTERN_ANY.matcher(result);
         StringBuffer sb = new StringBuffer();
+        String group;
+        String replacement;
         while (matcher.find()) {
-            String group = new StringBuilder("%")
-                    .append(replacePlaceholders(player, matcher.group()
-                            .replaceAll("^%", "").replaceAll("%$", "")))
+            group = new StringBuilder("%")
+                    .append(replacePlaceholders(player,
+                            matcher.group().replaceAll("(^%)|(%$)", "")))
                     .append("%").toString();
-            String replacement = replacePlaceholder(player, group);
+            replacement = replacePlaceholder(player, group);
             matcher.appendReplacement(sb, Matcher.quoteReplacement(replacement == null ? group : replacement));
         }
         matcher.appendTail(sb);

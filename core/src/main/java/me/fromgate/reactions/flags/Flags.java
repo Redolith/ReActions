@@ -152,7 +152,7 @@ public enum Flags {
             for (int i = 0; i < c.getFlags().size(); i++) {
                 FlagVal f = c.getFlags().get(i);
                 Variables.setTempVar(new StringBuilder(f.flag).append("_flag").toString().toUpperCase(), f.value);
-                if (!checkFlag(p, f.flag, Placeholders.replacePlaceholders(p, f.value), f.not)) return false;
+                if (!checkFlag(p, f.flag, Placeholders.replacePlaceholderButRaw(p, f.value), f.not)) return false;
             }
         return true;
     }
