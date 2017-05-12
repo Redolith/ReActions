@@ -8,15 +8,17 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ActionsWaiter {
     private static Set<Task> tasks;
 
     public static void init() {
-        tasks = new HashSet<>();
+        tasks = Collections.newSetFromMap(new ConcurrentHashMap<Task, Boolean>()); //new HashSet<>();
         load();
     }
 
@@ -42,8 +44,9 @@ public class ActionsWaiter {
 
     public static void load() {
         if (!tasks.isEmpty()) {
-            for (Task t : tasks)
+            for (Task t : tasks) {
                 t.stop();
+            }
         }
         tasks.clear();
         YamlConfiguration cfg = new YamlConfiguration();
@@ -68,8 +71,9 @@ public class ActionsWaiter {
             if (t.isExecuted()) toRemove.add(t);
         }
         if (toRemove.isEmpty()) return;
-        for (Task t : toRemove)
+        for (Task t : toRemove) {
             if (tasks.contains(t)) tasks.remove(t);
+        }
         save();
     }
 
