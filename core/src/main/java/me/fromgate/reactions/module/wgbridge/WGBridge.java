@@ -92,4 +92,6 @@ public abstract class WGBridge {
     public abstract boolean isPlayerIsOwner(Player p, String region);
 
     public abstract boolean isPlayerIsMember(Player p, String region);
+
+    public abstract boolean isFlagInRegion(Player p, String region);
 }

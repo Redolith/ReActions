@@ -5,6 +5,8 @@ import com.sk89q.worldguard.bukkit.RegionQuery;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.domains.Association;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -172,5 +174,39 @@ public class WGBridge6x extends WGBridge {
         return (rg.contains(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
     }
 
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isFlagInRegion(Player p, String region) {
+        if (!connected) return false;
+        String[] parts = region.split("\\.");
+        if (parts.length < 3 || parts.length > 4) return false;
+        World world;
+        String regionName;
+        String flagName;
+        String valueName;
+        if (parts.length == 3) {
+            world = Bukkit.getWorlds().get(0);
+            regionName = parts[0];
+            flagName = parts[1];
+            valueName = parts[2];
+        } else {
+            world = Bukkit.getWorld(parts[0]);
+            regionName = parts[1];
+            flagName = parts[2];
+            valueName = parts[3];
+        }
+        if (world == null) return false;
+        if (flagName == null) return false;
+        ProtectedRegion rg = worldguard.getRegionManager(world).getRegion(regionName);
+        if (rg == null) return false;
+        ApplicableRegionSet set = worldguard.getRegionManager(world).getApplicableRegions(rg);
+        Flag<?> f = DefaultFlag.fuzzyMatchFlag(flagName);
+        if (f == null) return false;
+        LocalPlayer localPlayer = p != null ? worldguard.wrapPlayer(p) : null;
+        if (set.getFlag(f, localPlayer) == null) return false;
+        String flagStr = set.getFlag(f, localPlayer).toString();
+        if (flagStr.equalsIgnoreCase(valueName)) return true;
+        return false;
+    }
 
 }

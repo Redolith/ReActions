@@ -134,4 +134,8 @@ public class RAWorldGuard {
     public static boolean isConnected() {
         return bridge != null && bridge.isConnected();
     }
+
+    public static boolean isFlagInRegion(Player p, String region) {
+        return bridge.isFlagInRegion(p, region);
+    }
 }

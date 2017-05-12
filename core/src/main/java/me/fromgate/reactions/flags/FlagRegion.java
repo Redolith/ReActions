@@ -46,6 +46,8 @@ public class FlagRegion extends Flag {
                 return RAWorldGuard.isPlayerIsMember(p, param);
             case 3:
                 return RAWorldGuard.isPlayerIsOwner(p, param);
+            case 4:
+                return RAWorldGuard.isFlagInRegion(p, param);
         }
         return false;
     }

@@ -60,6 +60,7 @@ public enum Flags {
     REGION_PLAYERS("rgplayer", false, new FlagRegion(1)),
     REGION_MEMBER("rgmember", false, new FlagRegion(2)),
     REGION_OWNER("rgowner", false, new FlagRegion(3)),
+    REGION_STATE("rgstate", false, new FlagRegion(4)),
     GAMEMODE("gamemode", true, new FlagGameMode()),
     FOODLEVEL("food", true, new FlagFoodlevel()),
     XP("xp", true, new FlagXP()),
