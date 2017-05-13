@@ -14,11 +14,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 public class ItemUtil {
 
     private static Random random = new Random();
     private static boolean itemVersion = determineVersion(); // false - old, true - new;
+
+    private final static Pattern INT_GZ = Pattern.compile("[1-9]+[0-9]*");
+    private final static Pattern D = Pattern.compile("\\d+");
+    private final static Pattern ITEM_D = Pattern.compile("item\\d+|ITEM\\d+");
+    private final static Pattern SET_D = Pattern.compile("set\\d+|SET\\d+");
 
     private static boolean determineVersion() {
         String versionStr = Bukkit.getBukkitVersion().replaceAll("[^0-9]", "");
@@ -119,7 +125,7 @@ public class ItemUtil {
     private static int getAmount(String itemStr) {
         Map<String, String> itemMap = VirtualItem.parseParams(itemStr);
         String amountStr = VirtualItem.getParam(itemMap, "amount", "1");
-        if (amountStr.matches("\\d+")) return Integer.parseInt(amountStr);
+        if (D.matcher(amountStr).matches()) return Integer.parseInt(amountStr);
         return 1;
     }
 
@@ -218,7 +224,7 @@ public class ItemUtil {
     public static List<ItemStack> parseItemsSet(Param params) {
         List<ItemStack> items = new ArrayList<>();
         for (String key : params.keySet()) {
-            if (key.matches("item\\d+|ITEM\\d+")) {
+            if (ITEM_D.matcher(key).matches()) {
                 String itemStr = params.getParam(key, "");
                 VirtualItem vi = itemFromString(itemStr);
                 if (vi != null) items.add(vi);
@@ -238,12 +244,12 @@ public class ItemUtil {
      */
     public static List<ItemStack> parseRandomItemsStr(String items) {
         Param params = new Param(items);
-        if (params.matchAnyParam("set\\d+|SET\\d+")) {
+        if (params.matchAnyParam(SET_D) {
             Map<List<ItemStack>, Integer> sets = new HashMap<>();
             int maxChance = 0;
             int nochcount = 0;
             for (String key : params.keySet()) {
-                if (!key.matches("set\\d+|SET\\d+")) continue;
+                if (!SET_D.matcher(key).matches()) continue;
                 Param itemParams = new Param(params.getParam(key));
                 List<ItemStack> itemList = parseItemsSet(itemParams);
                 if (itemList == null || itemList.isEmpty()) continue;
@@ -288,7 +294,7 @@ public class ItemUtil {
                 String stacks = ln[0];
                 if (stacks.isEmpty()) continue;
                 int chance = -1;
-                if ((ln.length == 2) && (ln[1].matches("[1-9]+[0-9]*"))) {
+                if ((ln.length == 2) && (INT_GZ.matcher(ln[1]).matches())) {
                     chance = Integer.parseInt(ln[1]);
                     maxchance += chance;
                 } else nochcount++;

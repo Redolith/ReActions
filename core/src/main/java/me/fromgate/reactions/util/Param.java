@@ -124,10 +124,21 @@ public class Param {
         return false;
     }
 
+    public boolean matchAnyParam(Pattern... patterns) {
+        for (Pattern pattern : patterns) {
+            for (String param : params.keySet()) {
+                if (pattern.matcher(param).matches()) return true;
+            }
+        }
+        return false;
+    }
+
     public boolean matchAnyParam(String... keys) {
-        for (String key : keys)
-            for (String param : params.keySet())
+        for (String key : keys) {
+            for (String param : params.keySet()) {
                 if (param.matches(key)) return true;
+            }
+        }
         return false;
     }
 
