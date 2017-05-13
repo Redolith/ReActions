@@ -7,6 +7,7 @@ import com.sk89q.worldguard.domains.Association;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.flags.Flag;
+import com.sk89q.worldguard.protection.flags.RegionGroup;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -178,7 +179,10 @@ public class WGBridge6x extends WGBridge {
     @Override
     public boolean isFlagInRegion(Player p, String region) {
         if (!connected) return false;
-        String[] parts = region.split("\\.");
+        String[] parts;
+        String[] group_parts = region.split("\\/");
+        if (group_parts.length > 1) parts = group_parts[0].split("\\.");
+        else parts = region.split("\\.");
         if (parts.length < 3 || parts.length > 4) return false;
         World world;
         String regionName;
@@ -204,8 +208,15 @@ public class WGBridge6x extends WGBridge {
         if (f == null) return false;
         LocalPlayer localPlayer = p != null ? worldguard.wrapPlayer(p) : null;
         if (set.getFlag(f, localPlayer) == null) return false;
+        Boolean result = false;
         String flagStr = set.getFlag(f, localPlayer).toString();
-        if (flagStr.equalsIgnoreCase(valueName)) return true;
+        if (flagStr.equalsIgnoreCase(valueName)) result = true;
+
+        if (result && group_parts.length > 1) {
+            RegionGroup group;
+            group = set.getFlag(f.getRegionGroupFlag());
+            if ((group.toString()).replace("_", "").equalsIgnoreCase(group_parts[1].replace("_", ""))) return true;
+        } else if (result) return true;
         return false;
     }
 
