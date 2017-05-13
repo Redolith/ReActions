@@ -58,6 +58,21 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Util {
+    private final static Pattern INT_GZ = Pattern.compile("[1-9]+[0-9]*");
+    private final static Pattern INT_LGZ = Pattern.compile("-?[0-9]+[0-9]*");
+    private final static Pattern INT = Pattern.compile("[0-9]+[0-9]*");
+    private final static Pattern FLOAT = Pattern.compile("([0-9]+\\.[0-9]+)|([0-9]+)");
+    private final static Pattern NUM = Pattern.compile("[0-9]*");
+
+    private final static Pattern TIME_HH_MM = Pattern.compile("^[0-5][0-9]:[0-5][0-9]$");
+    private final static Pattern TIME_HH_MM_SS = Pattern.compile("^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$");
+    private final static Pattern TIME_X_MSDHMST = Pattern.compile("\\d+(ms|d|h|m|s|t)");
+    private final static Pattern TIME_X_MS = Pattern.compile("^\\d+ms$");
+    private final static Pattern TIME_X_D = Pattern.compile("^\\d+d$");
+    private final static Pattern TIME_X_H = Pattern.compile("^\\d+h$");
+    private final static Pattern TIME_X_M = Pattern.compile("^\\d+m$");
+    private final static Pattern TIME_X_S = Pattern.compile("^\\d+s$");
+    private final static Pattern TIME_X_T = Pattern.compile("^\\d+t$");
 
     static Random random = new Random();
 
@@ -71,9 +86,9 @@ public class Util {
             strmin = minmaxstr.substring(0, minmaxstr.indexOf("-"));
             strmax = minmaxstr.substring(minmaxstr.indexOf("-") + 1);
         }
-        if (strmin.matches("[1-9]+[0-9]*")) min = Integer.parseInt(strmin);
+        if (INT_GZ.matcher(strmin).matches()) min = Integer.parseInt(strmin);
         max = min;
-        if (strmax.matches("[1-9]+[0-9]*")) max = Integer.parseInt(strmax);
+        if (INT_GZ.matcher(strmax).matches()) max = Integer.parseInt(strmax);
         if (max > min) return min + tryChance(1 + max - min);
         else return min;
     }
@@ -97,8 +112,8 @@ public class Util {
                     if (prm.length > 2) strpitch = prm[2];
                 }
             } else sndstr = param;
-            if (strvolume.matches("([0-9]+\\.[0-9]+)|([0-9]+)")) volume = Float.parseFloat(strvolume);
-            if (strpitch.matches("([0-9]+\\.[0-9]+)|([0-9]+)")) pitch = Float.parseFloat(strpitch);
+            if (FLOAT.matcher(strvolume).matches()) volume = Float.parseFloat(strvolume);
+            if (FLOAT.matcher(strpitch).matches()) pitch = Float.parseFloat(strpitch);
         } else {
             String locationStr = params.getParam("loc");
             soundLoc = locationStr.isEmpty() ? loc : Locator.parseLocation(locationStr, null);
@@ -144,16 +159,18 @@ public class Util {
         int chX2 = x2 >> 4;
         int chZ1 = z1 >> 4;
         int chZ2 = z2 >> 4;
-        for (int x = chX1; x <= chX2; x++)
+        for (int x = chX1; x <= chX2; x++) {
             for (int z = chZ1; z <= chZ2; z++) {
                 for (Entity e : l1.getWorld().getChunkAt(x, z).getEntities()) {
                     double ex = e.getLocation().getX();
                     double ey = e.getLocation().getY();
                     double ez = e.getLocation().getZ();
-                    if ((x1 <= ex) && (ex <= x2) && (y1 <= ey) && (ey <= y2) && (z1 <= ez) && (ez <= z2))
+                    if ((x1 <= ex) && (ex <= x2) && (y1 <= ey) && (ey <= y2) && (z1 <= ez) && (ez <= z2)) {
                         entities.add(e);
+                    }
                 }
             }
+        }
         return entities;
     }
 
@@ -322,7 +339,7 @@ public class Util {
             String[] ln = str.split(",");
             if (ln.length > 0)
                 for (String numStrInList : ln) {
-                    if ((!numStrInList.isEmpty()) && numStrInList.matches("[0-9]*") && (Integer.parseInt(numStrInList) == id)) {
+                    if ((!numStrInList.isEmpty()) && NUM.matcher(numStrInList).matches() && (Integer.parseInt(numStrInList) == id)) {
                         return true;
                     }
                 }
@@ -380,33 +397,35 @@ public class Util {
         return random.nextInt(maxvalue);
     }
 
+
     public static boolean isIntegerSigned(String... str) {
         if (str.length == 0) return false;
         for (String s : str)
-            if (!s.matches("-?[0-9]+[0-9]*")) return false;
+            if (!INT_LGZ.matcher(s).matches()) return false;
         return true;
     }
 
     public static boolean isInteger(String str) {
-        return (str.matches("[0-9]+[0-9]*"));
+        return (INT.matcher(str).matches());
     }
 
     public static boolean isInteger(String... str) {
         if (str.length == 0) return false;
         for (String s : str)
-            if (!s.matches("[0-9]+[0-9]*")) return false;
+            if (!INT.matcher(s).matches()) return false;
         return true;
     }
 
 
+
     public static boolean isIntegerGZ(String str) {
-        return (str.matches("[1-9]+[0-9]*"));
+        return INT_GZ.matcher(str).matches();
     }
 
     public static boolean isIntegerGZ(String... str) {
         if (str.length == 0) return false;
         for (String s : str)
-            if (!s.matches("[1-9]+[0-9]*")) return false;
+            if (!INT_GZ.matcher(s).matches()) return false;
         return true;
     }
 
@@ -424,31 +443,30 @@ public class Util {
         int ms = 0; // миллисекунды
         if (isInteger(time)) {
             ss = Integer.parseInt(time);
-        } else if (time.matches("^[0-5][0-9]:[0-5][0-9]$")) {
+        } else if (TIME_HH_MM.matcher(time).matches()) {
             String[] ln = time.split(":");
             if (isInteger(ln[0])) mm = Integer.parseInt(ln[0]);
             if (isInteger(ln[1])) ss = Integer.parseInt(ln[1]);
-        } else if (time.matches("^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$")) {
+        } else if (TIME_HH_MM_SS.matcher(time).matches()) {
             String[] ln = time.split(":");
             if (isInteger(ln[0])) hh = Integer.parseInt(ln[0]);
             if (isInteger(ln[1])) mm = Integer.parseInt(ln[1]);
             if (isInteger(ln[2])) ss = Integer.parseInt(ln[2]);
         } else {
-            Pattern pattern = Pattern.compile("\\d+(ms|d|h|m|s)");
-            Matcher matcher = pattern.matcher(time);
+            Matcher matcher = TIME_X_MSDHMST.matcher(time);
             while (matcher.find()) {
                 String foundTime = matcher.group();
-                if (foundTime.matches("^\\d+ms")) {
+                if (TIME_X_MS.matcher(foundTime).matches()) {
                     ms = Integer.parseInt(time.replace("ms", ""));
-                } else if (foundTime.matches("^\\d+d")) {
+                } else if (TIME_X_D.matcher(foundTime).matches()) {
                     dd = Integer.parseInt(time.replace("d", ""));
-                } else if (foundTime.matches("^\\d+h")) {
+                } else if (TIME_X_H.matcher(foundTime).matches()) {
                     hh = Integer.parseInt(time.replace("h", ""));
-                } else if (foundTime.matches("^\\d+m$")) {
+                } else if (TIME_X_M.matcher(foundTime).matches()) {
                     mm = Integer.parseInt(time.replace("m", ""));
-                } else if (foundTime.matches("^\\d+s$")) {
+                } else if (TIME_X_S.matcher(foundTime).matches()) {
                     ss = Integer.parseInt(time.replace("s", ""));
-                } else if (foundTime.matches("^\\d+t$")) {
+                } else if (TIME_X_T.matcher(foundTime).matches()) {
                     tt = Integer.parseInt(time.replace("t", ""));
                 }
             }
