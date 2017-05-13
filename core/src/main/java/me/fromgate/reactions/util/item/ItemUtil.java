@@ -244,7 +244,7 @@ public class ItemUtil {
      */
     public static List<ItemStack> parseRandomItemsStr(String items) {
         Param params = new Param(items);
-        if (params.matchAnyParam(SET_D) {
+        if (params.matchAnyParam(SET_D)) {
             Map<List<ItemStack>, Integer> sets = new HashMap<>();
             int maxChance = 0;
             int nochcount = 0;
