@@ -307,9 +307,11 @@ public enum M {
     ACTION_WAIT("Wait some time before exucute another actions. Parameter: time:<time>"),
     ACTION_MENU_ITEM("Create and show GUI (item menu) to player. Parameters: menu:<MenuId>"),
     ACTION_ITEM_SLOT("Place item into provided inventory slot. Parameters: item:<Item> slot:<Number:0..35> [exist:<drop | undress | keep>]"),
-    ACTION_REGEX("This action is used when you need to pull out point data from the text"),
-    ACTION_LOG("Write message into server log file. You can use it as additional debug tool for your activators."),
-    ACTION_PLAYER_ID("This action is used when it is necessary to get the UUID of the player by its nickname and vice versa - the nickname of the player by its UUID."),
+    ACTION_REGEX("This action is used when you need to pull out point data from the text. Parameters: input:<Text> regex:<RegExp> [prefix<Prefix>]"),
+    ACTION_LOG("Write message into server log file. You can use it as additional debug tool for your activators. Parameters: message:<Text> prefix:<true/False> color:<true/False>"),
+    ACTION_PLAYER_ID("This action is used when it is necessary to get the UUID of the player by its nickname and vice versa - the nickname of the player by its UUID. Parameters: varid:<VariableUUID>"),
+    ACTION_FILE("Actions on the server files. Parameters: action:remove filename:[Path]<File.Ext>"),
+    ACTION_GLIDE("Set the flight mode on Elytra. Parameters: glide:<true/false> [player:<Name>]"),
 
     /*
     DESCRIPTION MESSAGES
@@ -334,6 +336,7 @@ public enum M {
     FLAG_REGION_PLAYERS("This flag returns true when there <count> (or more) players located in region <region>. Parameter: <region>/<count>"),
     FLAG_REGION_MEMBER("Is player member of region? Parameter: <region>"),
     FLAG_REGION_OWNER("Is player owner of region? Parameter: <region>"),
+    FLAG_REGION_STATE("Check flag value in the region. Parameters: [<World>.]<RegionName.FlagName.FlagValue>[/<GroupName>]"),
     FLAG_GAMEMODE("Check gamemode. Parameter:  <survival/creative/adventure>"),
     FLAG_FOODLEVEL("Check food level. Parameter: <food level>"),
     FLAG_XP("Check player total experience. Parameter: <xp>"),
