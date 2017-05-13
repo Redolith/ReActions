@@ -10,6 +10,13 @@ public class Param {
     private String paramStr = "";
     private Map<String, String> params = new HashMap<>();
 
+    private final static Pattern PARAM_PATTERN = Pattern.compile("\\S+:\\{[^\\{\\}]*\\}|\\S+");
+    private final static Pattern PARAM_BRACKET = Pattern.compile("\\{.*\\}");
+    private final static Pattern PARAM_BRACKET_SE = Pattern.compile("^\\{.*\\}$");
+    private final static Pattern INT = Pattern.compile("-?[1-9]+[0-9]*");
+    private final static Pattern FLOAT = Pattern.compile("-?[0-9]+\\.?[0-9]*");
+    private final static Pattern BOOLEAN = Pattern.compile("(?i)true|on|yes");
+
     public Param(String param) {
         this(param, "param");
     }
@@ -32,7 +39,8 @@ public class Param {
             if (sb.length() > 0) sb.append(" ");
             sb.append(key).append(":");
             String value = params.get(key);
-            if (value.contains(" ") && !value.matches("^\\{.*\\}$")) sb.append("{").append(value).append("}");
+            if (value.contains(" ") && !PARAM_BRACKET_SE.matcher(value).matches())
+                sb.append("{").append(value).append("}");
             else sb.append(value);
         }
         this.paramStr = sb.toString();
@@ -82,29 +90,29 @@ public class Param {
     public int getParam(String key, int defParam) {
         if (!params.containsKey(key)) return defParam;
         String str = params.get(key);
-        if (!str.matches("-?[1-9]+[0-9]*")) return defParam;
+        if (!INT.matcher(str).matches()) return defParam;
         return Integer.parseInt(str);
     }
+
 
     public float getParam(String key, float defParam) {
         if (!params.containsKey(key)) return defParam;
         String str = params.get(key);
-        if (!str.matches("-?[0-9]+\\.?[0-9]*")) return defParam;
+        if (!FLOAT.matcher(str).matches()) return defParam;
         return Float.parseFloat(str);
     }
 
     public double getParam(String key, double defParam) {
         if (!params.containsKey(key)) return defParam;
         String str = params.get(key);
-        if (!str.matches("-?[0-9]+\\.?[0-9]*")) return defParam;
+        if (!FLOAT.matcher(str).matches()) return defParam;
         return Double.parseDouble(str);
     }
-
 
     public boolean getParam(String key, boolean defValue) {
         if (!params.containsKey(key)) return defValue;
         String str = params.get(key);
-        return (str.equalsIgnoreCase("true") || str.equalsIgnoreCase("on") || str.equalsIgnoreCase("yes"));
+        return (BOOLEAN.matcher(str).matches());
     }
 
     public String toString() {
@@ -112,8 +120,11 @@ public class Param {
     }
 
     public boolean isParamsExists(String... keys) {
-        for (String key : keys)
-            if (!params.containsKey(key)) return false;
+        for (String key : keys) {
+            if (!params.containsKey(key)) {
+                return false;
+            }
+        }
         return true;
     }
 
@@ -144,8 +155,7 @@ public class Param {
 
     public static Map<String, String> parseParams(String param, String defaultKey) {
         Map<String, String> params = new HashMap<>();
-        Pattern pattern = Pattern.compile("\\S+:\\{[^\\{\\}]*\\}|\\S+");
-        Matcher matcher = pattern.matcher(hideBkts(param));
+        Matcher matcher = PARAM_PATTERN.matcher(hideBkts(param));
         while (matcher.find()) {
             String paramPart = matcher.group().trim().replace("#BKT1#", "{").replace("#BKT2#", "}");
             String key = paramPart;
@@ -158,7 +168,7 @@ public class Param {
                 value = key;
                 key = defaultKey;
             }
-            if (value.matches("\\{.*\\}")) value = value.substring(1, value.length() - 1);
+            if (PARAM_BRACKET.matcher(value).matches()) value = value.substring(1, value.length() - 1);
             params.put(key, value);
         }
         return params;
