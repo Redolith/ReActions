@@ -131,7 +131,7 @@ public class BukkitMessenger implements Messenger {
         try {
             if (f.exists()) lng.load(f);
             else {
-                InputStream is = plugin.getClass().getResourceAsStream("/lang/" + language + ".lng");
+                InputStream is = plugin.getClass().getResourceAsStream("/language/" + language + ".lng");
                 if (is != null) lng.load(is);
             }
         } catch (Exception e) {

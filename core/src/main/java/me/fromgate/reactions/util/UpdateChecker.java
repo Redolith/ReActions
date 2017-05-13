@@ -1,5 +1,6 @@
 package me.fromgate.reactions.util;
 
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -92,8 +93,9 @@ public class UpdateChecker {
     public static void setUpdateMessage(List<String> list) {
         if (list == null || list.isEmpty()) {
             updateMessages = new ArrayList<>();
-            updateMessages.add("&6%plugin% &eis outdated! Recommended version is &6v%newversion%");
-            updateMessages.add("&ePlease download new version from BukkitDev:");
+
+            updateMessages.add(M.MSG_OUTDATED.getText("%plugin%", "%newversion%"));
+            updateMessages.add(M.MSG_PLEASEDOWNLOAD.getText());
             updateMessages.add("&b%url%");
         } else updateMessages = list;
     }
@@ -126,8 +128,9 @@ public class UpdateChecker {
      */
     public static void updateMsg(Player player) {
         if (isUpdateRequired() && player.hasPermission(informPermission)) {
-            for (String message : updateMessages)
+            for (String message : updateMessages) {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', replacePlaceholders(message)));
+            }
         }
     }
 

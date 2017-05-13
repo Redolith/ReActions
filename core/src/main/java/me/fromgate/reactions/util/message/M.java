@@ -38,7 +38,7 @@ public enum M {
     LNG_SAVE_FAIL("Failed to save lang file"),
     LNG_PRINT_FAIL("Failed to print message %1%. Sender object is null."),
     LNG_CONFIG("[MESSAGES] Messages: %1% Language: %2% Save translate file: %1% Debug mode: %3%"),
-    LNG_PRINT_FAIL_M("Failed to print message. Unknown key %2%"),
+    LNG_PRINT_FAIL_M("Failed to print message. Unknown key %1%"),
 
     WORD_UNKNOWN("Unknown"),
     WRONG_PERMISSION("You have not enough permissions to execute this command"),
@@ -48,8 +48,9 @@ public enum M {
     CMD_FAILED("Failed to execute command. Type %1% to get help!"),
     HLP_TITLE("%1% | Help"),
 
-    MSG_OUTDATED("%1% is outdated!"),
-    MSG_PLEASEDOWNLOAD("Please download new version (%1%) from "),
+    MSG_OUTDATED("%1% is outdated! Recommended version is %2%", 'e', '6'),
+    MSG_PLEASEDOWNLOAD("Please download new version from:"),
+
     HLP_HELP("Help"),
     HLP_THISHELP("%1% - this help"),
     HLP_EXECCMD("%1% - execute command"),

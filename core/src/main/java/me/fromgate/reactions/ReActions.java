@@ -92,8 +92,8 @@ public class ReActions extends JavaPlugin {
     public void onEnable() {
         loadCfg();
         saveCfg();
-        UpdateChecker.init(this, "ReActions", "61726", "reactions", this.checkUpdates);
         M.init("ReActions", new BukkitMessenger(this), language, false, languageSave);
+        UpdateChecker.init(this, "ReActions", "61726", "reactions", this.checkUpdates);
 
         if (!getDataFolder().exists()) getDataFolder().mkdirs();
         PluginManager pm = this.getServer().getPluginManager();
