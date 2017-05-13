@@ -24,6 +24,7 @@ package me.fromgate.reactions.actions;
 
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator;
+import me.fromgate.reactions.util.Cfg;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.message.M;
@@ -78,7 +79,7 @@ public abstract class Action {
     }
 
     private boolean printAction() {
-        return (Util.isWordInList(this.type.name(), plg().getActionMsg()) || Util.isWordInList(this.type.getAlias(), plg().getActionMsg()));
+        return (Util.isWordInList(this.type.name(), Cfg.actionMsg) || Util.isWordInList(this.type.getAlias(), Cfg.actionMsg));
     }
 
     public abstract boolean execute(Player p, Param params);

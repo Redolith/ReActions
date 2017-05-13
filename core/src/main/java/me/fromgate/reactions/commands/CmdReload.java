@@ -4,6 +4,7 @@ import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activators;
 import me.fromgate.reactions.menu.InventoryMenu;
 import me.fromgate.reactions.timer.Timers;
+import me.fromgate.reactions.util.Cfg;
 import me.fromgate.reactions.util.Delayer;
 import me.fromgate.reactions.util.FakeCmd;
 import me.fromgate.reactions.util.Locator;
@@ -21,7 +22,7 @@ public class CmdReload extends Cmd {
         Activators.loadActivators();
         Locator.loadLocs();
         ReActions.getPlugin().reloadConfig();
-        ReActions.getPlugin().loadCfg();
+        Cfg.load();
         Delayer.load();
         Variables.load();
         Timers.init();

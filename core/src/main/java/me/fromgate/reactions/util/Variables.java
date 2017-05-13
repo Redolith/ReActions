@@ -238,6 +238,7 @@ public class Variables {
             setTempVar(key, params.getParam(key));
         }
     }
+
     public static void setTempVar(String varId, String value) {
         tempvars.put(varId, value);
     }

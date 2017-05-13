@@ -22,7 +22,6 @@
 
 package me.fromgate.reactions.util;
 
-import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.util.item.ItemUtil;
 import me.fromgate.reactions.util.message.M;
 import org.bukkit.ChatColor;
@@ -291,7 +290,7 @@ public class Util {
     public static void printPage(CommandSender sender, List<String> list, M title, int page) {
         int pageHeight = (sender instanceof Player) ? 9 : 1000;
         if (title != null) title.print(sender);
-        ChatPage chatPage = paginate(list, page, ReActions.getPlugin().getChatLineLength(), pageHeight);
+        ChatPage chatPage = paginate(list, page, Cfg.chatLength, pageHeight);
         for (String str : chatPage.getLines()) {
             M.printMessage(sender, str);
         }

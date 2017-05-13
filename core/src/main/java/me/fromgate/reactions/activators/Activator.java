@@ -23,10 +23,10 @@
 
 package me.fromgate.reactions.activators;
 
-import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.flags.Flags;
 import me.fromgate.reactions.util.ActVal;
+import me.fromgate.reactions.util.Cfg;
 import me.fromgate.reactions.util.FlagVal;
 import me.fromgate.reactions.util.Variables;
 import org.bukkit.Location;
@@ -162,13 +162,13 @@ public abstract class Activator {
         save(key, cfg);
         List<String> flg = new ArrayList<>();
         for (FlagVal f : flags) flg.add(f.toString());
-        cfg.set(key + ".flags", flg.isEmpty() && !ReActions.getPlugin().saveEmpty() ? null : flg);
+        cfg.set(key + ".flags", flg.isEmpty() && !Cfg.saveEmptySections ? null : flg);
         flg = new ArrayList<>();
         for (ActVal a : actions) flg.add(a.toString());
-        cfg.set(key + ".actions", flg.isEmpty() && !ReActions.getPlugin().saveEmpty() ? null : flg);
+        cfg.set(key + ".actions", flg.isEmpty() && !Cfg.saveEmptySections ? null : flg);
         flg = new ArrayList<>();
         for (ActVal a : reactions) flg.add(a.toString());
-        cfg.set(key + ".reactions", flg.isEmpty() && !ReActions.getPlugin().saveEmpty() ? null : flg);
+        cfg.set(key + ".reactions", flg.isEmpty() && !Cfg.saveEmptySections ? null : flg);
     }
 
     public void loadActivator(YamlConfiguration cfg) {

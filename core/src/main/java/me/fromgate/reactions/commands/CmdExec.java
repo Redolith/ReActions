@@ -19,8 +19,7 @@ public class CmdExec extends Cmd {
         Param param = new Param(commandLine, "activator");
         if (EventManager.raiseExecEvent(sender, param)) {
             M.printMSG(sender, "cmd_runplayer", commandLine);
-        }
-        else M.printMSG(sender, "cmd_runplayerfail", 'c', '6', commandLine);
+        } else M.printMSG(sender, "cmd_runplayerfail", 'c', '6', commandLine);
         return true;
     }
 

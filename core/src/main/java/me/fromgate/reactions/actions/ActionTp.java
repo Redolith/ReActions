@@ -23,6 +23,7 @@
 package me.fromgate.reactions.actions;
 
 import me.fromgate.reactions.externals.RAEffects;
+import me.fromgate.reactions.util.Cfg;
 import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Teleporter;
@@ -53,7 +54,7 @@ public class ActionTp extends Action {
 
         if (loc != null) {
             if (radius > 0) loc = Locator.getRadiusLocation(loc, radius, land);
-            if (plg().isCenterTpLocation()) {
+            if (Cfg.centerTpCoords) {
                 loc.setX(loc.getBlockX() + 0.5);
                 loc.setZ(loc.getBlockZ() + 0.5);
             }

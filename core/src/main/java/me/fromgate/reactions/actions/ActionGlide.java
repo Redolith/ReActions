@@ -17,6 +17,7 @@ public class ActionGlide extends Action {
         Boolean isGlide = params.getParam("glide", true);
         return glidePlayer(player, isGlide);
     }
+
     public boolean glidePlayer(Player player, Boolean isGlide) {
         if (player == null || player.isDead() || !player.isOnline()) return false;
         player.setGliding(isGlide);

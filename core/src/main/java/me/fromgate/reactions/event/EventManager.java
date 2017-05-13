@@ -33,6 +33,7 @@ import me.fromgate.reactions.activators.PlayerDeathActivator;
 import me.fromgate.reactions.activators.SignActivator;
 import me.fromgate.reactions.externals.RAWorldGuard;
 import me.fromgate.reactions.util.BukkitCompatibilityFix;
+import me.fromgate.reactions.util.Cfg;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.item.ItemUtil;
@@ -340,7 +341,7 @@ public class EventManager {
         if (player.isDead()) return;
         if (!RAWorldGuard.isPlayerInRegion(player, region)) return;
         String rg = "rg-" + region;
-        if (!isTimeToRaiseEvent(player, rg, plg().worlduardRecheck, repeat)) return;
+        if (!isTimeToRaiseEvent(player, rg, Cfg.worlduardRecheck, repeat)) return;
 
         RegionEvent wge = new RegionEvent(player, region);
         Bukkit.getServer().getPluginManager().callEvent(wge);
@@ -350,7 +351,7 @@ public class EventManager {
             public void run() {
                 setFutureRegionCheck(playerName, region, true);
             }
-        }, 20 * plg().worlduardRecheck);
+        }, 20 * Cfg.worlduardRecheck);
     }
 
 
@@ -360,7 +361,7 @@ public class EventManager {
         if (player == null) return;
         if (!player.isOnline()) return;
         String rg = "iw-" + itemStr;
-        if (!isTimeToRaiseEvent(player, rg, plg().itemWearRecheck, repeat)) return;
+        if (!isTimeToRaiseEvent(player, rg, Cfg.itemWearRecheck, repeat)) return;
         ItemWearEvent iwe = new ItemWearEvent(player);
         if (!iwe.isItemWeared(itemStr)) return;
         Bukkit.getServer().getPluginManager().callEvent(iwe);
@@ -369,7 +370,7 @@ public class EventManager {
             public void run() {
                 setFutureItemWearCheck(playerName, itemStr, true);
             }
-        }, 20 * plg().itemWearRecheck);
+        }, 20 * Cfg.itemWearRecheck);
     }
 
 
@@ -403,7 +404,7 @@ public class EventManager {
         ItemStack itemInHand = BukkitCompatibilityFix.getItemInHand(player);
         if (itemInHand == null || itemInHand.getType() == Material.AIR) return false;
         String rg = "ih-" + itemStr;
-        if (!isTimeToRaiseEvent(player, rg, plg().itemHoldRecheck, repeat)) return false;
+        if (!isTimeToRaiseEvent(player, rg, Cfg.itemHoldRecheck, repeat)) return false;
         if (!ItemUtil.compareItemStr(itemInHand, itemStr)) return false;
         ItemHoldEvent ihe = new ItemHoldEvent(player);
         Bukkit.getServer().getPluginManager().callEvent(ihe);
@@ -413,7 +414,7 @@ public class EventManager {
             public void run() {
                 setFutureItemHoldCheck(playerName, itemStr, true);
             }
-        }, 20 * plg().itemHoldRecheck);
+        }, 20 * Cfg.itemHoldRecheck);
         return true;
     }
 
