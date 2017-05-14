@@ -50,9 +50,10 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class VirtualItem18 extends VirtualItem {
-
+    private final static Pattern INT = Pattern.compile("\\d+");
     /**
      * Constructor Create new VirtualItem object
      *
@@ -135,15 +136,15 @@ public class VirtualItem18 extends VirtualItem {
                 itemStr = new String(itemStr.substring(0, itemStr.indexOf(":")));
                 dataStr = new String(itemStr.substring(itemStr.indexOf(":") + 1));
             }
-            type = itemStr.matches("[0-9]+") ? Material.getMaterial(Integer
+            type = INT.matcher(itemStr).matches() ? Material.getMaterial(Integer
                     .valueOf(itemStr)) : Material.getMaterial(itemStr
                     .toUpperCase());
-            data = dataStr.matches("[0-9]+") ? Integer.valueOf(dataStr) : 0;
-            amount = getNumber(amountStr); // amountStr.matches("[0-9]+") ?
+            data = INT.matcher(dataStr).matches() ? Integer.valueOf(dataStr) : 0;
+            amount = getNumber(amountStr);
             if (amount == 0) return null;
         } else if (params.containsKey("type")) {
             String typeStr = getParam(params, "type", "");
-            type = typeStr.matches("[0-9]+") ? Material.getMaterial(Integer
+            type = INT.matcher(typeStr).matches() ? Material.getMaterial(Integer
                     .valueOf(typeStr)) : Material.getMaterial(typeStr
                     .toUpperCase());
         } else

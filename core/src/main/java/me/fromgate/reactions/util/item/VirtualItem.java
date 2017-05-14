@@ -68,12 +68,20 @@ import java.util.regex.Pattern;
 
 public class VirtualItem extends ItemStack {
 
-    protected static boolean ALLOW_RANDOM = true;
-    protected static boolean TRY_OLD_ITEM_PARSE = true;
-    protected static boolean ADD_REGEX = true;
+    private static boolean ALLOW_RANDOM = true;
+    private static boolean TRY_OLD_ITEM_PARSE = true;
+    static boolean ADD_REGEX = true;
     protected static Random random = new Random();
-    private static String DIVIDER = "\\n";
-
+    private final static String DIVIDER = "\\n";
+    private final static Pattern AMOUNT_RANDOM = Pattern.compile("<\\d+|>\\d+|<=\\d+|>=\\d+");
+    private final static Pattern BYTES_RGB = Pattern.compile("^[0-9]{1,3},[0-9]{1,3},[0-9]{1,3}$");
+    private final static Pattern BYTE = Pattern.compile("[0-9]{1,3}");
+    private final static Pattern INT_MIN_MAX = Pattern.compile("\\d+(-\\d+)?");
+    private final static Pattern INT = Pattern.compile("\\d+");
+    private final static Pattern TIME_HH_MM = Pattern.compile("^[0-5][0-9]:[0-5][0-9]$");
+    private final static Pattern TIME_HH_MM_SS = Pattern.compile("^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$");
+    private final static Pattern PARAM_PATTERN = Pattern.compile("\\S+:\\{[^\\{\\}]*\\}|\\S+:\\S+");
+    private final static Pattern PARAM_BRACKET = Pattern.compile("\\{.*\\}");
     /**
      * Constructor Create new VirtualItem object
      *
@@ -133,6 +141,7 @@ public class VirtualItem extends ItemStack {
      * @param params - Map of parameters and values
      * @return - VirtualItem object
      */
+
     @SuppressWarnings("deprecation")
     public static VirtualItem fromMap(Map<String, String> params) {
         if (params == null || params.isEmpty())
@@ -146,22 +155,22 @@ public class VirtualItem extends ItemStack {
             String dataStr = "0";
             String amountStr = "1";
             if (itemStr.contains("*")) {
-                itemStr = new String(itemStr.substring(0, itemStr.indexOf("*")));
-                amountStr = new String(itemStr.substring(itemStr.indexOf("*") + 1));
+                itemStr = itemStr.substring(0, itemStr.indexOf("*"));
+                amountStr = itemStr.substring(itemStr.indexOf("*") + 1);
             }
             if (itemStr.contains(":")) {
-                itemStr = new String(itemStr.substring(0, itemStr.indexOf(":")));
-                dataStr = new String(itemStr.substring(itemStr.indexOf(":") + 1));
+                itemStr = itemStr.substring(0, itemStr.indexOf(":"));
+                dataStr = itemStr.substring(itemStr.indexOf(":") + 1);
             }
-            type = itemStr.matches("\\d+") ? Material.getMaterial(Integer
+            type = INT.matcher(itemStr).matches() ? Material.getMaterial(Integer
                     .valueOf(itemStr)) : Material.getMaterial(itemStr
                     .toUpperCase());
-            data = dataStr.matches("\\d+") ? Integer.valueOf(dataStr) : 0;
+            data = INT.matcher(dataStr).matches() ? Integer.valueOf(dataStr) : 0;
             amount = getNumber(amountStr);
             if (amount == 0) return null;
         } else if (params.containsKey("type")) {
             String typeStr = getParam(params, "type", "");
-            type = typeStr.matches("\\d+") ? Material.getMaterial(Integer
+            type = INT.matcher(typeStr).matches() ? Material.getMaterial(Integer
                     .valueOf(typeStr)) : Material.getMaterial(typeStr
                     .toUpperCase());
         } else
@@ -274,9 +283,9 @@ public class VirtualItem extends ItemStack {
             String eType = e;
             int power = 0;
             if (eType.contains(":")) {
-                String powerStr = new String(eType.substring(eType.indexOf(":") + 1));
-                eType = new String(eType.substring(0, eType.indexOf(":")));
-                power = powerStr.matches("[0-9+]") ? Integer.valueOf(powerStr) : 0;
+                String powerStr = eType.substring(eType.indexOf(":") + 1);
+                eType = eType.substring(0, eType.indexOf(":"));
+                power = INT.matcher(powerStr).matches() ? Integer.valueOf(powerStr) : 0;
             }
             Enchantment enchantment = Enchantment.getByName(eType.toUpperCase());
             if (enchantment == null) continue;
@@ -292,6 +301,7 @@ public class VirtualItem extends ItemStack {
             this.setItemMeta(mm);
         }
     }
+
 
     protected void setPotionMeta(String potions) {
         if (potions == null || potions.isEmpty())
@@ -309,7 +319,7 @@ public class VirtualItem extends ItemStack {
                     .toUpperCase());
             if (pType == null)
                 continue;
-            int amplifier = (ln.length > 1 && ln[1].matches("\\d+-\\d+|\\d+")) ? getNumber(ln[1]) : 0;
+            int amplifier = (ln.length > 1 && INT_MIN_MAX.matcher(ln[1]).matches()) ? getNumber(ln[1]) : 0;
             int duration = (ln.length > 2) ? parseTimeTicks(ln[2]) : Integer.MAX_VALUE;
             pm.addCustomEffect(new PotionEffect(pType, duration, amplifier, true), true);
         }
@@ -514,13 +524,13 @@ public class VirtualItem extends ItemStack {
      * @return - Color
      */
     protected static Color parseColor(String colorStr) {
-        if (colorStr.matches("\\d+,\\d+,\\d+")) {
+        if (BYTES_RGB.matcher(colorStr).matches()) {
             String[] rgb = colorStr.split(",");
             int red = Integer.parseInt(rgb[0]);
             int green = Integer.parseInt(rgb[1]);
             int blue = Integer.parseInt(rgb[2]);
             return Color.fromRGB(red, green, blue);
-        } else if (colorStr.matches("\\d+")) {
+        } else if (BYTE.matcher(colorStr).matches()) {
             int num = Integer.parseInt(colorStr);
             if (num > 15)
                 num = 15;
@@ -537,9 +547,9 @@ public class VirtualItem extends ItemStack {
 
     @SuppressWarnings("deprecation")
     protected static DyeColor parseDyeColor(String colorStr) {
-        if (colorStr.matches("\\d+,\\d+,\\d+")) {
+        if (BYTES_RGB.matcher(colorStr).matches()) {
             return getClosestColor(parseColor(colorStr));
-        } else if (colorStr.matches("\\d+")) {
+        } else if (BYTE.matcher(colorStr).matches()) {
             int num = Integer.parseInt(colorStr);
             if (num > 15)
                 num = 15;
@@ -659,8 +669,7 @@ public class VirtualItem extends ItemStack {
             if (eType.contains(":")) {
                 String powerStr = new String(eType.substring(eType.indexOf(":") + 1));
                 eType = new String(eType.substring(0, eType.indexOf(":")));
-                power = powerStr.matches("\\d+-\\d+|\\d+") ? getNumber(powerStr)
-                        : 0;
+                power = INT_MIN_MAX.matcher(powerStr).matches() ? getNumber(powerStr) : 0;
             }
             Enchantment enchantment = Enchantment
                     .getByName(eType.toUpperCase());
@@ -714,43 +723,43 @@ public class VirtualItem extends ItemStack {
         this.setItemMeta(im);
     }
 
+
     protected int parseTimeTicks(String time) {
         int hh = 0; // часы
         int mm = 0; // минуты
         int ss = 0; // секунды
         int tt = 0; // тики
         int ms = 0; // миллисекунды
-        if (time.matches("\\d+")) {
+        if (INT.matcher(time).matches()) {
             tt = Integer.parseInt(time);
-        } else if (time.matches("^[0-5][0-9]:[0-5][0-9]$")) {
+        } else if (TIME_HH_MM.matcher(time).matches()) {
             String[] ln = time.split(":");
             mm = Integer.parseInt(ln[0]);
             ss = Integer.parseInt(ln[1]);
-        } else if (time
-                .matches("^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$")) {
+        } else if (TIME_HH_MM_SS.matcher(time).matches()) {
             String[] ln = time.split(":");
             hh = Integer.parseInt(ln[0]);
             mm = Integer.parseInt(ln[1]);
             ss = Integer.parseInt(ln[2]);
         } else if (time.endsWith("ms")) {
             String s = time.replace("ms", "");
-            if (s.matches("\\d+"))
+            if (INT.matcher(s).matches())
                 ms = Integer.parseInt(s);
         } else if (time.endsWith("h")) {
             String s = time.replace("h", "");
-            if (s.matches("\\d+"))
+            if (INT.matcher(s).matches())
                 hh = Integer.parseInt(s);
         } else if (time.endsWith("m")) {
             String s = time.replace("m", "");
-            if (s.matches("\\d+"))
+            if (INT.matcher(s).matches())
                 mm = Integer.parseInt(s);
         } else if (time.endsWith("s")) {
             String s = time.replace("s", "");
-            if (s.matches("\\d+"))
+            if (INT.matcher(s).matches())
                 ss = Integer.parseInt(s);
         } else if (time.endsWith("t")) {
             String s = time.replace("t", "");
-            if (s.matches("\\d+"))
+            if (INT.matcher(s).matches())
                 tt = Integer.parseInt(s);
         } else
             return Integer.MAX_VALUE;
@@ -768,22 +777,22 @@ public class VirtualItem extends ItemStack {
      */
     protected static Map<String, String> parseParams(String param) {
         Map<String, String> params = new HashMap<>();
-        Pattern pattern = Pattern.compile("\\S+:\\{[^\\{\\}]*\\}|\\S+:\\S+");
-        Matcher matcher = pattern.matcher(hideBkts(param));
+
+        Matcher matcher = PARAM_PATTERN.matcher(hideBkts(param));
         while (matcher.find()) {
             String paramPart = matcher.group().trim().replace("#BKT1#", "{").replace("#BKT2#", "}");
             String key;
             String value;
             if (paramPart.contains(":")) {
-                key = new String(paramPart.substring(0, paramPart.indexOf(":")));
-                value = new String(paramPart.substring(paramPart.indexOf(":") + 1));
+                key = paramPart.substring(0, paramPart.indexOf(":"));
+                value = paramPart.substring(paramPart.indexOf(":") + 1);
             } else {
                 key = "default-param"; // это для упрощенного формата
                 value = paramPart;
             }
 
             if (key.isEmpty()) continue;
-            if (value.matches("\\{.*\\}")) value = new String(value.substring(1, value.length() - 1));
+            if (PARAM_BRACKET.matcher(value).matches()) value = value.substring(1, value.length() - 1);
             params.put(key, value);
         }
         return params;
@@ -951,22 +960,22 @@ public class VirtualItem extends ItemStack {
     }
 
     protected static int getNumber(String numMinMaxStr) {
-        if (numMinMaxStr.matches("\\d+"))
+        if (INT.matcher(numMinMaxStr).matches())
             return Integer.parseInt(numMinMaxStr);
         int min = 0;
         int max;
         String strMin = numMinMaxStr;
         String strMax = numMinMaxStr;
         if (numMinMaxStr.contains("-")) {
-            strMin = new String(numMinMaxStr.substring(0, numMinMaxStr.indexOf("-")));
-            strMax = new String(numMinMaxStr.substring(numMinMaxStr.indexOf("-") + 1));
+            strMin = numMinMaxStr.substring(0, numMinMaxStr.indexOf("-"));
+            strMax = numMinMaxStr.substring(numMinMaxStr.indexOf("-") + 1);
         }
-        if (strMin.matches("\\d+"))
+        if (INT.matcher(strMin).matches())
             min = Integer.parseInt(strMin);
         if (!ALLOW_RANDOM)
             return min;
         max = min;
-        if (strMax.matches("\\d+"))
+        if (INT.matcher(strMax).matches())
             max = Integer.parseInt(strMax);
         if (max > min)
             return min + random.nextInt(1 + max - min);
@@ -991,17 +1000,17 @@ public class VirtualItem extends ItemStack {
         String name = "";
         String loreStr = "";
         if (iStr.contains("$")) {
-            name = new String(iStr.substring(0, iStr.indexOf("$")));
-            iStr = new String(iStr.substring(name.length() + 1));
+            name = iStr.substring(0, iStr.indexOf("$"));
+            iStr = iStr.substring(name.length() + 1);
             if (name.contains("@")) {
-                loreStr = new String(name.substring(name.indexOf("@") + 1));
-                name = new String(name.substring(0, name.indexOf("@")));
+                loreStr = name.substring(name.indexOf("@") + 1);
+                name = name.substring(0, name.indexOf("@"));
             }
 
         }
         if (iStr.contains("@")) {
-            enchant = new String(iStr.substring(iStr.indexOf("@") + 1));
-            iStr = new String(iStr.substring(0, iStr.indexOf("@")));
+            enchant = iStr.substring(iStr.indexOf("@") + 1);
+            iStr = iStr.substring(0, iStr.indexOf("@"));
         }
         int id;
         int amount = 1;
@@ -1012,7 +1021,7 @@ public class VirtualItem extends ItemStack {
                 amount = Math.max(getNumber(si[1]), 1);
             String ti[] = si[0].split(":");
             if (ti.length > 0) {
-                if (ti[0].matches("[0-9]*"))
+                if (INT.matcher(ti[0]).matches())
                     id = Integer.parseInt(ti[0]);
                 else {
                     Material m = Material.getMaterial(ti[0].toUpperCase());
@@ -1020,7 +1029,7 @@ public class VirtualItem extends ItemStack {
                         return null;
                     id = m.getId();
                 }
-                if ((ti.length == 2) && (ti[1]).matches("[0-9]*"))
+                if ((ti.length == 2) && (INT.matcher(ti[1]).matches()))
                     data = Short.parseShort(ti[1]);
                 ItemStack item = new ItemStack(id, amount, data);
                 if (!enchant.isEmpty()) {
@@ -1043,7 +1052,7 @@ public class VirtualItem extends ItemStack {
                             String ench = ec;
                             int level = 1;
                             if (ec.contains(":")) {
-                                ench = new String(ec.substring(0, ec.indexOf(":")));
+                                ench = ec.substring(0, ec.indexOf(":"));
                                 level = Math.max(1, getNumber(ec.substring(ench
                                         .length() + 1)));
                             }
@@ -1110,17 +1119,17 @@ public class VirtualItem extends ItemStack {
             String dataStr = "";
             String amountStr = "";
             if (itemStr.contains("*")) {
-                itemStr = new String(itemStr.substring(0, itemStr.indexOf("*")));
-                amountStr = new String(itemStr.substring(itemStr.indexOf("*") + 1));
+                itemStr = itemStr.substring(0, itemStr.indexOf("*"));
+                amountStr = itemStr.substring(itemStr.indexOf("*") + 1);
             }
             if (itemStr.contains(":")) {
-                itemStr = new String(itemStr.substring(0, itemStr.indexOf(":")));
-                dataStr = new String(itemStr.substring(itemStr.indexOf(":") + 1));
+                itemStr = itemStr.substring(0, itemStr.indexOf(":"));
+                dataStr = itemStr.substring(itemStr.indexOf(":") + 1);
             }
-            itemMap.put("type", itemStr.matches("[0-9]+") ? (Material.getMaterial(Integer.valueOf(itemStr))).name() : (Material.getMaterial(itemStr.toUpperCase())).name());
+            itemMap.put("type", INT.matcher(itemStr).matches() ? (Material.getMaterial(Integer.valueOf(itemStr))).name() : (Material.getMaterial(itemStr.toUpperCase())).name());
 
-            if (dataStr.matches("[0-9]+")) itemMap.put("data", dataStr);
-            if (amountStr.matches("[0-9]+")) itemMap.put("amount", amountStr);
+            if (INT.matcher(dataStr).matches()) itemMap.put("data", dataStr);
+            if (INT.matcher(amountStr).matches()) itemMap.put("amount", amountStr);
             if (itemMap.containsKey("item")) itemMap.remove("item");
             if (itemMap.containsKey("default-param")) itemMap.remove("default-param");
         }
@@ -1129,7 +1138,7 @@ public class VirtualItem extends ItemStack {
         if (this.hasLore() && !itemMap.containsKey("lore")) return false;
         if (itemMap.containsKey("type")) {
             String typeStr = itemMap.get("type").toUpperCase();
-            if (typeStr.matches("\\d+")) {
+            if (INT.matcher(typeStr).matches()) {
                 Material m = null;
                 try {
                     m = Material.getMaterial(Integer.parseInt(typeStr));
@@ -1143,14 +1152,14 @@ public class VirtualItem extends ItemStack {
 
         if (itemMap.containsKey("data")) {
             String dataStr = itemMap.get("data");
-            int reqData = dataStr.matches("\\d+") ? Integer.parseInt(dataStr) : -1;
+            int reqData = INT.matcher(dataStr).matches() ? Integer.parseInt(dataStr) : -1;
             if (reqData != (int) this.getDurability()) return false;
         }
         if (itemMap.containsKey("amount")) {
             String amountStr = itemMap.get("amount");
-            if (amountStr.matches("\\d+") && this.getAmount() < Integer.parseInt(amountStr))
+            if (INT.matcher(amountStr).matches() && this.getAmount() < Integer.parseInt(amountStr))
                 return false;//this.getAmount()>=Integer.parseInt(amountStr);
-            else if (amountStr.matches("<\\d+|>\\d+|<=\\d+|>=\\d+")) {
+            else if (AMOUNT_RANDOM.matcher(amountStr).matches()) {
                 boolean greater = amountStr.startsWith(">");
                 boolean equal = amountStr.contains("=");
                 int reqAmount = Integer.parseInt(amountStr.replaceAll("\\D+", ""));
@@ -1174,7 +1183,6 @@ public class VirtualItem extends ItemStack {
         return true;
     }
 
-
     private boolean compareOrMatch(String str, String toStr, boolean useRegex) {
         if (useRegex) {
             try {
@@ -1188,6 +1196,4 @@ public class VirtualItem extends ItemStack {
         }
         return str.equalsIgnoreCase(toStr);
     }
-
-
 }
