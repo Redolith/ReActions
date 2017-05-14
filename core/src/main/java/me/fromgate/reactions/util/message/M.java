@@ -415,7 +415,7 @@ public enum M {
     ACTIVATOR_INVENTORY_CLICK("This activator works when the player performs actions with the inventory using the mouse or keys"),
     ACTIVATOR_DROP("This activator initiates when player drop out items"),
     ACTIVATOR_FLIGHT("This activators initiates when player's flight-mode changed"),
-    ACTIVATOR_ENTITY_CLICK("This activator is initiated when the player performs a right-click on an entity. /react add entity_click <id> [entity-type]"),
+    ACTIVATOR_ENTITY_CLICK("This activator is initiated when the player performs a right-click on an entity. /react add entity_click <id> [EntityType]"),
     MSG_PLACEHOLDERLISTTITLE("Placeholders"),
     PLACEHOLDER_TIME_SERVER("Server (system) time"),
     PLACEHOLDER_TIME_INGAME("In-game time. If player is unknonw will show time in default world"),
