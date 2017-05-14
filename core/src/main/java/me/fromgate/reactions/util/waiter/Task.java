@@ -73,7 +73,7 @@ public class Task implements Runnable {
         return this.executionTime < System.currentTimeMillis();
     }
 
-    public synchronized boolean isExecuted() {
+    public boolean isExecuted() {
         return this.isExecuted;
     }
 
