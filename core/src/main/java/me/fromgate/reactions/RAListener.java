@@ -124,8 +124,9 @@ public class RAListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onChatCommand(AsyncPlayerChatEvent event) {
-        if (EventManager.raiseMessageEvent(event.getPlayer(), MessageActivator.Source.CHAT_INPUT, event.getMessage()))
+        if (EventManager.raiseMessageEvent(event.getPlayer(), MessageActivator.Source.CHAT_INPUT, event.getMessage())) {
             event.setCancelled(true);
+        }
     }
 
     @EventHandler(priority = EventPriority.NORMAL)

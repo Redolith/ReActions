@@ -28,9 +28,7 @@ import me.fromgate.reactions.externals.Externals;
 import me.fromgate.reactions.externals.LogHandler;
 import me.fromgate.reactions.externals.RACraftConomy;
 import me.fromgate.reactions.externals.RAEffects;
-import me.fromgate.reactions.externals.RAProtocolLib;
 import me.fromgate.reactions.externals.RARacesAndClasses;
-import me.fromgate.reactions.externals.RATowny;
 import me.fromgate.reactions.externals.RAVault;
 import me.fromgate.reactions.externals.RAWorldGuard;
 import me.fromgate.reactions.menu.InventoryMenu;
@@ -63,13 +61,6 @@ public class ReActions extends JavaPlugin {
         return instance;
     }
 
-    //разные переменные
-    private boolean townyConected = false;
-
-    public boolean isTownyConnected() {
-        return townyConected;
-    }
-
     @Override
     public void onEnable() {
         instance = this;
@@ -100,8 +91,6 @@ public class ReActions extends JavaPlugin {
         RACraftConomy.init();
         RAWorldGuard.init();
         ActionsWaiter.init();
-        if (Bukkit.getPluginManager().getPlugin("Towny") != null) townyConected = RATowny.init();
-        if (Bukkit.getPluginManager().getPlugin("ProtocolLib") != null) RAProtocolLib.connectProtocolLib();
 
         Delayer.load();
         Variables.load();
