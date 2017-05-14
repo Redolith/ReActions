@@ -27,7 +27,11 @@ import me.fromgate.reactions.util.Variables;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.regex.Pattern;
+
 public class FlagTime extends Flag {
+
+    private final static Pattern INT = Pattern.compile("\\d+");
 
     @Override
     public boolean checkFlag(Player p, String time) {
@@ -44,7 +48,7 @@ public class FlagTime extends Flag {
             String[] tln = time.split(",");
             if (tln.length > 0) {
                 for (String timeStr : tln)
-                    if (timeStr.matches("[0-9]+")) {
+                    if (INT.matcher(timeStr).matches()) {
                         int ct = (int) ((currentTime / 1000 + 6) % 24);
                         if (ct == Integer.parseInt(timeStr)) return true;
                     }

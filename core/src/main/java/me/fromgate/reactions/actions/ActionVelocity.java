@@ -26,7 +26,10 @@ import me.fromgate.reactions.util.Param;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import java.util.regex.Pattern;
+
 public class ActionVelocity extends Action {
+    private final static Pattern FLOAT = Pattern.compile("[0-9]+(\\.?[0-9]*)?");
 
     @Override
     public boolean execute(Player p, Param params) {
@@ -35,7 +38,6 @@ public class ActionVelocity extends Action {
         this.setMessageParam("[" + v.getBlockX() + ", " + v.getBlockY() + ", " + v.getBlockZ() + "]");
         return true;
     }
-
 
     private Vector setPlayerVelocity(Player p, Param params) {
         String velstr;
@@ -51,13 +53,13 @@ public class ActionVelocity extends Action {
         if (velstr.isEmpty()) return null;
         Vector v = p.getVelocity();
         String[] ln = velstr.split(",");
-        if ((ln.length == 1) && (velstr.matches("-?(([0-9]+\\.[0-9]*)|([0-9]+))"))) {
+        if ((ln.length == 1) && (FLOAT.matcher(velstr).matches())) {
             double power = Double.parseDouble(velstr);
             v.setY(Math.min(10, kick ? power * p.getVelocity().getY() : power));
         } else if ((ln.length == 3) &&
-                ln[0].matches("-?(([0-9]+\\.[0-9]*)|([0-9]+))") &&
-                ln[1].matches("-?(([0-9]+\\.[0-9]*)|([0-9]+))") &&
-                ln[2].matches("-?(([0-9]+\\.[0-9]*)|([0-9]+))")) {
+                FLOAT.matcher(ln[0]).matches() &&
+                FLOAT.matcher(ln[1]).matches() &&
+                FLOAT.matcher(ln[2]).matches()) {
             double powerx = Double.parseDouble(ln[0]);
             double powery = Double.parseDouble(ln[1]);
             double powerz = Double.parseDouble(ln[2]);

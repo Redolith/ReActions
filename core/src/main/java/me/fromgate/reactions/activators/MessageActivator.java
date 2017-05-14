@@ -32,7 +32,14 @@ import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
 
+import java.util.regex.Pattern;
+
 public class MessageActivator extends Activator {
+    private final static Pattern NOT_D = Pattern.compile("\\D+");
+    private final static Pattern NUM = Pattern.compile("-?[0-9]+");
+    private final static Pattern FLOAT = Pattern.compile("-?[0-9]+\\.?[0-9]*");
+
+
     Type type;
     Source source;
     String mask;
@@ -158,7 +165,6 @@ public class MessageActivator extends Activator {
         return false;
     }
 
-
     private void setTempVars(String message) {
         Variables.setTempVar("message", message);
         String[] args = message.split(" ");
@@ -167,12 +173,12 @@ public class MessageActivator extends Activator {
         if (args != null && args.length > 0) {
             for (int i = 0; i < args.length; i++) {
                 Variables.setTempVar("word" + Integer.toString(i + 1), args[i]);
-                Variables.setTempVar("wnum" + Integer.toString(i + 1), args[i].replaceAll("\\D+", ""));
-                if (args[i].matches("-?[1-9]+[0-9]*")) {
+                Variables.setTempVar("wnum" + Integer.toString(i + 1), NOT_D.matcher(args[i]).replaceAll(""));
+                if (NUM.matcher(args[i]).matches()) {
                     countInt++;
                     Variables.setTempVar("int" + countInt, args[i]);
                 }
-                if (args[i].matches("-?[0-9]+\\.?[0-9]*")) {
+                if (FLOAT.matcher(args[i]).matches()) {
                     countNum++;
                     Variables.setTempVar("num" + countNum, args[i]);
                 }

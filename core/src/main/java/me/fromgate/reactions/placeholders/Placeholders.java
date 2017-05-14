@@ -76,10 +76,12 @@ public class Placeholders {
         return result;
     }
 
+    private final static Pattern PH_W_S = Pattern.compile("(%\\w+:\\S+%)");
+
     private static String replacePlaceholder(Player player, String field) {
         String key = field.replaceAll("^%", "").replaceAll("%$", "");
         String value = "";
-        if (field.matches("(%\\w+:\\S+%)")) {
+        if (PH_W_S.matcher(field).matches()) {
             value = field.replaceAll("^%\\w+:", "").replaceAll("%$", "");
             key = key.replaceAll(Pattern.quote(":" + value) + "$", "");
         }

@@ -1,10 +1,10 @@
-/*  
+/*
  *  ReActions, Minecraft bukkit plugin
  *  (c)2012-2017, fromgate, fromgate@gmail.com
  *  http://dev.bukkit.org/server-mods/reactions/
- *    
+ *
  *  This file is part of ReActions.
- *  
+ *
  *  ReActions is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -17,7 +17,7 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with ReActions.  If not, see <http://www.gnorg/licenses/>.
- * 
+ *
  */
 
 
@@ -41,8 +41,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 public class Locator {
+    private final static Pattern FLOAT = Pattern.compile("-?[0-9]+\\.?[0-9]*");
+
     private static Map<String, TpLoc> tports = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
 
@@ -177,7 +180,7 @@ public class Locator {
         World w = Bukkit.getWorld(ln[0]);
         if (w == null) return null;
         for (int i = 1; i < ln.length; i++) {
-            if (!ln[i].matches("-?[0-9]+\\.?[0-9]*")) return null;
+            if (!FLOAT.matcher(ln[i]).matches()) return null;
         }
         loc = new Location(w, Double.parseDouble(ln[1]), Double.parseDouble(ln[2]), Double.parseDouble(ln[3]));
         if (ln.length == 6) {
@@ -192,7 +195,7 @@ public class Locator {
         String[] ln = vectorStr.split(",");
         if (ln.length != 3) return null;
         for (String s : ln) {
-            if (!s.matches("-?[0-9]+\\.?[0-9]*")) return null;
+            if (!FLOAT.matcher(s).matches()) return null;
         }
         return new Vector(Double.parseDouble(ln[0]), Double.parseDouble(ln[1]), Double.parseDouble(ln[2]));
     }

@@ -54,6 +54,7 @@ import java.util.regex.Pattern;
 
 public class VirtualItem18 extends VirtualItem {
     private final static Pattern INT = Pattern.compile("\\d+");
+
     /**
      * Constructor Create new VirtualItem object
      *

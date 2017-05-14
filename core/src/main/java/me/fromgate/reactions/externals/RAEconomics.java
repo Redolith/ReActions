@@ -27,9 +27,11 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 
 public class RAEconomics {
+    private final static Pattern FLOAT = Pattern.compile("[0-9]+(\\.?[0-9]*)?");
 
     public static boolean isEconomyFound() {
         if (RACraftConomy.isEnabled()) return true;
@@ -71,9 +73,8 @@ public class RAEconomics {
         return "";
     }
 
-
     public static boolean isFloat(String numStr) {
-        return numStr.matches("[0-9]+\\.?[0-9]*");
+        return FLOAT.matcher(numStr).matches();
     }
 
     public static Map<String, String> getBalances(Player p) {

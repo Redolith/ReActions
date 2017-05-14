@@ -35,7 +35,12 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
+import java.util.regex.Pattern;
+
 public class RAProtocolLib {
+    private final static Pattern TEXT = Pattern.compile("^\\{\"text\":\".*\"\\}");
+    private final static Pattern TEXT_START = Pattern.compile("^\\{\"text\":\"");
+    private final static Pattern TEXT_END = Pattern.compile("\"\\}$");
 
     private static boolean connected = false;
 
@@ -99,9 +104,9 @@ public class RAProtocolLib {
 
     private static String textToString(String message) {
         String text = message;
-        if (text.matches("^\\{\"text\":\".*\"\\}")) {
-            text = text.replaceAll("^\\{\"text\":\"", "");
-            text = text.replaceAll("\"\\}$", "");
+        if (TEXT.matcher(text).matches()) {
+            text = TEXT_START.matcher(text).replaceAll("");
+            text = TEXT_END.matcher(text).replaceAll("");
         }
         return ChatColor.stripColor(text);
     }

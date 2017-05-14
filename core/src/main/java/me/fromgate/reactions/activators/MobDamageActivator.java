@@ -36,7 +36,11 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
+import java.util.regex.Pattern;
+
 public class MobDamageActivator extends Activator {
+    private final static Pattern FLOAT = Pattern.compile("[0-9]+(\\.?[0-9]*)?");
+
     private String mobName;
     private String mobType;
     private String itemStr;
@@ -60,7 +64,6 @@ public class MobDamageActivator extends Activator {
         }
     }
 
-
     @Override
     public boolean activate(Event event) {
         if (!(event instanceof MobDamageEvent)) return false;
@@ -79,7 +82,7 @@ public class MobDamageActivator extends Activator {
         Variables.setTempVar("damage", Double.toString(me.getDamage()));
         boolean result = Actions.executeActivator(me.getPlayer(), this);
         String dmgStr = Variables.getTempVar("damage");
-        if (dmgStr.matches("\\d+\\.?\\d*")) me.setDamage(Double.parseDouble(dmgStr));
+        if (FLOAT.matcher(dmgStr).matches()) me.setDamage(Double.parseDouble(dmgStr));
         return result;
     }
 

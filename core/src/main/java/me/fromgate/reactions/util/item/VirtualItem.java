@@ -82,6 +82,7 @@ public class VirtualItem extends ItemStack {
     private final static Pattern TIME_HH_MM_SS = Pattern.compile("^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$");
     private final static Pattern PARAM_PATTERN = Pattern.compile("\\S+:\\{[^\\{\\}]*\\}|\\S+:\\S+");
     private final static Pattern PARAM_BRACKET = Pattern.compile("\\{.*\\}");
+
     /**
      * Constructor Create new VirtualItem object
      *

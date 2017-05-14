@@ -11,10 +11,14 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.regex.Pattern;
+
 /**
  * Created by MaxDikiy on 2017-05-01.
  */
 public class DropActivator extends Activator {
+    private final static Pattern FLOAT = Pattern.compile("\\d+\\.?\\d*");
+
     private String itemStr;
 
     public DropActivator(String name, String param) {
@@ -36,7 +40,7 @@ public class DropActivator extends Activator {
         Variables.setTempVar("pickupDelay", Double.toString(de.getPickupDelay()));
         boolean result = Actions.executeActivator(de.getPlayer(), this);
         String pickupDelayStr = Variables.getTempVar("pickupDelay");
-        if (pickupDelayStr.matches("\\d+\\.?\\d*")) de.setPickupDelay(Double.parseDouble(pickupDelayStr));
+        if (FLOAT.matcher(pickupDelayStr).matches()) de.setPickupDelay(Double.parseDouble(pickupDelayStr));
         return result;
     }
 
