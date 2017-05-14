@@ -495,4 +495,10 @@ public class EventManager {
         return e.isCancelled();
     }
 
+    public static boolean raiseEntityClickEvent(PlayerInteractEntityEvent event) {
+        EntityClickEvent e = new EntityClickEvent(event.getPlayer(), event.getRightClicked());
+        Bukkit.getServer().getPluginManager().callEvent(e);
+        return e.isCancelled();
+    }
+
 }
