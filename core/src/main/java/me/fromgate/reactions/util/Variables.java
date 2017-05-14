@@ -42,6 +42,10 @@ public class Variables {
     private static Map<String, String> vars = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private static Map<String, String> tempvars = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
+    private final static Pattern VARP = Pattern.compile("(?i).*%varp?:\\S+%.*");
+    private final static Pattern FLOAT_0 = Pattern.compile("^[0-9]+\\.0$");
+    private final static Pattern NUMBER = Pattern.compile("-?[0-9]+(.[0-9]+)?");
+
     private static String varId(Player player, String var) {
         return (player == null ? "general." + var : player.getName() + "." + var);
     }
@@ -196,19 +200,20 @@ public class Variables {
         }
     }
 
-    public static String replacePlaceholders(Player p, String str) {
-        if (!str.matches("(?i).*%varp?:\\S+%.*")) return str;
+
+    public static String replacePlaceholders(Player player, String str) {
+        if (!VARP.matcher(str).matches()) return str;
 
         String newStr = str;
         for (String key : vars.keySet()) {
             String replacement = vars.get(key);
-            replacement = replacement.matches("^[0-9]+\\.0$") ? Integer.toString((int) Double.parseDouble(replacement)) : Matcher.quoteReplacement(replacement);
-            if (key.startsWith("general")) {
-                String id = key.replaceFirst("general\\.", "");
+            replacement = FLOAT_0.matcher(replacement).matches() ? Integer.toString((int) Double.parseDouble(replacement)) : Matcher.quoteReplacement(replacement);
+            if (key.startsWith("general.")) {
+                String id = id = key.substring(8); // key.replaceFirst("general\\.", "");
                 newStr = newStr.replaceAll(new StringBuilder("(?i)%var:").append(Pattern.quote(id)).append("%").toString(), replacement);
             } else {
-                if (p != null && key.matches(Util.join("(?i)^", p.getName(), "\\..*"))) {
-                    String id = key.replaceAll(Util.join("(?i)^", p.getName(), "\\."), "");
+                if (player != null && key.matches(Util.join("(?i)^", player.getName(), "\\..*"))) {
+                    String id = key.replaceAll(Util.join("(?i)^", player.getName(), "\\."), "");
                     newStr = newStr.replaceAll(new StringBuilder("(?i)%varp:").append(Pattern.quote(id)).append("%").toString(), replacement);
                 }
                 newStr = newStr.replaceAll(new StringBuilder("(?i)%varp?:").append(Pattern.quote(key)).append("%").toString(), replacement);
@@ -226,7 +231,7 @@ public class Variables {
         String newStr = str;
         for (String key : tempvars.keySet()) {
             String replacement = tempvars.get(key);
-            replacement = replacement.matches("^[0-9]+\\.0$") ? Integer.toString((int) Double.parseDouble(replacement)) : Matcher.quoteReplacement(replacement);
+            replacement = FLOAT_0.matcher(replacement).matches() ? Integer.toString((int) Double.parseDouble(replacement)) : Matcher.quoteReplacement(replacement);
             newStr = newStr.replaceAll("(?i)%" + key + "%", replacement);
         }
         return newStr;
@@ -271,11 +276,10 @@ public class Variables {
         M.printPage(sender, varList, M.MSG_VARLIST, pageNum, linesPerPage);
     }
 
-
     public static boolean isNumber(String... str) {
         if (str.length == 0) return false;
         for (String s : str)
-            if (!s.matches("-?[0-9]+(.[0-9]+)?")) return false;
+            if (!NUMBER.matcher(s).matches()) return false;
         return true;
     }
 
