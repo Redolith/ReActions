@@ -412,7 +412,7 @@ public class RAListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onButton(PlateEvent event) {
+    public void onPlate(PlateEvent event) {
         event.setCancelled(Activators.activate(event));
     }
 
