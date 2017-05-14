@@ -34,6 +34,7 @@ import me.fromgate.reactions.event.ButtonEvent;
 import me.fromgate.reactions.event.CommandEvent;
 import me.fromgate.reactions.event.DoorEvent;
 import me.fromgate.reactions.event.DropEvent;
+import me.fromgate.reactions.event.EntityClickEvent;
 import me.fromgate.reactions.event.EventManager;
 import me.fromgate.reactions.event.ExecEvent;
 import me.fromgate.reactions.event.FactionCreateEvent;
@@ -388,6 +389,11 @@ public class RAListener implements Listener {
         if (EventManager.raiseFlightEvent(event)) event.setCancelled(true);
     }
 
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onEntityClick(PlayerInteractEntityEvent event) {
+        if (EventManager.raiseEntityClickEvent(event)) event.setCancelled(true);
+    }
+
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
     public void onPlayerJoinActivators(PlayerJoinEvent event) {
@@ -561,6 +567,11 @@ public class RAListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onFlightActivator(FlightEvent event) {
+        event.setCancelled(Activators.activate(event));
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onEntityClickActivator(EntityClickEvent event) {
         event.setCancelled(Activators.activate(event));
     }
 

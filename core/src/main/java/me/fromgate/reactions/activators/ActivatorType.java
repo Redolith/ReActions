@@ -28,6 +28,7 @@ import me.fromgate.reactions.event.ButtonEvent;
 import me.fromgate.reactions.event.CommandEvent;
 import me.fromgate.reactions.event.DoorEvent;
 import me.fromgate.reactions.event.DropEvent;
+import me.fromgate.reactions.event.EntityClickEvent;
 import me.fromgate.reactions.event.ExecEvent;
 import me.fromgate.reactions.event.FactionCreateEvent;
 import me.fromgate.reactions.event.FactionDisbandEvent;
@@ -98,6 +99,7 @@ public enum ActivatorType {
     INVENTORY_CLICK("inventoryclick", InventoryClickActivator.class, PlayerInventoryClickEvent.class),
     DROP("drop", DropActivator.class, DropEvent.class),
     FLIGHT("flight", FlightActivator.class, FlightEvent.class),
+    ENTITY_CLICK("entityclick", EntityClickActivator.class, EntityClickEvent.class),
     VARIABLE("var", VariableActivator.class, VariableEvent.class);
 
     private String alias;
