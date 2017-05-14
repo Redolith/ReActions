@@ -3,8 +3,10 @@ package me.fromgate.reactions.util.waiter;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.util.ActVal;
 import me.fromgate.reactions.util.message.M;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -15,10 +17,14 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ActionsWaiter {
+
     private static Set<Task> tasks;
+
+    private static BukkitTask saveTask;
 
     public static void init() {
         tasks = Collections.newSetFromMap(new ConcurrentHashMap<Task, Boolean>()); //new HashSet<>();
+        saveTask = null;
         load();
     }
 
@@ -78,18 +84,24 @@ public class ActionsWaiter {
     }
 
     public static void save() {
-        YamlConfiguration cfg = new YamlConfiguration();
-        File f = new File(ReActions.getPlugin().getDataFolder() + File.separator + "delayed-actions.yml");
-        if (f.exists()) f.delete();
-        for (Task t : tasks) {
-            if (!t.isExecuted()) t.save(cfg);
-        }
-        try {
-            cfg.save(f);
-        } catch (Throwable e) {
-            M.logMessage("Failed to save delayed actions");
+        if (saveTask == null) {
+            saveTask = Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), new Runnable() {
+                @Override
+                public void run() {
+                    YamlConfiguration cfg = new YamlConfiguration();
+                    File f = new File(ReActions.getPlugin().getDataFolder() + File.separator + "delayed-actions.yml");
+                    if (f.exists()) f.delete();
+                    for (Task t : tasks) {
+                        if (!t.isExecuted()) t.save(cfg);
+                    }
+                    try {
+                        cfg.save(f);
+                    } catch (Throwable e) {
+                        M.logMessage("Failed to save delayed actions");
+                    }
+                    saveTask = null;
+                }
+            }, 1);
         }
     }
-
-
 }
