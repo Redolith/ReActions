@@ -5,6 +5,7 @@ import me.fromgate.reactions.util.Param;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -146,6 +147,12 @@ public class ItemUtil {
         return countItemsInventory(inventory, itemMap);
     }
 
+    @SuppressWarnings("deprecation")
+    public static VirtualItem itemFromBlock(Block block) {
+        if (block == null) return itemFromString("AIR");
+        return itemFromItemStack(new ItemStack(block.getType(), 1, block.getData()));
+    }
+
     public static VirtualItem itemFromItemStack(ItemStack item) {
         return itemVersion ? VirtualItem.fromItemStack(item) : VirtualItem18.fromItemStack(item);
     }
@@ -154,6 +161,12 @@ public class ItemUtil {
         return itemFromString(string);
     }
 
+    @SuppressWarnings("deprecation")
+    public static boolean compareItemStr(Block block, String itemStr) {
+        if (block == null || block.getType() == Material.AIR) return false;
+        ItemStack item = new ItemStack(block.getType(), 1, block.getData());
+        return compareItemStr(item, itemStr);
+    }
 
     public static boolean compareItemStr(ItemStack item, String itemStr) {
         if (item == null || item.getType() == Material.AIR) return false;

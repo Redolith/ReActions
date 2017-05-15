@@ -552,13 +552,16 @@ public class VirtualItem extends ItemStack {
             return getClosestColor(parseColor(colorStr));
         } else if (BYTE.matcher(colorStr).matches()) {
             int num = Integer.parseInt(colorStr);
-            if (num > 15)
+            if (num > 15) {
                 num = 15;
+            }
             return DyeColor.getByDyeData((byte) num);
         } else {
-            for (DyeColor dc : DyeColor.values())
-                if (dc.name().equalsIgnoreCase(colorStr))
+            for (DyeColor dc : DyeColor.values()) {
+                if (dc.name().equalsIgnoreCase(colorStr)) {
                     return dc;
+                }
+            }
         }
         return null;
     }
@@ -1149,6 +1152,20 @@ public class VirtualItem extends ItemStack {
                 typeStr = m.name();
             }
             if (!compareOrMatch(this.getType().name(), typeStr.toUpperCase(), regex)) return false;
+
+            if (itemMap.containsKey("color")) {
+                DyeColor dyeColor = parseDyeColor(itemMap.get("color"));
+                switch (typeStr.toUpperCase()) {
+                    case "WOOL":
+                    case "35":
+                        itemMap.put("data", String.valueOf(dyeColor.getWoolData()));
+                        break;
+                    case "INK_SACK":
+                    case "351":
+                        itemMap.put("data", String.valueOf(dyeColor.getWoolData()));
+                        break;
+                }
+            }
         }
 
         if (itemMap.containsKey("data")) {

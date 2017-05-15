@@ -5,6 +5,7 @@ import me.fromgate.reactions.event.PlayerBlockBreakEvent;
 import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Variables;
+import me.fromgate.reactions.util.item.ItemUtil;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -14,21 +15,21 @@ import org.bukkit.event.Event;
  * Created by MaxDikiy on 2017-05-14.
  */
 public class BlockBreakActivator extends Activator {
-    private String blockType;
+    private String blockStr;
     private String blockLocation;
 
     public BlockBreakActivator(String name, Block targetBlock, String param) {
         super(name, "activators");
         this.blockLocation = "";
-        this.blockType = "";
+        this.blockStr = "";
         Param params = new Param(param);
         if (targetBlock != null) {
             this.blockLocation = Locator.locationToString(targetBlock.getLocation());
-            this.blockType = (targetBlock.getType()).toString();
+            this.blockStr = (targetBlock.getType()).toString();
         }
-        String bt = params.getParam("type", "");
-        if (this.blockType.isEmpty() || this.blockType.equals("AIR") || !bt.isEmpty() && !this.blockType.equalsIgnoreCase(bt)) {
-            this.blockType = bt;
+        String bt = params.getParam("block", "");
+        if (this.blockStr.isEmpty() || this.blockStr.equals("AIR") || !bt.isEmpty() && !this.blockStr.equalsIgnoreCase(bt)) {
+            this.blockStr = bt;
             this.blockLocation = params.getParam("loc", "");
         }
     }
@@ -37,14 +38,18 @@ public class BlockBreakActivator extends Activator {
         super(name, group, cfg);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean activate(Event event) {
         if (!(event instanceof PlayerBlockBreakEvent)) return false;
         PlayerBlockBreakEvent bbe = (PlayerBlockBreakEvent) event;
-        if (bbe.getBlockBreak() == null) return false;
-        if (!isActivatorBlock(bbe.getBlockBreak())) return false;
+        Block brokenBlock = bbe.getBlockBreak();
+        if (brokenBlock == null) return false;
+        if (!isActivatorBlock(brokenBlock)) return false;
         Variables.setTempVar("blocklocation", Locator.locationToString(bbe.getBlockBreakLocation()));
-        Variables.setTempVar("blocktype", bbe.getBlockBreak().getType().name());
+        Variables.setTempVar("blocktype", brokenBlock.getType().name());
+        Variables.setTempVar("blockdata", String.valueOf(brokenBlock.getData()));
+        Variables.setTempVar("block", ItemUtil.itemFromBlock(brokenBlock).toString());
         return Actions.executeActivator(bbe.getPlayer(), this);
     }
 
@@ -54,7 +59,8 @@ public class BlockBreakActivator extends Activator {
     }
 
     private boolean isActivatorBlock(Block block) {
-        if (!(this.blockType).isEmpty() && !(block.getType()).toString().equalsIgnoreCase(this.blockType)) return false;
+        if (this.blockStr.isEmpty()) return false;
+        if (!ItemUtil.compareItemStr(block, this.blockStr)) return false;
         return checkLocations(block);
     }
 
@@ -71,13 +77,13 @@ public class BlockBreakActivator extends Activator {
 
     @Override
     public void save(String root, YamlConfiguration cfg) {
-        cfg.set(root + ".block-type", this.blockType);
+        cfg.set(root + ".block", this.blockStr);
         cfg.set(root + ".location", this.blockLocation.isEmpty() ? null : this.blockLocation);
     }
 
     @Override
     public void load(String root, YamlConfiguration cfg) {
-        this.blockType = cfg.getString(root + ".block-type", "");
+        this.blockStr = cfg.getString(root + ".block", "");
         this.blockLocation = cfg.getString(root + ".location", "");
     }
 
@@ -93,7 +99,7 @@ public class BlockBreakActivator extends Activator {
         if (!getActions().isEmpty()) sb.append(" A:").append(getActions().size());
         if (!getReactions().isEmpty()) sb.append(" R:").append(getReactions().size());
         sb.append(" (");
-        sb.append("type:").append(blockType.isEmpty() ? "-" : blockType.toUpperCase());
+        sb.append("block:").append(blockStr.isEmpty() ? "-" : blockStr);
         sb.append(" loc:").append(blockLocation.isEmpty() ? "-" : blockLocation);
         sb.append(")");
         return sb.toString();
