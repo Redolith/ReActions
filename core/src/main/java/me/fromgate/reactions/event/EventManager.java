@@ -49,6 +49,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -497,6 +498,12 @@ public class EventManager {
 
     public static boolean raiseEntityClickEvent(PlayerInteractEntityEvent event) {
         EntityClickEvent e = new EntityClickEvent(event.getPlayer(), event.getRightClicked());
+        Bukkit.getServer().getPluginManager().callEvent(e);
+        return e.isCancelled();
+    }
+
+    public static boolean raiseBlockBreakEvent(BlockBreakEvent event) {
+        PlayerBlockBreakEvent e = new PlayerBlockBreakEvent(event.getPlayer(), event.getBlock());
         Bukkit.getServer().getPluginManager().callEvent(e);
         return e.isCancelled();
     }

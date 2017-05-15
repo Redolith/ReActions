@@ -54,6 +54,7 @@ import me.fromgate.reactions.event.MobDamageEvent;
 import me.fromgate.reactions.event.MobKillEvent;
 import me.fromgate.reactions.event.PVPKillEvent;
 import me.fromgate.reactions.event.PlateEvent;
+import me.fromgate.reactions.event.PlayerBlockBreakEvent;
 import me.fromgate.reactions.event.PlayerInventoryClickEvent;
 import me.fromgate.reactions.event.PlayerRespawnedEvent;
 import me.fromgate.reactions.event.PlayerWasKilledEvent;
@@ -87,6 +88,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -394,6 +396,11 @@ public class RAListener implements Listener {
         if (EventManager.raiseEntityClickEvent(event)) event.setCancelled(true);
     }
 
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onBlockBreak(BlockBreakEvent event) {
+        if (EventManager.raiseBlockBreakEvent(event)) event.setCancelled(true);
+    }
+
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
     public void onPlayerJoinActivators(PlayerJoinEvent event) {
@@ -572,6 +579,11 @@ public class RAListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onEntityClickActivator(EntityClickEvent event) {
+        event.setCancelled(Activators.activate(event));
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onBlockBreakActivator(PlayerBlockBreakEvent event) {
         event.setCancelled(Activators.activate(event));
     }
 

@@ -47,6 +47,7 @@ import me.fromgate.reactions.event.MobDamageEvent;
 import me.fromgate.reactions.event.MobKillEvent;
 import me.fromgate.reactions.event.PVPKillEvent;
 import me.fromgate.reactions.event.PlateEvent;
+import me.fromgate.reactions.event.PlayerBlockBreakEvent;
 import me.fromgate.reactions.event.PlayerInventoryClickEvent;
 import me.fromgate.reactions.event.PlayerRespawnedEvent;
 import me.fromgate.reactions.event.PlayerWasKilledEvent;
@@ -100,6 +101,7 @@ public enum ActivatorType {
     DROP("drop", DropActivator.class, DropEvent.class),
     FLIGHT("flight", FlightActivator.class, FlightEvent.class),
     ENTITY_CLICK("entityclick", EntityClickActivator.class, EntityClickEvent.class),
+    BLOCK_BREAK("blockbreak", BlockBreakActivator.class, PlayerBlockBreakEvent.class, true),
     VARIABLE("var", VariableActivator.class, VariableEvent.class);
 
     private String alias;
