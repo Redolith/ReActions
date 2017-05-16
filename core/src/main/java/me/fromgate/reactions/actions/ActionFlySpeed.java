@@ -8,9 +8,10 @@ import org.bukkit.entity.Player;
  * Created by MaxDikiy on 2017-05-16.
  */
 public class ActionFlySpeed extends Action {
+    @Override
     public boolean execute(Player p, Param params) {
         Player player = p;
-        double speed = 0;
+        double speed;
         if (params.hasAnyParam("speed", "player")) {
             String playerName = params.getParam("player", p != null ? p.getName() : "");
             //noinspection deprecation
