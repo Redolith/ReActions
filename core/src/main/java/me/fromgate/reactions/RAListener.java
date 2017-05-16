@@ -63,6 +63,7 @@ import me.fromgate.reactions.event.RegionEnterEvent;
 import me.fromgate.reactions.event.RegionEvent;
 import me.fromgate.reactions.event.RegionLeaveEvent;
 import me.fromgate.reactions.event.SignEvent;
+import me.fromgate.reactions.event.SneakEvent;
 import me.fromgate.reactions.event.VariableEvent;
 import me.fromgate.reactions.externals.RAEconomics;
 import me.fromgate.reactions.externals.RAVault;
@@ -112,6 +113,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -401,6 +403,11 @@ public class RAListener implements Listener {
         if (EventManager.raiseBlockBreakEvent(event)) event.setCancelled(true);
     }
 
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onSneak(PlayerToggleSneakEvent event) {
+        if (EventManager.raiseSneakEvent(event)) event.setCancelled(true);
+    }
+
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
     public void onPlayerJoinActivators(PlayerJoinEvent event) {
@@ -584,6 +591,11 @@ public class RAListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onBlockBreakActivator(PlayerBlockBreakEvent event) {
+        event.setCancelled(Activators.activate(event));
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onSneakActivator(SneakEvent event) {
         event.setCancelled(Activators.activate(event));
     }
 

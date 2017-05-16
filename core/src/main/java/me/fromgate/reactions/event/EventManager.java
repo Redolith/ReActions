@@ -59,6 +59,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Button;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -504,6 +505,12 @@ public class EventManager {
 
     public static boolean raiseBlockBreakEvent(BlockBreakEvent event) {
         PlayerBlockBreakEvent e = new PlayerBlockBreakEvent(event.getPlayer(), event.getBlock());
+        Bukkit.getServer().getPluginManager().callEvent(e);
+        return e.isCancelled();
+    }
+
+    public static boolean raiseSneakEvent(PlayerToggleSneakEvent event) {
+        SneakEvent e = new SneakEvent(event.getPlayer(), event.isSneaking());
         Bukkit.getServer().getPluginManager().callEvent(e);
         return e.isCancelled();
     }

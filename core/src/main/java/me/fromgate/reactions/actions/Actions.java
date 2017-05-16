@@ -108,7 +108,9 @@ public enum Actions {
     LOG("log", false, new ActionLog()),
     PLAYER_ID("playerid", false, new ActionPlayerID()),
     FILE("file", false, new ActionFile()),
-    GLIDE("glide", false, new ActionGlide());
+    GLIDE("glide", false, new ActionGlide()),
+    WALK_SPEED("walkspeed", false, new ActionWalkSpeed()),
+    FLY_SPEED("flyspeed", false, new ActionFlySpeed());
 
     private String alias;
     private boolean requireplayer;

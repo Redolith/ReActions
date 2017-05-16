@@ -417,6 +417,7 @@ public enum M {
     ACTIVATOR_FLIGHT("This activators initiates when player's flight-mode changed"),
     ACTIVATOR_ENTITY_CLICK("This activator is initiated when the player performs a right-click on an entity. /react add entity_click <id> [EntityType]"),
     ACTIVATOR_BLOCK_BREAK("This activator is initiated when the player destroys the block. /react add block_break <id> [block:<Block>] [loc:<Location>]"),
+    ACTIVATOR_SNEAK("This activators initiates when player's sneak-mode changed. /react add sneak <id> [sneak:<any|true|false>]"),
     MSG_PLACEHOLDERLISTTITLE("Placeholders"),
     PLACEHOLDER_TIME_SERVER("Server (system) time"),
     PLACEHOLDER_TIME_INGAME("In-game time. If player is unknonw will show time in default world"),

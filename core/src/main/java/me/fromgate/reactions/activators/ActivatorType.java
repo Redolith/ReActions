@@ -56,6 +56,7 @@ import me.fromgate.reactions.event.RegionEnterEvent;
 import me.fromgate.reactions.event.RegionEvent;
 import me.fromgate.reactions.event.RegionLeaveEvent;
 import me.fromgate.reactions.event.SignEvent;
+import me.fromgate.reactions.event.SneakEvent;
 import me.fromgate.reactions.event.VariableEvent;
 import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.message.M;
@@ -102,6 +103,7 @@ public enum ActivatorType {
     FLIGHT("flight", FlightActivator.class, FlightEvent.class),
     ENTITY_CLICK("entityclick", EntityClickActivator.class, EntityClickEvent.class),
     BLOCK_BREAK("blockbreak", BlockBreakActivator.class, PlayerBlockBreakEvent.class, true),
+    SNEAK("sneak", SneakActivator.class, SneakEvent.class),
     VARIABLE("var", VariableActivator.class, VariableEvent.class);
 
     private String alias;
