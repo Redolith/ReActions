@@ -387,3 +387,5 @@ lng_fail_action_desc: 'Не определено описание действи
 lng_fail_flag_desc: 'Не определено описание флага: %1%'
 lng_fail_placeholder_desc: 'Не определено описание плейсхолдера: %1%'
 lng_translation_not_found: 'Не найден перевод сообщения %1%'
+action_walk_speed: 'Задать скорость пешего передвижения. Параметры: speed:<0..10> [player:<игрока>]'
+action_fly_speed: 'Задать скорость полёта. Параметры: speed:<0..10> [player:<игрока>]'
