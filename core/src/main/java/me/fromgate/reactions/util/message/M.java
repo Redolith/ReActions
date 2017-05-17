@@ -22,6 +22,10 @@
 
 package me.fromgate.reactions.util.message;
 
+import me.fromgate.reactions.actions.Actions;
+import me.fromgate.reactions.activators.ActivatorType;
+import me.fromgate.reactions.flags.Flags;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,6 +43,8 @@ public enum M {
     LNG_PRINT_FAIL("Failed to print message %1%. Sender object is null."),
     LNG_CONFIG("[MESSAGES] Messages: %1% Language: %2% Save translate file: %1% Debug mode: %3%"),
     LNG_PRINT_FAIL_M("Failed to print message. Unknown key %1%"),
+    LNG_TRANSLATION_NOT_FOUND("Failed to find localized message %1%"),
+
 
     WORD_UNKNOWN("Unknown"),
     WRONG_PERMISSION("You have not enough permissions to execute this command"),
@@ -685,6 +691,7 @@ public enum M {
         initMessages();
         if (saveLanguage) saveMessages();
         LNG_CONFIG.debug(M.values().length, language, true, debugMode);
+        testRequiredMessages();
     }
 
     /**
@@ -706,8 +713,39 @@ public enum M {
         for (M key : M.values()) {
             if (lng.containsKey(key.name().toLowerCase())) {
                 key.initMessage(lng.get(key.name().toLowerCase()));
+            } else {
+                M.LNG_TRANSLATION_NOT_FOUND.log(key.name());
             }
         }
+    }
+
+    private static void testRequiredMessages() {
+        String key;
+        for (ActivatorType activator : ActivatorType.values()) {
+            key = "ACTIVATOR_" + activator.name().toUpperCase();
+            if (!exists(key)) {
+                M.LNG_MISSED_ACTIVATOR_DESC.log(key);
+            }
+        }
+        for (Actions action : Actions.values()) {
+            key = "ACTION_" + action.name().toUpperCase();
+            if (!exists(key)) {
+                M.LNG_FAIL_ACTION_DESC.log(key);
+            }
+        }
+        for (Flags flag : Flags.values()) {
+            key = "FLAG_" + flag.name().toUpperCase();
+            if (!exists(key)) {
+                M.LNG_FAIL_FLAG_DESC.log(key);
+            }
+        }
+    }
+
+    private static boolean exists(String key) {
+        for (M m : values()) {
+            if (m.name().equalsIgnoreCase(key)) return true;
+        }
+        return false;
     }
 
     private static void saveMessages() {
