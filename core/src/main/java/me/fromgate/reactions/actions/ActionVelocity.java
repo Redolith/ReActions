@@ -29,7 +29,7 @@ import org.bukkit.util.Vector;
 import java.util.regex.Pattern;
 
 public class ActionVelocity extends Action {
-    private final static Pattern FLOAT = Pattern.compile("[0-9]+(\\.?[0-9]*)?");
+    private final static Pattern FLOAT = Pattern.compile("[0-9-]+(\\.?[0-9]*)?");
 
     @Override
     public boolean execute(Player p, Param params) {

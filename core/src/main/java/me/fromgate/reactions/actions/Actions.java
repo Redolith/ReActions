@@ -110,7 +110,8 @@ public enum Actions {
     FILE("file", false, new ActionFile()),
     GLIDE("glide", false, new ActionGlide()),
     WALK_SPEED("walkspeed", false, new ActionWalkSpeed()),
-    FLY_SPEED("flyspeed", false, new ActionFlySpeed());
+    FLY_SPEED("flyspeed", false, new ActionFlySpeed()),
+    IF_ELSE("ifelse", false, new ActionIfElse());
 
     private String alias;
     private boolean requireplayer;

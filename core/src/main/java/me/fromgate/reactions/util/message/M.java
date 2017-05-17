@@ -321,6 +321,7 @@ public enum M {
     ACTION_GLIDE("Set the flight mode on Elytra. Parameters: glide:<true/false> [player:<Name>]"),
     ACTION_WALK_SPEED("Set the walk speed. Parameters: speed:<0..10> [player:<player>]"),
     ACTION_FLY_SPEED("Set the flight speed. Parameters: speed:<0..10> [player:<player>]"),
+    ACTION_IF_ELSE("Condition operator. Parameters: if:< ==, !=, >, <, &&, ||, /^regex$/.test(\"value\")> <then> <else>"),
 
     /*
     DESCRIPTION MESSAGES
