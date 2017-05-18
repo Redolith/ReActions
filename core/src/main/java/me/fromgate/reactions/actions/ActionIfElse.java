@@ -1,6 +1,7 @@
 package me.fromgate.reactions.actions;
 
 import me.fromgate.reactions.event.EventManager;
+import me.fromgate.reactions.util.ActVal;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Variables;
 import org.bukkit.entity.Player;
@@ -8,12 +9,15 @@ import org.bukkit.entity.Player;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
  * Created by MaxDikiy on 2017-05-17.
  */
 public class ActionIfElse extends Action {
+
     @Override
     public boolean execute(Player p, Param params) {
         String condition;
@@ -31,7 +35,8 @@ public class ActionIfElse extends Action {
 
             try {
                 Boolean result = (Boolean) engine.eval(condition.toLowerCase());
-                if (!executeActivator(p, condition.toLowerCase(), (result) ? then_ : else_))
+                if (!executeActivator(p, condition.toLowerCase(), (result) ? then_ : else_)
+                        && !executeActions(p,  (result) ? then_ : else_))
                     Variables.setTempVar("ifelseresult" + suffix, (result) ? then_ : else_);
             } catch (ScriptException e) {
                 Variables.setTempVar("ifelsedebug", e.getMessage());
@@ -51,6 +56,31 @@ public class ActionIfElse extends Action {
         Param tempVars = new Param();
         tempVars.set("condition", condition);
         EventManager.raiseExecEvent(p, param, tempVars);
+        return true;
+    }
+
+    private Boolean executeActions(Player p, String paramStr) {
+        List<ActVal> actions = new ArrayList<>();
+        Param params = Param.parseParams(paramStr);
+        if (!params.hasAnyParam("run")) return false;
+        params = Param.parseParams(params.getParam("run"));
+        if (params.isEmpty() || !params.hasAnyParam("actions")) return false;
+        params = Param.parseParams(params.getParam("actions"));
+
+        if (!params.isParamsExists("action1")) return false;
+        for (String actionKey : params.keySet()) {
+            if (!((actionKey.toLowerCase()).startsWith("action"))) continue;
+            if (params.isEmpty() || !params.toString().contains("=")) continue;
+            String action = params.getParam(actionKey);
+
+            String flag = new String(action.substring(0, action.indexOf("=")));
+            String param = new String(action.substring(action.indexOf("=") + 1, action.length()));
+            actions.add(new ActVal(Actions.getValidName(flag), param));
+        }
+
+        if (actions.isEmpty()) return false;
+        Actions.executeActions(p, actions, true);
+        actions.clear();
         return true;
     }
 
