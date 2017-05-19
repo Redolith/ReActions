@@ -60,6 +60,7 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Button;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -470,6 +471,7 @@ public class EventManager {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) leftClick = false;
         else if (event.getAction() == Action.LEFT_CLICK_BLOCK) leftClick = true;
         else return false;
+        if(event.getHand() == EquipmentSlot.OFF_HAND) return false;
         BlockClickEvent e = new BlockClickEvent(event.getPlayer(), event.getClickedBlock(), leftClick);
         Bukkit.getServer().getPluginManager().callEvent(e);
         return e.isCancelled();
