@@ -60,7 +60,6 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Button;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -100,16 +99,16 @@ public class EventManager {
         return true;
     }
 
-    public static boolean raiseMobClickEvent(Player p, LivingEntity mob) {
+    public static boolean raiseMobClickEvent(Player player, LivingEntity mob) {
         if (mob == null) return false;
-        MobClickEvent e = new MobClickEvent(p, mob);
+        MobClickEvent e = new MobClickEvent(player, mob);
         Bukkit.getServer().getPluginManager().callEvent(e);
         return true;
     }
 
-    public static boolean raiseMobKillEvent(Player p, LivingEntity mob) {
+    public static boolean raiseMobKillEvent(Player player, LivingEntity mob) {
         if (mob == null) return false;
-        MobKillEvent e = new MobKillEvent(p, mob);
+        MobKillEvent e = new MobKillEvent(player, mob);
         Bukkit.getServer().getPluginManager().callEvent(e);
         return true;
     }
@@ -471,7 +470,7 @@ public class EventManager {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) leftClick = false;
         else if (event.getAction() == Action.LEFT_CLICK_BLOCK) leftClick = true;
         else return false;
-        if(event.getHand() == EquipmentSlot.OFF_HAND) return false;
+        if (!BukkitCompatibilityFix.isHandSlot(event)) return false;
         BlockClickEvent e = new BlockClickEvent(event.getPlayer(), event.getClickedBlock(), leftClick);
         Bukkit.getServer().getPluginManager().callEvent(e);
         return e.isCancelled();
