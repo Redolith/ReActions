@@ -59,8 +59,8 @@ public class BlockBreakActivator extends Activator {
     }
 
     private boolean isActivatorBlock(Block block) {
-        if (this.blockStr.isEmpty()) return false;
-        if (!ItemUtil.compareItemStr(block, this.blockStr)) return false;
+        //if (this.blockStr.isEmpty()) return false;
+        if (!this.blockStr.isEmpty() && !ItemUtil.compareItemStr(block, this.blockStr)) return false;
         return checkLocations(block);
     }
 
