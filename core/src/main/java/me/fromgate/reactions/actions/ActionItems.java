@@ -73,6 +73,9 @@ public class ActionItems extends Action {
             case SET_INVENTORY: {
                 return setInventorySlot(p, params);
             }
+            case GET_INVENTORY: {
+                return getInventorySlot(p, params);
+            }
             case UNWEAR_ITEM: {
                 return unwearItem(p, params);
             }
@@ -117,6 +120,46 @@ public class ActionItems extends Action {
 
         return true;
     }
+
+    private boolean getInventorySlot(Player player, Param params) {
+        String slotStr = params.getParam("slot", "");
+        if (slotStr.isEmpty()) return false;
+        if (!Util.isInteger(slotStr)) return wearItemView(player, params);
+        int slotNum = Integer.parseInt(slotStr);
+        if (slotNum >= player.getInventory().getSize()) return false;
+        ItemStack item = player.getInventory().getItem(slotNum) == null ? null : player.getInventory().getItem(slotNum);
+        String actionItems = "";
+        if (item != null) actionItems = ItemUtil.itemToString(item);
+        Variables.setTempVar("item_str", actionItems);
+
+        return true;
+    }
+
+    private boolean wearItemView(Player player, Param params) {
+        String itemStr = params.getParam("slot", "");
+        int slot; //4 - auto, 3 - helmet, 2 - chestplate, 1 - leggins, 0 - boots
+        slot = this.getSlotNum(params.getParam("slot", "auto"));
+        if (slot == -1) return getItemInOffhand(player, params);
+        ItemStack item = null;
+        ItemStack[] armour = player.getInventory().getArmorContents();
+        item = armour[slot] == null ? null : armour[slot];
+        String actionItems = "";
+        if (item != null) actionItems = ItemUtil.itemToString(item);
+        Variables.setTempVar("item_str", actionItems);
+        return true;
+    }
+
+    private boolean getItemInOffhand(Player player, Param params) {
+        String itemStr = params.getParam("slot", "");
+        if (itemStr.isEmpty()) return false;
+        if (!itemStr.equalsIgnoreCase("offhand")) {
+            Variables.setTempVar("item_str", "");
+            return true;
+        }
+        Variables.setTempVar("item_str", ItemUtil.itemToString(BukkitCompatibilityFix.getItemInOffHand(player)));
+        return true;
+    }
+
 
     /**
      * Реализует действие ITEM_WEAR
@@ -357,7 +400,8 @@ public class ActionItems extends Action {
         WEAR_ITEM,
         UNWEAR_ITEM,
         OPEN_INVENTORY,
-        SET_INVENTORY
+        SET_INVENTORY,
+        GET_INVENTORY
     }
 
 

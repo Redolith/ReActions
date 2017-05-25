@@ -62,6 +62,7 @@ public enum Actions {
     ITEM_WEAR("itemwear", true, new ActionItems(ItemActionType.WEAR_ITEM)),
     ITEM_UNWEAR("itemundress", true, new ActionItems(ItemActionType.UNWEAR_ITEM)),
     ITEM_SLOT("itemslot", true, new ActionItems(ItemActionType.SET_INVENTORY)),
+    ITEM_SLOT_VIEW("itemslotview", true, new ActionItems(ItemActionType.GET_INVENTORY)),
     CMD("cmdplr", true, new ActionCommand(ActionCommand.NORMAL)),
     CMD_OP("cmdop", false, new ActionCommand(ActionCommand.OP)),
     CMD_CONSOLE("cmdsrv", false, new ActionCommand(ActionCommand.CONSOLE)),
