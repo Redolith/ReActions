@@ -314,6 +314,7 @@ public enum M {
     ACTION_WAIT("Wait some time before exucute another actions. Parameter: time:<time>"),
     ACTION_MENU_ITEM("Create and show GUI (item menu) to player. Parameters: menu:<MenuId>"),
     ACTION_ITEM_SLOT("Place item into provided inventory slot. Parameters: item:<Item> slot:<Number:0..35> [exist:<drop | undress | keep>]"),
+    ACTION_ITEM_SLOT_VIEW("Get information about an item in a given slot. Parameters: item:<Item> slot:<Number:0..35>"),
     ACTION_REGEX("This action is used when you need to pull out point data from the text. Parameters: input:<Text> regex:<RegExp> [prefix<Prefix>]"),
     ACTION_LOG("Write message into server log file. You can use it as additional debug tool for your activators. Parameters: message:<Text> prefix:<true/False> color:<true/False>"),
     ACTION_PLAYER_ID("This action is used when it is necessary to get the UUID of the player by its nickname and vice versa - the nickname of the player by its UUID. Parameters: varid:<VariableUUID>"),
