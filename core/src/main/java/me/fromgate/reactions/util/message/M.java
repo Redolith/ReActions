@@ -717,7 +717,7 @@ public enum M {
         for (M key : M.values()) {
             if (lng.containsKey(key.name().toLowerCase())) {
                 key.initMessage(lng.get(key.name().toLowerCase()));
-            } else {
+            } else if (!(language.equalsIgnoreCase("default") || language.equalsIgnoreCase("english"))) {
                 M.LNG_TRANSLATION_NOT_FOUND.log(key.name());
             }
         }
