@@ -1,5 +1,6 @@
 package me.fromgate.reactions.placeholders;
 
+import me.fromgate.reactions.externals.RAPlaceholderAPI;
 import me.fromgate.reactions.flags.Flags;
 import me.fromgate.reactions.util.Variables;
 import me.fromgate.reactions.util.message.M;
@@ -73,6 +74,7 @@ public class Placeholders {
         matcher.appendTail(sb);
         result = sb.toString();
         if (!string.equals(result)) result = replacePlaceholders(player, result);
+        result = RAPlaceholderAPI.processPlaceholder(player, result);
         return result;
     }
 

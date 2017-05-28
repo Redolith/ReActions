@@ -3,7 +3,7 @@ main: me.fromgate.reactions.ReActions
 version: 0.9.11
 website: http://fromgate.me
 author: fromgate, fromgate@gmail.com
-softdepend: [Vault,Towny,WorldGuard,RacesAndClasses,PlayEffect,Factions,Craftconomy3,ProtocolLib]
+softdepend: [Vault,Towny,WorldGuard,RacesAndClasses,PlayEffect,Factions,Craftconomy3,ProtocolLib,PlaceholderAPI]
 commands:
    react:
       aliases: [ra,rea,rct]

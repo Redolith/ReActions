@@ -10,8 +10,6 @@ public class Externals {
     //разные переменные
     private static boolean townyConected = false;
 
-
-
     public static void init() {
         if (Bukkit.getPluginManager().getPlugin("Factions") != null) {
             try {
@@ -29,7 +27,20 @@ public class Externals {
             }
         }
 
-        if (Bukkit.getPluginManager().getPlugin("ProtocolLib") != null) RAProtocolLib.connectProtocolLib();
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            try {
+                RAPlaceholderAPI.init();
+            } catch (Throwable ignore) {
+            }
+        }
+
+
+        if (Bukkit.getPluginManager().getPlugin("ProtocolLib") != null) {
+            try {
+                RAProtocolLib.connectProtocolLib();
+            } catch (Throwable ignore) {
+            }
+        }
     }
 
     public static boolean isConnectedFactions() {
@@ -39,4 +50,5 @@ public class Externals {
     public static boolean isTownyConnected() {
         return townyConected;
     }
+
 }

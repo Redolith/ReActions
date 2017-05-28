@@ -47,6 +47,7 @@ public class CommandActivator extends Activator {
     boolean useRegex;
 
     public void init() {
+        if (command == null) return;
         Param params = new Param(command);
         if (params.isParamsExists("cmd")) {
             checkExact = true;
