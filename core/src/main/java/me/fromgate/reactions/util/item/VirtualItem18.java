@@ -298,8 +298,9 @@ public class VirtualItem18 extends VirtualItem {
         String colorStr = getParam(params, "color");
         if (colorStr != null && !colorStr.isEmpty()) {
             DyeColor dc = parseDyeColor(colorStr);
-            if (dc != null)
+            if (dc != null) {
                 bm.setBaseColor(dc);
+            }
         }
 
 
@@ -310,8 +311,8 @@ public class VirtualItem18 extends VirtualItem {
                 String pattern = pStr;
                 String dc = "";
                 if (pStr.contains(":")) {
-                    dc = new String(pStr.substring(pStr.indexOf(":") + 1));
-                    pattern = new String(pStr.substring(0, pStr.indexOf(":")));
+                    dc = pStr.substring(pStr.indexOf(":") + 1);
+                    pattern = pStr.substring(0, pStr.indexOf(":"));
                 }
 
                 PatternType pType = PatternType.getByIdentifier(pattern

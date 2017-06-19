@@ -1,8 +1,8 @@
 apply plugin: 'java'
 
 compileJava.options.encoding = 'UTF-8'
-compileJava.sourceCompatibility = 1.7
-compileJava.targetCompatibility = 1.7
+compileJava.sourceCompatibility = 1.8
+compileJava.targetCompatibility = 1.8
 
 repositories {
     mavenCentral()
