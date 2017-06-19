@@ -33,6 +33,8 @@ public class ActionRegex extends Action {
                 if (m.group(i) != null) group = m.group(i);
                 else group = "";
                 Variables.setTempVar(prefix + "group" + count + "" + i, group);
+                Variables.setTempVar(prefix + "group_" + count + "_" + i, group);
+                Variables.setTempVar(prefix + "group:" + count + ":" + i, group);
             }
         }
         return true;

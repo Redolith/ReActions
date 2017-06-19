@@ -57,7 +57,7 @@ public class Activators {
     }
 
     public static void loadActivators() {
-        List<String> groups = findGroupsInDir();
+        List<String> groups = findGroupsInDirs("");
         if (!groups.isEmpty())
             for (String group : groups)
                 loadActivators(group);
@@ -74,6 +74,24 @@ public class Activators {
             if (fstr.endsWith(".yml")) {
                 grps.add(new String(fstr.substring(0, fstr.length() - 4)));
             }
+        return grps;
+    }
+
+    private static List<String> findGroupsInDirs(String dir) {
+        dir = ((dir.isEmpty()) ? "" : dir + File.separator);
+        List<String> grps = new ArrayList<>();
+        File dirs = new File(plg().getDataFolder() + File.separator + "Activators" + File.separator + dir);
+        if (!dirs.exists()) dirs.mkdirs();
+        for (File f : dirs.listFiles()) {
+            if (f.isDirectory()) {
+                grps.addAll(findGroupsInDirs(dir + f.getName()));
+            } else {
+                String fstr = f.getName();
+                if (fstr.endsWith(".yml")) {
+                    grps.add(new String(dir + fstr.substring(0, fstr.length() - 4)));
+                }
+            }
+        }
         return grps;
     }
 
@@ -165,11 +183,20 @@ public class Activators {
         return true;
     }
 
+    private static void delFiles(String dir) {
+        dir = dir + ((dir.isEmpty()) ? "" : File.separator);
+        File dirs = new File(plg().getDataFolder() + File.separator + "Activators" + File.separator + dir);
+        for (File f : dirs.listFiles())
+            if (f.isDirectory()) {
+                delFiles(dir + f.getName());
+                f.delete();
+            } else {
+                f.delete();
+            }
+    }
+
     public static void saveActivators() {
-        File dir = new File(plg().getDataFolder() + File.separator + "Activators" + File.separator);
-        if (!dir.exists()) dir.mkdirs();
-        for (File f : dir.listFiles())
-            f.delete();
+        delFiles("");
         for (String group : findGroupsFromActivators())
             saveActivators(group);
     }
@@ -181,8 +208,26 @@ public class Activators {
         return grps;
     }
 
+    public static String implode(String separator, String... data) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < data.length - 1; i++) {
+            //data.length - 1 => to not add separator at the end
+            if (!data[i].matches(" *")) {//empty string are ""; " "; "  "; and so on
+                sb.append(data[i]);
+                sb.append(separator);
+            }
+        }
+        sb.append(data[data.length - 1].trim());
+        return sb.toString();
+    }
+
     public static void saveActivators(String group) {
-        File f = new File(plg().getDataFolder() + File.separator + "Activators" + File.separator + group + ".yml");
+        String g = implode(File.separator, group.split("\\/"));
+
+        File f = new File(plg().getDataFolder() + File.separator + "Activators" + File.separator + g + ".yml");
+        File dir = new File(f.getPath());
+        if (!dir.exists()) dir.mkdirs();
+
         try {
             if (f.exists()) f.delete();
             f.createNewFile();
