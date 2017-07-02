@@ -69,7 +69,7 @@ public abstract class Action {
             if (msg == null) {
                 M.LNG_FAIL_ACTION_MSG.print(type.name());
             } else {
-                msg.print(params, messageParam);
+                msg.print(player, messageParam);
             }
         }
         //Залипухи, но похоже по другому - никак...
