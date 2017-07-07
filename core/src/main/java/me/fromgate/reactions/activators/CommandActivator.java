@@ -40,11 +40,11 @@ import java.util.Set;
 
 public class CommandActivator extends Activator {
 
-    boolean checkExact;
-    String command;
-    Param arguments = new Param();
+    private boolean checkExact;
+    private String command;
+    private Param arguments = new Param();
+    private boolean useRegex;
     boolean override;
-    boolean useRegex;
 
     public void init() {
         if (command == null) return;
@@ -68,6 +68,10 @@ public class CommandActivator extends Activator {
             command = cmdParam.getParam("command");
             override = cmdParam.getParam("override", true);
             useRegex = cmdParam.getParam("regex", false);
+        } else {
+            command = param;
+            override = true;
+            useRegex = false;
         }
         init();
     }
