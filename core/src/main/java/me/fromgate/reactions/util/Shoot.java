@@ -50,10 +50,11 @@ public class Shoot {
         int distance = params.getParam("distance", 100);
         for (LivingEntity le : getEntityBeam(shooter, getBeam(shooter, distance), onehit)) {
             double damage = (double) Util.getMinMaxRandom(params.getParam("damage", "1"));
+            boolean shoot = true;
             if (damage > 0) {
-                damageEntity(shooter, le, damage);
+                shoot = damageEntity(shooter, le, damage);
             }
-            if (params.hasAnyParam("run")) {
+            if (shoot && params.hasAnyParam("run")) {
                 executeActivator(shooter instanceof Player ? (Player) shooter : null, le, params.getParam("run"));
             }
         }
