@@ -321,7 +321,7 @@ public class ActionItems extends Action {
         boolean scatter = params.getParam("scatter", true);
         boolean land = params.getParam("land", true);
         List<ItemStack> items = ItemUtil.parseRandomItemsStr(params.getParam("item", ""));
-        if (items.isEmpty()) return false;
+        if (items == null || items.isEmpty()) return false;
         if (radius == 0) scatter = false;
         Location l = Locator.getRadiusLocation(loc, radius, land);
         for (ItemStack i : items) {
