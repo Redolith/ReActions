@@ -152,6 +152,10 @@ public class EventManager {
         if (itemInHand == null || itemInHand.getType() == Material.AIR) return false;
         ItemClickEvent ice = new ItemClickEvent(event.getPlayer());
         Bukkit.getServer().getPluginManager().callEvent(ice);
+        itemInHand = BukkitCompatibilityFix.getItemInHand(event.getPlayer());
+        if (itemInHand == null || itemInHand.getType() == Material.AIR) {
+            event.setCancelled(true);
+        }
         return true;
     }
 

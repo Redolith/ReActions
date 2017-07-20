@@ -362,16 +362,6 @@ public class RAListener implements Listener {
         if (EventManager.raiseDoorEvent(event)) event.setCancelled(true);
     }
 
-    /*
-      Fix java.util.concurrent.ExecutionException: java.lang.AssertionError: TRAP
-     */
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void itemPlace(PlayerInteractEvent event) {
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-        ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
-        if (item == null || item.getType() == Material.AIR) event.setCancelled(true);
-    }
-
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent event) {
         PushBack.rememberLocations(event.getPlayer(), event.getFrom(), event.getTo());
