@@ -47,6 +47,7 @@ public class InventoryClickActivator extends Activator {
         Variables.setTempVar("action", pice.getAction().toString());
         Variables.setTempVar("slot", pice.getSlotType().toString());
         Variables.setTempVar("inventory", pice.getInventoryType().toString());
+        Variables.setTempVar("item", ItemUtil.itemToString(pice.getItemStack()));
         return Actions.executeActivator(pice.getPlayer(), this);
     }
 

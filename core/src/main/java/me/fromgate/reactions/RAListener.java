@@ -32,6 +32,9 @@ import me.fromgate.reactions.activators.SignActivator;
 import me.fromgate.reactions.event.BlockClickEvent;
 import me.fromgate.reactions.event.ButtonEvent;
 import me.fromgate.reactions.event.CommandEvent;
+import me.fromgate.reactions.event.DamageByBlockEvent;
+import me.fromgate.reactions.event.DamageByMobEvent;
+import me.fromgate.reactions.event.DamageEvent;
 import me.fromgate.reactions.event.DoorEvent;
 import me.fromgate.reactions.event.DropEvent;
 import me.fromgate.reactions.event.EntityClickEvent;
@@ -80,7 +83,9 @@ import me.fromgate.reactions.util.mob.MobSpawn;
 import me.fromgate.reactions.util.waiter.ActionsWaiter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -91,11 +96,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
@@ -280,6 +288,41 @@ public class RAListener implements Listener {
         if (dmg < 0) return;
         dmg = BukkitCompatibilityFix.getEventDamage(event) * dmg;
         BukkitCompatibilityFix.setEventDamage(event, dmg);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onPlayerDamage(EntityDamageEvent event) {
+        String source = "ANY";
+        if (event.getEntity().getType() != EntityType.PLAYER) return;
+        if ((event instanceof EntityDamageByEntityEvent)) {
+            source = "ENTITY";
+            EntityDamageByEntityEvent evdmg = (EntityDamageByEntityEvent) event;
+            Entity entityDamager = evdmg.getDamager();
+            LivingEntity damager = Util.getDamagerEntity(event);
+            if (damager == null && entityDamager instanceof Projectile) {
+                damager = (LivingEntity) ((Projectile) entityDamager).getShooter();
+            }
+            if (EventManager.raisePlayerDamageByMobEvent(evdmg, damager, entityDamager)) event.setCancelled(true);
+        } else if ((event instanceof EntityDamageByBlockEvent)){
+            source = "BLOCK";
+            EntityDamageByBlockEvent evdmg = (EntityDamageByBlockEvent) event;
+            Block blockDamager = evdmg.getDamager();
+            if (EventManager.raisePlayerDamageByBlockEvent(evdmg, blockDamager)) event.setCancelled(true);
+        } else {
+            source = "OTHER";
+        }
+
+        if(EventManager.raisePlayerDamageEvent(event, source)) event.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onEntityChangeBlockEvent(EntityChangeBlockEvent event) {
+        if (EventManager.raiseEntityChangeBlockEvent(event)) event.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onProjectileHitEvent(ProjectileHitEvent event) {
+        EventManager.raiseProjectileHitEvent(event);
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -596,6 +639,21 @@ public class RAListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onSneakActivator(SneakEvent event) {
+        event.setCancelled(Activators.activate(event));
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onDamageByMob(DamageByMobEvent event) {
+        event.setCancelled(Activators.activate(event));
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onDamageByBlock(DamageByBlockEvent event) {
+        event.setCancelled(Activators.activate(event));
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onPlayerDamage(DamageEvent event) {
         event.setCancelled(Activators.activate(event));
     }
 

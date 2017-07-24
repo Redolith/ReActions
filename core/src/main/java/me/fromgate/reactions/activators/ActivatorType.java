@@ -26,6 +26,9 @@ package me.fromgate.reactions.activators;
 import me.fromgate.reactions.event.BlockClickEvent;
 import me.fromgate.reactions.event.ButtonEvent;
 import me.fromgate.reactions.event.CommandEvent;
+import me.fromgate.reactions.event.DamageByBlockEvent;
+import me.fromgate.reactions.event.DamageByMobEvent;
+import me.fromgate.reactions.event.DamageEvent;
 import me.fromgate.reactions.event.DoorEvent;
 import me.fromgate.reactions.event.DropEvent;
 import me.fromgate.reactions.event.EntityClickEvent;
@@ -104,6 +107,9 @@ public enum ActivatorType {
     ENTITY_CLICK("entityclick", EntityClickActivator.class, EntityClickEvent.class),
     BLOCK_BREAK("blockbreak", BlockBreakActivator.class, PlayerBlockBreakEvent.class, true),
     SNEAK("sneak", SneakActivator.class, SneakEvent.class),
+    DAMAGE("damage", DamageActivator.class, DamageEvent.class),
+    DAMAGE_BY_MOB("damagebymob", DamageByMobActivator.class, DamageByMobEvent.class),
+    DAMAGE_BY_BLOCK("damagebyblock", DamageByBlockActivator.class, DamageByBlockEvent.class, true),
     VARIABLE("var", VariableActivator.class, VariableEvent.class);
 
     private String alias;

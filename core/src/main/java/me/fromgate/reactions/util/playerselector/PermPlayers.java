@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import java.util.HashSet;
 import java.util.Set;
 
-@SelectorDefine(key = "group")
+@SelectorDefine(key = "perm")
 public class PermPlayers extends PlayerSelector {
 
     @Override

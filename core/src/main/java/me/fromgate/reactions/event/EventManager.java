@@ -43,15 +43,22 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.entity.EntityDamageByBlockEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -67,6 +74,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 public class EventManager {
     private static ReActions plg() {
@@ -518,6 +526,57 @@ public class EventManager {
         SneakEvent e = new SneakEvent(event.getPlayer(), event.isSneaking());
         Bukkit.getServer().getPluginManager().callEvent(e);
         return e.isCancelled();
+    }
+
+    public static boolean raisePlayerDamageByMobEvent(EntityDamageByEntityEvent event, LivingEntity damager, Entity entityDamager) {
+        if (!(event.getEntity() instanceof LivingEntity)) return false;
+        double damage = BukkitCompatibilityFix.getEventDamage(event);
+        DamageByMobEvent dm = new DamageByMobEvent((Player) event.getEntity(), damager, entityDamager, damage, event.getCause());
+        Bukkit.getServer().getPluginManager().callEvent(dm);
+        BukkitCompatibilityFix.setEventDamage(event, dm.getDamage());
+        return dm.isCancelled();
+    }
+
+    public static boolean raisePlayerDamageByBlockEvent(EntityDamageByBlockEvent event, Block blockDamager) {
+        if (!(event.getEntity() instanceof LivingEntity)) return false;
+        double damage = BukkitCompatibilityFix.getEventDamage(event);
+        DamageByBlockEvent db = new DamageByBlockEvent((Player) event.getEntity(), blockDamager, damage, event.getCause());
+        Bukkit.getServer().getPluginManager().callEvent(db);
+        BukkitCompatibilityFix.setEventDamage(event, db.getDamage());
+        return db.isCancelled();
+    }
+
+    public static boolean raisePlayerDamageEvent(EntityDamageEvent event, String source) {
+        if (!(event.getEntity() instanceof LivingEntity)) return false;
+        double damage = BukkitCompatibilityFix.getEventDamage(event);
+        DamageEvent de = new DamageEvent((Player) event.getEntity(), damage, event.getCause(), source);
+        Bukkit.getServer().getPluginManager().callEvent(de);
+        BukkitCompatibilityFix.setEventDamage(event, de.getDamage());
+        return de.isCancelled();
+    }
+
+    public static boolean raiseEntityChangeBlockEvent(EntityChangeBlockEvent event) {
+        if (event.getEntity() instanceof FallingBlock){
+            FallingBlock fb = (FallingBlock) event.getEntity();
+            for (Player p : Bukkit.getServer().getOnlinePlayers()){
+                for (Entity e : p.getNearbyEntities(0.5D, 1.0D, 0.5D)){
+                    if ((e instanceof FallingBlock) && fb == e) {
+                        //noinspection deprecation
+                        Bukkit.getPluginManager().callEvent(new EntityDamageByEntityEvent(e, p, EntityDamageEvent.DamageCause.FALLING_BLOCK, 0));
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean raiseProjectileHitEvent(ProjectileHitEvent event) {
+        if (!(event.getHitEntity() instanceof Player)) return false;
+        Player p = (Player) event.getHitEntity();
+        Entity e = event.getEntity();
+        if (e == null) return false;
+        // TODO PlayerProjectileHit activator
+        return false;
     }
 
 }
