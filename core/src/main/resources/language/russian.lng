@@ -362,6 +362,9 @@ activator_flight: 'Активатор инициируется при измен
 activator_entity_click: 'Активатор инициируется когда игрок выполняет правый клик по сущности. /react add entity_click <ИдАктиватор> [ТипСущности]'
 activator_block_break: 'Активатор инициируется когда игрок разрушает блок. /react add block_break <ИдАктиватора> [block:<Блок>] [loc:<Координаты>]'
 activator_sneak: 'Активатор инициируется при смене режимы скрытности (приседания) игрока. /react add sneak <ИдАктиватора> [sneak:<any|true|false>]'
+activator_damage: 'Активатор инициируется при получении игроком урона. . /react add damage <ИдАктиватора> [source:<block|entity|other|any>] [cause:<couseType>]'
+activator_damage_by_mob: 'Активатор инициируется при получении игроком урона от сущности. /react add damage_by_mob <ИдАктиватора> [damager-type:<LivingEntityType>] [damager-name] [entity-type:<EntityType>] [cause:<causeType>]'
+activator_damage_by_block: 'Активатор инициируется при получении игроком урона от блока. /react add damage_by_block <id> [block:<Block>] [cause:<causeType>]'
 msg_placeholderlisttitle: Плейсхолдеры
 placeholder_time_server: Серверное (системное) время
 placeholder_time_ingame: Внутри-игровое время. Если игрок в активаторе не указан, то будет отображено время в первом мире
