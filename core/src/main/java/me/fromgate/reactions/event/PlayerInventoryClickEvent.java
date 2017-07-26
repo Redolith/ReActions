@@ -28,6 +28,7 @@ import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
 
@@ -38,8 +39,9 @@ public class PlayerInventoryClickEvent extends RAEvent {
     private InventoryType inventory;
     private ItemStack item;
     private Integer numberKey;
+    private InventoryView inventoryView;
 
-    public PlayerInventoryClickEvent(Player p, InventoryAction action, ClickType click, Inventory inventory, SlotType slot, ItemStack item, Integer numberKey) {
+    public PlayerInventoryClickEvent(Player p, InventoryAction action, ClickType click, Inventory inventory, SlotType slot, ItemStack item, Integer numberKey, InventoryView inventoryView) {
         super(p);
         this.action = action;
         this.click = click;
@@ -47,6 +49,7 @@ public class PlayerInventoryClickEvent extends RAEvent {
         this.slot = slot;
         this.item = item;
         this.numberKey = numberKey;
+        this.inventoryView = inventoryView;
     }
 
     public InventoryAction getAction() {
@@ -71,6 +74,10 @@ public class PlayerInventoryClickEvent extends RAEvent {
 
     public Integer getNumberKey() {
         return this.numberKey;
+    }
+
+    public Inventory getBottomInventory() {
+        return this.inventoryView.getBottomInventory();
     }
 
 }

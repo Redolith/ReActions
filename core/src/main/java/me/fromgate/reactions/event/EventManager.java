@@ -74,7 +74,6 @@ import org.bukkit.metadata.FixedMetadataValue;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
 
 public class EventManager {
     private static ReActions plg() {
@@ -490,7 +489,7 @@ public class EventManager {
 
     public static boolean raiseInventoryClickEvent(InventoryClickEvent event) {
         Player p = (Player) event.getWhoClicked();
-        PlayerInventoryClickEvent e = new PlayerInventoryClickEvent(p, event.getAction(), event.getClick(), event.getInventory(), event.getSlotType(), event.getCurrentItem(), event.getHotbarButton());
+        PlayerInventoryClickEvent e = new PlayerInventoryClickEvent(p, event.getAction(), event.getClick(), event.getInventory(), event.getSlotType(), event.getCurrentItem(), event.getHotbarButton(), event.getView());
         Bukkit.getServer().getPluginManager().callEvent(e);
         return e.isCancelled();
     }
