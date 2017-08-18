@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -182,6 +183,10 @@ public class InventoryMenu implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (!InventoryMenu.isMenu(event.getInventory())) return;
+        if (event.isShiftClick()) {
+            event.setCancelled(true);
+            return;
+        }
         Player player = (Player) event.getWhoClicked();
         int clickedSlot = event.getRawSlot();
         if (clickedSlot < 0 || clickedSlot >= event.getInventory().getSize()) return;
@@ -195,6 +200,12 @@ public class InventoryMenu implements Listener {
         event.setCancelled(true);
         InventoryMenu.removeInventory(event.getInventory());
         player.closeInventory();
+    }
+
+    @EventHandler
+    public void onInventoryMove(InventoryDragEvent event) {
+        if (!InventoryMenu.isMenu(event.getInventory())) return;
+        event.setCancelled(true);
     }
 
     public static List<String> getEmptyList(int size) {
