@@ -103,6 +103,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -266,7 +267,7 @@ public class RAListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onMobDamageByPlayer(EntityDamageEvent event) {
-        if ((event.getCause() != DamageCause.ENTITY_ATTACK) && (event.getCause() != DamageCause.PROJECTILE)) return;
+        if ((event.getCause() != DamageCause.ENTITY_ATTACK) && (event.getCause() != DamageCause.PROJECTILE) && (event.getCause() != DamageCause.MAGIC)) return;
         if (!(event instanceof EntityDamageByEntityEvent)) return;
         EntityDamageByEntityEvent evdmg = (EntityDamageByEntityEvent) event;
         LivingEntity damager = Util.getDamagerEntity(evdmg);
@@ -277,7 +278,7 @@ public class RAListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onDamageByMob(EntityDamageEvent event) {
-        if ((event.getCause() != DamageCause.ENTITY_ATTACK) && (event.getCause() != DamageCause.PROJECTILE)) return;
+        if ((event.getCause() != DamageCause.ENTITY_ATTACK) && (event.getCause() != DamageCause.PROJECTILE) && (event.getCause() != DamageCause.MAGIC)) return;
         if (!(event instanceof EntityDamageByEntityEvent)) return;
         EntityDamageByEntityEvent evdmg = (EntityDamageByEntityEvent) event;
         LivingEntity damager = Util.getDamagerEntity(evdmg);
@@ -313,6 +314,12 @@ public class RAListener implements Listener {
         }
 
         if(EventManager.raisePlayerDamageEvent(event, source)) event.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onPotionSplash(PotionSplashEvent event) {
+        LivingEntity damager = (LivingEntity) event.getPotion().getShooter();
+        // TODO PotionSplashbyMob and PotionSplashbyPlayer activators
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)

@@ -243,7 +243,7 @@ public class InventoryClickActivator extends Activator {
     }
 
     private boolean checkNumberKey(Integer key) {
-        if (numberKey.equals("ANY") || Integer.parseInt(numberKey) <= 0) return true;
+        if (numberKey.isEmpty() || numberKey.equals("ANY") || Integer.parseInt(numberKey) <= 0) return true;
         return key == Integer.parseInt(numberKey) - 1;
     }
 

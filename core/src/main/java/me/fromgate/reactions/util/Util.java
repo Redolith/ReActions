@@ -37,6 +37,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.ThrownPotion;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -248,7 +249,17 @@ public class Util {
                 LivingEntity shooterEntity = BukkitCompatibilityFix.getShooter(prj);
                 if (shooterEntity == null) return null;
                 return shooterEntity;
-            } else if (evdmg.getDamager() instanceof LivingEntity) return (LivingEntity) evdmg.getDamager();
+            }
+            else if (evdmg.getCause() == DamageCause.MAGIC) {
+                Entity entityDamager = evdmg.getDamager();
+                LivingEntity shooterEntity = null;
+                if (entityDamager instanceof ThrownPotion) {
+                    shooterEntity = (LivingEntity) ((ThrownPotion) entityDamager).getShooter();
+                }
+                if (shooterEntity == null) return null;
+                return shooterEntity;
+            }
+            else if (evdmg.getDamager() instanceof LivingEntity) return (LivingEntity) evdmg.getDamager();
         }
         return null;
     }
