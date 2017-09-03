@@ -489,7 +489,7 @@ public class EventManager {
 
     public static boolean raiseInventoryClickEvent(InventoryClickEvent event) {
         Player p = (Player) event.getWhoClicked();
-        PlayerInventoryClickEvent e = new PlayerInventoryClickEvent(p, event.getAction(), event.getClick(), event.getInventory(), event.getSlotType(), event.getCurrentItem(), event.getHotbarButton(), event.getView());
+        PlayerInventoryClickEvent e = new PlayerInventoryClickEvent(p, event.getAction(), event.getClick(), event.getInventory(), event.getSlotType(), event.getCurrentItem(), event.getHotbarButton(), event.getView(), event.getSlot());
         Bukkit.getServer().getPluginManager().callEvent(e);
         return e.isCancelled();
     }

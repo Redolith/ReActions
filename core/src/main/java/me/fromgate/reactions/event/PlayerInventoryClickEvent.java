@@ -35,20 +35,22 @@ import org.bukkit.inventory.ItemStack;
 public class PlayerInventoryClickEvent extends RAEvent {
     private InventoryAction action;
     private ClickType click;
-    private SlotType slot;
+    private SlotType slotType;
     private InventoryType inventory;
     private ItemStack item;
     private Integer numberKey;
+    private Integer slot;
     private InventoryView inventoryView;
 
-    public PlayerInventoryClickEvent(Player p, InventoryAction action, ClickType click, Inventory inventory, SlotType slot, ItemStack item, Integer numberKey, InventoryView inventoryView) {
+    public PlayerInventoryClickEvent(Player p, InventoryAction action, ClickType click, Inventory inventory, SlotType slotType, ItemStack item, Integer numberKey, InventoryView inventoryView, Integer slot) {
         super(p);
         this.action = action;
         this.click = click;
         this.inventory = inventory.getType();
-        this.slot = slot;
+        this.slotType = slotType;
         this.item = item;
         this.numberKey = numberKey;
+        this.slot = slot;
         this.inventoryView = inventoryView;
     }
 
@@ -65,7 +67,7 @@ public class PlayerInventoryClickEvent extends RAEvent {
     }
 
     public SlotType getSlotType() {
-        return this.slot;
+        return this.slotType;
     }
 
     public ItemStack getItemStack() {
@@ -74,6 +76,10 @@ public class PlayerInventoryClickEvent extends RAEvent {
 
     public Integer getNumberKey() {
         return this.numberKey;
+    }
+
+    public Integer getSlot() {
+        return this.slot;
     }
 
     public Inventory getBottomInventory() {

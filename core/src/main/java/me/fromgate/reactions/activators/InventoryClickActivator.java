@@ -15,9 +15,10 @@ public class InventoryClickActivator extends Activator {
     private ClickType click;
     private InventoryAction action;
     private InventoryType inventory;
-    private SlotType slot;
+    private SlotType slotType;
     private String itemStr;
     private String numberKey;
+    private String slotStr;
 
 
     public InventoryClickActivator(String name, String param) {
@@ -26,8 +27,9 @@ public class InventoryClickActivator extends Activator {
         this.click = ClickType.getByName(params.getParam("click", "ANY"));
         this.action = InventoryAction.getByName(params.getParam("action", "ANY"));
         this.inventory = InventoryType.getByName(params.getParam("inventory", "ANY"));
-        this.slot = SlotType.getByName(params.getParam("slot", "ANY"));
+        this.slotType = SlotType.getByName(params.getParam("slotType", "ANY"));
         this.numberKey = getNumberKeyByName(params.getParam("key", "ANY"));
+        this.slotStr = getSlotByName(params.getParam("slot", "ANY"));
         this.itemStr = params.getParam("item");
     }
 
@@ -44,17 +46,20 @@ public class InventoryClickActivator extends Activator {
         if (!clickCheck(pice.getClickType())) return false;
         if (!actionCheck(pice.getAction())) return false;
         if (!inventoryCheck(pice.getInventoryType())) return false;
-        if (!slotCheck(pice.getSlotType())) return false;
+        if (!slotTypeCheck(pice.getSlotType())) return false;
         Integer key = pice.getNumberKey();
         if (!checkItem(pice.getItemStack(), key, pice.getBottomInventory())) return false;
         if (!checkNumberKey(key)) return false;
+        Integer slot = pice.getSlot();
+        if (!checkSlot(slot)) return false;
         Variables.setTempVar("click", pice.getClickType().toString());
         Variables.setTempVar("action", pice.getAction().toString());
-        Variables.setTempVar("slot", pice.getSlotType().toString());
+        Variables.setTempVar("slotType", pice.getSlotType().toString());
         Variables.setTempVar("inventory", pice.getInventoryType().toString());
         Variables.setTempVar("item", ItemUtil.itemToString(pice.getItemStack()));
         Variables.setTempVar("key", Integer.toString(key + 1));
         Variables.setTempVar("itemkey", (key > -1) ? ItemUtil.itemToString(pice.getBottomInventory().getItem(key)) : "");
+        Variables.setTempVar("slot", Integer.toString(slot));
         return Actions.executeActivator(pice.getPlayer(), this);
     }
 
@@ -69,8 +74,9 @@ public class InventoryClickActivator extends Activator {
         cfg.set(root + ".click-type", click.name());
         cfg.set(root + ".action-type", action.name());
         cfg.set(root + ".inventory-type", inventory.name());
-        cfg.set(root + ".slot-type", slot.name());
+        cfg.set(root + ".slot-type", slotType.name());
         cfg.set(root + ".key", this.numberKey);
+        cfg.set(root + ".slot", this.slotStr);
         cfg.set(root + ".item", this.itemStr);
     }
 
@@ -79,8 +85,9 @@ public class InventoryClickActivator extends Activator {
         this.click = ClickType.getByName(cfg.getString(root + ".click-type", "ANY"));
         this.action = InventoryAction.getByName(cfg.getString(root + ".action-type", "ANY"));
         this.inventory = InventoryType.getByName(cfg.getString(root + ".inventory-type", "ANY"));
-        this.slot = SlotType.getByName(cfg.getString(root + ".slot-type", "ANY"));
+        this.slotType = SlotType.getByName(cfg.getString(root + ".slot-type", "ANY"));
         this.numberKey = cfg.getString(root + ".key", "");
+        this.slotStr = cfg.getString(root + ".slot", "");
         this.itemStr = cfg.getString(root + ".item", "");
     }
 
@@ -214,6 +221,16 @@ public class InventoryClickActivator extends Activator {
         return "ANY";
     }
 
+    private static String getSlotByName(String slotStr) {
+        Integer slot = Integer.parseInt(slotStr);
+        if (slot > -1) {
+            for (int i = 0; i < 36; i++) {
+                if (slot == i) return String.valueOf(i);
+            }
+        }
+        return "ANY";
+    }
+
     private boolean clickCheck(org.bukkit.event.inventory.ClickType ct) {
         if (click.name().equals("ANY")) return true;
         return ct.name().equals(click.name());
@@ -229,9 +246,9 @@ public class InventoryClickActivator extends Activator {
         return it.name().equals(inventory.name());
     }
 
-    private boolean slotCheck(org.bukkit.event.inventory.InventoryType.SlotType sl) {
-        if (slot.name().equals("ANY")) return true;
-        return sl.name().equals(slot.name());
+    private boolean slotTypeCheck(org.bukkit.event.inventory.InventoryType.SlotType sl) {
+        if (slotType.name().equals("ANY")) return true;
+        return sl.name().equals(slotType.name());
     }
 
     private boolean checkItem(ItemStack item, Integer key, Inventory bottomInventory) {
@@ -247,6 +264,11 @@ public class InventoryClickActivator extends Activator {
         return key == Integer.parseInt(numberKey) - 1;
     }
 
+    private boolean checkSlot(Integer slot) {
+        if (slotStr.isEmpty() || slotStr.equals("ANY") || Integer.parseInt(slotStr) <= 0) return true;
+        return slot == Integer.parseInt(slotStr);
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(name).append(" [").append(getType()).append("]");
@@ -257,8 +279,9 @@ public class InventoryClickActivator extends Activator {
         sb.append("click:").append(this.click.name());
         sb.append(" action:").append(this.action.name());
         sb.append(" inventory:").append(this.inventory.name());
-        sb.append(" slot:").append(this.slot.name());
+        sb.append(" slotType:").append(this.slotType.name());
         sb.append(" key:").append(this.numberKey);
+        sb.append(" slot:").append(this.slotStr);
         sb.append(")");
         return sb.toString();
     }

@@ -2,6 +2,7 @@ package me.fromgate.reactions.util.item;
 
 import me.fromgate.reactions.util.BukkitCompatibilityFix;
 import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.Variables;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -138,6 +139,7 @@ public class ItemUtil {
 
     public static boolean hasItemInInventory(Inventory inventory, String itemStr) {
         int countAmount = countItemsInInventory(inventory, itemStr);
+        Variables.setTempVar("item_amount", countAmount == 0 ? "0" : String.valueOf(countAmount));
         int amount = getAmount(itemStr);
         return countAmount >= amount;
     }
