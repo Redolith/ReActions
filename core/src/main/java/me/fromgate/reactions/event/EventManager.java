@@ -64,6 +64,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
@@ -576,6 +577,15 @@ public class EventManager {
         if (e == null) return false;
         // TODO PlayerProjectileHit activator
         return false;
+    }
+
+    public static boolean raisePlayerPickupItemEvent(PlayerPickupItemEvent event) {
+        Item item = event.getItem();
+        double pickupDelay = BukkitCompatibilityFix.getItemPickupDelay(item);
+        PickupItemEvent e = new PickupItemEvent(event.getPlayer(), event.getItem(), pickupDelay);
+        Bukkit.getServer().getPluginManager().callEvent(e);
+        BukkitCompatibilityFix.setItemPickupDelay(item, e.getPickupDelay());
+        return e.isCancelled();
     }
 
 }

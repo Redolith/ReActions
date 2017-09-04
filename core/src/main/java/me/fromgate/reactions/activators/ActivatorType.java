@@ -49,6 +49,7 @@ import me.fromgate.reactions.event.MobClickEvent;
 import me.fromgate.reactions.event.MobDamageEvent;
 import me.fromgate.reactions.event.MobKillEvent;
 import me.fromgate.reactions.event.PVPKillEvent;
+import me.fromgate.reactions.event.PickupItemEvent;
 import me.fromgate.reactions.event.PlateEvent;
 import me.fromgate.reactions.event.PlayerBlockBreakEvent;
 import me.fromgate.reactions.event.PlayerInventoryClickEvent;
@@ -103,6 +104,7 @@ public enum ActivatorType {
     BLOCK_CLICK("blockclick", BlockClickActivator.class, BlockClickEvent.class, true),
     INVENTORY_CLICK("inventoryclick", InventoryClickActivator.class, PlayerInventoryClickEvent.class),
     DROP("drop", DropActivator.class, DropEvent.class),
+    PICKUP_ITEM("pickupitem", PickupItemActivator.class, PickupItemEvent.class),
     FLIGHT("flight", FlightActivator.class, FlightEvent.class),
     ENTITY_CLICK("entityclick", EntityClickActivator.class, EntityClickEvent.class),
     BLOCK_BREAK("blockbreak", BlockBreakActivator.class, PlayerBlockBreakEvent.class, true),

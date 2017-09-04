@@ -56,6 +56,7 @@ import me.fromgate.reactions.event.MobClickEvent;
 import me.fromgate.reactions.event.MobDamageEvent;
 import me.fromgate.reactions.event.MobKillEvent;
 import me.fromgate.reactions.event.PVPKillEvent;
+import me.fromgate.reactions.event.PickupItemEvent;
 import me.fromgate.reactions.event.PlateEvent;
 import me.fromgate.reactions.event.PlayerBlockBreakEvent;
 import me.fromgate.reactions.event.PlayerInventoryClickEvent;
@@ -300,7 +301,7 @@ public class RAListener implements Listener {
             EntityDamageByEntityEvent evdmg = (EntityDamageByEntityEvent) event;
             Entity entityDamager = evdmg.getDamager();
             LivingEntity damager = Util.getDamagerEntity(event);
-            if (damager == null && entityDamager instanceof Projectile) {
+            if (damager == null && entityDamager != null && entityDamager instanceof Projectile) {
                 damager = (LivingEntity) ((Projectile) entityDamager).getShooter();
             }
             if (EventManager.raisePlayerDamageByMobEvent(evdmg, damager, entityDamager)) event.setCancelled(true);
@@ -456,6 +457,11 @@ public class RAListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onSneak(PlayerToggleSneakEvent event) {
         if (EventManager.raiseSneakEvent(event)) event.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onPlayerPickupItem(PlayerPickupItemEvent event) {
+        if (EventManager.raisePlayerPickupItemEvent(event)) event.setCancelled(true);
     }
 
 
@@ -626,6 +632,11 @@ public class RAListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onDropActivator(DropEvent event) {
+        event.setCancelled(Activators.activate(event));
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onPickupItemActivator(PickupItemEvent event) {
         event.setCancelled(Activators.activate(event));
     }
 

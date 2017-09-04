@@ -424,6 +424,7 @@ public enum M {
     ACTIVATOR_BLOCK_CLICK("This activator works when the player clicks on the block with the left or right mouse button."),
     ACTIVATOR_INVENTORY_CLICK("This activator works when the player performs actions with the inventory using the mouse or keys"),
     ACTIVATOR_DROP("This activator initiates when player drop out items"),
+    ACTIVATOR_PICKUP_ITEM("This activator initiates when player pick up items"),
     ACTIVATOR_FLIGHT("This activators initiates when player's flight-mode changed"),
     ACTIVATOR_ENTITY_CLICK("This activator is initiated when the player performs a right-click on an entity. /react add entity_click <id> [EntityType]"),
     ACTIVATOR_BLOCK_BREAK("This activator is initiated when the player destroys the block. /react add block_break <id> [block:<Block>] [loc:<Location>]"),
