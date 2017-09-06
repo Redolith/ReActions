@@ -50,7 +50,14 @@ public class BlockBreakActivator extends Activator {
         Variables.setTempVar("blocktype", brokenBlock.getType().name());
         Variables.setTempVar("blockdata", String.valueOf(brokenBlock.getData()));
         Variables.setTempVar("block", ItemUtil.itemFromBlock(brokenBlock).toString());
-        return Actions.executeActivator(bbe.getPlayer(), this);
+
+        Variables.setTempVar("is_drop", bbe.isDropItems().toString());
+        boolean result = Actions.executeActivator(bbe.getPlayer(), this);
+        String isDropItem = Variables.getTempVar("is_drop");
+        if (isDropItem.equalsIgnoreCase("true") || isDropItem.equalsIgnoreCase("false")) {
+            bbe.setDropItems(Boolean.parseBoolean(isDropItem));
+        }
+        return result;
     }
 
     private boolean checkLocations(Block block) {

@@ -7,6 +7,7 @@ import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Variables;
 import me.fromgate.reactions.util.item.ItemUtil;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
@@ -42,6 +43,15 @@ public class PickupItemActivator extends Activator {
         boolean result = Actions.executeActivator(pie.getPlayer(), this);
         String pickupDelayStr = Variables.getTempVar("pickupDelay");
         if (FLOAT.matcher(pickupDelayStr).matches()) pie.setPickupDelay(Double.parseDouble(pickupDelayStr));
+        Param itemParam = new Param(Variables.getTempVar("item"));
+        if (!itemParam.isEmpty()) {
+            String itemType = itemParam.getParam("type", "0");
+            if (itemType.equalsIgnoreCase("AIR") || itemType.equalsIgnoreCase("null") || itemType.equalsIgnoreCase("0") || itemType.isEmpty()) {
+                pie.setItemStack(new ItemStack(Material.getMaterial("AIR"), 1));
+            } else {
+                pie.setItemStack(ItemUtil.parseItemStack(itemParam.getParam("param-line", "")));
+            }
+        }
         return result;
     }
 

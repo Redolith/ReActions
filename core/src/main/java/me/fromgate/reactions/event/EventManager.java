@@ -497,10 +497,28 @@ public class EventManager {
 
     public static boolean raiseDropEvent(PlayerDropItemEvent event) {
         Item item = event.getItemDrop();
+        Player player = event.getPlayer();
         double pickupDelay = BukkitCompatibilityFix.getItemPickupDelay(item);
-        DropEvent e = new DropEvent(event.getPlayer(), event.getItemDrop(), pickupDelay);
+        DropEvent e = new DropEvent(player, event.getItemDrop(), pickupDelay);
         Bukkit.getServer().getPluginManager().callEvent(e);
         BukkitCompatibilityFix.setItemPickupDelay(item, e.getPickupDelay());
+        ItemStack newItemStack =e.getItemStack() ;
+        if (newItemStack != null && newItemStack.getType() == Material.AIR) {
+            item.remove();
+        }
+        else if (newItemStack != null) {
+            ItemStack itemStack = item.getItemStack();
+            if (newItemStack.getAmount() > 1) {
+                for (int i=0; i<newItemStack.getAmount(); i++) {
+                    item.setItemStack(new ItemStack(newItemStack.clone()));
+                }
+            } else {
+                itemStack.setType(newItemStack.getType());
+                if (newItemStack.getData() != null) itemStack.setData(newItemStack.getData());
+                if (newItemStack.getItemMeta() != null) itemStack.setItemMeta(newItemStack.getItemMeta());
+                itemStack.setDurability(newItemStack.getDurability());
+            }
+        }
         return e.isCancelled();
     }
 
@@ -517,8 +535,9 @@ public class EventManager {
     }
 
     public static boolean raiseBlockBreakEvent(BlockBreakEvent event) {
-        PlayerBlockBreakEvent e = new PlayerBlockBreakEvent(event.getPlayer(), event.getBlock());
+        PlayerBlockBreakEvent e = new PlayerBlockBreakEvent(event.getPlayer(), event.getBlock(), event.isDropItems());
         Bukkit.getServer().getPluginManager().callEvent(e);
+        event.setDropItems(e.isDropItems());
         return e.isCancelled();
     }
 
@@ -581,10 +600,29 @@ public class EventManager {
 
     public static boolean raisePlayerPickupItemEvent(PlayerPickupItemEvent event) {
         Item item = event.getItem();
+        Player player = event.getPlayer();
         double pickupDelay = BukkitCompatibilityFix.getItemPickupDelay(item);
-        PickupItemEvent e = new PickupItemEvent(event.getPlayer(), event.getItem(), pickupDelay);
+        PickupItemEvent e = new PickupItemEvent(player, event.getItem(), pickupDelay);
         Bukkit.getServer().getPluginManager().callEvent(e);
         BukkitCompatibilityFix.setItemPickupDelay(item, e.getPickupDelay());
+        ItemStack newItemStack =e.getItemStack() ;
+        if (newItemStack != null && newItemStack.getType() == Material.AIR) {
+            e.setCancelled(true);
+            item.remove();
+        }
+        else if (newItemStack != null) {
+            ItemStack itemStack = item.getItemStack();
+            if (newItemStack.getAmount() > 1) {
+                e.setCancelled(true);
+                item.remove();
+                ItemUtil.giveItemOrDrop(player, newItemStack);
+            } else {
+                itemStack.setType(newItemStack.getType());
+                if (newItemStack.getData() != null) itemStack.setData(newItemStack.getData());
+                if (newItemStack.getItemMeta() != null) itemStack.setItemMeta(newItemStack.getItemMeta());
+                itemStack.setDurability(newItemStack.getDurability());
+            }
+        }
         return e.isCancelled();
     }
 
