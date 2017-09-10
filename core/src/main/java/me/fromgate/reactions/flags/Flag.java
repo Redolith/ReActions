@@ -22,15 +22,8 @@
 
 package me.fromgate.reactions.flags;
 
-import me.fromgate.reactions.ReActions;
 import org.bukkit.entity.Player;
 
 public abstract class Flag {
-    Flags ftype;
-
-    ReActions plg() {
-        return ReActions.instance;
-    }
-
     public abstract boolean checkFlag(Player p, String param);
 }
