@@ -63,7 +63,7 @@ public class FlagFlagSet extends Flag {
 
     private static String hideBkts(String s) {
         int count = 0;
-        String r = "";
+        StringBuilder r = new StringBuilder();
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
             String a = String.valueOf(c);
@@ -74,8 +74,8 @@ public class FlagFlagSet extends Flag {
                 if (count != 1) a = "#BKT2#";
                 count--;
             }
-            r = r + a;
+            r.append(a);
         }
-        return r;
+        return r.toString();
     }
 }
