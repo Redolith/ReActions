@@ -31,6 +31,8 @@ import java.util.regex.Pattern;
 
 public class FlagFlagSet extends Flag {
 
+    private static final Pattern NEGATIVE_FLAG = Pattern.compile("");
+
     @Override
     public boolean checkFlag(Player p, String param) {
         if (param.isEmpty()) return false; // или true???
