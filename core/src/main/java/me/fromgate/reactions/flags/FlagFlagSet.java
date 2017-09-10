@@ -31,11 +31,12 @@ import java.util.regex.Pattern;
 
 public class FlagFlagSet extends Flag {
 
-    private static final Pattern NEGATIVE_FLAG = Pattern.compile("");
+    private final static Pattern BRACES = Pattern.compile("(^\\{\\s*)|(\\s*}$)");
+    private final static Pattern BRACES_GROUP = Pattern.compile("\\S+:\\{[^\\{\\}]*\\}|\\S+");
 
     @Override
     public boolean checkFlag(Player p, String param) {
-        if (param.isEmpty()) return false; // или true???
+        if (param.isEmpty()) return false;
         List<String> flagList = parseParamsList(param);
         if (flagList.isEmpty()) return false;
         for (String flagStr : flagList) {
@@ -43,8 +44,9 @@ public class FlagFlagSet extends Flag {
             if (negative) flagStr = flagStr.replaceFirst("!", "");
             String[] fnv = flagStr.split(":", 2);
             if (fnv.length != 2) continue;
-            if (Flags.checkFlag(p, fnv[0], fnv[1].replaceAll("^\\{", "").replaceAll("\\}$", "").trim(), negative))
+            if (Flags.checkFlag(p, fnv[0], BRACES.matcher(fnv[1]).replaceAll(""), negative)) {
                 return true;
+            }
         }
         return false;
     }
@@ -52,8 +54,7 @@ public class FlagFlagSet extends Flag {
 
     public List<String> parseParamsList(String param) {
         List<String> paramList = new ArrayList<>();
-        Pattern pattern = Pattern.compile("\\S+:\\{[^\\{\\}]*\\}|\\S+");
-        Matcher matcher = pattern.matcher(hideBkts(param));
+        Matcher matcher = BRACES_GROUP.matcher(hideBkts(param));
         while (matcher.find()) {
             paramList.add(matcher.group().trim().replace("#BKT1#", "{").replace("#BKT2#", "}"));
         }
