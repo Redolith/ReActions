@@ -25,6 +25,7 @@ package me.fromgate.reactions.util;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.event.EventManager;
 import me.fromgate.reactions.util.message.M;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -57,14 +58,20 @@ public class Variables {
     public static void setVar(String player, String var, String value) {
         String prevVal = Variables.getVar(player, var, "");
         vars.put(varId(player, var), value);
-        save();
+        if (!Cfg.playerSelfVarFile) save();
+        else {
+            //noinspection deprecation
+            Player p = Bukkit.getServer().getPlayer(player);
+            if (p != null) save(p);
+        }
         EventManager.raiseVariableEvent(var, player, value, prevVal);
     }
 
     public static void setVar(Player player, String var, String value) {
         String prevVal = Variables.getVar(player, var, "");
         vars.put(varId(player, var), value);
-        save();
+        if (!Cfg.playerSelfVarFile) save();
+        else save(player);
         EventManager.raiseVariableEvent(var, player == null ? "" : player.getName(), value, prevVal);
     }
 
@@ -72,7 +79,8 @@ public class Variables {
         String prevVal = Variables.getVar(player, var, "");
         String id = varId(player, var);
         if (vars.containsKey(id)) vars.remove(id);
-        save();
+        if (!Cfg.playerSelfVarFile) save();
+        else save(player);
         EventManager.raiseVariableEvent(var, player == null ? "" : player.getName(), "", prevVal);
     }
 
@@ -81,7 +89,12 @@ public class Variables {
         String id = varId(player, var);
         if (!vars.containsKey(id)) return false;
         vars.remove(id);
-        save();
+        if (!Cfg.playerSelfVarFile) save();
+        else {
+            //noinspection deprecation
+            Player p = Bukkit.getServer().getPlayer(player);
+            if (p != null) save(p);
+        }
         EventManager.raiseVariableEvent(var, player, "", prevVal);
         return true;
     }
@@ -185,6 +198,41 @@ public class Variables {
         }
     }
 
+    public static void save(Player player) {
+        try {
+            YamlConfiguration cfg = new YamlConfiguration();
+            String varDir = ReActions.instance.getDataFolder() + File.separator + "variables";
+            File dir = new File(varDir);
+            if (!dir.exists() && !dir.mkdirs()) return;
+            saveGeneral();
+            String playerUUID = player.getUniqueId().toString();
+            File f = new File(varDir + File.separator + playerUUID + ".yml");
+            if (f.exists()) f.delete();
+            f.createNewFile();
+            for (String key : vars.keySet()) {
+                if (key.contains(player.getName())) cfg.set(key, vars.get(key));
+            }
+            cfg.save(f);
+            removePlayerVars(player);
+        } catch (Exception ignored) {
+        }
+    }
+
+    private static void saveGeneral() {
+        try {
+            YamlConfiguration cfg = new YamlConfiguration();
+            String varDir = ReActions.instance.getDataFolder() + File.separator + "variables";
+            File f = new File(varDir + File.separator + "general.yml");
+            if (f.exists()) f.delete();
+            f.createNewFile();
+            for (String key : vars.keySet()) {
+                if (key.contains("general")) cfg.set(key, vars.get(key));
+            }
+            cfg.save(f);
+        } catch (Exception ignored) {
+        }
+    }
+
     public static void load() {
         vars.clear();
         try {
@@ -195,6 +243,65 @@ public class Variables {
             for (String key : cfg.getKeys(true)) {
                 if (!key.contains(".")) continue;
                 vars.put(key, cfg.getString(key));
+            }
+            if (!Cfg.playerSelfVarFile) {
+                loadVars();
+                File dir = new File(ReActions.instance.getDataFolder() + File.separator + "variables");
+                if (!dir.exists() || !dir.isDirectory()) return;
+                String[] files = dir.list();
+                for (int i = 0; i < files.length; i++) {
+                    File fl = new File(dir, files[i]);
+                    fl.delete();
+                }
+                dir.delete();
+            }
+        } catch (Exception ignored) {
+        }
+    }
+
+    public static void loadVars() {
+        if (Cfg.playerSelfVarFile) load();
+        try {
+            YamlConfiguration cfg = new YamlConfiguration();
+            File dir = new File(ReActions.instance.getDataFolder() + File.separator + "variables");
+            if (!dir.exists()) return;
+            for (File f : dir.listFiles()) {
+                if (!f.isDirectory()) {
+                    String fstr = f.getName();
+                    if (fstr.endsWith(".yml")) {
+                        cfg.load(f);
+                        for (String key : cfg.getKeys(true)) {
+                            if (!key.contains(".")) continue;
+                            vars.put(key, cfg.getString(key));
+                        }
+                    }
+                }
+            }
+        } catch (Exception ignored) {
+        }
+    }
+
+    private static void removePlayerVars(Player player) {
+        try {
+            Map<String, String> vars_tmp = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+            YamlConfiguration cfg = new YamlConfiguration();
+            String fileName = ReActions.instance.getDataFolder() + File.separator + "variables.yml";
+            File f = new File(fileName);
+            if (!f.exists()) return;
+            cfg.load(f);
+            String name = player.getName();
+            for (String key : cfg.getKeys(true)) {
+                if (!key.contains(".")) continue;
+                if (key.contains(name) || key.contains("general")) continue;
+                vars_tmp.put(key, cfg.getString(key));
+            }
+
+            YamlConfiguration cfg2 = new YamlConfiguration();
+            if (f.delete() && f.createNewFile()) {
+                for (String key : vars_tmp.keySet())
+                    cfg2.set(key, vars_tmp.get(key));
+                cfg2.save(f);
+                vars_tmp.clear();
             }
         } catch (Exception ignored) {
         }

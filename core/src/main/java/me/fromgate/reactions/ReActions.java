@@ -93,7 +93,8 @@ public class ReActions extends JavaPlugin {
         ActionsWaiter.init();
 
         Delayer.load();
-        Variables.load();
+        if (!Cfg.playerSelfVarFile) Variables.load();
+        else Variables.loadVars();
         Locator.loadLocs();
 
         SQLManager.init();

@@ -18,10 +18,12 @@ public class Cfg {
     public static int itemWearRecheck = 2;
     public static boolean horizontalPushback = false;
     public static int chatLength = 55;
+    public static boolean playerSelfVarFile = false;
 
     public static void save() {
         config.set("general.language", language);
         config.set("general.check-updates", checkUpdates);
+        config.set("general.player-self-variable-file", playerSelfVarFile);
         config.set("reactions.save-empty-actions-and-flags-sections", saveEmptySections);
         config.set("reactions.show-messages-for-actions", actionMsg);
         config.set("reactions.center-player-teleport", centerTpCoords);
@@ -40,6 +42,7 @@ public class Cfg {
         language = config.getString("general.language", "english");
         checkUpdates = config.getBoolean("general.check-updates", true);
         languageSave = config.getBoolean("general.language-save", false);
+        playerSelfVarFile = config.getBoolean("general.player-self-variable-file", false);
         chatLength = config.getInt("reactions.default-chat-line-length", 55);
         saveEmptySections = config.getBoolean("reactions.save-empty-actions-and-flags-sections", false);
         centerTpCoords = config.getBoolean("reactions.center-player-teleport", true);
