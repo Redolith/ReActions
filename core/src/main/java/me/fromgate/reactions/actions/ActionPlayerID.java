@@ -1,7 +1,7 @@
 package me.fromgate.reactions.actions;
 
-import com.google.common.base.Charsets;
 import me.fromgate.reactions.util.Param;
+import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.Variables;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -13,22 +13,24 @@ import java.util.UUID;
  * Created by MaxDikiy on 5/6/2017.
  */
 public class ActionPlayerID extends Action {
-    private Boolean isOnline;
+    private Boolean isOnlineMode;
 
     @Override
     public boolean execute(Player p, Param params) {
         String playerName = params.getParam("player", "");
-        this.isOnline = params.getParam("online", false);
+        this.isOnlineMode = params.getParam("online", false);
         String varID = params.getParam("varid", "");
         String varName = params.getParam("varname", "");
 
+        UUID uniqueID = null;
+        String uuid = "";
+        String pName;
+
         if (playerName.isEmpty()) {
-            UUID uniqueID = getUUID(p, p.getName());
-            Variables.setVar(p.getName(), varID, uniqueID.toString());
-            Variables.setVar(p.getName(), varName, p.getName());
-            return true;
+            uniqueID = getUUID(p);
+            uuid = uniqueID.toString();
+            pName = p.getName();
         } else {
-            UUID uniqueID = null;
             Player player;
             String[] components = playerName.split("-");
             if (components.length == 5) uniqueID = UUID.fromString(playerName);
@@ -39,13 +41,8 @@ public class ActionPlayerID extends Action {
                 player = Bukkit.getPlayer(uniqueID);
             }
             if (player != null) {
-                if (uniqueID == null) uniqueID = getUUID(player, player.getName());
-                Variables.setVar(playerName, varID, uniqueID.toString());
-                Variables.setVar(playerName, varName, player.getName());
-                Variables.setTempVar("playerid", uniqueID.toString());
-                Variables.setTempVar("playername", player.getName());
-                return true;
-
+                pName = player.getName();
+                if (uniqueID == null) uniqueID = getUUID(player);
             } else {
                 OfflinePlayer offPlayer;
                 if (uniqueID == null) {
@@ -54,31 +51,23 @@ public class ActionPlayerID extends Action {
                 } else {
                     offPlayer = Bukkit.getOfflinePlayer(uniqueID);
                 }
-                if (uniqueID == null) uniqueID = getOfflineUUID(offPlayer, offPlayer.getName());
-
-                Variables.setVar(playerName, varID, uniqueID.toString());
-                Variables.setVar(playerName, varName, offPlayer.getName());
-                Variables.setTempVar("playerid", uniqueID.toString());
-                Variables.setTempVar("playername", offPlayer.getName());
-                return true;
+                pName = offPlayer.getName();
+                if (uniqueID == null) uniqueID = getUUID(offPlayer);
             }
+            uuid = uniqueID.toString();
         }
+        Variables.setVar(playerName, varID, uuid);
+        Variables.setTempVar("playerid", uuid);
+        if (pName == null) return true;
+        Variables.setTempVar("playername", pName);
+        if (varName.isEmpty()) return true;
+        Variables.setVar(playerName, varName, pName);
+        return true;
     }
 
-    public UUID getUUID(Player p, String playerName) {
-        if (!isOnline) //noinspection unused
-        {
-            return UUID.nameUUIDFromBytes(("OfflinePlayer:" + playerName).getBytes(Charsets.UTF_8));
-        }
-        return p.getUniqueId();
-    }
 
-    public UUID getOfflineUUID(OfflinePlayer p, String playerName) {
-        if (!isOnline) //noinspection unused
-        {
-            return UUID.nameUUIDFromBytes(("OfflinePlayer:" + playerName).getBytes(Charsets.UTF_8));
-        }
-        return p.getUniqueId();
+    private UUID getUUID(OfflinePlayer p) {
+        return Util.getUUID(p, p.getName(), isOnlineMode);
     }
 
 }

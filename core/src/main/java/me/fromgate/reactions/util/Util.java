@@ -22,11 +22,14 @@
 
 package me.fromgate.reactions.util;
 
+import com.google.common.base.Charsets;
 import me.fromgate.reactions.util.item.ItemUtil;
 import me.fromgate.reactions.util.message.M;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -55,6 +58,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -496,5 +500,28 @@ public class Util {
         if (l < Integer.MIN_VALUE) return Integer.MIN_VALUE;
         if (l > Integer.MAX_VALUE) return Integer.MAX_VALUE;
         return (int) l;
+    }
+
+    public static UUID getUUID(OfflinePlayer player, String playerName, Boolean isOnlineMode) {
+        if (!isOnlineMode)
+        {
+            return UUID.nameUUIDFromBytes(("OfflinePlayer:" + playerName).getBytes(Charsets.UTF_8));
+        }
+        return player.getUniqueId();
+    }
+
+    public static UUID getUUID(OfflinePlayer player) {
+        boolean isOnlineMode = Bukkit.getOnlineMode();
+        return getUUID(player, player.getName(), isOnlineMode);
+    }
+
+    @SuppressWarnings("deprecation")
+    public static UUID getUUID(String player) {
+        Player p = Bukkit.getServer().getPlayer(player);
+        if (p == null)  {
+            OfflinePlayer offP = Bukkit.getOfflinePlayer(player);
+            if (offP != null) return getUUID(offP);
+        } else return getUUID(p);
+        return null;
     }
 }

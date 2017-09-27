@@ -25,7 +25,6 @@ package me.fromgate.reactions.util;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.event.EventManager;
 import me.fromgate.reactions.util.message.M;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -35,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,11 +59,7 @@ public class Variables {
         String prevVal = Variables.getVar(player, var, "");
         vars.put(varId(player, var), value);
         if (!Cfg.playerSelfVarFile) save();
-        else {
-            //noinspection deprecation
-            Player p = Bukkit.getServer().getPlayer(player);
-            if (p != null) save(p);
-        }
+        else save(player);
         EventManager.raiseVariableEvent(var, player, value, prevVal);
     }
 
@@ -71,7 +67,7 @@ public class Variables {
         String prevVal = Variables.getVar(player, var, "");
         vars.put(varId(player, var), value);
         if (!Cfg.playerSelfVarFile) save();
-        else save(player);
+        else save(player.getName());
         EventManager.raiseVariableEvent(var, player == null ? "" : player.getName(), value, prevVal);
     }
 
@@ -80,7 +76,7 @@ public class Variables {
         String id = varId(player, var);
         if (vars.containsKey(id)) vars.remove(id);
         if (!Cfg.playerSelfVarFile) save();
-        else save(player);
+        else save(player.getName());
         EventManager.raiseVariableEvent(var, player == null ? "" : player.getName(), "", prevVal);
     }
 
@@ -90,11 +86,7 @@ public class Variables {
         if (!vars.containsKey(id)) return false;
         vars.remove(id);
         if (!Cfg.playerSelfVarFile) save();
-        else {
-            //noinspection deprecation
-            Player p = Bukkit.getServer().getPlayer(player);
-            if (p != null) save(p);
-        }
+        else save(player);
         EventManager.raiseVariableEvent(var, player, "", prevVal);
         return true;
     }
@@ -198,19 +190,21 @@ public class Variables {
         }
     }
 
-    public static void save(Player player) {
+    public static void save(String player) {
         try {
             YamlConfiguration cfg = new YamlConfiguration();
             String varDir = ReActions.instance.getDataFolder() + File.separator + "variables";
             File dir = new File(varDir);
             if (!dir.exists() && !dir.mkdirs()) return;
             saveGeneral();
-            String playerUUID = player.getUniqueId().toString();
-            File f = new File(varDir + File.separator + playerUUID + ".yml");
+            if (player == null || player.isEmpty()) return;
+            UUID id = Util.getUUID(player);
+            if (id == null) return;
+            File f = new File(varDir + File.separator + id.toString() + ".yml");
             if (f.exists()) f.delete();
             f.createNewFile();
             for (String key : vars.keySet()) {
-                if (key.contains(player.getName())) cfg.set(key, vars.get(key));
+                if (key.contains(player)) cfg.set(key, vars.get(key));
             }
             cfg.save(f);
             removePlayerVars(player);
@@ -281,7 +275,7 @@ public class Variables {
         }
     }
 
-    private static void removePlayerVars(Player player) {
+    private static void removePlayerVars(String player) {
         try {
             Map<String, String> vars_tmp = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
             YamlConfiguration cfg = new YamlConfiguration();
@@ -289,10 +283,9 @@ public class Variables {
             File f = new File(fileName);
             if (!f.exists()) return;
             cfg.load(f);
-            String name = player.getName();
             for (String key : cfg.getKeys(true)) {
                 if (!key.contains(".")) continue;
-                if (key.contains(name) || key.contains("general")) continue;
+                if (key.contains(player) || key.contains("general")) continue;
                 vars_tmp.put(key, cfg.getString(key));
             }
 

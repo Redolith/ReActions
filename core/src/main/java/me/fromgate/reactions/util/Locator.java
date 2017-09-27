@@ -261,7 +261,7 @@ public class Locator {
     }
 
     public static String locationToString(Location loc) {
-        if (loc == null) return "";
+        if (loc == null || loc.getWorld() == null) return "";
         return loc.getWorld().getName() + "," +
                 trimDouble(loc.getX()) + "," +
                 trimDouble(loc.getY()) + "," +
