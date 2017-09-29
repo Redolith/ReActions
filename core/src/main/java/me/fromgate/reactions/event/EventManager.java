@@ -590,7 +590,7 @@ public class EventManager {
     }
 
     public static boolean raiseProjectileHitEvent(ProjectileHitEvent event) {
-        if (event.getHitEntity() == null && !(event.getHitEntity() instanceof Player)) return false;
+        if (event.getHitEntity() == null || !(event.getHitEntity() instanceof Player)) return false;
         Player p = (Player) event.getHitEntity();
         Entity e = event.getEntity();
         if (e == null) return false;
