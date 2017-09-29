@@ -23,7 +23,7 @@ public class ActionPlayerID extends Action {
         String varName = params.getParam("varname", "");
 
         UUID uniqueID = null;
-        String uuid = "";
+        String uuid;
         String pName;
 
         if (playerName.isEmpty()) {
@@ -56,12 +56,11 @@ public class ActionPlayerID extends Action {
             }
             uuid = uniqueID.toString();
         }
+        if (pName == null) pName = "";
         Variables.setVar(playerName, varID, uuid);
-        Variables.setTempVar("playerid", uuid);
-        if (pName == null) return true;
-        Variables.setTempVar("playername", pName);
-        if (varName.isEmpty()) return true;
         Variables.setVar(playerName, varName, pName);
+        Variables.setTempVar("playerid", uuid);
+        Variables.setTempVar("playername", pName);
         return true;
     }
 
