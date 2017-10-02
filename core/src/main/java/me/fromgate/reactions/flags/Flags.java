@@ -95,7 +95,9 @@ public enum Flags {
     SQL_CHECK("sqlcheck", false, new FlagSQL(true)),
     SQL_RESULT("sqlhasresult", false, new FlagSQL(false)),
     FLY_SPEED("flyspeed", true, new FlagFlySpeed()),
-    WALK_SPEED("walkspeed", true, new FlagWalkSpeed());
+    WALK_SPEED("walkspeed", true, new FlagWalkSpeed()),
+    GREATER("greater", false, new FlagGreaterLower(0)),
+    LOWER("lower", false, new FlagGreaterLower(1));
 
 
     private String alias;

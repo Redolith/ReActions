@@ -24,7 +24,8 @@ public class CmdReload extends Cmd {
         ReActions.getPlugin().reloadConfig();
         Cfg.load();
         Delayer.load();
-        Variables.load();
+        if (!Cfg.playerSelfVarFile) Variables.load();
+        else Variables.loadVars();
         Timers.init();
         InventoryMenu.load();
         FakeCmd.updateAllCommands();
