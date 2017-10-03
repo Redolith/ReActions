@@ -66,6 +66,7 @@ public enum Actions {
     CMD("cmdplr", true, new ActionCommand(ActionCommand.NORMAL)),
     CMD_OP("cmdop", false, new ActionCommand(ActionCommand.OP)),
     CMD_CONSOLE("cmdsrv", false, new ActionCommand(ActionCommand.CONSOLE)),
+    CMD_CHAT("cmdchat", false, new ActionCommand(ActionCommand.CHAT)),
     MONEY_PAY("moneypay", false, new ActionMoneyPay()),
     MONEY_GIVE("moneygive", false, new ActionMoneyGive()),
     DELAY("delay", false, new ActionDelay(true)),

@@ -35,6 +35,7 @@ public class ActionCommand extends Action {
     public final static int NORMAL = 0;
     public final static int OP = 1;
     public final static int CONSOLE = 2;
+    public final static int CHAT = 3;
 
     private int commandAs = NORMAL;
 
@@ -56,6 +57,9 @@ public class ActionCommand extends Action {
                 break;
             case CONSOLE:
                 dispatchCommand(false, Bukkit.getConsoleSender(), commandLine);
+                break;
+            case CHAT:
+                player.chat(commandLine);
                 break;
         }
         return true;
