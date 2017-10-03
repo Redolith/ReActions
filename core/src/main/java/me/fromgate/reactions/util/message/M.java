@@ -273,6 +273,7 @@ public enum M {
     ACTION_CMD("Execute command as player. Parameter: <command>"),
     ACTION_CMD_OP("Execute command as OP. Parameter: <command>"),
     ACTION_CMD_CONSOLE("Execute command as server console. Parameter: <command>"),
+    ACTION_CMD_CHAT("Execute command as player from the chat block. Parameter: <command>"),
     ACTION_MONEY_PAY("Debit player's account (and credit target player if defined). Parameter: <amount>[/<target>]"),
     ACTION_MONEY_GIVE("Credit player's account (and debit source player if defined). Parameter: <amount>[/<source>]"),
     ACTION_DELAY("Set global delay variable. Parameter: <time>/<id>"),
@@ -384,6 +385,8 @@ public enum M {
     FLAG_FCT_ARE_PLAYERS_IN_REL("Check is players are in defined relations. Parameters: <player1> <player2> <relation>. Where <realtion> could be: LEADER, OFFICER, MEMBER, RECRUIT, ALLY, TRUCE, NEUTRAL or ENEMY"),
     FLAG_FLY_SPEED("Check is player fly speed higher then provided value or not"),
     FLAG_WALK_SPEED("Check is player walk speed higher then provided value or not"),
+    FLAG_GREATER("Check if the parameter is greater than <value>"),
+    FLAG_LOWER("Check if the parameter is lower than <value>"),
 
     /*
             ACTIVATORS!
