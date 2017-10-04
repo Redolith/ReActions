@@ -259,6 +259,7 @@ public enum M {
     ACTION_GROUP_ADD("Add player to group. Parameter: <group name>"),
     ACTION_GROUP_REMOVE("Kick player from group. Parameter: <group name>"),
     ACTION_MESSAGE("Display message to player. Parameters: region:<region> group:<group> perm:<permission> world:<world> player:<player>"),
+    ACTION_CHAT_MESSAGE("Send message from player."),
     ACTION_BROADCAST("Send message to every online player. Parameter - message."),
     ACTION_DAMAGE("Hit player. Parameter: <damage amount>"),
     ACTION_TOWN_SET("Move player to Towny's town. Parameters: <town name>"),

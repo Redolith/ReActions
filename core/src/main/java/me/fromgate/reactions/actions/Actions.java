@@ -50,6 +50,7 @@ public enum Actions {
     GROUP_ADD("grpadd", true, new ActionGroupAdd()),
     GROUP_REMOVE("grprmv", true, new ActionGroupRemove()),
     MESSAGE("msg", false, new ActionMessage()),
+    CHAT_MESSAGE("chatmsg", false, new ActionChatMessage()),
     BROADCAST("msgall", false, new ActionBroadcast()),
     DAMAGE("dmg", false, new ActionDamage()),
     TOWN_SET("townset", true, new ActionTownSet()),

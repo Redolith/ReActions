@@ -59,7 +59,8 @@ public class ActionCommand extends Action {
                 dispatchCommand(false, Bukkit.getConsoleSender(), commandLine);
                 break;
             case CHAT:
-                player.chat(commandLine);
+                commandLine = commandLine.replaceFirst("/", "");
+                player.chat("/" + commandLine);
                 break;
         }
         return true;
