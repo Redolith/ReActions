@@ -43,6 +43,7 @@ public class Teleporter {
     }
 
     public static void teleport(Player player, Location location) {
+        if (location == null) return;
         if (events.containsKey(player)) {
             events.get(player).setTo(location);
         } else player.teleport(location);

@@ -77,7 +77,7 @@ public class WGBridge5x extends WGBridge {
     public boolean isPlayerInRegion(Player p, String rg) {
         if (!connected) return false;
         List<String> rgs = getRegions(p);
-        if (rgs.isEmpty()) return false;
+        if (rgs.isEmpty()) return rg.equalsIgnoreCase("__global__");
         World world = getRegionWorld(rg);
         String regionName = getRegionName(rg);
         return rgs.contains((world.getName() + "." + regionName).toLowerCase());
