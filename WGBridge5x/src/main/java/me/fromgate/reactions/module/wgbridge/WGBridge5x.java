@@ -77,10 +77,10 @@ public class WGBridge5x extends WGBridge {
     public boolean isPlayerInRegion(Player p, String rg) {
         if (!connected) return false;
         List<String> rgs = getRegions(p);
-        if (rgs.isEmpty()) return rg.equalsIgnoreCase("__global__");
+        if (rgs.isEmpty() && !rg.contains("__global__")) return false;
         World world = getRegionWorld(rg);
         String regionName = getRegionName(rg);
-        return rgs.contains((world.getName() + "." + regionName).toLowerCase());
+        return rgs.isEmpty() && rg.contains("__global__") && p.getWorld() == world || rgs.contains((world.getName() + "." + regionName).toLowerCase());
     }
 
     @Override
