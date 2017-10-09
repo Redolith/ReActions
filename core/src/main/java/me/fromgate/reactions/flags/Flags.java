@@ -97,7 +97,8 @@ public enum Flags {
     FLY_SPEED("flyspeed", true, new FlagFlySpeed()),
     WALK_SPEED("walkspeed", true, new FlagWalkSpeed()),
     GREATER("greater", false, new FlagGreaterLower(0)),
-    LOWER("lower", false, new FlagGreaterLower(1));
+    LOWER("lower", false, new FlagGreaterLower(1)),
+    SEL_BLOCKS("selblocks", true, new FlagSelectionBlocks());
 
 
     private String alias;

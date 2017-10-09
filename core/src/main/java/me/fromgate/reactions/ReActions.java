@@ -30,6 +30,7 @@ import me.fromgate.reactions.externals.RACraftConomy;
 import me.fromgate.reactions.externals.RAEffects;
 import me.fromgate.reactions.externals.RARacesAndClasses;
 import me.fromgate.reactions.externals.RAVault;
+import me.fromgate.reactions.externals.RAWorldEdit;
 import me.fromgate.reactions.externals.RAWorldGuard;
 import me.fromgate.reactions.menu.InventoryMenu;
 import me.fromgate.reactions.placeholders.Placeholders;
@@ -90,6 +91,7 @@ public class ReActions extends JavaPlugin {
         RAVault.init();
         RACraftConomy.init();
         RAWorldGuard.init();
+        RAWorldEdit.init();
         ActionsWaiter.init();
 
         Delayer.load();

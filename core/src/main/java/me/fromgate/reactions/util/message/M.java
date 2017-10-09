@@ -388,6 +388,7 @@ public enum M {
     FLAG_WALK_SPEED("Check is player walk speed higher then provided value or not"),
     FLAG_GREATER("Check if the parameter is greater than <value>"),
     FLAG_LOWER("Check if the parameter is lower than <value>"),
+    FLAG_SEL_BLOCKS("Checks the number of blocks in the selected area"),
 
     /*
             ACTIVATORS!
