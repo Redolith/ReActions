@@ -212,6 +212,7 @@ public class InventoryClickActivator extends Activator {
     }
 
     private static String getNumberKeyByName(String keyStr) {
+        if (keyStr.equalsIgnoreCase("ANY")) return "ANY";
         Integer key = Integer.parseInt(keyStr);
         if (key > 0) {
             for (int i = 1; i < 10; i++) {
@@ -252,11 +253,10 @@ public class InventoryClickActivator extends Activator {
     }
 
     private boolean checkItem(ItemStack item, Integer key, Inventory bottomInventory) {
-        Boolean result = false;
         if (this.itemStr.isEmpty()) return true;
-        result = ItemUtil.compareItemStr(item, this.itemStr, true);
+        Boolean result = ItemUtil.compareItemStr(item, this.itemStr, true);
         if (!result && key > -1) return ItemUtil.compareItemStr(bottomInventory.getItem(key), this.itemStr, true);
-        return true;
+        return result;
     }
 
     private boolean checkNumberKey(Integer key) {

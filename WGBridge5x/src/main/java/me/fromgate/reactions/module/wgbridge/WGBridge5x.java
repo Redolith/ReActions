@@ -7,6 +7,7 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.RegionGroup;
+import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import me.fromgate.reactions.util.message.M;
 import org.bukkit.Bukkit;
@@ -227,4 +228,11 @@ public class WGBridge5x extends WGBridge {
         return false;
     }
 
+    public LocalPlayer getWrapPlayer(Player player) {
+        return worldguard.wrapPlayer(player);
+    }
+
+    public RegionManager getRegionManager(World world) {
+        return worldguard.getRegionContainer().get(world);
+    }
 }

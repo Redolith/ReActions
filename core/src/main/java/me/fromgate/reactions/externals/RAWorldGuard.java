@@ -42,7 +42,7 @@ import java.util.Set;
 
 public class RAWorldGuard {
 
-    private static WGBridge bridge = null;
+    protected static WGBridge bridge = null;
     private static Set<String> regionActivators = null;
 
     public static boolean init() {
@@ -138,4 +138,8 @@ public class RAWorldGuard {
     public static boolean isFlagInRegion(Player p, String region) {
         return bridge.isFlagInRegion(p, region);
     }
+
+    public static boolean isLocationInRegion(Location loc, String regionName) {
+        return  bridge.isLocationInRegion(loc, regionName);
+    };
 }

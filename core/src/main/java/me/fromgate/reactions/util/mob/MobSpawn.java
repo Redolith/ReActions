@@ -118,7 +118,9 @@ public class MobSpawn {
         String[] ln = mobstr.split(":");
         if (ln.length < 1) return mobs;
 
-        for (int i = 0; i < Math.min(2, ln.length); i++) {
+        //for (int i = 0; i < Math.min(2, ln.length); i++) {
+        int k = 0;
+        for (int i = 0; i < ln.length; i++) {
             String mbs = ln[i];
             String name = "";
             if (mbs.contains("$")) {
@@ -151,8 +153,10 @@ public class MobSpawn {
             LivingEntity mob = (LivingEntity) e;
             setMobName(mob, name);
             mobs.add(mob);
+            if (k > 0) mobs.get(k).addPassenger(mobs.get(k - 1));
+            k++;
         }
-        if (mobs.size() == 2) mobs.get(1).setPassenger(mobs.get(0));
+        //if (mobs.size() == 2) mobs.get(1).setPassenger(mobs.get(0));
         return mobs;
     }
 

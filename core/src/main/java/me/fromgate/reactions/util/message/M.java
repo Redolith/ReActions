@@ -325,6 +325,8 @@ public enum M {
     ACTION_WALK_SPEED("Set the walk speed. Parameters: speed:<0..10> [player:<player>]"),
     ACTION_FLY_SPEED("Set the flight speed. Parameters: speed:<0..10> [player:<player>]"),
     ACTION_IF_ELSE("Condition operator. Parameters: if:< ==, !=, >, <, &&, ||, /^regex$/.test(\"value\")> <then> <else>"),
+    ACTION_WE_SUPERPICKAXE("Enable/Disable super pick axe: value:<true/false> [player:<Name>]"),
+    ACTION_WE_TOOLCONTROL("Change tool control setting: value:<true/false> [player:<Name>]"),
 
     /*
     DESCRIPTION MESSAGES
@@ -388,7 +390,10 @@ public enum M {
     FLAG_WALK_SPEED("Check is player walk speed higher then provided value or not"),
     FLAG_GREATER("Check if the parameter is greater than <value>"),
     FLAG_LOWER("Check if the parameter is lower than <value>"),
-    FLAG_SEL_BLOCKS("Checks the number of blocks in the selected area"),
+    FLAG_WE_SEL_BLOCKS("Checks the number of blocks in the selected area"),
+    FLAG_WE_SUPERPICKAXE("Checks whether the super pick axe is enabled"),
+    FLAG_WE_TOOLCONTROL("Checks if tool control is enabled"),
+    FLAG_REGION_IN_RADIUS("Checks if exist region in radius from player"),
 
     /*
             ACTIVATORS!
@@ -437,6 +442,8 @@ public enum M {
     ACTIVATOR_DAMAGE("This activator initiates when the player is exposed to some kind of damage. /react add damage <id> [source:<block|entity|other|any>] [couse:<couseType>]"),
     ACTIVATOR_DAMAGE_BY_MOB("This activator initiates when the player is exposed to damage from Entity. /react add damage_by_mob <id> [damager-type:<LivingEntityType>] [damager-name] [entity-type:<EntityType>] [couse:<couseType>]"),
     ACTIVATOR_DAMAGE_BY_BLOCK("This activator initiates when the player is exposed to damage from Block. /react add damage_by_block <id> [block:<Block>] [couse:<couseType>]"),
+    ACTIVATOR_WE_CHANGE("This activator is triggered when a player edits the world using the WorldEdit plug-in. /react add we_change <id> [region:<region>] [block-type:<block-type>]"),
+    ACTIVATOR_WE_SELECTION_REGION("This activator is initiates when a player make a select using the WorldEdit plug-in. /react add we_selection_region <id> [min-blocks:<digit>] [max-blocks:<digit>] [type:<selectionType>]"),
     MSG_PLACEHOLDERLISTTITLE("Placeholders"),
     PLACEHOLDER_TIME_SERVER("Server (system) time"),
     PLACEHOLDER_TIME_INGAME("In-game time. If player is unknonw will show time in default world"),

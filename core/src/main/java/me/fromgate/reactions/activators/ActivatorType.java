@@ -25,6 +25,8 @@ package me.fromgate.reactions.activators;
 
 import me.fromgate.reactions.event.BlockClickEvent;
 import me.fromgate.reactions.event.ButtonEvent;
+import me.fromgate.reactions.event.WEChangeEvent;
+import me.fromgate.reactions.event.WESelectionRegionEvent;
 import me.fromgate.reactions.event.CommandEvent;
 import me.fromgate.reactions.event.DamageByBlockEvent;
 import me.fromgate.reactions.event.DamageByMobEvent;
@@ -112,7 +114,9 @@ public enum ActivatorType {
     DAMAGE("damage", DamageActivator.class, DamageEvent.class),
     DAMAGE_BY_MOB("damagebymob", DamageByMobActivator.class, DamageByMobEvent.class),
     DAMAGE_BY_BLOCK("damagebyblock", DamageByBlockActivator.class, DamageByBlockEvent.class, true),
-    VARIABLE("var", VariableActivator.class, VariableEvent.class);
+    VARIABLE("var", VariableActivator.class, VariableEvent.class),
+    WE_SELECTION_REGION("weselectionregion", WESelectionRegionActivator.class, WESelectionRegionEvent.class),
+    WE_CHANGE("wechange", WEChangeActivator.class, WEChangeEvent.class);
 
     private String alias;
     private Class<? extends Activator> aclass;

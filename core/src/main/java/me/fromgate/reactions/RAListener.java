@@ -31,10 +31,11 @@ import me.fromgate.reactions.activators.MessageActivator;
 import me.fromgate.reactions.activators.SignActivator;
 import me.fromgate.reactions.event.BlockClickEvent;
 import me.fromgate.reactions.event.ButtonEvent;
+import me.fromgate.reactions.event.WEChangeEvent;
+import me.fromgate.reactions.event.WESelectionRegionEvent;
 import me.fromgate.reactions.event.CommandEvent;
 import me.fromgate.reactions.event.DamageByBlockEvent;
 import me.fromgate.reactions.event.DamageByMobEvent;
-import me.fromgate.reactions.event.DamageEvent;
 import me.fromgate.reactions.event.DoorEvent;
 import me.fromgate.reactions.event.DropEvent;
 import me.fromgate.reactions.event.EntityClickEvent;
@@ -671,12 +672,17 @@ public class RAListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onPlayerDamage(DamageEvent event) {
+    public void onVariableEvent(VariableEvent event) {
         event.setCancelled(Activators.activate(event));
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onVariableEvent(VariableEvent event) {
+    public void onWESelectionRegionEvent(WESelectionRegionEvent event) {
+        event.setCancelled(Activators.activate(event));
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onWEChangeEvent(WEChangeEvent event) {
         event.setCancelled(Activators.activate(event));
     }
 

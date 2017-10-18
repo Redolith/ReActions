@@ -27,6 +27,10 @@ import me.fromgate.reactions.flags.factions.FlagAtFactionZoneRel;
 import me.fromgate.reactions.flags.factions.FlagFaction;
 import me.fromgate.reactions.flags.factions.FlagIsFactionRelPlayerAround;
 import me.fromgate.reactions.flags.factions.FlagPlayersInRel;
+import me.fromgate.reactions.flags.worldedit.FlagRegionInRadius;
+import me.fromgate.reactions.flags.worldedit.FlagSelectionBlocks;
+import me.fromgate.reactions.flags.worldedit.FlagSuperPickAxe;
+import me.fromgate.reactions.flags.worldedit.FlagToolControl;
 import me.fromgate.reactions.placeholders.Placeholders;
 import me.fromgate.reactions.util.FlagVal;
 import me.fromgate.reactions.util.RADebug;
@@ -98,7 +102,10 @@ public enum Flags {
     WALK_SPEED("walkspeed", true, new FlagWalkSpeed()),
     GREATER("greater", false, new FlagGreaterLower(0)),
     LOWER("lower", false, new FlagGreaterLower(1)),
-    SEL_BLOCKS("selblocks", true, new FlagSelectionBlocks());
+    WE_SEL_BLOCKS("selblocks", true, new FlagSelectionBlocks()),
+    WE_SUPERPICKAXE("superpickaxe", true, new FlagSuperPickAxe()),
+    WE_TOOLCONTROL("toolcontrol", true, new FlagToolControl()),
+    REGION_IN_RADIUS("regioninradius", true, new FlagRegionInRadius());
 
 
     private String alias;
