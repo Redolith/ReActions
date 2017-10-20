@@ -116,7 +116,8 @@ public enum Actions {
     FLY_SPEED("flyspeed", false, new ActionFlySpeed()),
     IF_ELSE("ifelse", false, new ActionIfElse()),
     WE_TOOLCONTROL("wetoolcontrol", true, new ActionWEToolControl()),
-    WE_SUPERPICKAXE("wesuperpickaxe", true, new ActionWESuperPickaxe());
+    WE_SUPERPICKAXE("wesuperpickaxe", true, new ActionWESuperPickaxe()),
+    RADIUS_CLEAR("clearradius", true, new ActionClearRadius());
 
     private String alias;
     private boolean requireplayer;

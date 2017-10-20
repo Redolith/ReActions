@@ -327,6 +327,7 @@ public enum M {
     ACTION_IF_ELSE("Condition operator. Parameters: if:< ==, !=, >, <, &&, ||, /^regex$/.test(\"value\")> <then> <else>"),
     ACTION_WE_SUPERPICKAXE("Enable/Disable super pick axe: value:<true/false> [player:<Name>]"),
     ACTION_WE_TOOLCONTROL("Change tool control setting: value:<true/false> [player:<Name>]"),
+    ACTION_RADIUS_CLEAR("Remove entities (mobs or items) in radius from player location. Paramters: radius:<digit> type:<entity_type|all|mobs|items>"),
 
     /*
     DESCRIPTION MESSAGES

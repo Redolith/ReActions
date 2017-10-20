@@ -31,6 +31,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -523,5 +524,14 @@ public class Util {
             if (offP != null) return getUUID(offP);
         } else return getUUID(p);
         return null;
+    }
+
+    public static List<Location> getMinMaxRadiusLocations(Player p, int radius) {
+        List<Location> locs = new ArrayList<>();
+        Location loc = p.getLocation();
+        World world = p.getWorld();
+        locs.add(new Location(world,loc.getBlockX()+radius, loc.getBlockY()+radius, loc.getBlockZ()+radius));
+        locs.add(new Location(world,loc.getBlockX()-radius, loc.getBlockY()-radius, loc.getBlockZ()-radius));
+        return locs;
     }
 }
