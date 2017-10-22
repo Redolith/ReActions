@@ -321,6 +321,7 @@ public enum M {
     ACTION_LOG("Write message into server log file. You can use it as additional debug tool for your activators. Parameters: message:<Text> prefix:<true/False> color:<true/False>"),
     ACTION_PLAYER_ID("This action is used when it is necessary to get the UUID of the player by its nickname and vice versa - the nickname of the player by its UUID. Parameters: varid:<VariableUUID>"),
     ACTION_FILE("Actions on the server files. Parameters: action:remove filename:[Path]<File.Ext>"),
+    ACTION_FLY("Set the flight mode for Player. Parameters: fly:<true/false> [player:<Name>]"),
     ACTION_GLIDE("Set the flight mode on Elytra. Parameters: glide:<true/false> [player:<Name>]"),
     ACTION_WALK_SPEED("Set the walk speed. Parameters: speed:<0..10> [player:<player>]"),
     ACTION_FLY_SPEED("Set the flight speed. Parameters: speed:<0..10> [player:<player>]"),

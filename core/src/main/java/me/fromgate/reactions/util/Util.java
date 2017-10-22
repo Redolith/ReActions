@@ -532,6 +532,8 @@ public class Util {
         World world = p.getWorld();
         locs.add(new Location(world,loc.getBlockX()+radius, loc.getBlockY()+radius, loc.getBlockZ()+radius));
         locs.add(new Location(world,loc.getBlockX()-radius, loc.getBlockY()-radius, loc.getBlockZ()-radius));
+        Variables.setTempVar("loc1", Locator.locationToString(locs.get(0)));
+        Variables.setTempVar("loc2", Locator.locationToString(locs.get(1)));
         return locs;
     }
 }

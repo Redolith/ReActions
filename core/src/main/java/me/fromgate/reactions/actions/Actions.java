@@ -111,6 +111,7 @@ public enum Actions {
     LOG("log", false, new ActionLog()),
     PLAYER_ID("playerid", false, new ActionPlayerID()),
     FILE("file", false, new ActionFile()),
+    FLY("fly", false, new ActionFly()),
     GLIDE("glide", false, new ActionGlide()),
     WALK_SPEED("walkspeed", false, new ActionWalkSpeed()),
     FLY_SPEED("flyspeed", false, new ActionFlySpeed()),
