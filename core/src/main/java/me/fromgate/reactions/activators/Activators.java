@@ -72,7 +72,7 @@ public class Activators {
         if (!dir.exists()) dir.mkdirs();
         for (String fstr : dir.list())
             if (fstr.endsWith(".yml")) {
-                grps.add(new String(fstr.substring(0, fstr.length() - 4)));
+                grps.add(fstr.substring(0, fstr.length() - 4));
             }
         return grps;
     }
@@ -88,7 +88,7 @@ public class Activators {
             } else {
                 String fstr = f.getName();
                 if (fstr.endsWith(".yml")) {
-                    grps.add(new String(dir + fstr.substring(0, fstr.length() - 4)));
+                    grps.add(dir + fstr.substring(0, fstr.length() - 4));
                 }
             }
         }
