@@ -23,6 +23,7 @@
 package me.fromgate.reactions.util;
 
 import com.google.common.base.Charsets;
+import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.util.item.ItemUtil;
 import me.fromgate.reactions.util.message.M;
 import org.bukkit.Bukkit;
@@ -48,6 +49,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Openable;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.ChatPaginator;
 import org.bukkit.util.ChatPaginator.ChatPage;
@@ -536,4 +538,50 @@ public class Util {
         Variables.setTempVar("loc2", Locator.locationToString(locs.get(1)));
         return locs;
     }
+
+    public static String escapeJava(String doco) {
+        if (doco == null)
+            return "";
+
+        StringBuilder b = new StringBuilder();
+        for (char c : doco.toCharArray()) {
+            if (c == '\r')
+                b.append("\\r");
+            else if (c == '\n')
+                b.append("\\n");
+            else if (c == '"')
+                b.append("\\\"");
+            else if (c == '\\')
+                b.append("\\\\");
+            else
+                b.append(c);
+        }
+        return b.toString();
+    }
+
+    public static void setGod(Player player) {
+        player.setMetadata("reactions-god", new FixedMetadataValue(ReActions.instance, true));
+    }
+
+    public static boolean isGod(Player player) {
+        return player.hasMetadata("reactions-god") && player.getMetadata("reactions-god").get(0).asBoolean();
+    }
+
+    public static void removeGod(Player player) {
+        if (player.hasMetadata("reactions-god")) player.removeMetadata("reactions-god", ReActions.instance);
+    }
+
+    public static void setCheckGod(Player player) {
+        player.setMetadata("reactions-god-check", new FixedMetadataValue(ReActions.instance, true));
+    }
+
+    public static boolean checkGod(Player player) {
+        boolean result = false;
+        if (player.hasMetadata("reactions-god-check")) {
+            result = player.getMetadata("reactions-god-check").get(0).asBoolean();
+            player.removeMetadata("reactions-god-check", ReActions.instance);
+        }
+        return result;
+    }
+
 }

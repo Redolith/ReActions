@@ -31,6 +31,8 @@ import me.fromgate.reactions.activators.MessageActivator;
 import me.fromgate.reactions.activators.SignActivator;
 import me.fromgate.reactions.event.BlockClickEvent;
 import me.fromgate.reactions.event.ButtonEvent;
+import me.fromgate.reactions.event.DamageEvent;
+import me.fromgate.reactions.event.GameModeEvent;
 import me.fromgate.reactions.event.WEChangeEvent;
 import me.fromgate.reactions.event.WESelectionRegionEvent;
 import me.fromgate.reactions.event.CommandEvent;
@@ -113,6 +115,7 @@ import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -293,10 +296,19 @@ public class RAListener implements Listener {
         BukkitCompatibilityFix.setEventDamage(event, dmg);
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerDamage(EntityDamageEvent event) {
         String source = "ANY";
         if (event.getEntity().getType() != EntityType.PLAYER) return;
+        if (event.isCancelled()) {
+            Util.setGod((Player) event.getEntity());
+            return;
+        }
+        Util.removeGod((Player) event.getEntity());
+        if (Util.checkGod((Player) event.getEntity()) && event.getCause() == EntityDamageEvent.DamageCause.FALL && Math.round(event.getDamage()) == 0) {
+            event.setCancelled(true);
+            return;
+        }
         if ((event instanceof EntityDamageByEntityEvent)) {
             source = "ENTITY";
             EntityDamageByEntityEvent evdmg = (EntityDamageByEntityEvent) event;
@@ -478,6 +490,11 @@ public class RAListener implements Listener {
     public void onPlayerQuitActivators(PlayerQuitEvent event) {
         TempOp.removeTempOp(event.getPlayer());
         EventManager.raiseQuitEvent(event);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onPlayerGameModeChangeEvent(PlayerGameModeChangeEvent event) {
+        EventManager.raisePlayerGameModeChangeEvent(event);
     }
 
     /*
@@ -662,6 +679,11 @@ public class RAListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onDamage(DamageEvent event) {
+        event.setCancelled(Activators.activate(event));
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onDamageByMob(DamageByMobEvent event) {
         event.setCancelled(Activators.activate(event));
     }
@@ -683,6 +705,11 @@ public class RAListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onWEChangeEvent(WEChangeEvent event) {
+        event.setCancelled(Activators.activate(event));
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onGameModeChangeEvent(GameModeEvent event) {
         event.setCancelled(Activators.activate(event));
     }
 

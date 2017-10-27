@@ -22,8 +22,12 @@
 
 package me.fromgate.reactions.flags;
 
+import me.fromgate.reactions.util.Util;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 
 public class FlagState extends Flag {
 
@@ -64,6 +68,11 @@ public class FlagState extends Flag {
                 if (player.getSpectatorTarget() != null) return true;
             case GLIDE:
                 if (player.isGliding()) return true;
+            case GOD:
+                Util.setCheckGod(player);
+                //noinspection deprecation
+                Bukkit.getPluginManager().callEvent(new EntityDamageByEntityEvent(player, player, EntityDamageEvent.DamageCause.FALL, 0));
+                if (Util.isGod(player)) return true;
         }
         return false;
     }
@@ -80,7 +89,8 @@ public class FlagState extends Flag {
         FLY,
         OP,
         SPECTATOR_TARGET,
-        GLIDE;
+        GLIDE,
+        GOD;
 
         public static Posture getByName(String name) {
             for (Posture pt : Posture.values())

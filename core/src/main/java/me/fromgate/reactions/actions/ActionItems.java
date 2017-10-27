@@ -127,25 +127,25 @@ public class ActionItems extends Action {
         if (!Util.isInteger(slotStr)) return wearItemView(player, params);
         int slotNum = Integer.parseInt(slotStr);
         if (slotNum >= player.getInventory().getSize()) return false;
-        ItemStack item = player.getInventory().getItem(slotNum) == null ? null : player.getInventory().getItem(slotNum);
+        ItemStack item = player.getInventory().getItem(slotNum);
         String actionItems = "";
         if (item != null) actionItems = ItemUtil.itemToString(item);
         Variables.setTempVar("item_str", actionItems);
+        Variables.setTempVar("item_str_esc", Util.escapeJava(actionItems));
 
         return true;
     }
 
     private boolean wearItemView(Player player, Param params) {
-        String itemStr = params.getParam("slot", "");
         int slot; //4 - auto, 3 - helmet, 2 - chestplate, 1 - leggins, 0 - boots
         slot = this.getSlotNum(params.getParam("slot", "auto"));
         if (slot == -1) return getItemInOffhand(player, params);
-        ItemStack item = null;
         ItemStack[] armour = player.getInventory().getArmorContents();
-        item = armour[slot] == null ? null : armour[slot];
+        ItemStack item = armour[slot];
         String actionItems = "";
         if (item != null) actionItems = ItemUtil.itemToString(item);
         Variables.setTempVar("item_str", actionItems);
+        Variables.setTempVar("item_str_esc", Util.escapeJava(actionItems));
         return true;
     }
 
@@ -154,9 +154,11 @@ public class ActionItems extends Action {
         if (itemStr.isEmpty()) return false;
         if (!itemStr.equalsIgnoreCase("offhand")) {
             Variables.setTempVar("item_str", "");
+            Variables.setTempVar("item_str_esc", "");
             return true;
         }
         Variables.setTempVar("item_str", ItemUtil.itemToString(BukkitCompatibilityFix.getItemInOffHand(player)));
+        Variables.setTempVar("item_str_esc", Util.escapeJava(ItemUtil.itemToString(BukkitCompatibilityFix.getItemInOffHand(player))));
         return true;
     }
 
@@ -186,15 +188,25 @@ public class ActionItems extends Action {
         }
         ItemStack item = null;
         if (itemStr.equalsIgnoreCase("AIR") || itemStr.equalsIgnoreCase("NULL")) {
-            if (slot == -1) slot = 3;
+            if (slot == -1) return setItemInOffhand(player, params, null);
+            //if (slot == -1) slot = 3;
         } else {
             item = ItemUtil.parseItemStack(itemStr);
             if (item == null) return false;
-            if (slot == -1) slot = getSlotByItem(item);
+            if (slot == -1) return setItemInOffhand(player, params, item);
+            // if (slot == -1) slot = getSlotByItem(item);
         }
         return setArmourItem(player, slot, item, existDrop);
     }
 
+    private boolean setItemInOffhand(Player player, Param params, ItemStack item) {
+        String itemStr = params.getParam("slot", "");
+        if (itemStr.isEmpty()) return false;
+        if (!itemStr.equalsIgnoreCase("offhand")) return false;
+        BukkitCompatibilityFix.setItemInOffHand(player, item);
+        EventManager.raiseItemWearEvent(player);
+        return true;
+    }
 
     private boolean setArmourItem(Player player, int slot, ItemStack item, int existDrop) {
         ItemStack[] armour = player.getInventory().getArmorContents().clone();

@@ -77,7 +77,7 @@ public class QuitActivator extends Activator {
 
     @Override
     public boolean isValid() {
-        return false;
+        return true;
     }
 
     @Override

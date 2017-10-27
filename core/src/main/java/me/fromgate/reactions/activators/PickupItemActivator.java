@@ -77,7 +77,7 @@ public class PickupItemActivator extends Activator {
 
     @Override
     public boolean isValid() {
-        return false;
+        return true;
     }
 
     private boolean checkItem(ItemStack item) {

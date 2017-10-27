@@ -61,6 +61,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -626,4 +627,9 @@ public class EventManager {
         return e.isCancelled();
     }
 
+    public static boolean raisePlayerGameModeChangeEvent(PlayerGameModeChangeEvent event) {
+        GameModeEvent e = new GameModeEvent(event.getPlayer(), event.getNewGameMode());
+        Bukkit.getServer().getPluginManager().callEvent(e);
+        return e.isCancelled();
+    }
 }
