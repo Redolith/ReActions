@@ -494,7 +494,7 @@ public class RAListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerGameModeChangeEvent(PlayerGameModeChangeEvent event) {
-        EventManager.raisePlayerGameModeChangeEvent(event);
+        if (EventManager.raisePlayerGameModeChangeEvent(event)) event.setCancelled(true);;
     }
 
     /*
