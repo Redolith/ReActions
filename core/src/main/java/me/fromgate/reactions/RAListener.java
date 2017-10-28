@@ -33,6 +33,7 @@ import me.fromgate.reactions.event.BlockClickEvent;
 import me.fromgate.reactions.event.ButtonEvent;
 import me.fromgate.reactions.event.DamageEvent;
 import me.fromgate.reactions.event.GameModeEvent;
+import me.fromgate.reactions.event.GodEvent;
 import me.fromgate.reactions.event.WEChangeEvent;
 import me.fromgate.reactions.event.WESelectionRegionEvent;
 import me.fromgate.reactions.event.CommandEvent;
@@ -300,12 +301,21 @@ public class RAListener implements Listener {
     public void onPlayerDamage(EntityDamageEvent event) {
         String source = "ANY";
         if (event.getEntity().getType() != EntityType.PLAYER) return;
+        Player player = (Player) event.getEntity();
         if (event.isCancelled()) {
-            Util.setGod((Player) event.getEntity());
+            if (Util.checkGod(player) && Util.setGod(player)) return;
+            else if (Util.setGod(player) && EventManager.raisePlayerGodChangeEvent(player, true)) {
+                Util.removeGod(player);
+            }
+        } else if (Util.checkGod(player) && event.getCause() == DamageCause.CUSTOM && Math.round(event.getDamage()) == 0) {
+            event.setCancelled(true);
+            return;
+        } else if (Util.removeGod(player) && EventManager.raisePlayerGodChangeEvent(player, false)) {
+            Util.setGod(player);
+            event.setCancelled(true);
             return;
         }
-        Util.removeGod((Player) event.getEntity());
-        if (Util.checkGod((Player) event.getEntity()) && event.getCause() == EntityDamageEvent.DamageCause.FALL && Math.round(event.getDamage()) == 0) {
+        if (event.getCause() == DamageCause.CUSTOM && Math.round(event.getDamage()) == 0) {
             event.setCancelled(true);
             return;
         }
@@ -710,6 +720,11 @@ public class RAListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onGameModeChangeEvent(GameModeEvent event) {
+        event.setCancelled(Activators.activate(event));
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onGodChangeEvent(GodEvent event) {
         event.setCancelled(Activators.activate(event));
     }
 

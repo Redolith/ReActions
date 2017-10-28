@@ -70,8 +70,6 @@ public class FlagState extends Flag {
                 if (player.isGliding()) return true;
             case GOD:
                 Util.setCheckGod(player);
-                //noinspection deprecation
-                Bukkit.getPluginManager().callEvent(new EntityDamageByEntityEvent(player, player, EntityDamageEvent.DamageCause.FALL, 0));
                 if (Util.isGod(player)) return true;
         }
         return false;

@@ -559,20 +559,29 @@ public class Util {
         return b.toString();
     }
 
-    public static void setGod(Player player) {
-        player.setMetadata("reactions-god", new FixedMetadataValue(ReActions.instance, true));
-    }
-
     public static boolean isGod(Player player) {
         return player.hasMetadata("reactions-god") && player.getMetadata("reactions-god").get(0).asBoolean();
     }
 
-    public static void removeGod(Player player) {
-        if (player.hasMetadata("reactions-god")) player.removeMetadata("reactions-god", ReActions.instance);
+    public static boolean setGod(Player player) {
+        if (!isGod(player)) {
+            player.setMetadata("reactions-god", new FixedMetadataValue(ReActions.instance, true));
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean removeGod(Player player) {
+        if (isGod(player)) {
+            player.removeMetadata("reactions-god", ReActions.instance);
+            return true;
+        }
+        return false;
     }
 
     public static void setCheckGod(Player player) {
         player.setMetadata("reactions-god-check", new FixedMetadataValue(ReActions.instance, true));
+        setEventGod(player);
     }
 
     public static boolean checkGod(Player player) {
@@ -582,6 +591,11 @@ public class Util {
             player.removeMetadata("reactions-god-check", ReActions.instance);
         }
         return result;
+    }
+
+    public static void setEventGod(Player player) {
+        //noinspection deprecation
+        Bukkit.getPluginManager().callEvent(new EntityDamageByEntityEvent(player, player, DamageCause.CUSTOM, 0));
     }
 
 }
