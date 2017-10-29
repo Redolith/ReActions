@@ -28,6 +28,7 @@ import me.fromgate.reactions.util.message.M;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -191,6 +192,11 @@ public class Variables {
     }
 
     public static void save(String player) {
+        if (Cfg.playerAsynchSaveSelfVarFile) saveAsynch(player);
+        else savePlayer(player);
+    }
+
+    public static void savePlayer(String player) {
         try {
             YamlConfiguration cfg = new YamlConfiguration();
             String varDir = ReActions.instance.getDataFolder() + File.separator + "variables";
@@ -210,6 +216,16 @@ public class Variables {
             removePlayerVars(player);
         } catch (Exception ignored) {
         }
+    }
+
+    public static void saveAsynch(String player) {
+        JavaPlugin pluginInstance = ReActions.instance;
+        pluginInstance.getServer().getScheduler().runTaskAsynchronously(pluginInstance, new Runnable() {
+            @Override
+            public void run() {
+                save(player);
+            }
+        });
     }
 
     private static void saveGeneral() {
