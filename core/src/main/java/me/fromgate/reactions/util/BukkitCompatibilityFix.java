@@ -32,6 +32,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EntityEquipment;
@@ -389,5 +390,14 @@ public class BukkitCompatibilityFix {
         } catch (NoSuchMethodError ignored) {
         }
         return true;
+    }
+
+    public static Entity getHitEntity(ProjectileHitEvent event) {
+        try {
+            return event.getHitEntity();
+        } catch (NoSuchMethodError e) {
+            M.logOnce("event.getHitEntity()", "Failed to execute method getHitEntity in ProjectileHitEvent.class. Older server?");
+        }
+        return null;
     }
 }

@@ -603,12 +603,7 @@ public class EventManager {
     }
 
     public static boolean raiseProjectileHitEvent(ProjectileHitEvent event) {
-        Entity hitEntity = null;
-        try {
-            hitEntity = event.getHitEntity();
-        } catch (Exception e) {
-            M.logOnce("event.getHitEntity()", "Failed to execute method getHitEntity in ProjectileHitEvent.class. Older server?");
-        }
+        Entity hitEntity = BukkitCompatibilityFix.getHitEntity(event);
         if (hitEntity == null || !(hitEntity instanceof Player)) return false;
         Player player = (Player) event.getHitEntity();
         Entity entity = event.getEntity();
