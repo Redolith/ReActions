@@ -603,10 +603,16 @@ public class EventManager {
     }
 
     public static boolean raiseProjectileHitEvent(ProjectileHitEvent event) {
-        if (event.getHitEntity() == null || !(event.getHitEntity() instanceof Player)) return false;
-        Player p = (Player) event.getHitEntity();
-        Entity e = event.getEntity();
-        if (e == null) return false;
+        Entity hitEntity = null;
+        try {
+            hitEntity = event.getHitEntity();
+        } catch (Exception e) {
+            M.logOnce("event.getHitEntity()", "Failed to execute method getHitEntity in ProjectileHitEvent.class. Older server?");
+        }
+        if (hitEntity == null || !(hitEntity instanceof Player)) return false;
+        Player player = (Player) event.getHitEntity();
+        Entity entity = event.getEntity();
+        if (entity == null) return false;
         // TODO PlayerProjectileHit activator
         return false;
     }
