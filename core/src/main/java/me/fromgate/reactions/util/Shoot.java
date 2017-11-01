@@ -34,6 +34,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityEvent;
 import org.bukkit.util.BlockIterator;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -48,11 +49,12 @@ public class Shoot {
     public static void shoot(LivingEntity shooter, Param params) {
         boolean onehit = params.getParam("singlehit", true);
         int distance = params.getParam("distance", 100);
+        float knockbackTarget = params.getParam("knockbackTarget", 0);
         for (LivingEntity le : getEntityBeam(shooter, getBeam(shooter, distance), onehit)) {
             double damage = (double) Util.getMinMaxRandom(params.getParam("damage", "1"));
             boolean shoot = true;
             if (damage > 0) {
-                shoot = damageEntity(shooter, le, damage);
+                shoot = damageEntity(shooter, le, damage, knockbackTarget);
             }
             if (shoot && params.hasAnyParam("run")) {
                 executeActivator(shooter instanceof Player ? (Player) shooter : null, le, params.getParam("run"));
@@ -138,7 +140,13 @@ public class Shoot {
         return le.getEyeLocation().getBlock().equals(b);
     }
 
-    public static boolean damageEntity(LivingEntity damager, LivingEntity entity, double damage) {
+    public static boolean damageEntity(LivingEntity damager, LivingEntity entity, double damage, float knockbackTarget) {
+        Vector eVec = entity.getLocation().toVector().clone();
+        Vector dVec = damager.getLocation().toVector().clone();
+        Vector eDirection = eVec.subtract(dVec).normalize();
+        eDirection.add(new Vector(0.0D, 0.1D, 0.0D)).multiply(knockbackTarget);
+        entity.setVelocity(eDirection);
+
         EntityEvent event = BukkitCompatibilityFix.createEntityDamageByEntityEvent(damager, entity, DamageCause.ENTITY_ATTACK, damage);
 
         if (event == null) return false;

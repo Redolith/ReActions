@@ -12,6 +12,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class InventoryClickActivator extends Activator {
+    private String inventoryName;
     private ClickType click;
     private InventoryAction action;
     private InventoryType inventory;
@@ -24,6 +25,7 @@ public class InventoryClickActivator extends Activator {
     public InventoryClickActivator(String name, String param) {
         super(name, "activators");
         Param params = new Param(param);
+        this.inventoryName = params.getParam("name", "");
         this.click = ClickType.getByName(params.getParam("click", "ANY"));
         this.action = InventoryAction.getByName(params.getParam("action", "ANY"));
         this.inventory = InventoryType.getByName(params.getParam("inventory", "ANY"));
@@ -42,6 +44,7 @@ public class InventoryClickActivator extends Activator {
     public boolean activate(Event event) {
         if (!(event instanceof PlayerInventoryClickEvent)) return false;
         PlayerInventoryClickEvent pice = (PlayerInventoryClickEvent) event;
+        if (!inventoryName.isEmpty() && !pice.getInventoryName().equalsIgnoreCase(inventoryName)) return false;
         if (pice.getClickType() == null) return false;
         if (!clickCheck(pice.getClickType())) return false;
         if (!actionCheck(pice.getAction())) return false;
@@ -52,6 +55,7 @@ public class InventoryClickActivator extends Activator {
         if (!checkNumberKey(key)) return false;
         Integer slot = pice.getSlot();
         if (!checkSlot(slot)) return false;
+        Variables.setTempVar("name", pice.getInventoryName());
         Variables.setTempVar("click", pice.getClickType().toString());
         Variables.setTempVar("action", pice.getAction().toString());
         Variables.setTempVar("slotType", pice.getSlotType().toString());
@@ -71,6 +75,7 @@ public class InventoryClickActivator extends Activator {
 
     @Override
     public void save(String root, YamlConfiguration cfg) {
+        cfg.set(root + ".name", this.inventoryName);
         cfg.set(root + ".click-type", click.name());
         cfg.set(root + ".action-type", action.name());
         cfg.set(root + ".inventory-type", inventory.name());
@@ -82,6 +87,7 @@ public class InventoryClickActivator extends Activator {
 
     @Override
     public void load(String root, YamlConfiguration cfg) {
+        this.inventoryName = cfg.getString(root + ".name", "");
         this.click = ClickType.getByName(cfg.getString(root + ".click-type", "ANY"));
         this.action = InventoryAction.getByName(cfg.getString(root + ".action-type", "ANY"));
         this.inventory = InventoryType.getByName(cfg.getString(root + ".inventory-type", "ANY"));
@@ -276,7 +282,8 @@ public class InventoryClickActivator extends Activator {
         if (!getActions().isEmpty()) sb.append(" A:").append(getActions().size());
         if (!getReactions().isEmpty()) sb.append(" R:").append(getReactions().size());
         sb.append(" (");
-        sb.append("click:").append(this.click.name());
+        sb.append("name:").append(this.inventoryName);
+        sb.append(" click:").append(this.click.name());
         sb.append(" action:").append(this.action.name());
         sb.append(" inventory:").append(this.inventory.name());
         sb.append(" slotType:").append(this.slotType.name());

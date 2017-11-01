@@ -41,9 +41,11 @@ public class PlayerInventoryClickEvent extends RAEvent {
     private Integer numberKey;
     private Integer slot;
     private InventoryView inventoryView;
+    private String inventoryName;
 
     public PlayerInventoryClickEvent(Player p, InventoryAction action, ClickType click, Inventory inventory, SlotType slotType, ItemStack item, Integer numberKey, InventoryView inventoryView, Integer slot) {
         super(p);
+        this.inventoryName = inventory.getName();
         this.action = action;
         this.click = click;
         this.inventory = inventory.getType();
@@ -52,6 +54,10 @@ public class PlayerInventoryClickEvent extends RAEvent {
         this.numberKey = numberKey;
         this.slot = slot;
         this.inventoryView = inventoryView;
+    }
+
+    public String getInventoryName() {
+        return this.inventoryName;
     }
 
     public InventoryAction getAction() {
