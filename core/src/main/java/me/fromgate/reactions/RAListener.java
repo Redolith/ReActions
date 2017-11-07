@@ -152,6 +152,9 @@ public class RAListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onServerCommandEvent(ServerCommandEvent event) {
         EventManager.raiseMessageEvent(Bukkit.getConsoleSender(), MessageActivator.Source.CONSOLE_INPUT, event.getCommand());
+        if (EventManager.raiseCommandEvent(null, event.getCommand(), event.isCancelled())) {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

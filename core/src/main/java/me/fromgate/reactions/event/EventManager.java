@@ -228,12 +228,13 @@ public class EventManager {
 
     public static boolean raiseCommandEvent(Player p, String command, boolean canceled) {
         if (command.isEmpty()) return false;
-        Bukkit.getScheduler().runTaskLater(plg(), new Runnable() {
-            @Override
-            public void run() {
-                Util.setEventGod(p);
-            }
-        }, 1);
+        if (p != null)
+            Bukkit.getScheduler().runTaskLater(plg(), new Runnable() {
+                @Override
+                public void run() {
+                    Util.setEventGod(p);
+                }
+            }, 1);
 
         String[] args = command.split(" ");
         CommandEvent ce = new CommandEvent(p, command, args, canceled);
@@ -548,7 +549,8 @@ public class EventManager {
     }
 
     public static boolean raiseBlockBreakEvent(BlockBreakEvent event) {
-        PlayerBlockBreakEvent e = new PlayerBlockBreakEvent(event.getPlayer(), event.getBlock(), event.isDropItems());
+        boolean isDropItems = BukkitCompatibilityFix.isDropItems(event);
+        PlayerBlockBreakEvent e = new PlayerBlockBreakEvent(event.getPlayer(), event.getBlock(), isDropItems);
         Bukkit.getServer().getPluginManager().callEvent(e);
         event.setDropItems(e.isDropItems());
         return e.isCancelled();

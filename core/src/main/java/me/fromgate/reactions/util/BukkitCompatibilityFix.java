@@ -29,6 +29,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityEvent;
@@ -399,5 +400,14 @@ public class BukkitCompatibilityFix {
             M.logOnce("event.getHitEntity()", "Failed to execute method getHitEntity in ProjectileHitEvent.class. Older server?");
         }
         return null;
+    }
+
+    public static boolean isDropItems(BlockBreakEvent event) {
+        try {
+            return event.isDropItems();
+        } catch (NoSuchMethodError e) {
+            M.logOnce("event.isDropItems()", "Failed to execute method isDropItems in BlockBreakEvent.class. Older server?");
+        }
+        return false;
     }
 }
