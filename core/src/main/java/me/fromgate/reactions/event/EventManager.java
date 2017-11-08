@@ -552,7 +552,7 @@ public class EventManager {
         boolean isDropItems = BukkitCompatibilityFix.isDropItems(event);
         PlayerBlockBreakEvent e = new PlayerBlockBreakEvent(event.getPlayer(), event.getBlock(), isDropItems);
         Bukkit.getServer().getPluginManager().callEvent(e);
-        event.setDropItems(e.isDropItems());
+        BukkitCompatibilityFix.setDropItems(event, e.isDropItems());
         return e.isCancelled();
     }
 

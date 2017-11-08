@@ -410,4 +410,12 @@ public class BukkitCompatibilityFix {
         }
         return false;
     }
+
+    public static void setDropItems(BlockBreakEvent event, boolean isDropItems) {
+        try {
+            event.setDropItems(isDropItems);
+        } catch (NoSuchMethodError e) {
+            M.logOnce("event.setDropItems()", "Failed to execute method setDropItems in BlockBreakEvent.class. Older server?");
+        }
+    }
 }
