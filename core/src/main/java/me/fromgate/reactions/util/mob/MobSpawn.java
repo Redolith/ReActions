@@ -153,7 +153,7 @@ public class MobSpawn {
             LivingEntity mob = (LivingEntity) e;
             setMobName(mob, name);
             mobs.add(mob);
-            if (k > 0) mobs.get(k).addPassenger(mobs.get(k - 1));
+            if (k > 0) BukkitCompatibilityFix.addPassenger(mobs.get(k), mobs.get(k - 1));
             k++;
         }
         //if (mobs.size() == 2) mobs.get(1).setPassenger(mobs.get(0));

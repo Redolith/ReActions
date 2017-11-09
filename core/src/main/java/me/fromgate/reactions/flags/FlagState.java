@@ -22,12 +22,10 @@
 
 package me.fromgate.reactions.flags;
 
+import me.fromgate.reactions.util.BukkitCompatibilityFix;
 import me.fromgate.reactions.util.Util;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 
 public class FlagState extends Flag {
 
@@ -65,9 +63,9 @@ public class FlagState extends Flag {
                 if (!player.isInsideVehicle()) return false;
                 return player.getVehicle().getType() == EntityType.PIG;
             case SPECTATOR_TARGET:
-                if (player.getSpectatorTarget() != null) return true;
+                if (BukkitCompatibilityFix.getSpectatorTarget(player) != null) return true;
             case GLIDE:
-                if (player.isGliding()) return true;
+                if (BukkitCompatibilityFix.isGliding(player)) return true;
             case GOD:
                 Util.setCheckGod(player);
                 if (Util.isGod(player)) return true;

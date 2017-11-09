@@ -149,7 +149,7 @@ public class Util {
             snd = Sound.valueOf(param.toUpperCase());
         } catch (Exception ignored) {
         }
-        if (snd == null) snd = Sound.UI_BUTTON_CLICK;
+        if (snd == null) snd = BukkitCompatibilityFix.getSound("UI_BUTTON_CLICK");
         return snd;
     }
 

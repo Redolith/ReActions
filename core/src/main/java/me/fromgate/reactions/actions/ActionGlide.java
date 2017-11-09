@@ -1,5 +1,6 @@
 package me.fromgate.reactions.actions;
 
+import me.fromgate.reactions.util.BukkitCompatibilityFix;
 import me.fromgate.reactions.util.Param;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -20,7 +21,7 @@ public class ActionGlide extends Action {
 
     public boolean glidePlayer(Player player, Boolean isGlide) {
         if (player == null || player.isDead() || !player.isOnline()) return false;
-        player.setGliding(isGlide);
+        BukkitCompatibilityFix.setGliding(player, isGlide);
         return true;
     }
 }

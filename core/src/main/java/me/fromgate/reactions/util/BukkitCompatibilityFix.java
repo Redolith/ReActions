@@ -23,6 +23,7 @@
 package me.fromgate.reactions.util;
 
 import me.fromgate.reactions.util.message.M;
+import org.bukkit.Sound;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -435,5 +436,56 @@ public class BukkitCompatibilityFix {
         } catch (NoSuchMethodError e) {
             M.logOnce("event.setCancelled()", "Failed to execute method setCancelled in ServerCommandEvent.class. Older server?");
         }
+    }
+
+    public static boolean isGliding(Player player) {
+        try {
+            return player.isGliding();
+        } catch (NoSuchMethodError e) {
+            M.logOnce("player.isGliding()", "Failed to execute method isGliding in Player.class. Older server?");
+        }
+        return false;
+    }
+
+    public static void setGliding(Player player, boolean isGlide) {
+        try {
+            player.setGliding(isGlide);
+        } catch (NoSuchMethodError e) {
+            M.logOnce("player.setGliding()", "Failed to execute method setGliding in Player.class. Older server?");
+        }
+    }
+
+    public static Entity getSpectatorTarget(Player player) {
+        try {
+            return player.getSpectatorTarget();
+        } catch (NoSuchMethodError e) {
+            M.logOnce("player.getSpectatorTarget()", "Failed to execute method getSpectatorTarget in Player.class. Older server?");
+        }
+        return null;
+    }
+
+    public static void sendTitle(Player player, String text) {
+        try {
+            player.sendTitle(null, text);
+        } catch (NoSuchMethodError e) {
+            M.logOnce("player.sendTitle()", "Failed to execute method sendTitle in Player.class. Older server?");
+        }
+    }
+
+    public static void addPassenger(LivingEntity target, LivingEntity passenger) {
+        try {
+            target.addPassenger(passenger);
+        } catch (NoSuchMethodError e) {
+            M.logOnce("LivingEntity.addPassenger()", "Failed to execute method addPassenger in LivingEntity.class. Older server?");
+        }
+    }
+
+    public static Sound getSound(String sound) {
+        try {
+            return Sound.valueOf(sound);
+        } catch (IllegalArgumentException e) {
+            M.logOnce("sound.UI_BUTTON_CLICK", "Failed to execute sound constant in Sound.class. Older server?");
+        }
+        return null;
     }
 }

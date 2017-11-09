@@ -22,6 +22,7 @@
 
 package me.fromgate.reactions.util.message;
 
+import me.fromgate.reactions.util.BukkitCompatibilityFix;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -82,7 +83,7 @@ public class BukkitMessenger implements Messenger {
         if (player == null) {
             return false;
         }
-        player.sendTitle(null, text);
+        BukkitCompatibilityFix.sendTitle(player, text);
         return true;
     }
 

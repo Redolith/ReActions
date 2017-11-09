@@ -607,7 +607,7 @@ public class EventManager {
     public static boolean raiseProjectileHitEvent(ProjectileHitEvent event) {
         Entity hitEntity = BukkitCompatibilityFix.getHitEntity(event);
         if (hitEntity == null || !(hitEntity instanceof Player)) return false;
-        Player player = (Player) event.getHitEntity();
+        Player player = (Player) hitEntity;
         Entity entity = event.getEntity();
         if (entity == null) return false;
         // TODO PlayerProjectileHit activator
