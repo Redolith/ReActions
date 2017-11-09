@@ -153,7 +153,7 @@ public class RAListener implements Listener {
     public void onServerCommandEvent(ServerCommandEvent event) {
         EventManager.raiseMessageEvent(Bukkit.getConsoleSender(), MessageActivator.Source.CONSOLE_INPUT, event.getCommand());
         if (EventManager.raiseCommandEvent(null, event.getCommand(), BukkitCompatibilityFix.isCancelledServerCommandEvent(event))) {
-            event.setCancelled(true);
+            BukkitCompatibilityFix.setCancelledServerCommandEvent(event, true);
         }
     }
 

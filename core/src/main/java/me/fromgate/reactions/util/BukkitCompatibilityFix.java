@@ -428,4 +428,12 @@ public class BukkitCompatibilityFix {
         }
         return false;
     }
+
+    public static void setCancelledServerCommandEvent(ServerCommandEvent event, boolean isCancelled) {
+        try {
+            event.setCancelled(isCancelled);
+        } catch (NoSuchMethodError e) {
+            M.logOnce("event.setCancelled()", "Failed to execute method setCancelled in ServerCommandEvent.class. Older server?");
+        }
+    }
 }
