@@ -36,6 +36,7 @@ import org.bukkit.event.entity.EntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -417,5 +418,14 @@ public class BukkitCompatibilityFix {
         } catch (NoSuchMethodError e) {
             M.logOnce("event.setDropItems()", "Failed to execute method setDropItems in BlockBreakEvent.class. Older server?");
         }
+    }
+
+    public static boolean isCancelledServerCommandEvent(ServerCommandEvent event) {
+        try {
+            return event.isCancelled();
+        } catch (NoSuchMethodError e) {
+            M.logOnce("event.isCancelled()", "Failed to execute method isCancelled in ServerCommandEvent.class. Older server?");
+        }
+        return false;
     }
 }
