@@ -27,6 +27,7 @@ import me.fromgate.reactions.event.BlockClickEvent;
 import me.fromgate.reactions.event.ButtonEvent;
 import me.fromgate.reactions.event.GameModeEvent;
 import me.fromgate.reactions.event.GodEvent;
+import me.fromgate.reactions.event.ItemHeldEvent;
 import me.fromgate.reactions.event.WEChangeEvent;
 import me.fromgate.reactions.event.WESelectionRegionEvent;
 import me.fromgate.reactions.event.CommandEvent;
@@ -99,6 +100,7 @@ public enum ActivatorType {
     ITEM_CLICK("itemclick", ItemClickActivator.class, ItemClickEvent.class),
     ITEM_CONSUME("consume", ItemConsumeActivator.class, ItemConsumeEvent.class),
     ITEM_HOLD("itemhold", ItemHoldActivator.class, ItemHoldEvent.class),
+    ITEM_HELD("itemheld", ItemHeldActivator.class, ItemHeldEvent.class),
     ITEM_WEAR("itemwear", ItemWearActivator.class, ItemWearEvent.class),
     FCT_CHANGE("faction", FactionActivator.class, FactionEvent.class),
     FCT_RELATION("fctrelation", FactionRelationActivator.class, FactionRelationEvent.class),

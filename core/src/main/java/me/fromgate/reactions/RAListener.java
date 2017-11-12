@@ -34,6 +34,7 @@ import me.fromgate.reactions.event.ButtonEvent;
 import me.fromgate.reactions.event.DamageEvent;
 import me.fromgate.reactions.event.GameModeEvent;
 import me.fromgate.reactions.event.GodEvent;
+import me.fromgate.reactions.event.ItemHeldEvent;
 import me.fromgate.reactions.event.WEChangeEvent;
 import me.fromgate.reactions.event.WESelectionRegionEvent;
 import me.fromgate.reactions.event.CommandEvent;
@@ -116,6 +117,7 @@ import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -173,6 +175,7 @@ public class RAListener implements Listener {
     public void onPlayerItemHeldEvent(PlayerItemHeldEvent event) {
         EventManager.raiseItemHoldEvent(event.getPlayer());
         EventManager.raiseItemWearEvent(event.getPlayer());
+        if (EventManager.raiseItemHeldEvent(event.getPlayer(), event.getNewSlot(), event.getPreviousSlot())) event.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -728,6 +731,11 @@ public class RAListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onGodChangeEvent(GodEvent event) {
+        event.setCancelled(Activators.activate(event));
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onItemHeldEvent(ItemHeldEvent event) {
         event.setCancelled(Activators.activate(event));
     }
 

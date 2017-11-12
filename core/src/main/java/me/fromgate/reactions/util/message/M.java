@@ -422,6 +422,7 @@ public enum M {
     ACTIVATOR_MOB_KILL("This activator is executing when player killing the mob. You can define mob type (name supported too) for this activators. Command: /react add  mobclick <id> Mob_Name$MOB_TYPE"),
     ACTIVATOR_ITEM_CLICK("This activator is linked to right-clicking with defined item. /react add item_click <id> <item (name supported)>"),
     ACTIVATOR_ITEM_CONSUME("This activator is linked to eating (drinking) the event. /react add item_consume <id> <item (name supported)>"),
+    ACTIVATOR_ITEM_HELD("This activator is executed at the moment when the player changes the item in his hand. /react add <id> item_held"),
     ACTIVATOR_ITEM_HOLD("This activator is linked to defined item, while player hold it in hand. /react add <id> item_hold <item (name supported)>"),
     ACTIVATOR_ITEM_WEAR("This activator is linked to defined item, while player wears an item. /react add item_wear <id> <item (name supported)>"),
     ACTIVATOR_FCT_CHANGE("This activator is initiates when player moved from one faction to another. /react add fct_change <id> faction:<New faction|ANY> oldfaction:<Old faction|ANY>"),

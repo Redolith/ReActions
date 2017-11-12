@@ -653,4 +653,10 @@ public class EventManager {
         Bukkit.getServer().getPluginManager().callEvent(e);
         return e.isCancelled();
     }
+
+    public static boolean raiseItemHeldEvent(Player player, int newSlot, int previousSlot) {
+        ItemHeldEvent e = new ItemHeldEvent(player, newSlot, previousSlot);
+        Bukkit.getServer().getPluginManager().callEvent(e);
+        return e.isCancelled();
+    }
 }

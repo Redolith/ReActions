@@ -464,6 +464,7 @@ public class BukkitCompatibilityFix {
         return null;
     }
 
+    @SuppressWarnings("deprecation")
     public static void sendTitle(Player player, String text) {
         try {
             player.sendTitle(null, text);
