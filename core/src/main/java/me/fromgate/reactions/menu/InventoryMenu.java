@@ -30,6 +30,7 @@ import java.util.TreeMap;
 public class InventoryMenu implements Listener {
     private static Map<Integer, List<String>> activeMenus = new HashMap<>();
     private static Map<String, VirtualInventory> menu = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private static Param tempvars;
 
     public static void init() {
         load();
@@ -147,7 +148,8 @@ public class InventoryMenu implements Listener {
         return inv;
     }
 
-    public static boolean createAndOpenInventory(Player player, Param params) {
+    public static boolean createAndOpenInventory(Player player, Param params, final Param tempVars) {
+        tempvars = tempVars;
         Inventory inv = getInventory(params);
         if (inv == null) return false;
         activeMenus.put(getInventoryCode(player, inv), getActivators(params));
@@ -194,7 +196,7 @@ public class InventoryMenu implements Listener {
         if (activators.size() > clickedSlot) {
             String activator = activators.get(clickedSlot);
             if (!activator.isEmpty()) {
-                EventManager.raiseExecEvent(player, new Param(activator, "activator"));
+                EventManager.raiseExecEvent(player, new Param(activator, "activator"), tempvars);
             }
         }
         event.setCancelled(true);
