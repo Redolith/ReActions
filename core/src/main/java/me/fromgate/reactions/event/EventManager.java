@@ -60,6 +60,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -502,10 +503,13 @@ public class EventManager {
         return e.isCancelled();
     }
 
+    @SuppressWarnings("deprecation")
     public static boolean raiseInventoryClickEvent(InventoryClickEvent event) {
         Player p = (Player) event.getWhoClicked();
         PlayerInventoryClickEvent e = new PlayerInventoryClickEvent(p, event.getAction(), event.getClick(), event.getInventory(), event.getSlotType(), event.getCurrentItem(), event.getHotbarButton(), event.getView(), event.getSlot());
         Bukkit.getServer().getPluginManager().callEvent(e);
+        event.setCurrentItem(e.getItemStack());
+        if ((event instanceof InventoryCreativeEvent)) event.setCursor(e.getItemStack());
         return e.isCancelled();
     }
 
@@ -621,7 +625,7 @@ public class EventManager {
         PickupItemEvent e = new PickupItemEvent(player, event.getItem(), pickupDelay);
         Bukkit.getServer().getPluginManager().callEvent(e);
         BukkitCompatibilityFix.setItemPickupDelay(item, e.getPickupDelay());
-        ItemStack newItemStack =e.getItemStack() ;
+        ItemStack newItemStack = e.getItemStack();
         if (newItemStack != null && newItemStack.getType() == Material.AIR) {
             e.setCancelled(true);
             item.remove();

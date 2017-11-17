@@ -113,6 +113,7 @@ import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -460,6 +461,11 @@ public class RAListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerInventoryClick(InventoryClickEvent event) {
+        if (EventManager.raiseInventoryClickEvent(event)) event.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onPlayerInventoryClick(InventoryCreativeEvent event) {
         if (EventManager.raiseInventoryClickEvent(event)) event.setCancelled(true);
     }
 

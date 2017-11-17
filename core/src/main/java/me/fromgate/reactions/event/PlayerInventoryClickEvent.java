@@ -80,6 +80,10 @@ public class PlayerInventoryClickEvent extends RAEvent {
         return this.item;
     }
 
+    public void setItemStack(ItemStack itemStack) {
+        this.item = itemStack;
+    }
+
     public Integer getNumberKey() {
         return this.numberKey;
     }

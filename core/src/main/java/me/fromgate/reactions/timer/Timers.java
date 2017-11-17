@@ -145,7 +145,7 @@ public class Timers {
         timers.put(name, timer);
         updateIngameTimers();
         if (save) save();
-        return M.MSG_TIMERADDED.print(sender, name);
+        return true;//M.MSG_TIMERADDED.print(sender, name);
     }
 
     public static Map<String, Timer> getIngameTimers() {

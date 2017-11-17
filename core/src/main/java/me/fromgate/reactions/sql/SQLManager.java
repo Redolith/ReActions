@@ -134,6 +134,10 @@ public class SQLManager {
 
         try {
             selectStmt = connection.createStatement();
+            String sqlset = Variables.getTempVar("SQL_SET");
+            if (!sqlset.isEmpty()) {
+                selectStmt.execute(sqlset);
+            }
             result = selectStmt.executeQuery(query);
             if (result.first()) {
                 int columns = result.getMetaData().getColumnCount();

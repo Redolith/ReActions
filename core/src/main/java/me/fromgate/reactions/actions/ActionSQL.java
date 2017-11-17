@@ -78,6 +78,15 @@ public class ActionSQL extends Action {
                 }
                 SQLManager.executeUpdate(query, params);
                 break;
+            case 4: // SET
+                query = params.getParam("query", params.getParam("param-line", "")).trim();
+                if (query.isEmpty()) return false;
+                if (!query.toLowerCase().startsWith("set")) {
+                    M.logOnce("needset" + query, "You need to use only \"SET\" query in SQL_SET action. Query: " + query);
+                    return false;
+                }
+                Variables.setTempVar("SQL_SET", query);
+                break;
         }
         return true;
     }

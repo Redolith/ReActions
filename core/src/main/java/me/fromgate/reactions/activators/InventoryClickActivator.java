@@ -6,6 +6,7 @@ import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Variables;
 import me.fromgate.reactions.util.item.ItemUtil;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.Inventory;
@@ -64,7 +65,17 @@ public class InventoryClickActivator extends Activator {
         Variables.setTempVar("key", Integer.toString(key + 1));
         Variables.setTempVar("itemkey", (key > -1) ? ItemUtil.itemToString(pice.getBottomInventory().getItem(key)) : "");
         Variables.setTempVar("slot", Integer.toString(slot));
-        return Actions.executeActivator(pice.getPlayer(), this);
+        boolean result = Actions.executeActivator(pice.getPlayer(), this);
+        Param itemParam = new Param(Variables.getTempVar("item"));
+        if (!itemParam.isEmpty()) {
+            String itemType = itemParam.getParam("type", "0");
+            if (itemType.equalsIgnoreCase("AIR") || itemType.equalsIgnoreCase("null") || itemType.equalsIgnoreCase("0") || itemType.isEmpty()) {
+                pice.setItemStack(new ItemStack(Material.getMaterial("AIR"), 1));
+            } else {
+                pice.setItemStack(ItemUtil.parseItemStack(itemParam.getParam("param-line", "")));
+            }
+        }
+        return result;
     }
 
     @Override

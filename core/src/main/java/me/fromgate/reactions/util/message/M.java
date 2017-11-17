@@ -310,6 +310,7 @@ public enum M {
     ACTION_SQL_UPDATE("Execute update-query (update field of table at MySQL database) Parameter: query:{UPDATE... }"),
     ACTION_SQL_INSERT("Execute insert-query (insert new row in table at MySQL database) Parameter: query:{INSERT... }"),
     ACTION_SQL_DELETE("Execute delete-query (delete record in MySQL database table) Parameter: query:{DELETE... }"),
+    ACTION_SQL_SET("Execute SET (SET a constant to MySQL database before SQL_SELECT action if need it) Parameter: query:{SET... }"),
     ACTION_SIGN_SET_LINE("Set (or clear) one or more line of sign. Parameters: loc:<location> line1:<text>...line4:<text> clear:<1,2..4>"),
     ACTION_FCT_POWER_ADD("Add power to player's faction power value. Prameters: value:<Value>"),
     ACTION_ACTION_DELAYED("Execute another action after delay. Parameters: time:<time> action:{<another action with parameters>}"),
