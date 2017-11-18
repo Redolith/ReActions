@@ -506,10 +506,16 @@ public class EventManager {
     @SuppressWarnings("deprecation")
     public static boolean raiseInventoryClickEvent(InventoryClickEvent event) {
         Player p = (Player) event.getWhoClicked();
+        ItemStack oldItem = event.getCurrentItem();
         PlayerInventoryClickEvent e = new PlayerInventoryClickEvent(p, event.getAction(), event.getClick(), event.getInventory(), event.getSlotType(), event.getCurrentItem(), event.getHotbarButton(), event.getView(), event.getSlot());
         Bukkit.getServer().getPluginManager().callEvent(e);
-        event.setCurrentItem(e.getItemStack());
-        if ((event instanceof InventoryCreativeEvent)) event.setCursor(e.getItemStack());
+        ItemStack newItemStack = e.getItemStack();
+        if (newItemStack != null) {
+            if (newItemStack.getType() != Material.AIR && newItemStack.getAmount() <= 1 && oldItem != null) {
+                newItemStack.setAmount(oldItem.getAmount());
+            }
+            if (!(event instanceof InventoryCreativeEvent)) event.setCurrentItem(newItemStack);
+        }
         return e.isCancelled();
     }
 
@@ -520,7 +526,7 @@ public class EventManager {
         DropEvent e = new DropEvent(player, event.getItemDrop(), pickupDelay);
         Bukkit.getServer().getPluginManager().callEvent(e);
         BukkitCompatibilityFix.setItemPickupDelay(item, e.getPickupDelay());
-        ItemStack newItemStack =e.getItemStack() ;
+        ItemStack newItemStack = e.getItemStack();
         if (newItemStack != null && newItemStack.getType() == Material.AIR) {
             item.remove();
         }
