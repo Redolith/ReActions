@@ -47,8 +47,11 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.Door;
+import org.bukkit.material.Gate;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Openable;
+import org.bukkit.material.TrapDoor;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.ChatPaginator;
@@ -297,17 +300,22 @@ public class Util {
         return false;
     }
 
-    public static Block getDoorBottomBlock(Block b) {
-        if (b.getType() != Material.WOODEN_DOOR) return b;
-        if (b.getRelative(BlockFace.DOWN).getType() == Material.WOODEN_DOOR)
-            return b.getRelative(BlockFace.DOWN);
-        return b;
+    public static Block getDoorBottomBlock(Block block) {
+        if (block.getType() == Material.IRON_DOOR || block.getState().getData() instanceof Door) {
+            Block bottomBlock = block.getRelative(BlockFace.DOWN);
+            if (bottomBlock.getType() == Material.IRON_DOOR || bottomBlock.getState().getData() instanceof Door) {
+                return bottomBlock;
+            }
+        }
+        return block;
     }
 
     public static boolean isDoorBlock(Block b) {
-        if (b.getType() == Material.WOODEN_DOOR) return true;
-        if (b.getType() == Material.TRAP_DOOR) return true;
-        return b.getType() == Material.FENCE_GATE;
+        if (b.getType() == Material.IRON_DOOR) return true;
+        MaterialData data = b.getState().getData();
+        if (data instanceof Door) return true;
+        if (data instanceof TrapDoor) return true;
+        return data instanceof Gate;
     }
 
     public static String join(String... s) {
