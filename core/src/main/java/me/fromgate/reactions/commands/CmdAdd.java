@@ -31,33 +31,33 @@ public class CmdAdd extends Cmd {
         String arg1 = args[1];
         String arg2 = args.length >= 3 ? args[2] : "";
         String arg3 = args.length >= 4 ? args[3] : "";
-        String arg4 = args.length >= 5 ? args[4] : "";
+        StringBuilder arg4 = new StringBuilder(args.length >= 5 ? args[4] : "");
         if (args.length > 5) {
             for (int i = 5; i < args.length; i++)
-                arg4 = arg4 + " " + args[i];
-            arg4 = arg4.trim();
+                arg4.append(" ").append(args[i]);
+            arg4 = new StringBuilder(arg4.toString().trim());
         }
         if (ActivatorType.isValid(arg1)) {
             @SuppressWarnings("deprecation")
-            Block block = player != null ? player.getTargetBlock((Set<Material>) null, 100) : null;
-            return addActivator(sender, player, arg1, arg2, (arg3.isEmpty() ? "" : arg3) + (arg4.isEmpty() ? "" : " " + arg4), block);
+            Block block = player != null ? player.getTargetBlock(null, 100) : null;
+            return addActivator(sender, player, arg1, arg2, (arg3.isEmpty() ? "" : arg3) + ((arg4.length() == 0) ? "" : " " + arg4), block);
         } else if (arg1.equalsIgnoreCase("loc")) {
             if (player == null) return false;
             if (!Locator.addTpLoc(arg2, player.getLocation())) return false;
             Locator.saveLocs();
             M.CMD_ADDTPADDED.print(sender, arg2);
         } else if (arg1.equalsIgnoreCase("timer")) {
-            Param params = Param.parseParams((arg3.isEmpty() ? "" : arg3) + (arg4.isEmpty() ? "" : " " + arg4));
+            Param params = Param.parseParams((arg3.isEmpty() ? "" : arg3) + ((arg4.length() == 0) ? "" : " " + arg4));
             return Timers.addTimer(sender, arg2, params, true);
         } else if (arg1.equalsIgnoreCase("menu")) {
             // /react add menu id size sdjkf
-            if (InventoryMenu.add(arg2, Util.isInteger(arg3) ? Integer.parseInt(arg3) : 9, ((Util.isInteger(arg3) ? "" : arg3 + " ") + (arg4.isEmpty() ? "" : arg4)).trim())) {
+            if (InventoryMenu.add(arg2, Util.isInteger(arg3) ? Integer.parseInt(arg3) : 9, ((Util.isInteger(arg3) ? "" : arg3 + " ") + ((arg4.length() == 0) ? "" : arg4.toString())).trim())) {
                 M.CMD_ADDMENUADDED.print(sender, arg2);
             } else {
                 M.CMD_ADDMENUADDFAIL.print(sender, arg2);
             }
         } else if (Activators.contains(arg1)) {
-            String param = Util.replaceStandartLocations(player, arg4); // используется в addActions
+            String param = Util.replaceStandartLocations(player, arg4.toString()); // используется в addActions
             if (arg2.equalsIgnoreCase("a") || arg2.equalsIgnoreCase("action")) {
                 if (addAction(arg1, arg3, param)) {
                     Activators.saveActivators();

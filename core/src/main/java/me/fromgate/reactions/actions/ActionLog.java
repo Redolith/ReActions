@@ -68,7 +68,7 @@ public class ActionLog extends Action {
 
             if (file.isFile()) {
                 BufferedWriter bw = new BufferedWriter(new FileWriter(file, true));
-                bw.append("[" + d + "] " + message + "\n");
+                bw.append("[").append(d).append("] ").append(message).append("\n");
                 bw.close();
             }
 

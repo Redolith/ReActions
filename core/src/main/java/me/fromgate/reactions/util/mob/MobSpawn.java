@@ -120,8 +120,7 @@ public class MobSpawn {
 
         //for (int i = 0; i < Math.min(2, ln.length); i++) {
         int k = 0;
-        for (int i = 0; i < ln.length; i++) {
-            String mbs = ln[i];
+        for (String mbs : ln) {
             String name = "";
             if (mbs.contains("$")) {
                 name = mbs.substring(0, mbs.indexOf("$"));
@@ -239,7 +238,7 @@ public class MobSpawn {
         String[] ln = equip.split(";");
         if (ln.length == 0) return;
         String[] eq = {"", "", "", "", "", ""};
-        for (int i = 0; i < Math.min(ln.length, 6); i++) eq[i] = ln[i];
+        System.arraycopy(ln, 0, eq, 0, Math.min(ln.length, 6));
         setMobEquipment(e, eq[0], eq[1], eq[2], eq[3], eq[4], eq[5]);
     }
 

@@ -220,12 +220,7 @@ public class Variables {
 
     public static void saveAsynch(String player) {
         JavaPlugin pluginInstance = ReActions.instance;
-        pluginInstance.getServer().getScheduler().runTaskAsynchronously(pluginInstance, new Runnable() {
-            @Override
-            public void run() {
-                save(player);
-            }
-        });
+        pluginInstance.getServer().getScheduler().runTaskAsynchronously(pluginInstance, () -> save(player));
     }
 
     private static void saveGeneral() {
@@ -259,8 +254,8 @@ public class Variables {
                 File dir = new File(ReActions.instance.getDataFolder() + File.separator + "variables");
                 if (!dir.exists() || !dir.isDirectory()) return;
                 String[] files = dir.list();
-                for (int i = 0; i < files.length; i++) {
-                    File fl = new File(dir, files[i]);
+                for (String file : files) {
+                    File fl = new File(dir, file);
                     fl.delete();
                 }
                 dir.delete();
@@ -326,13 +321,13 @@ public class Variables {
             replacement = FLOAT_0.matcher(replacement).matches() ? Integer.toString((int) Double.parseDouble(replacement)) : Matcher.quoteReplacement(replacement);
             if (key.startsWith("general.")) {
                 String id = id = key.substring(8); // key.replaceFirst("general\\.", "");
-                newStr = newStr.replaceAll(new StringBuilder("(?i)%var:").append(Pattern.quote(id)).append("%").toString(), replacement);
+                newStr = newStr.replaceAll("(?i)%var:" + Pattern.quote(id) + "%", replacement);
             } else {
                 if (player != null && key.matches(Util.join("(?i)^", player.getName(), "\\..*"))) {
                     String id = key.replaceAll(Util.join("(?i)^", player.getName(), "\\."), "");
-                    newStr = newStr.replaceAll(new StringBuilder("(?i)%varp:").append(Pattern.quote(id)).append("%").toString(), replacement);
+                    newStr = newStr.replaceAll("(?i)%varp:" + Pattern.quote(id) + "%", replacement);
                 }
-                newStr = newStr.replaceAll(new StringBuilder("(?i)%varp?:").append(Pattern.quote(key)).append("%").toString(), replacement);
+                newStr = newStr.replaceAll("(?i)%varp?:" + Pattern.quote(key) + "%", replacement);
             }
         }
         return newStr;

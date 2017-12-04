@@ -597,11 +597,10 @@ public class VirtualItem extends ItemStack {
                 return dc.name();
         if (!useRGB)
             getClosestColor(c).name();
-        StringBuilder sb = new StringBuilder();
-        sb.append(c.getRed()).append(",");
-        sb.append(c.getGreen()).append(",");
-        sb.append(c.getBlue());
-        return sb.toString();
+        String sb = String.valueOf(c.getRed()) + "," +
+                c.getGreen() + "," +
+                c.getBlue();
+        return sb;
     }
 
     public List<String> toStringList() {
@@ -671,8 +670,8 @@ public class VirtualItem extends ItemStack {
             String eType = e;
             int power = 0;
             if (eType.contains(":")) {
-                String powerStr = new String(eType.substring(eType.indexOf(":") + 1));
-                eType = new String(eType.substring(0, eType.indexOf(":")));
+                String powerStr = eType.substring(eType.indexOf(":") + 1);
+                eType = eType.substring(0, eType.indexOf(":"));
                 power = INT_MIN_MAX.matcher(powerStr).matches() ? getNumber(powerStr) : 0;
             }
             Enchantment enchantment = Enchantment
@@ -804,7 +803,7 @@ public class VirtualItem extends ItemStack {
 
     protected static String hideBkts(String s) {
         int count = 0;
-        String r = "";
+        StringBuilder r = new StringBuilder();
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
             String a = String.valueOf(c);
@@ -817,9 +816,9 @@ public class VirtualItem extends ItemStack {
                     a = "#BKT2#";
                 count--;
             }
-            r = r + a;
+            r.append(a);
         }
-        return r;
+        return r.toString();
     }
 
     protected static String getParam(Map<String, String> params, String key,

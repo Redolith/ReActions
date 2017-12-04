@@ -148,7 +148,7 @@ public enum Flags {
     public static boolean checkFlag(Player p, String flag, String param, boolean not) {
         Flags ft = Flags.getByName(flag);
         if (ft == null) return false;
-        Variables.setTempVar(new StringBuilder(flag).append("_flag").toString().toUpperCase(), param);
+        Variables.setTempVar((flag + "_flag").toUpperCase(), param);
         boolean check = ft.check(p, param);
         if (not) return !check;
         return check;
@@ -162,7 +162,7 @@ public enum Flags {
         if (c.getFlags().size() > 0)
             for (int i = 0; i < c.getFlags().size(); i++) {
                 FlagVal f = c.getFlags().get(i);
-                Variables.setTempVar(new StringBuilder(f.flag).append("_flag").toString().toUpperCase(), f.value);
+                Variables.setTempVar((f.flag + "_flag").toUpperCase(), f.value);
                 if (!checkFlag(p, f.flag, Placeholders.replacePlaceholderButRaw(p, f.value), f.not)) return false;
             }
         return true;

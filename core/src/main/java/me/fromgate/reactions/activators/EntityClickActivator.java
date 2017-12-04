@@ -36,8 +36,7 @@ public class EntityClickActivator extends Activator {
     }
 
     private boolean isActivatorEntity(Entity entity) {
-        if (!(this.entityType).isEmpty() && !(entity.getType()).toString().equalsIgnoreCase(this.entityType)) return false;
-        return true;
+        return this.entityType.isEmpty() || entity.getType().toString().equalsIgnoreCase(this.entityType);
     }
 
     @Override

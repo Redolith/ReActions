@@ -21,11 +21,11 @@ public class CmdRemove extends Cmd {
         if (args.length == 1) return false;
         String arg1 = args[1];
         String arg2 = args.length >= 3 ? args[2] : "";
-        String arg3 = args.length >= 4 ? args[3] : "";
+        StringBuilder arg3 = new StringBuilder(args.length >= 4 ? args[3] : "");
         if (args.length > 5) {
             for (int i = 4; i < args.length; i++)
-                arg3 = arg3 + " " + args[i];
-            arg3 = arg3.trim();
+                arg3.append(" ").append(args[i]);
+            arg3 = new StringBuilder(arg3.toString().trim());
         }
         if (arg2.isEmpty()) return false;
         if (arg1.equalsIgnoreCase("act") || arg1.equalsIgnoreCase("activator")) {
@@ -42,14 +42,14 @@ public class CmdRemove extends Cmd {
         } else if (arg1.equalsIgnoreCase("timer") || arg1.equalsIgnoreCase("tmr")) {
             Timers.removeTimer(sender, arg2);
         } else if (arg1.equalsIgnoreCase("var") || arg1.equalsIgnoreCase("variable") || arg1.equalsIgnoreCase("variables")) {
-            removeVariable(sender, arg2 + (arg3.isEmpty() ? "" : " " + arg3));
+            removeVariable(sender, arg2 + ((arg3.length() == 0) ? "" : " " + arg3));
         } else if (arg1.equalsIgnoreCase("menu") || arg1.equalsIgnoreCase("m")) {
             if (InventoryMenu.remove(arg2)) M.printMSG(sender, "msg_removemenu", arg2);
             else M.printMSG(sender, "msg_removemenufail", 'c', '4', arg2);
         } else if (Activators.contains(arg1)) {
             Activator act = Activators.get(arg1);
-            if (Util.isIntegerGZ(arg3)) {
-                int num = Integer.parseInt(arg3);
+            if (Util.isIntegerGZ(arg3.toString())) {
+                int num = Integer.parseInt(arg3.toString());
                 if (arg2.equalsIgnoreCase("f") || arg2.equalsIgnoreCase("flag")) {
                     if (act.removeFlag(num - 1))
                         M.printMSG(sender, "msg_flagremoved", act.getName(), num);
@@ -64,7 +64,7 @@ public class CmdRemove extends Cmd {
                     else M.printMSG(sender, "msg_failedtoremovereaction", act.getName(), num);
                 } else return false;
                 Activators.saveActivators();
-            } else M.printMSG(sender, "msg_wrongnumber", arg3);
+            } else M.printMSG(sender, "msg_wrongnumber", arg3.toString());
         }
         return true;
     }

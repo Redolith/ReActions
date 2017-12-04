@@ -57,7 +57,7 @@ public class FakeCmd implements CommandExecutor {
         try {
             Constructor<PluginCommand> commandConstructor = PluginCommand.class.getDeclaredConstructor(String.class, Plugin.class);
             commandConstructor.setAccessible(true);
-            return (PluginCommand) commandConstructor.newInstance(commandStr, ReActions.getPlugin());
+            return commandConstructor.newInstance(commandStr, ReActions.getPlugin());
         } catch (Exception e) {
             e.printStackTrace();
         }

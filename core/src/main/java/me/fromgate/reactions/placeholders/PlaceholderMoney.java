@@ -12,7 +12,7 @@ public class PlaceholderMoney extends Placeholder {
     @Override
     public String processPlaceholder(Player player, String key, String param) {
         Map<String, String> params = RAEconomics.getBalances(player);
-        return params.containsKey(key) ? params.get(key) : null;
+        return params.getOrDefault(key, null);
     }
 
 }

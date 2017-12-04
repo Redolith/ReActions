@@ -53,7 +53,7 @@ public class PlaceholderPlayer extends Placeholder {
 
     @SuppressWarnings("deprecation")
     private Location getViewLocation(Player p) {
-        Block b = p.getTargetBlock((Set<Material>) null, 100);
+        Block b = p.getTargetBlock(null, 100);
         if (b == null) return p.getLocation();
         return b.getLocation().add(0.5, 0.5, 0.5);
     }

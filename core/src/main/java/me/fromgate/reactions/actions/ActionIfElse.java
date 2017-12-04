@@ -73,8 +73,8 @@ public class ActionIfElse extends Action {
             if (params.isEmpty() || !params.toString().contains("=")) continue;
             String action = params.getParam(actionKey);
 
-            String flag = new String(action.substring(0, action.indexOf("=")));
-            String param = new String(action.substring(action.indexOf("=") + 1, action.length()));
+            String flag = action.substring(0, action.indexOf("="));
+            String param = action.substring(action.indexOf("=") + 1, action.length());
             actions.add(new ActVal(Actions.getValidName(flag), param));
         }
 

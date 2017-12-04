@@ -70,12 +70,7 @@ public class ActionCommand extends Action {
         if (Bukkit.isPrimaryThread()) {
             dispatchCmd(setOp, sender, commandLine);
         } else {
-            Bukkit.getScheduler().runTask(ReActions.getPlugin(), new Runnable() {
-                @Override
-                public void run() {
-                    dispatchCmd(setOp, sender, commandLine);
-                }
-            });
+            Bukkit.getScheduler().runTask(ReActions.getPlugin(), () -> dispatchCmd(setOp, sender, commandLine));
         }
     }
 

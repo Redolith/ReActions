@@ -141,5 +141,5 @@ public class RAWorldGuard {
 
     public static boolean isLocationInRegion(Location loc, String regionName) {
         return  bridge.isLocationInRegion(loc, regionName);
-    };
+    }
 }

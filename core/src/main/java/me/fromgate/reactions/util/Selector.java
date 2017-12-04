@@ -36,7 +36,7 @@ public class Selector {
     @SuppressWarnings("deprecation")
     public static void selectLocation(Player p, Location loc) {
         if (p == null) return;
-        if (loc == null) loc = p.getTargetBlock((Set<Material>) null, 100).getLocation();
+        if (loc == null) loc = p.getTargetBlock(null, 100).getLocation();
         locs.put(p.getName(), loc);
     }
 

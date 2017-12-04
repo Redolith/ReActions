@@ -158,12 +158,9 @@ public class InventoryMenu implements Listener {
     }
 
     public static void openInventory(final Player player, final Inventory inv) {
-        Bukkit.getScheduler().runTaskLater(ReActions.instance, new Runnable() {
-            @Override
-            public void run() {
-                if (player.isOnline()) player.openInventory(inv);
-                else activeMenus.remove(getInventoryCode(player, inv));
-            }
+        Bukkit.getScheduler().runTaskLater(ReActions.instance, () -> {
+            if (player.isOnline()) player.openInventory(inv);
+            else activeMenus.remove(getInventoryCode(player, inv));
         }, 1);
     }
 

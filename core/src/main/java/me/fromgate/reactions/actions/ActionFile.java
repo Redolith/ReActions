@@ -31,8 +31,8 @@ public class ActionFile extends Action {
             int c = 0;
             if (file.isDirectory()) {
                 String[] files = file.list();
-                for (int i = 0; i < files.length; i++) {
-                    File f = new File(file, files[i]);
+                for (String subFile : files) {
+                    File f = new File(file, subFile);
                     if (f.delete()) c++;
                 }
             } else {

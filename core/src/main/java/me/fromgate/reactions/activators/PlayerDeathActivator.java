@@ -55,8 +55,8 @@ public class PlayerDeathActivator extends Activator {
         if (de.getKiller() != null) {
             Variables.setTempVar("killer-type", de.getKiller().getType().name());
             if (de.getKiller().getType() == EntityType.PLAYER) {
-                Variables.setTempVar("killer-name", ((Player) de.getKiller()).getName());
-                Variables.setTempVar("targetplayer", ((Player) de.getKiller()).getName());
+                Variables.setTempVar("killer-name", de.getKiller().getName());
+                Variables.setTempVar("targetplayer", de.getKiller().getName());
             } else {
                 String mobName = de.getKiller().getCustomName();
                 Variables.setTempVar("killer-name", mobName == null || mobName.isEmpty() ? de.getKiller().getType().name() : mobName);

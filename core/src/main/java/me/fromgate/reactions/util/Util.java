@@ -191,7 +191,7 @@ public class Util {
         if (p == null) return param;
         Location targetBlock = null;
         try {
-            targetBlock = p.getTargetBlock((Set<Material>) null, 100).getLocation();
+            targetBlock = p.getTargetBlock(null, 100).getLocation();
         } catch (Exception ignored) {
         }
         Map<String, Location> locs = new HashMap<>();

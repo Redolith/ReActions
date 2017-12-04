@@ -229,13 +229,9 @@ public class EventManager {
 
     public static boolean raiseCommandEvent(Player p, String command, boolean canceled) {
         if (command.isEmpty()) return false;
-        if (p != null)
-            Bukkit.getScheduler().runTaskLater(plg(), new Runnable() {
-                @Override
-                public void run() {
-                    Util.setEventGod(p);
-                }
-            }, 1);
+        if (p != null) {
+            Bukkit.getScheduler().runTaskLater(plg(), () -> Util.setEventGod(p), 1);
+        }
 
         String[] args = command.split(" ");
         CommandEvent ce = new CommandEvent(p, command, args, canceled);
@@ -281,14 +277,11 @@ public class EventManager {
         if (target.isEmpty() && !param.hasAnyParam(PlayerSelectors.getAllKeys())) target.add(senderPlayer);
 
         for (int i = 0; i < repeat; i++) {
-            Bukkit.getScheduler().runTaskLater(plg(), new Runnable() {
-                @Override
-                public void run() {
-                    for (Player player : target) {
-                        if (Activators.isStopped(player, id, true)) continue;
-                        ExecEvent ce = new ExecEvent(senderPlayer, player, id, tempVars);
-                        Bukkit.getServer().getPluginManager().callEvent(ce);
-                    }
+            Bukkit.getScheduler().runTaskLater(plg(), () -> {
+                for (Player player : target) {
+                    if (Activators.isStopped(player, id, true)) continue;
+                    ExecEvent ce = new ExecEvent(senderPlayer, player, id, tempVars);
+                    Bukkit.getServer().getPluginManager().callEvent(ce);
                 }
             }, delay * repeat);
         }
@@ -302,34 +295,28 @@ public class EventManager {
             return false;
         final Player p = event.getPlayer();
         final Location l = event.getClickedBlock().getLocation();
-        Bukkit.getScheduler().runTaskLater(plg(), new Runnable() {
-            @Override
-            public void run() {
-                PlateEvent pe = new PlateEvent(p, l);
-                Bukkit.getServer().getPluginManager().callEvent(pe);
-            }
+        Bukkit.getScheduler().runTaskLater(plg(), () -> {
+            PlateEvent pe = new PlateEvent(p, l);
+            Bukkit.getServer().getPluginManager().callEvent(pe);
         }, 1);
         return false;
     }
 
     public static void raiseAllRegionEvents(final Player player, final Location to, final Location from) {
         if (!RAWorldGuard.isConnected()) return;
-        Bukkit.getScheduler().runTaskLaterAsynchronously(ReActions.instance, new Runnable() {
-            @Override
-            public void run() {
+        Bukkit.getScheduler().runTaskLaterAsynchronously(ReActions.instance, () -> {
 
-                final List<String> regionsTo = RAWorldGuard.getRegions(to);
-                final List<String> regionsFrom = RAWorldGuard.getRegions(from);
+            final List<String> regionsTo = RAWorldGuard.getRegions(to);
+            final List<String> regionsFrom = RAWorldGuard.getRegions(from);
 
-                Bukkit.getScheduler().runTask(ReActions.instance, new Runnable() {
-                    @Override
-                    public void run() {
-                        raiseRegionEvent(player, regionsTo);
-                        raiseRgEnterEvent(player, regionsTo, regionsFrom);
-                        raiseRgLeaveEvent(player, regionsTo, regionsFrom);
-                    }
-                });
-            }
+            Bukkit.getScheduler().runTask(ReActions.instance, new Runnable() {
+                @Override
+                public void run() {
+                    raiseRegionEvent(player, regionsTo);
+                    raiseRgEnterEvent(player, regionsTo, regionsFrom);
+                    raiseRgLeaveEvent(player, regionsTo, regionsFrom);
+                }
+            });
         }, 1);
     }
 
@@ -375,12 +362,7 @@ public class EventManager {
         RegionEvent wge = new RegionEvent(player, region);
         Bukkit.getServer().getPluginManager().callEvent(wge);
 
-        Bukkit.getScheduler().runTaskLater(plg(), new Runnable() {
-            @Override
-            public void run() {
-                setFutureRegionCheck(playerName, region, true);
-            }
-        }, 20 * Cfg.worlduardRecheck);
+        Bukkit.getScheduler().runTaskLater(plg(), () -> setFutureRegionCheck(playerName, region, true), 20 * Cfg.worlduardRecheck);
     }
 
 
@@ -394,34 +376,23 @@ public class EventManager {
         ItemWearEvent iwe = new ItemWearEvent(player);
         if (!iwe.isItemWeared(itemStr)) return;
         Bukkit.getServer().getPluginManager().callEvent(iwe);
-        Bukkit.getScheduler().runTaskLater(plg(), new Runnable() {
-            @Override
-            public void run() {
-                setFutureItemWearCheck(playerName, itemStr, true);
-            }
-        }, 20 * Cfg.itemWearRecheck);
+        Bukkit.getScheduler().runTaskLater(plg(), () -> setFutureItemWearCheck(playerName, itemStr, true), 20 * Cfg.itemWearRecheck);
     }
 
 
     public static void raiseItemWearEvent(Player player) {
         final String playerName = player.getName();
-        Bukkit.getScheduler().runTaskLater(plg(), new Runnable() {
-            @Override
-            public void run() {
-                for (ItemWearActivator iw : Activators.getItemWearActivatos())
-                    setFutureItemWearCheck(playerName, iw.getItemStr(), false);
-            }
+        Bukkit.getScheduler().runTaskLater(plg(), () -> {
+            for (ItemWearActivator iw : Activators.getItemWearActivatos())
+                setFutureItemWearCheck(playerName, iw.getItemStr(), false);
         }, 1);
     }
 
     public static void raiseItemHoldEvent(Player player) {
         final String playerName = player.getName();
-        Bukkit.getScheduler().runTaskLater(plg(), new Runnable() {
-            @Override
-            public void run() {
-                for (ItemHoldActivator ih : Activators.getItemHoldActivatos())
-                    setFutureItemHoldCheck(playerName, ih.getItemStr(), false);
-            }
+        Bukkit.getScheduler().runTaskLater(plg(), () -> {
+            for (ItemHoldActivator ih : Activators.getItemHoldActivatos())
+                setFutureItemHoldCheck(playerName, ih.getItemStr(), false);
         }, 1);
     }
 
@@ -438,12 +409,7 @@ public class EventManager {
         ItemHoldEvent ihe = new ItemHoldEvent(player);
         Bukkit.getServer().getPluginManager().callEvent(ihe);
 
-        Bukkit.getScheduler().runTaskLater(plg(), new Runnable() {
-            @Override
-            public void run() {
-                setFutureItemHoldCheck(playerName, itemStr, true);
-            }
-        }, 20 * Cfg.itemHoldRecheck);
+        Bukkit.getScheduler().runTaskLater(plg(), () -> setFutureItemHoldCheck(playerName, itemStr, true), 20 * Cfg.itemHoldRecheck);
         return true;
     }
 

@@ -100,7 +100,7 @@ public class SQLManager {
 
     // server port db user password codepage
     public static Connection connectToMySQL(Param params) {
-        String сAddress = params.getParam("server", serverAdress);
+        String cAddress = params.getParam("server", serverAdress);
         String cPort = params.getParam("port", port);
         String cDataBase = params.getParam("db", dataBase);
         String cUser = params.getParam("user", userName);
@@ -114,7 +114,7 @@ public class SQLManager {
         prop.setProperty("user", cUser);
         prop.setProperty("password", cPassword);
         Connection connection = null;
-        String connectionLine = "jdbc:mysql://" + сAddress + (cPort.isEmpty() ? "" : ":" + cPort) + "/" + cDataBase;
+        String connectionLine = "jdbc:mysql://" + cAddress + (cPort.isEmpty() ? "" : ":" + cPort) + "/" + cDataBase;
         try {
             connection = DriverManager.getConnection(connectionLine, prop);
         } catch (Exception e) {

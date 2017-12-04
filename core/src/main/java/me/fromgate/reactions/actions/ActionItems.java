@@ -302,12 +302,10 @@ public class ActionItems extends Action {
         String actionItems = ItemUtil.toDisplayString(items);
         setMessageParam(actionItems);
         Variables.setTempVar("item_str", actionItems);
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plg(), new Runnable() {
-            public void run() {
-                for (ItemStack i : items)
-                    ItemUtil.giveItemOrDrop(p, i);
-                EventManager.raiseItemHoldEvent(p);
-            }
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plg(), () -> {
+            for (ItemStack i : items)
+                ItemUtil.giveItemOrDrop(p, i);
+            EventManager.raiseItemHoldEvent(p);
         }, 1);
         return true;
     }

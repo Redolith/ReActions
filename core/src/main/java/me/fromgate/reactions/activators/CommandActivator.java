@@ -97,14 +97,14 @@ public class CommandActivator extends Activator {
     }
 
     private void setTempVars(String command, String[] args) {
-        String argStr = args.length > 1 ? command.replaceAll(new StringBuilder("^").append(args[0]).append(" ").toString(), "") : "";
+        String argStr = args.length > 1 ? command.replaceAll("^" + args[0] + " ", "") : "";
         Variables.setTempVar("command", command);
         Variables.setTempVar("args", argStr);
         String argsLeft = command.replaceAll("(\\S+ )+{" + args.length + "}", "");
         Variables.setTempVar("argsleft", argsLeft);
         if (args.length > 0) {
             for (int i = 0; i < args.length; i++)
-                Variables.setTempVar(new StringBuilder("arg").append(i).toString(), args[i]);
+                Variables.setTempVar("arg" + i, args[i]);
         }
 
         int count = 0;

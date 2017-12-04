@@ -42,10 +42,9 @@ public class ActionMessage extends Action {
     }
 
     private String removeParams(String message) {
-        StringBuilder sb = new StringBuilder("(?i)(");
-        sb.append(Joiner.on("|").join(PlayerSelectors.getAllKeys()));
-        sb.append("|hide):(\\{.*\\}|\\S+)\\s{0,1}");
-        return message.replaceAll(sb.toString(), "");
+        String sb = "(?i)(" + Joiner.on("|").join(PlayerSelectors.getAllKeys()) +
+                "|hide):(\\{.*\\}|\\S+)\\s{0,1}";
+        return message.replaceAll(sb, "");
         //String message = params.getParam("text", params.getParam("param-line").replaceAll("(?i)(region|loc|radius|rgplayer|player|world|faction|group|perm):(\\{.*\\}|\\S+)\\s{0,1}", ""));
 
     }
@@ -77,7 +76,7 @@ public class ActionMessage extends Action {
         if (annoymentTime.isEmpty()) return true;
         long time = Util.parseTime(annoymentTime);
         if (time == 0) return false;
-        String key = new StringBuilder("reactions-msg-")/*.append(this.getActivatorName())*/.append(message.hashCode()).append((this.isAction() ? "act" : "react")).toString();
+        String key = "reactions-msg-" +/*.append(this.getActivatorName())*/message.hashCode() + (this.isAction() ? "act" : "react");
         if (player.hasMetadata(key)) {
             Long until = player.getMetadata(key).get(0).asLong();
             Long now = System.currentTimeMillis();

@@ -80,8 +80,7 @@ public class SignActivator extends Activator {
                 return false;
             }
         }
-        if (emptyLines >= 4) return false;
-        return true;
+        return emptyLines < 4;
     }
 
     @Override

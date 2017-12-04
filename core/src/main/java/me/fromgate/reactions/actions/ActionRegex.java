@@ -41,10 +41,9 @@ public class ActionRegex extends Action {
     }
 
     private String removeParams(String message) {
-        StringBuilder sb = new StringBuilder("(?i)(");
-        sb.append(Joiner.on("|").join(PlayerSelectors.getAllKeys()));
-        sb.append("|hide|regex|prefix):(\\{.*\\}|\\S+)\\s{0,1}");
-        return message.replaceAll(sb.toString(), "");
+        String sb = "(?i)(" + Joiner.on("|").join(PlayerSelectors.getAllKeys()) +
+                "|hide|regex|prefix):(\\{.*\\}|\\S+)\\s{0,1}";
+        return message.replaceAll(sb, "");
 
     }
 

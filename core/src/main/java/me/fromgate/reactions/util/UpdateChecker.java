@@ -55,12 +55,7 @@ public class UpdateChecker {
         setUpdateMessage(new ArrayList<String>());
         if (enableUpdateChecker) {
             updateMsg();
-            Bukkit.getScheduler().runTaskTimerAsynchronously(pluginInstance, new Runnable() {
-                @Override
-                public void run() {
-                    updateMsg();
-                }
-            }, (40 + (new Random()).nextInt(20)) * 1200, 60 * 1200);
+            Bukkit.getScheduler().runTaskTimerAsynchronously(pluginInstance, () -> updateMsg(), (40 + (new Random()).nextInt(20)) * 1200, 60 * 1200);
         }
     }
 
@@ -137,14 +132,11 @@ public class UpdateChecker {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private static void updateMsg() {
-        pluginInstance.getServer().getScheduler().runTaskAsynchronously(pluginInstance, new Runnable() {
-            @Override
-            public void run() {
-                updateLastVersion();
-                if (isUpdateRequired()) {
-                    log(projectName + " v" + projectCurrentVersion + " is outdated! Recommended version is v" + projectLastVersion);
-                    log(projectBukkitDev);
-                }
+        pluginInstance.getServer().getScheduler().runTaskAsynchronously(pluginInstance, () -> {
+            updateLastVersion();
+            if (isUpdateRequired()) {
+                log(projectName + " v" + projectCurrentVersion + " is outdated! Recommended version is v" + projectLastVersion);
+                log(projectBukkitDev);
             }
         });
     }

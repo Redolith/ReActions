@@ -336,7 +336,7 @@ public class ItemUtil {
         VirtualItem vi = itemFromString(itemStr);
         if (vi != null) return vi.toDisplayString();
         Map<String, String> itemMap = VirtualItem.parseParams(itemStr);
-        String name = itemMap.containsKey("name") ? itemMap.get("name") : itemMap.containsKey("type") ? itemMap.get("type") : null;
+        String name = itemMap.containsKey("name") ? itemMap.get("name") : itemMap.getOrDefault("type", null);
         if (name == null) return itemStr;
         int amount = getAmount(itemStr);
         String data = VirtualItem.getParam(itemMap, "data", "0");

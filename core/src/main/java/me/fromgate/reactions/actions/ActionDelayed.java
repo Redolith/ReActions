@@ -31,30 +31,6 @@ public class ActionDelayed extends Action {
 
         ActVal av = new ActVal(actionStr, paramStr);
         ActionsWaiter.executeDelayed(p, av, this.isAction(), delay);
-
-		
-		
-		
-		/*
-        final Actions action = Actions.getByName(actionStr);
-		if (action==null) {
-			M.logOnce(actionSource, "Failed to execute delayed action: "+actionSource);
-			return false;
-		}
-		
-		final boolean isAction = this.isAction();
-		//final Activator activator = this.getActivator();
-		final Param actionParam = new Param (paramStr);
-		Bukkit.getScheduler().runTaskLater(plg(), new Runnable(){
-			@Override
-			public void run() {
-				if (p==null) return;
-				action.performAction(p,  isAction, actionParam);
-			}
-		}, Util.timeToTicks(delay));
-		
-		*/
-
         return false;
     }
 

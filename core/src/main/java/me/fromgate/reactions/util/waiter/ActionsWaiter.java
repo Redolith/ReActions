@@ -80,20 +80,17 @@ public class ActionsWaiter {
     }
 
     public static void save() {
-        Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), new Runnable() {
-            @Override
-            public void run() {
-                YamlConfiguration cfg = new YamlConfiguration();
-                File f = new File(ReActions.getPlugin().getDataFolder() + File.separator + "delayed-actions.yml");
-                if (f.exists()) f.delete();
-                for (Task t : tasks) {
-                    if (!t.isExecuted()) t.save(cfg);
-                }
-                try {
-                    cfg.save(f);
-                } catch (Throwable e) {
-                    M.logMessage("Failed to save delayed actions");
-                }
+        Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> {
+            YamlConfiguration cfg = new YamlConfiguration();
+            File f = new File(ReActions.getPlugin().getDataFolder() + File.separator + "delayed-actions.yml");
+            if (f.exists()) f.delete();
+            for (Task t : tasks) {
+                if (!t.isExecuted()) t.save(cfg);
+            }
+            try {
+                cfg.save(f);
+            } catch (Throwable e) {
+                M.logMessage("Failed to save delayed actions");
             }
         }, 1);
     }

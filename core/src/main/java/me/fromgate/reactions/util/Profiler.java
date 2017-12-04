@@ -69,26 +69,18 @@ public class Profiler {
     }
 
     public static void startTicker() {
-        bt = Bukkit.getScheduler().runTaskTimer(ReActions.instance, new Runnable() {
-            @Override
-            public void run() {
-                tick_count++;
-            }
-        }, 0, 1);
+        bt = Bukkit.getScheduler().runTaskTimer(ReActions.instance, () -> tick_count++, 0, 1);
         active = true;
     }
 
     public static void stopTicker(Long delay, final CommandSender s) {
         if (!active) return;
-        Bukkit.getScheduler().runTaskLater(ReActions.instance, new Runnable() {
-            @Override
-            public void run() {
-                bt.cancel();
-                bt = null;
-                active = false;
-                saveProfileResult();
-                printLastResult(s);
-            }
+        Bukkit.getScheduler().runTaskLater(ReActions.instance, () -> {
+            bt.cancel();
+            bt = null;
+            active = false;
+            saveProfileResult();
+            printLastResult(s);
         }, delay);
     }
 

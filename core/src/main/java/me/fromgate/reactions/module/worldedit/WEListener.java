@@ -36,21 +36,18 @@ public class WEListener {
         Actor actor = event.getActor();
         if (actor != null && actor.isPlayer()) {
             Player player = Bukkit.getPlayer(actor.getUniqueId());
-            Bukkit.getScheduler().runTaskLater(plg(), new Runnable() {
-                @Override
-                public void run() {
-                    Selection selection = getSelection(player);
-                    if (selection != null) {
-                        Region region = null;
-                        try {
-                            region = selection.getRegionSelector().getRegion();
-                            if (region != null) {
-                                // Check Region Selection
-                                checkChangeSelectionRegion(player, selection, region);
-                            }
-                        } catch (IncompleteRegionException e) {
-                           // e.printStackTrace();
+            Bukkit.getScheduler().runTaskLater(plg(), () -> {
+                Selection selection = getSelection(player);
+                if (selection != null) {
+                    Region region = null;
+                    try {
+                        region = selection.getRegionSelector().getRegion();
+                        if (region != null) {
+                            // Check Region Selection
+                            checkChangeSelectionRegion(player, selection, region);
                         }
+                    } catch (IncompleteRegionException e) {
+                        // e.printStackTrace();
                     }
                 }
             }, 2);

@@ -549,7 +549,6 @@ public class MathEval
         int argbeg;
 
         for (argbeg = beg; argbeg <= end && expression.charAt(argbeg) != '('; argbeg++) {
-            ;
         }
 
         String fncnam = expression.substring(beg, argbeg).trim();
@@ -755,16 +754,16 @@ public class MathEval
     //STATIC NESTED CLASSES - OPERATION EVALUATOR INTERFACE
     //*************************************************************************************************
 
-    static public interface OperatorHandler {
-        public double evaluateOperator(double lft, char opr, double rgt) throws ArithmeticException;
+    public interface OperatorHandler {
+        double evaluateOperator(double lft, char opr, double rgt) throws ArithmeticException;
     }
 
     //*************************************************************************************************
     //STATIC NESTED CLASSES - FUNCTION EVALUATOR INTERFACE
     //*************************************************************************************************
 
-    static public interface FunctionHandler {
-        public double evaluateFunction(String fncnam, ArgParser fncargs) throws ArithmeticException;
+    public interface FunctionHandler {
+        double evaluateFunction(String fncnam, ArgParser fncargs) throws ArithmeticException;
     }
 
     //*************************************************************************************************

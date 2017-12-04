@@ -207,8 +207,8 @@ public abstract class Activator {
             String flag = flgstr;
             String param = "";
             if (flgstr.contains("=")) {
-                flag = new String(flgstr.substring(0, flgstr.indexOf("=")));
-                param = new String(flgstr.substring(flgstr.indexOf("=") + 1, flgstr.length()));
+                flag = flgstr.substring(0, flgstr.indexOf("="));
+                param = flgstr.substring(flgstr.indexOf("=") + 1, flgstr.length());
             }
             addReaction(flag, param);
         }

@@ -188,19 +188,16 @@ public class Timers {
 
     public static void initIngameTimer() {
         if (ingameTimer != null) return;
-        ingameTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(ReActions.instance, new Runnable() {
-            @Override
-            public void run() {
-                String currentTime = Time.currentIngameTime();
-                if (currentIngameTime.equalsIgnoreCase(currentTime)) return;
-                currentIngameTime = currentTime;
-                if (!timersIngame.contains(currentIngameTime)) return;
-                Map<String, Timer> timers = getIngameTimers();
-                for (String key : timers.keySet()) {
-                    Timer timer = timers.get(key);
-                    if (timer.isTimeToRun()) {
-                        EventManager.raiseExecEvent(null, timer.getParams());
-                    }
+        ingameTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(ReActions.instance, () -> {
+            String currentTime = Time.currentIngameTime();
+            if (currentIngameTime.equalsIgnoreCase(currentTime)) return;
+            currentIngameTime = currentTime;
+            if (!timersIngame.contains(currentIngameTime)) return;
+            Map<String, Timer> timers = getIngameTimers();
+            for (String key : timers.keySet()) {
+                Timer timer = timers.get(key);
+                if (timer.isTimeToRun()) {
+                    EventManager.raiseExecEvent(null, timer.getParams());
                 }
             }
         }, 1, 4); //1 По идее так не упустим, хотя.... ;)
@@ -208,13 +205,10 @@ public class Timers {
 
     public static void initServerTimer() {
         if (serverTimer != null) return;
-        serverTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(ReActions.instance, new Runnable() {
-            @Override
-            public void run() {
-                for (Timer timer : getServerTimers().values()) {
-                    if (timer.isTimeToRun()) {
-                        EventManager.raiseExecEvent(null, timer.getParams());
-                    }
+        serverTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(ReActions.instance, () -> {
+            for (Timer timer : getServerTimers().values()) {
+                if (timer.isTimeToRun()) {
+                    EventManager.raiseExecEvent(null, timer.getParams());
                 }
             }
         }, 1, 20);

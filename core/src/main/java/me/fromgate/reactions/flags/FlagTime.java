@@ -58,18 +58,18 @@ public class FlagTime extends Flag {
     }
 
     private void saveTempVar(String time) {
-        String result = time;
+        StringBuilder result = new StringBuilder(time);
         if (!(time.equals("day") || time.equals("night"))) {
             String[] ln = time.split(",");
             if (ln.length > 0)
                 for (int i = 0; i < ln.length; i++) {
                     if (!Util.isInteger(ln[i])) continue;
                     String tmp = String.format("%02d:00", Integer.parseInt(ln[i]));
-                    if (i == 0) result = tmp;
-                    else result = result + ", " + tmp;
+                    if (i == 0) result = new StringBuilder(tmp);
+                    else result.append(", ").append(tmp);
                 }
         }
-        Variables.setTempVar("TIME", result);
+        Variables.setTempVar("TIME", result.toString());
     }
 }
 

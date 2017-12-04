@@ -75,7 +75,7 @@ public class Delayer {
 
     public static boolean checkDelay(String id, long updateTime) {
         String idd = (id.contains(".") ? id : "global." + id);
-        boolean result = !delays.containsKey(idd) || (Long) delays.get(idd) < System.currentTimeMillis();
+        boolean result = !delays.containsKey(idd) || delays.get(idd) < System.currentTimeMillis();
         if (result && updateTime > 0) Delayer.setDelay(idd, updateTime, false);
         return result;
     }

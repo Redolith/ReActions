@@ -176,7 +176,7 @@ public class Param {
 
     private static String hideBkts(String s) {
         int count = 0;
-        String r = "";
+        StringBuilder r = new StringBuilder();
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
             String a = String.valueOf(c);
@@ -187,9 +187,9 @@ public class Param {
                 if (count != 1) a = "#BKT2#";
                 count--;
             }
-            r = r + a;
+            r.append(a);
         }
-        return r;
+        return r.toString();
     }
 
     public Set<String> keySet() {
@@ -197,7 +197,7 @@ public class Param {
     }
 
     public String getParam(String key) {
-        return this.params.containsKey(key) ? this.params.get(key) : "";
+        return this.params.getOrDefault(key, "");
     }
 
     public Map<String, String> getMap() {

@@ -26,8 +26,6 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import java.util.Iterator;
-
 
 /**
  * Created by MaxDikiy on 9/10/2017.
@@ -153,10 +151,9 @@ public class RAWorldEdit {
 
         ApplicableRegionSet set = RAWorldGuard.bridge.getRegionManager(world).getApplicableRegions(region);
         if (RAWorldGuard.bridge.getRegionManager(world).overlapsUnownedRegion(region, player)) {
-            Iterator<ProtectedRegion> it = set.iterator();
-            while (it.hasNext()) {
-                ProtectedRegion each = it.next();
-                if (each != null && !each.getOwners().contains(player) && !each.getMembers().contains(player)) return true;
+            for (ProtectedRegion each : set) {
+                if (each != null && !each.getOwners().contains(player) && !each.getMembers().contains(player))
+                    return true;
             }
         }
         return false;
@@ -171,26 +168,19 @@ public class RAWorldEdit {
         if (region == null) return 3;
         ApplicableRegionSet set = RAWorldGuard.bridge.getRegionManager(world).getApplicableRegions(region);
         if (RAWorldGuard.bridge.getRegionManager(world).overlapsUnownedRegion(region, player)) {
-            Iterator<ProtectedRegion> it = set.iterator();
-            while (it.hasNext()) {
-                ProtectedRegion each = it.next();
-                if (each != null)
-                {
-                    if (!each.getOwners().contains(player) && !each.getMembers().contains(player))
-                    {
+            for (ProtectedRegion each : set) {
+                if (each != null) {
+                    if (!each.getOwners().contains(player) && !each.getMembers().contains(player)) {
                         return 1;
                     }
-                    if (each.getOwners().contains(player) || each.getMembers().contains(player))
-                    {
+                    if (each.getOwners().contains(player) || each.getMembers().contains(player)) {
                         canBuild = true;
                     }
                 }
             }
             if (!canBuild) return 1;
         } else {
-            Iterator<ProtectedRegion> it = set.iterator();
-            while (it.hasNext()) {
-                ProtectedRegion each = it.next();
+            for (ProtectedRegion each : set) {
                 if (each != null) {
                     if (each.getOwners().contains(player) || each.getMembers().contains(player)) {
                         BlockVector rgBlockMin = region.getMinimumPoint();

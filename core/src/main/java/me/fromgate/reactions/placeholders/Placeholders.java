@@ -64,10 +64,10 @@ public class Placeholders {
         String group;
         String replacement;
         while (matcher.find()) {
-            group = new StringBuilder("%")
-                    .append(replacePlaceholders(player,
-                            matcher.group().replaceAll("(^%)|(%$)", "")))
-                    .append("%").toString();
+            group = "%" +
+                    replacePlaceholders(player,
+                            matcher.group().replaceAll("(^%)|(%$)", "")) +
+                    "%";
             replacement = replacePlaceholder(player, group);
             matcher.appendReplacement(sb, Matcher.quoteReplacement(replacement == null ? group : replacement));
         }

@@ -656,9 +656,9 @@ public enum M {
                 fullFloat = true;
                 continue;
             } else if (key instanceof Double) {
-                if (!fullFloat) s = fmt.format((Double) key);
+                if (!fullFloat) s = fmt.format(key);
             } else if (key instanceof Float) {
-                if (!fullFloat) s = fmt.format((Float) key);
+                if (!fullFloat) s = fmt.format(key);
             }
 
             String from = (new StringBuilder("%").append(count).append("%")).toString();

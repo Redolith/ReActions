@@ -65,33 +65,33 @@ public class RAProtocolLib {
 
 
     private static String jsonToString(JSONObject source) {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         for (Object key : source.keySet()) {
             Object value = source.get(key);
             if (value instanceof String) {
                 if ((key instanceof String) && (!((String) key).equalsIgnoreCase("text"))) continue;
-                result = result + value;
+                result.append(value);
             } else if (value instanceof JSONObject) {
-                result = result + jsonToString((JSONObject) value);
+                result.append(jsonToString((JSONObject) value));
             } else if (value instanceof JSONArray) {
-                result = result + jsonToString((JSONArray) value);
+                result.append(jsonToString((JSONArray) value));
             }
         }
-        return result;
+        return result.toString();
     }
 
     private static String jsonToString(JSONArray source) {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         for (Object value : source) {
             if (value instanceof String) {
-                result = result + value;
+                result.append(value);
             } else if (value instanceof JSONObject) {
-                result = result + jsonToString((JSONObject) value);
+                result.append(jsonToString((JSONObject) value));
             } else if (value instanceof JSONArray) {
-                result = result + jsonToString((JSONArray) value);
+                result.append(jsonToString((JSONArray) value));
             }
         }
-        return result;
+        return result.toString();
     }
 
     private static String jsonToString(String json) {

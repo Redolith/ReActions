@@ -31,15 +31,10 @@ import me.fromgate.reactions.activators.MessageActivator;
 import me.fromgate.reactions.activators.SignActivator;
 import me.fromgate.reactions.event.BlockClickEvent;
 import me.fromgate.reactions.event.ButtonEvent;
-import me.fromgate.reactions.event.DamageEvent;
-import me.fromgate.reactions.event.GameModeEvent;
-import me.fromgate.reactions.event.GodEvent;
-import me.fromgate.reactions.event.ItemHeldEvent;
-import me.fromgate.reactions.event.WEChangeEvent;
-import me.fromgate.reactions.event.WESelectionRegionEvent;
 import me.fromgate.reactions.event.CommandEvent;
 import me.fromgate.reactions.event.DamageByBlockEvent;
 import me.fromgate.reactions.event.DamageByMobEvent;
+import me.fromgate.reactions.event.DamageEvent;
 import me.fromgate.reactions.event.DoorEvent;
 import me.fromgate.reactions.event.DropEvent;
 import me.fromgate.reactions.event.EntityClickEvent;
@@ -50,8 +45,11 @@ import me.fromgate.reactions.event.FactionDisbandEvent;
 import me.fromgate.reactions.event.FactionEvent;
 import me.fromgate.reactions.event.FactionRelationEvent;
 import me.fromgate.reactions.event.FlightEvent;
+import me.fromgate.reactions.event.GameModeEvent;
+import me.fromgate.reactions.event.GodEvent;
 import me.fromgate.reactions.event.ItemClickEvent;
 import me.fromgate.reactions.event.ItemConsumeEvent;
+import me.fromgate.reactions.event.ItemHeldEvent;
 import me.fromgate.reactions.event.ItemHoldEvent;
 import me.fromgate.reactions.event.ItemWearEvent;
 import me.fromgate.reactions.event.JoinEvent;
@@ -74,6 +72,8 @@ import me.fromgate.reactions.event.RegionLeaveEvent;
 import me.fromgate.reactions.event.SignEvent;
 import me.fromgate.reactions.event.SneakEvent;
 import me.fromgate.reactions.event.VariableEvent;
+import me.fromgate.reactions.event.WEChangeEvent;
+import me.fromgate.reactions.event.WESelectionRegionEvent;
 import me.fromgate.reactions.externals.RAEconomics;
 import me.fromgate.reactions.externals.RAVault;
 import me.fromgate.reactions.util.BukkitCompatibilityFix;
@@ -118,7 +118,6 @@ import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -516,7 +515,7 @@ public class RAListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerGameModeChangeEvent(PlayerGameModeChangeEvent event) {
-        if (EventManager.raisePlayerGameModeChangeEvent(event)) event.setCancelled(true);;
+        if (EventManager.raisePlayerGameModeChangeEvent(event)) event.setCancelled(true);
     }
 
     /*
