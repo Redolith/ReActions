@@ -56,86 +56,86 @@ public class PushBack {
         } else return loc1.distance(loc2);
     }
 
-    public static void rememberLocations(Player p, Location from, Location to) {
-        Location prev1 = getPlayerPrevLoc1(p);
+    public static void rememberLocations(Player player, Location from, Location to) {
+        Location prev1 = getPlayerPrevLoc1(player);
         if (prev1 == null) {
-            setPlayerPrevLoc1(p, from);
-            setPlayerPrevLoc2(p, from);
+            setPlayerPrevLoc1(player, from);
+            setPlayerPrevLoc2(player, from);
             return;
         }
         if (distance(prev1, to) < 1) return;
-        setPlayerPrevLoc2(p, prev1);
-        setPlayerPrevLoc1(p, from);
+        setPlayerPrevLoc2(player, prev1);
+        setPlayerPrevLoc1(player, from);
     }
 
-    private static void setPlayerPrevLoc2(Player p, Location prev2) {
-        p.setMetadata("ra-pb-loc2-world", new FixedMetadataValue(plg(), prev2.getWorld().getName()));
-        p.setMetadata("ra-pb-loc2-x", new FixedMetadataValue(plg(), prev2.getX()));
-        p.setMetadata("ra-pb-loc2-y", new FixedMetadataValue(plg(), prev2.getY()));
-        p.setMetadata("ra-pb-loc2-z", new FixedMetadataValue(plg(), prev2.getZ()));
-        p.setMetadata("ra-pb-loc2-yaw", new FixedMetadataValue(plg(), prev2.getYaw()));
-        p.setMetadata("ra-pb-loc2-pitch", new FixedMetadataValue(plg(), prev2.getPitch()));
+    private static void setPlayerPrevLoc2(Player player, Location prev2) {
+        player.setMetadata("ra-pb-loc2-world", new FixedMetadataValue(plg(), prev2.getWorld().getName()));
+        player.setMetadata("ra-pb-loc2-x", new FixedMetadataValue(plg(), prev2.getX()));
+        player.setMetadata("ra-pb-loc2-y", new FixedMetadataValue(plg(), prev2.getY()));
+        player.setMetadata("ra-pb-loc2-z", new FixedMetadataValue(plg(), prev2.getZ()));
+        player.setMetadata("ra-pb-loc2-yaw", new FixedMetadataValue(plg(), prev2.getYaw()));
+        player.setMetadata("ra-pb-loc2-pitch", new FixedMetadataValue(plg(), prev2.getPitch()));
     }
 
-    private static void setPlayerPrevLoc1(Player p, Location prev1) {
-        p.setMetadata("ra-pb-loc1-world", new FixedMetadataValue(plg(), prev1.getWorld().getName()));
-        p.setMetadata("ra-pb-loc1-x", new FixedMetadataValue(plg(), prev1.getX()));
-        p.setMetadata("ra-pb-loc1-y", new FixedMetadataValue(plg(), prev1.getY()));
-        p.setMetadata("ra-pb-loc1-z", new FixedMetadataValue(plg(), prev1.getZ()));
-        p.setMetadata("ra-pb-loc1-yaw", new FixedMetadataValue(plg(), prev1.getYaw()));
-        p.setMetadata("ra-pb-loc1-pitch", new FixedMetadataValue(plg(), prev1.getPitch()));
+    private static void setPlayerPrevLoc1(Player player, Location prev1) {
+        player.setMetadata("ra-pb-loc1-world", new FixedMetadataValue(plg(), prev1.getWorld().getName()));
+        player.setMetadata("ra-pb-loc1-x", new FixedMetadataValue(plg(), prev1.getX()));
+        player.setMetadata("ra-pb-loc1-y", new FixedMetadataValue(plg(), prev1.getY()));
+        player.setMetadata("ra-pb-loc1-z", new FixedMetadataValue(plg(), prev1.getZ()));
+        player.setMetadata("ra-pb-loc1-yaw", new FixedMetadataValue(plg(), prev1.getYaw()));
+        player.setMetadata("ra-pb-loc1-pitch", new FixedMetadataValue(plg(), prev1.getPitch()));
     }
 
 
-    public static void clear(Player p) {
-        if (p.hasMetadata("ra-pb-loc1-world")) p.removeMetadata("ra-pb-loc1-world", plg());
-        if (p.hasMetadata("ra-pb-loc1-x")) p.removeMetadata("ra-pb-loc1-x", plg());
-        if (p.hasMetadata("ra-pb-loc1-y")) p.removeMetadata("ra-pb-loc1-y", plg());
-        if (p.hasMetadata("ra-pb-loc1-z")) p.removeMetadata("ra-pb-loc1-z", plg());
-        if (p.hasMetadata("ra-pb-loc1-yaw")) p.removeMetadata("ra-pb-loc1-yaw", plg());
-        if (p.hasMetadata("ra-pb-loc1-pitch")) p.removeMetadata("ra-pb-loc1-pitch", plg());
+    public static void clear(Player player) {
+        if (player.hasMetadata("ra-pb-loc1-world")) player.removeMetadata("ra-pb-loc1-world", plg());
+        if (player.hasMetadata("ra-pb-loc1-x")) player.removeMetadata("ra-pb-loc1-x", plg());
+        if (player.hasMetadata("ra-pb-loc1-y")) player.removeMetadata("ra-pb-loc1-y", plg());
+        if (player.hasMetadata("ra-pb-loc1-z")) player.removeMetadata("ra-pb-loc1-z", plg());
+        if (player.hasMetadata("ra-pb-loc1-yaw")) player.removeMetadata("ra-pb-loc1-yaw", plg());
+        if (player.hasMetadata("ra-pb-loc1-pitch")) player.removeMetadata("ra-pb-loc1-pitch", plg());
 
-        if (p.hasMetadata("ra-pb-loc2-world")) p.removeMetadata("ra-pb-loc2-world", plg());
-        if (p.hasMetadata("ra-pb-loc2-x")) p.removeMetadata("ra-pb-loc2-x", plg());
-        if (p.hasMetadata("ra-pb-loc2-y")) p.removeMetadata("ra-pb-loc2-y", plg());
-        if (p.hasMetadata("ra-pb-loc2-z")) p.removeMetadata("ra-pb-loc2-z", plg());
-        if (p.hasMetadata("ra-pb-loc2-yaw")) p.removeMetadata("ra-pb-loc2-yaw", plg());
-        if (p.hasMetadata("ra-pb-loc2-pitch")) p.removeMetadata("ra-pb-loc2-pitch", plg());
+        if (player.hasMetadata("ra-pb-loc2-world")) player.removeMetadata("ra-pb-loc2-world", plg());
+        if (player.hasMetadata("ra-pb-loc2-x")) player.removeMetadata("ra-pb-loc2-x", plg());
+        if (player.hasMetadata("ra-pb-loc2-y")) player.removeMetadata("ra-pb-loc2-y", plg());
+        if (player.hasMetadata("ra-pb-loc2-z")) player.removeMetadata("ra-pb-loc2-z", plg());
+        if (player.hasMetadata("ra-pb-loc2-yaw")) player.removeMetadata("ra-pb-loc2-yaw", plg());
+        if (player.hasMetadata("ra-pb-loc2-pitch")) player.removeMetadata("ra-pb-loc2-pitch", plg());
 
     }
 
-    public static Location getPlayerPrevLoc1(Player p) {
-        if (!p.hasMetadata("ra-pb-loc1-world")) return null;
-        if (p.getMetadata("ra-pb-loc1-world").isEmpty()) return null;
-        if (!p.hasMetadata("ra-pb-loc1-x")) return null;
-        if (!p.hasMetadata("ra-pb-loc1-y")) return null;
-        if (!p.hasMetadata("ra-pb-loc1-z")) return null;
-        if (!p.hasMetadata("ra-pb-loc1-yaw")) return null;
-        if (!p.hasMetadata("ra-pb-loc1-pitch")) return null;
-        World w = Bukkit.getServer().getWorld(p.getMetadata("ra-pb-loc1-world").get(0).asString());
+    public static Location getPlayerPrevLoc1(Player player) {
+        if (!player.hasMetadata("ra-pb-loc1-world")) return null;
+        if (player.getMetadata("ra-pb-loc1-world").isEmpty()) return null;
+        if (!player.hasMetadata("ra-pb-loc1-x")) return null;
+        if (!player.hasMetadata("ra-pb-loc1-y")) return null;
+        if (!player.hasMetadata("ra-pb-loc1-z")) return null;
+        if (!player.hasMetadata("ra-pb-loc1-yaw")) return null;
+        if (!player.hasMetadata("ra-pb-loc1-pitch")) return null;
+        World w = Bukkit.getServer().getWorld(player.getMetadata("ra-pb-loc1-world").get(0).asString());
         if (w == null) return null;
-        return new Location(w, p.getMetadata("ra-pb-loc1-x").get(0).asDouble(),
-                p.getMetadata("ra-pb-loc1-y").get(0).asDouble(),
-                p.getMetadata("ra-pb-loc1-z").get(0).asDouble(),
-                p.getMetadata("ra-pb-loc1-yaw").get(0).asFloat(),
-                p.getMetadata("ra-pb-loc1-pitch").get(0).asFloat());
+        return new Location(w, player.getMetadata("ra-pb-loc1-x").get(0).asDouble(),
+                player.getMetadata("ra-pb-loc1-y").get(0).asDouble(),
+                player.getMetadata("ra-pb-loc1-z").get(0).asDouble(),
+                player.getMetadata("ra-pb-loc1-yaw").get(0).asFloat(),
+                player.getMetadata("ra-pb-loc1-pitch").get(0).asFloat());
     }
 
-    public static Location getPlayerPrevLoc2(Player p) {
-        if (!p.hasMetadata("ra-pb-loc2-world")) return null;
-        if (p.getMetadata("ra-pb-loc2-world").isEmpty()) return null;
-        if (!p.hasMetadata("ra-pb-loc2-x")) return null;
-        if (!p.hasMetadata("ra-pb-loc2-y")) return null;
-        if (!p.hasMetadata("ra-pb-loc2-z")) return null;
-        if (!p.hasMetadata("ra-pb-loc2-yaw")) return null;
-        if (!p.hasMetadata("ra-pb-loc2-pitch")) return null;
-        World w = Bukkit.getServer().getWorld(p.getMetadata("ra-pb-loc2-world").get(0).asString());
+    public static Location getPlayerPrevLoc2(Player player) {
+        if (!player.hasMetadata("ra-pb-loc2-world")) return null;
+        if (player.getMetadata("ra-pb-loc2-world").isEmpty()) return null;
+        if (!player.hasMetadata("ra-pb-loc2-x")) return null;
+        if (!player.hasMetadata("ra-pb-loc2-y")) return null;
+        if (!player.hasMetadata("ra-pb-loc2-z")) return null;
+        if (!player.hasMetadata("ra-pb-loc2-yaw")) return null;
+        if (!player.hasMetadata("ra-pb-loc2-pitch")) return null;
+        World w = Bukkit.getServer().getWorld(player.getMetadata("ra-pb-loc2-world").get(0).asString());
         if (w == null) return null;
-        return new Location(w, p.getMetadata("ra-pb-loc2-x").get(0).asDouble(),
-                p.getMetadata("ra-pb-loc2-y").get(0).asDouble(),
-                p.getMetadata("ra-pb-loc2-z").get(0).asDouble(),
-                p.getMetadata("ra-pb-loc2-yaw").get(0).asFloat(),
-                p.getMetadata("ra-pb-loc2-pitch").get(0).asFloat());
+        return new Location(w, player.getMetadata("ra-pb-loc2-x").get(0).asDouble(),
+                player.getMetadata("ra-pb-loc2-y").get(0).asDouble(),
+                player.getMetadata("ra-pb-loc2-z").get(0).asDouble(),
+                player.getMetadata("ra-pb-loc2-yaw").get(0).asFloat(),
+                player.getMetadata("ra-pb-loc2-pitch").get(0).asFloat());
     }
 
 }
