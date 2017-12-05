@@ -54,16 +54,23 @@ public class PushBack {
         } else return loc1.distance(loc2);
     }
 
+    private static boolean isSameBlock(Location loc1, Location loc2) {
+        if (Cfg.horizontalPushback) {
+            return loc1.getWorld().equals(loc2.getWorld()) && loc1.getBlockX() == loc2.getBlockX() && loc1.getBlockZ() == loc2.getBlockZ();
+        } else {
+            return Util.isSameBlock(loc1, loc2);
+        }
+    }
+
     public static void rememberLocations(Player player, Location from, Location to) {
         Location prev1 = getPlayerPrevLoc1(player);
         if (prev1 == null) {
             setPlayerPrevLoc1(player, from);
             setPlayerPrevLoc2(player, from);
-            return;
+        } else if (isSameBlock(prev1, to)) {
+            setPlayerPrevLoc2(player, prev1);
+            setPlayerPrevLoc1(player, from);
         }
-        if (distance(prev1, to) < 1) return;
-        setPlayerPrevLoc2(player, prev1);
-        setPlayerPrevLoc1(player, from);
     }
 
     private static void setPlayerPrevLoc1(Player player, Location prev1) {

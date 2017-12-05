@@ -606,7 +606,7 @@ public class Util {
     }
 
     public static boolean isSameBlock(Location loc1, Location loc2) {
-        return !(loc1.getBlockX() != loc2.getX()) && !(loc1.getBlockZ() != loc2.getZ()) && !(loc1.getBlockY() != loc2.getY());
+        return loc1.getWorld().equals(loc2.getWorld()) && !(loc1.getBlockX() != loc2.getX()) && !(loc1.getBlockZ() != loc2.getZ()) && !(loc1.getBlockY() != loc2.getY());
     }
 
 }
