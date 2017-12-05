@@ -79,22 +79,10 @@ jar {
 }
 
 shadowJar {
-    dependencies {
-        exclude(dependency('com.comphenix.protocol:ProtocolLib-API:4.2.1'))
-        exclude(dependency('com.massivecraft.massivecore:massivecore:2.9.9'))
-        exclude(dependency('com.massivecraft.factions:factions:2.9.0'))
-        exclude(dependency('me.fromgate.playeffect:PlayEffect:1.0-SNAPSHOT'))
-        exclude(dependency('de.tobiyas.racesandclasses:RacesAndClasses:1.2.1'))
-        exclude(dependency('com.palmergames.bukkit.towny:Towny:0.9.1'))
-        exclude(dependency('com.greatmancode:craftconomy:3.3.3'))
-        exclude(dependency('org.bukkit:bukkit:1.12.2-R0.1-SNAPSHOT'))
-        exclude(dependency('com.sk89q:worldedit:6.0.0-SNAPSHOT'))
-        exclude(dependency('com.sk89q:worldguard:6.1.1-SNAPSHOT'))
-        exclude(dependency('net.milkbowl.vault:Vault:1.6.6'))
-        exclude(dependency('me.clip:PlaceholderAPI:2.7.1'))
-    }
     relocate 'org.quartz', 'me.fromgate.reactions.externals.quartz'
-
-
+    dependencies {
+        include(project(':core'))
+        include(project(':WGBridge5x'))
+    }
 
 }
