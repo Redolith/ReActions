@@ -15,6 +15,7 @@ repositories {
     // ProtoclLib repo broken, try to look here too
     maven { url "http://mvn.yawk.at/" }
     maven { url "http://cnaude.org/repo/" }
+    maven { url "http://repo.bstats.org/content/repositories/releases/" }
 } 
 
 dependencies {
