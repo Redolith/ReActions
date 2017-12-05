@@ -1,6 +1,7 @@
-package me.fromgate.reactions.util;
+package me.fromgate.reactions.util.listeners;
 
 import me.fromgate.reactions.event.EventManager;
+import me.fromgate.reactions.util.BukkitCompatibilityFix;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

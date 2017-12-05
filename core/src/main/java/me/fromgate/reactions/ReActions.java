@@ -36,13 +36,14 @@ import me.fromgate.reactions.menu.InventoryMenu;
 import me.fromgate.reactions.placeholders.Placeholders;
 import me.fromgate.reactions.sql.SQLManager;
 import me.fromgate.reactions.timer.Timers;
-import me.fromgate.reactions.util.ArmorStandListener;
+import me.fromgate.reactions.util.listeners.ArmorStandListener;
 import me.fromgate.reactions.util.Cfg;
 import me.fromgate.reactions.util.Delayer;
 import me.fromgate.reactions.util.FakeCmd;
 import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.UpdateChecker;
 import me.fromgate.reactions.util.Variables;
+import me.fromgate.reactions.util.listeners.ReActionsListener;
 import me.fromgate.reactions.util.message.BukkitMessenger;
 import me.fromgate.reactions.util.message.M;
 import me.fromgate.reactions.util.playerselector.PlayerSelectors;
@@ -71,7 +72,7 @@ public class ReActions extends JavaPlugin {
 
         if (!getDataFolder().exists()) getDataFolder().mkdirs();
         PluginManager pm = this.getServer().getPluginManager();
-        pm.registerEvents(new RAListener(this), this);
+        pm.registerEvents(new ReActionsListener(), this);
         pm.registerEvents(new InventoryMenu(), this);
 
         Commander.init(this);

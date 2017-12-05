@@ -21,9 +21,10 @@
  */
 
 
-package me.fromgate.reactions;
+package me.fromgate.reactions.util.listeners;
 
 
+import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.ActivatorType;
 import me.fromgate.reactions.activators.Activators;
@@ -137,12 +138,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.List;
 
-public class RAListener implements Listener {
-    ReActions plg;
-
-    public RAListener(ReActions plg) {
-        this.plg = plg;
-    }
+public class ReActionsListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onChatCommand(AsyncPlayerChatEvent event) {
@@ -401,8 +397,8 @@ public class RAListener implements Listener {
         } else return;
         if (damager == null) return;
         Long time = System.currentTimeMillis();
-        damager.setMetadata("reactions-pvp-time", new FixedMetadataValue(plg, time));
-        target.setMetadata("reactions-pvp-time", new FixedMetadataValue(plg, time));
+        damager.setMetadata("reactions-pvp-time", new FixedMetadataValue(ReActions.getPlugin(), time));
+        target.setMetadata("reactions-pvp-time", new FixedMetadataValue(ReActions.getPlugin(), time));
     }
 
 
