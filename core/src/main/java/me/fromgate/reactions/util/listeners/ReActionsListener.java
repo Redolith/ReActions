@@ -79,7 +79,6 @@ import me.fromgate.reactions.externals.RAEconomics;
 import me.fromgate.reactions.externals.RAVault;
 import me.fromgate.reactions.util.BukkitCompatibilityFix;
 import me.fromgate.reactions.util.PlayerRespawner;
-import me.fromgate.reactions.util.PushBack;
 import me.fromgate.reactions.util.RADebug;
 import me.fromgate.reactions.util.Teleporter;
 import me.fromgate.reactions.util.TempOp;
@@ -125,7 +124,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -436,15 +434,6 @@ public class ReActionsListener implements Listener {
         EventManager.raisePlateEvent(event);
         if (EventManager.raiseLeverEvent(event)) event.setCancelled(true);
         if (EventManager.raiseDoorEvent(event)) event.setCancelled(true);
-    }
-
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onPlayerMove(PlayerMoveEvent event) {
-        PushBack.rememberLocations(event.getPlayer(), event.getFrom(), event.getTo());
-        if (event.getFrom().getBlockX() == event.getTo().getBlockX() &&
-                event.getFrom().getBlockY() == event.getTo().getBlockY() &&
-                event.getFrom().getBlockZ() == event.getTo().getBlockZ()) return;
-        EventManager.raiseAllRegionEvents(event.getPlayer(), event.getTo(), event.getFrom());
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

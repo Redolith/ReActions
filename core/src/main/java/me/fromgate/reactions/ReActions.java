@@ -43,6 +43,7 @@ import me.fromgate.reactions.util.FakeCmd;
 import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.UpdateChecker;
 import me.fromgate.reactions.util.Variables;
+import me.fromgate.reactions.util.listeners.MoveListener;
 import me.fromgate.reactions.util.listeners.ReActionsListener;
 import me.fromgate.reactions.util.message.BukkitMessenger;
 import me.fromgate.reactions.util.message.M;
@@ -73,12 +74,13 @@ public class ReActions extends JavaPlugin {
         if (!getDataFolder().exists()) getDataFolder().mkdirs();
         PluginManager pm = this.getServer().getPluginManager();
         pm.registerEvents(new ReActionsListener(), this);
+        MoveListener.init();
         pm.registerEvents(new InventoryMenu(), this);
 
         Commander.init(this);
         Timers.init();
         Activators.init();
-        Bukkit.getScheduler().runTaskLater(this, () -> FakeCmd.init(), 1);
+        Bukkit.getScheduler().runTaskLater(this, FakeCmd::init, 1);
         PlayerSelectors.init();
         RAEffects.init();
         RARacesAndClasses.init();
