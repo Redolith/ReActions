@@ -49,15 +49,6 @@ dependencies {
 }
 
 
-sourceSets.all { set ->
-    def jarTask = task("${set.name}Jar", type: Jar) {
-        baseName = "ReActions" + "-$set.name"
-        from set.output
-    }
-
-    artifacts { archives jarTask }
-}
-
 sourceSets {
     core
     WGBridge5x
