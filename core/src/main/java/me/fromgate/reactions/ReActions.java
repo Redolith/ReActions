@@ -47,11 +47,10 @@ import me.fromgate.reactions.util.message.BukkitMessenger;
 import me.fromgate.reactions.util.message.M;
 import me.fromgate.reactions.util.playerselector.PlayerSelectors;
 import me.fromgate.reactions.util.waiter.ActionsWaiter;
+import org.bstats.bukkit.MetricsLite;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.io.IOException;
 
 
 public class ReActions extends JavaPlugin {
@@ -108,11 +107,7 @@ public class ReActions extends JavaPlugin {
         } catch (Throwable ignored) {
         }
 
-        try {
-            MetricsLite metrics = new MetricsLite(this);
-            metrics.start();
-        } catch (IOException ignored) {
-        }
+        new MetricsLite(this);
     }
 
 }
