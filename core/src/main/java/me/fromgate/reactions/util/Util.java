@@ -63,7 +63,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -604,6 +603,10 @@ public class Util {
     public static void setEventGod(Player player) {
         //noinspection deprecation
         Bukkit.getPluginManager().callEvent(new EntityDamageByEntityEvent(player, player, DamageCause.CUSTOM, 0));
+    }
+
+    public static boolean isSameBlock(Location loc1, Location loc2) {
+        return !(loc1.getBlockX() != loc2.getX()) && !(loc1.getBlockZ() != loc2.getZ()) && !(loc1.getBlockY() != loc2.getY());
     }
 
 }
