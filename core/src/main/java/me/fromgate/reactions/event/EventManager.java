@@ -309,13 +309,10 @@ public class EventManager {
             final List<String> regionsTo = RAWorldGuard.getRegions(to);
             final List<String> regionsFrom = RAWorldGuard.getRegions(from);
 
-            Bukkit.getScheduler().runTask(ReActions.instance, new Runnable() {
-                @Override
-                public void run() {
-                    raiseRegionEvent(player, regionsTo);
-                    raiseRgEnterEvent(player, regionsTo, regionsFrom);
-                    raiseRgLeaveEvent(player, regionsTo, regionsFrom);
-                }
+            Bukkit.getScheduler().runTask(ReActions.instance, () -> {
+                raiseRegionEvent(player, regionsTo);
+                raiseRgEnterEvent(player, regionsTo, regionsFrom);
+                raiseRgLeaveEvent(player, regionsTo, regionsFrom);
             });
         }, 1);
     }
