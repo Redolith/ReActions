@@ -23,7 +23,7 @@
 package me.fromgate.reactions.flags;
 
 import me.fromgate.reactions.util.BukkitCompatibilityFix;
-import me.fromgate.reactions.util.Util;
+import me.fromgate.reactions.util.GodMode;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
@@ -67,8 +67,8 @@ public class FlagState extends Flag {
             case GLIDE:
                 if (BukkitCompatibilityFix.isGliding(player)) return true;
             case GOD:
-                Util.setCheckGod(player);
-                if (Util.isGod(player)) return true;
+                GodMode.setCheckGod(player);
+                if (GodMode.isGod(player)) return true;
         }
         return false;
     }
