@@ -56,9 +56,9 @@ public class GodMode {
     }
 
     public static void cancelGodEvent(EntityDamageEvent event) {
-        if (event instanceof EntityDamageByEntityEvent) {
-            event.setCancelled(true);
+        if (event instanceof EntityDamageByEntityEvent && godCheckEvents.contains(event)) {
             godCheckEvents.remove(event);
+            event.setCancelled(true);
         }
     }
 }
