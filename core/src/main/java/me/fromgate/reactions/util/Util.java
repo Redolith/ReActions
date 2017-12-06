@@ -23,7 +23,6 @@
 package me.fromgate.reactions.util;
 
 import com.google.common.base.Charsets;
-import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.util.item.ItemUtil;
 import me.fromgate.reactions.util.message.M;
 import org.bukkit.Bukkit;
@@ -52,7 +51,6 @@ import org.bukkit.material.Gate;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Openable;
 import org.bukkit.material.TrapDoor;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.ChatPaginator;
 import org.bukkit.util.ChatPaginator.ChatPage;
@@ -564,45 +562,6 @@ public class Util {
                 b.append(c);
         }
         return b.toString();
-    }
-
-    public static boolean isGod(Player player) {
-        return player.hasMetadata("reactions-god") && player.getMetadata("reactions-god").get(0).asBoolean();
-    }
-
-    public static boolean setGod(Player player) {
-        if (!isGod(player)) {
-            player.setMetadata("reactions-god", new FixedMetadataValue(ReActions.instance, true));
-            return true;
-        }
-        return false;
-    }
-
-    public static boolean removeGod(Player player) {
-        if (isGod(player)) {
-            player.removeMetadata("reactions-god", ReActions.instance);
-            return true;
-        }
-        return false;
-    }
-
-    public static void setCheckGod(Player player) {
-        player.setMetadata("reactions-god-check", new FixedMetadataValue(ReActions.instance, true));
-        setEventGod(player);
-    }
-
-    public static boolean checkGod(Player player) {
-        boolean result = false;
-        if (player.hasMetadata("reactions-god-check")) {
-            result = player.getMetadata("reactions-god-check").get(0).asBoolean();
-            player.removeMetadata("reactions-god-check", ReActions.instance);
-        }
-        return result;
-    }
-
-    public static void setEventGod(Player player) {
-        //noinspection deprecation
-        Bukkit.getPluginManager().callEvent(new EntityDamageByEntityEvent(player, player, DamageCause.CUSTOM, 0));
     }
 
     public static boolean isSameBlock(Location loc1, Location loc2) {

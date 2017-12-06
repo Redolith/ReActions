@@ -78,6 +78,7 @@ import me.fromgate.reactions.event.WESelectionRegionEvent;
 import me.fromgate.reactions.externals.RAEconomics;
 import me.fromgate.reactions.externals.RAVault;
 import me.fromgate.reactions.util.BukkitCompatibilityFix;
+import me.fromgate.reactions.util.GodMode;
 import me.fromgate.reactions.util.PlayerRespawner;
 import me.fromgate.reactions.util.RADebug;
 import me.fromgate.reactions.util.Teleporter;
@@ -297,21 +298,26 @@ public class ReActionsListener implements Listener {
         BukkitCompatibilityFix.setEventDamage(event, dmg);
     }
 
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onCheckGodEvent(EntityDamageEvent event) {
+        GodMode.cancelGodEvent(event);
+    }
+
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerDamage(EntityDamageEvent event) {
         String source = "ANY";
         if (event.getEntity().getType() != EntityType.PLAYER) return;
         Player player = (Player) event.getEntity();
         if (event.isCancelled()) {
-            if (Util.checkGod(player) && Util.setGod(player)) return;
-            else if (Util.setGod(player) && EventManager.raisePlayerGodChangeEvent(player, true)) {
-                Util.removeGod(player);
+            if (GodMode.checkGod(player) && GodMode.setGod(player)) return;
+            else if (GodMode.setGod(player) && EventManager.raisePlayerGodChangeEvent(player, true)) {
+                GodMode.removeGod(player);
             }
-        } else if (Util.checkGod(player) && event.getCause() == DamageCause.CUSTOM && Math.round(event.getDamage()) == 0) {
+        /* } /* else if (GodUtil.checkGod(player) && event.getCause() == DamageCause.CUSTOM && Math.round(event.getDamage()) == 0) {
             event.setCancelled(true);
-            return;
-        } else if (Util.removeGod(player) && EventManager.raisePlayerGodChangeEvent(player, false)) {
-            Util.setGod(player);
+            return; */
+        } else if (GodMode.removeGod(player) && EventManager.raisePlayerGodChangeEvent(player, false)) {
+            GodMode.setGod(player);
             event.setCancelled(true);
             return;
         }
