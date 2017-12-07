@@ -20,6 +20,7 @@ public class PlayerBlockBreakEvent extends RAEvent {
     public Block getBlockBreak() {
         return this.block;
     }
+
     public Boolean isDropItems() {
         return this.isDropItems;
     }

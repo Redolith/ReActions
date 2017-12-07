@@ -18,8 +18,7 @@ public class ActionWESuperPickaxe extends Action {
             isSP = params.getParam("value", false);
             //noinspection deprecation
             player = playerName.isEmpty() ? null : Bukkit.getPlayerExact(playerName);
-        }
-        else isSP = params.getParam("param-line", false);
+        } else isSP = params.getParam("param-line", false);
 
         if (isSP) RAWorldEdit.getSession(player).enableSuperPickAxe();
         else RAWorldEdit.getSession(player).disableSuperPickAxe();

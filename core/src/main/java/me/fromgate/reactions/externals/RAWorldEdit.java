@@ -76,25 +76,25 @@ public class RAWorldEdit {
         return worldedit.getSession(player);
     }
 
-    public static Vector getMinimumPoint (Player player) throws IncompleteRegionException {
+    public static Vector getMinimumPoint(Player player) throws IncompleteRegionException {
         Region r = getRegion(player);
         if (r == null) return null;
         return r.getMinimumPoint();
     }
 
-    public static Vector getMaximumPoint (Player player) throws IncompleteRegionException {
+    public static Vector getMaximumPoint(Player player) throws IncompleteRegionException {
         Region r = getRegion(player);
         if (r == null) return null;
         return r.getMaximumPoint();
     }
 
-    public static Region getRegion (Player player) throws IncompleteRegionException {
+    public static Region getRegion(Player player) throws IncompleteRegionException {
         RegionSelector rs = getRegionSelector(player);
         if (rs == null) return null;
         return rs.getRegion();
     }
 
-    public static RegionSelector getRegionSelector (Player player) {
+    public static RegionSelector getRegionSelector(Player player) {
         Selection sel = worldedit.getSelection(player);
         if (sel == null) return null;
         return sel.getRegionSelector();
@@ -145,8 +145,8 @@ public class RAWorldEdit {
         LocalPlayer player = RAWorldGuard.bridge.getWrapPlayer(p);
         String id = "__canbuild__";
         Vector loc = player.getPosition();
-        BlockVector min = new Vector(loc.getBlockX()+radius, 0, loc.getBlockZ()+radius).toBlockVector();
-        BlockVector max = new Vector(loc.getBlockX()-radius, world.getMaxHeight(), loc.getBlockZ()-radius).toBlockVector();
+        BlockVector min = new Vector(loc.getBlockX() + radius, 0, loc.getBlockZ() + radius).toBlockVector();
+        BlockVector max = new Vector(loc.getBlockX() - radius, world.getMaxHeight(), loc.getBlockZ() - radius).toBlockVector();
         ProtectedRegion region = new ProtectedCuboidRegion(id, min, max);
 
         ApplicableRegionSet set = RAWorldGuard.bridge.getRegionManager(world).getApplicableRegions(region);

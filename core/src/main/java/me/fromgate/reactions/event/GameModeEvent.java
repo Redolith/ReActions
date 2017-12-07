@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
  */
 public class GameModeEvent extends RAEvent {
     private GameMode gameMode;
+
     public GameModeEvent(Player player, GameMode gameMode) {
         super(player);
         this.gameMode = gameMode;

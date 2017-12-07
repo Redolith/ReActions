@@ -23,12 +23,10 @@
 package me.fromgate.reactions.util;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class Selector {
     private static Map<String, Location> locs = new HashMap<>();

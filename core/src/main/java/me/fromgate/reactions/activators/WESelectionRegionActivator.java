@@ -11,7 +11,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
 
-public class WESelectionRegionActivator extends  Activator {
+public class WESelectionRegionActivator extends Activator {
     private int maxBlocks;
     private int minBlocks;
     private String typeSelection;
@@ -54,7 +54,7 @@ public class WESelectionRegionActivator extends  Activator {
         return Actions.executeActivator(e.getPlayer(), this);
     }
 
-    public boolean checkTypeSelection (String selType) {
+    public boolean checkTypeSelection(String selType) {
         return typeSelection.isEmpty() || typeSelection.equalsIgnoreCase("ANY") || typeSelection.equalsIgnoreCase(selType);
     }
 

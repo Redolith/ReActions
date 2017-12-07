@@ -7,11 +7,8 @@ import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.item.ItemUtil;
 import me.fromgate.reactions.util.item.VirtualItem;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-
-import java.util.Set;
 
 @PlaceholderDefine(id = "BasicPlayer", needPlayer = true,
         keys = {"PLAYER_LOC", "PLAYER_LOC_EYE", "PLAYER_LOC_VIEW", "PLAYER_NAME", "player", "PLAYER_DISPLAY", "dplayer", "PLAYER_ITEM_HAND", "itemplayer", "PLAYER_INV", "invplayer", "HEALTH", "PLAYER_LOC_DEATH", "deathpoint"})

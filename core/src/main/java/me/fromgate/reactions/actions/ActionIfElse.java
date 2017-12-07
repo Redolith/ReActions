@@ -36,7 +36,7 @@ public class ActionIfElse extends Action {
             try {
                 Boolean result = (Boolean) engine.eval(condition.toLowerCase());
                 if (!executeActivator(p, condition.toLowerCase(), (result) ? then_ : else_)
-                        && !executeActions(p,  (result) ? then_ : else_))
+                        && !executeActions(p, (result) ? then_ : else_))
                     Variables.setTempVar("ifelseresult" + suffix, (result) ? then_ : else_);
             } catch (ScriptException e) {
                 Variables.setTempVar("ifelsedebug", e.getMessage());

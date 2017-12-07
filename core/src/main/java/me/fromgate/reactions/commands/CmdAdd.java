@@ -13,12 +13,9 @@ import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.message.M;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.util.Set;
 
 @CmdDefine(command = "react", description = M.CMD_ADD, permission = "reactions.config",
         subCommands = {"add"}, allowConsole = true,

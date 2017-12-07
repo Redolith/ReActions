@@ -22,8 +22,7 @@ public class FlagGreaterLower extends Flag {
         if (flagType == 0) {
             Variables.setTempVar("gparam", Double.toString(paramValue));
             if (paramValue > value) return true;
-        }
-        else if (flagType == 1) {
+        } else if (flagType == 1) {
             Variables.setTempVar("lparam", Double.toString(paramValue));
             if (paramValue < value) return true;
         }

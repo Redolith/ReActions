@@ -39,8 +39,10 @@ public class ItemHeldActivator extends Activator {
         ItemHeldEvent ihe = (ItemHeldEvent) event;
         ItemStack itemNew = ihe.getNewItem();
         ItemStack itemPrev = ihe.getPreviousItem();
-        if (!this.itemNewStr.isEmpty() && (itemNew == null || !ItemUtil.compareItemStr(itemNew, this.itemNewStr))) return false;
-        if (!this.itemPrevStr.isEmpty() && (itemPrev == null || !ItemUtil.compareItemStr(itemPrev, this.itemPrevStr))) return false;
+        if (!this.itemNewStr.isEmpty() && (itemNew == null || !ItemUtil.compareItemStr(itemNew, this.itemNewStr)))
+            return false;
+        if (!this.itemPrevStr.isEmpty() && (itemPrev == null || !ItemUtil.compareItemStr(itemPrev, this.itemPrevStr)))
+            return false;
         if (newSlot > -1 && newSlot != ihe.getNewSlot()) return false;
         if (previousSlot > -1 && previousSlot != ihe.getPreviousSlot()) return false;
         if (itemNew != null) {
@@ -57,8 +59,8 @@ public class ItemHeldActivator extends Activator {
                 Variables.setTempVar("itemprev-str", vi.toDisplayString());
             }
         }
-        Variables.setTempVar("slotNew", Integer.toString(ihe.getNewSlot()+1));
-        Variables.setTempVar("slotPrev", Integer.toString(ihe.getPreviousSlot()+1));
+        Variables.setTempVar("slotNew", Integer.toString(ihe.getNewSlot() + 1));
+        Variables.setTempVar("slotPrev", Integer.toString(ihe.getPreviousSlot() + 1));
         return Actions.executeActivator(ihe.getPlayer(), this);
     }
 

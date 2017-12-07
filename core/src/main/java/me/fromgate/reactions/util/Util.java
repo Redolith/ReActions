@@ -256,8 +256,7 @@ public class Util {
                 LivingEntity shooterEntity = BukkitCompatibilityFix.getShooter(prj);
                 if (shooterEntity == null) return null;
                 return shooterEntity;
-            }
-            else if (evdmg.getCause() == DamageCause.MAGIC) {
+            } else if (evdmg.getCause() == DamageCause.MAGIC) {
                 Entity entityDamager = evdmg.getDamager();
                 LivingEntity shooterEntity = null;
                 if (entityDamager instanceof ThrownPotion) {
@@ -265,8 +264,7 @@ public class Util {
                 }
                 if (shooterEntity == null) return null;
                 return shooterEntity;
-            }
-            else if (evdmg.getDamager() instanceof LivingEntity) return (LivingEntity) evdmg.getDamager();
+            } else if (evdmg.getDamager() instanceof LivingEntity) return (LivingEntity) evdmg.getDamager();
         }
         return null;
     }
@@ -511,8 +509,7 @@ public class Util {
     }
 
     public static UUID getUUID(OfflinePlayer player, String playerName, Boolean isOnlineMode) {
-        if (!isOnlineMode)
-        {
+        if (!isOnlineMode) {
             return UUID.nameUUIDFromBytes(("OfflinePlayer:" + playerName).getBytes(Charsets.UTF_8));
         }
         return player.getUniqueId();
@@ -526,7 +523,7 @@ public class Util {
     @SuppressWarnings("deprecation")
     public static UUID getUUID(String player) {
         Player p = Bukkit.getServer().getPlayer(player);
-        if (p == null)  {
+        if (p == null) {
             OfflinePlayer offP = Bukkit.getOfflinePlayer(player);
             if (offP != null) return getUUID(offP);
         } else return getUUID(p);
@@ -537,8 +534,8 @@ public class Util {
         List<Location> locs = new ArrayList<>();
         Location loc = p.getLocation();
         World world = p.getWorld();
-        locs.add(new Location(world,loc.getBlockX()+radius, loc.getBlockY()+radius, loc.getBlockZ()+radius));
-        locs.add(new Location(world,loc.getBlockX()-radius, loc.getBlockY()-radius, loc.getBlockZ()-radius));
+        locs.add(new Location(world, loc.getBlockX() + radius, loc.getBlockY() + radius, loc.getBlockZ() + radius));
+        locs.add(new Location(world, loc.getBlockX() - radius, loc.getBlockY() - radius, loc.getBlockZ() - radius));
         Variables.setTempVar("loc1", Locator.locationToString(locs.get(0)));
         Variables.setTempVar("loc2", Locator.locationToString(locs.get(1)));
         return locs;

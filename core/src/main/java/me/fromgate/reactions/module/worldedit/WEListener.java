@@ -71,13 +71,13 @@ public class WEListener {
         }
     }
 
-    public void checkChangeSelectionRegion(Player player, Selection selection, Region region){
+    public void checkChangeSelectionRegion(Player player, Selection selection, Region region) {
         if (regionSelection == null || region != null && !region.toString().equals(regionSelection.toString())) {
             regionSelection = region.clone();
             if (raiseChangeSelectionRegionEvent(player, selection, regionSelection)) {
                 regionSelection = null;
                 RegionSelector rs = getRegionSelector(player);
-                if(rs != null) rs.clear();
+                if (rs != null) rs.clear();
             }
         }
     }

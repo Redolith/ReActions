@@ -3,6 +3,7 @@ package me.fromgate.reactions.event;
 /**
  * Created by MaxDikiy on 2017-05-14.
  */
+
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 

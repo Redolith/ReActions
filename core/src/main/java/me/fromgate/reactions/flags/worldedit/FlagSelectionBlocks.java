@@ -7,12 +7,13 @@ import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.Variables;
 import org.bukkit.entity.Player;
 
-/**
- * Created by MaxDikiy on 9/10/2017.
- */
 import static me.fromgate.reactions.externals.RAWorldEdit.getArea;
 import static me.fromgate.reactions.externals.RAWorldEdit.getMaximumPoint;
 import static me.fromgate.reactions.externals.RAWorldEdit.getMinimumPoint;
+
+/**
+ * Created by MaxDikiy on 9/10/2017.
+ */
 
 public class FlagSelectionBlocks extends Flag {
     @Override

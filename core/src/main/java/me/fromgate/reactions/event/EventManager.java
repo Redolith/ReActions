@@ -493,11 +493,10 @@ public class EventManager {
         ItemStack newItemStack = e.getItemStack();
         if (newItemStack != null && newItemStack.getType() == Material.AIR) {
             item.remove();
-        }
-        else if (newItemStack != null) {
+        } else if (newItemStack != null) {
             ItemStack itemStack = item.getItemStack();
             if (newItemStack.getAmount() > 1) {
-                for (int i=0; i<newItemStack.getAmount(); i++) {
+                for (int i = 0; i < newItemStack.getAmount(); i++) {
                     item.setItemStack(new ItemStack(newItemStack.clone()));
                 }
             } else {
@@ -564,10 +563,10 @@ public class EventManager {
     }
 
     public static boolean raiseEntityChangeBlockEvent(EntityChangeBlockEvent event) {
-        if (event.getEntity() instanceof FallingBlock){
+        if (event.getEntity() instanceof FallingBlock) {
             FallingBlock fb = (FallingBlock) event.getEntity();
-            for (Player p : Bukkit.getServer().getOnlinePlayers()){
-                for (Entity e : p.getNearbyEntities(0.5D, 1.0D, 0.5D)){
+            for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+                for (Entity e : p.getNearbyEntities(0.5D, 1.0D, 0.5D)) {
                     if ((e instanceof FallingBlock) && fb == e) {
                         //noinspection deprecation
                         Bukkit.getPluginManager().callEvent(new EntityDamageByEntityEvent(e, p, EntityDamageEvent.DamageCause.FALLING_BLOCK, 0));
@@ -599,8 +598,7 @@ public class EventManager {
         if (newItemStack != null && newItemStack.getType() == Material.AIR) {
             e.setCancelled(true);
             item.remove();
-        }
-        else if (newItemStack != null) {
+        } else if (newItemStack != null) {
             ItemStack itemStack = item.getItemStack();
             if (newItemStack.getAmount() > 1) {
                 e.setCancelled(true);

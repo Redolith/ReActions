@@ -28,6 +28,7 @@ public class ItemHeldEvent extends RAEvent {
     public ItemStack getNewItem() {
         return ItemUtil.itemFromItemStack(this.getPlayer().getInventory().getItem(getNewSlot()));
     }
+
     public ItemStack getPreviousItem() {
         return ItemUtil.itemFromItemStack(this.getPlayer().getInventory().getItem(getPreviousSlot()));
     }

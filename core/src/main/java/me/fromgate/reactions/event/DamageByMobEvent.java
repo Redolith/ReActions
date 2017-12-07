@@ -26,6 +26,7 @@ public class DamageByMobEvent extends RAEvent {
     public LivingEntity getDamager() {
         return this.damager;
     }
+
     public Entity getEntityDamager() {
         return this.entityDamager;
     }

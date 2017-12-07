@@ -13,8 +13,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 
-public class WEDelegateExtent extends AbstractDelegateExtent{
+public class WEDelegateExtent extends AbstractDelegateExtent {
     private final Player player;
+
     /**
      * Create a new instance.
      *

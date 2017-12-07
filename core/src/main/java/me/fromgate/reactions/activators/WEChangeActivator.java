@@ -60,8 +60,7 @@ public class WEChangeActivator extends Activator {
             int bTypeID = Integer.parseInt(bType);
             //noinspection deprecation
             blockType = Material.getMaterial(bTypeID).name();
-        }
-        else if (!bType.equalsIgnoreCase("ANY") && Material.getMaterial(bType) != null)
+        } else if (!bType.equalsIgnoreCase("ANY") && Material.getMaterial(bType) != null)
             blockType = Material.getMaterial(bType).name();
         else blockType = "ANY";
     }

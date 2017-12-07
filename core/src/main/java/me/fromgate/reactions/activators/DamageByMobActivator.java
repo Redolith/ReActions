@@ -73,6 +73,7 @@ public class DamageByMobActivator extends Activator {
         if (FLOAT.matcher(dmgStr).matches()) pde.setDamage(Double.parseDouble(dmgStr));
         return result;
     }
+
     private boolean isActivatorDamager(LivingEntity damager) {
         if (!damagerName.isEmpty()) {
             if (!ChatColor.translateAlternateColorCodes('&', damagerName.replace("_", " ")).equals(getMobName(damager)))

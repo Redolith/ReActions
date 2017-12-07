@@ -18,8 +18,7 @@ public class ActionWEToolControl extends Action {
             isToolControl = params.getParam("value", false);
             //noinspection deprecation
             player = playerName.isEmpty() ? null : Bukkit.getPlayerExact(playerName);
-        }
-        else isToolControl = params.getParam("param-line", false);
+        } else isToolControl = params.getParam("param-line", false);
 
         RAWorldEdit.getSession(player).setToolControl(isToolControl);
         return true;

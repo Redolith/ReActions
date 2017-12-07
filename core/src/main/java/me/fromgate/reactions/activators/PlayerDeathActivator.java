@@ -28,7 +28,6 @@ import me.fromgate.reactions.util.Variables;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
 public class PlayerDeathActivator extends Activator {

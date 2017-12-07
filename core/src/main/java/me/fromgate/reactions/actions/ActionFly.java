@@ -39,20 +39,20 @@ public class ActionFly extends Action {
             player.setFlying(fly == AllowFly.TRUE);
         }
         if (allow == AllowFly.TRUE && fly == AllowFly.FALSE) {
-            if(!player.getAllowFlight()) player.setAllowFlight(true);
-            if (player.isFlying())  player.setFlying(false);
+            if (!player.getAllowFlight()) player.setAllowFlight(true);
+            if (player.isFlying()) player.setFlying(false);
         }
         if (allow == AllowFly.FALSE && fly == AllowFly.TRUE) {
-            if (!player.isFlying())  player.setAllowFlight(false);
+            if (!player.isFlying()) player.setAllowFlight(false);
         }
         if (allow == AllowFly.TRUE && fly == AllowFly.NONE) {
-            if(!player.getAllowFlight()) player.setAllowFlight(true);
+            if (!player.getAllowFlight()) player.setAllowFlight(true);
         }
         if (allow == AllowFly.FALSE && fly == AllowFly.NONE) {
-            if(player.getAllowFlight()) player.setAllowFlight(false);
+            if (player.getAllowFlight()) player.setAllowFlight(false);
         }
         if (allow == AllowFly.NONE && fly == AllowFly.TRUE) {
-            if(!player.getAllowFlight()) player.setAllowFlight(true);
+            if (!player.getAllowFlight()) player.setAllowFlight(true);
             player.setFlying(true);
         }
         if (allow == AllowFly.NONE && fly == AllowFly.FALSE) {
