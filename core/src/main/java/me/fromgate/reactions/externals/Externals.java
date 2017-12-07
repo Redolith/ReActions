@@ -1,5 +1,6 @@
 package me.fromgate.reactions.externals;
 
+import me.fromgate.reactions.externals.worldedit.RAWorldEdit;
 import org.bukkit.Bukkit;
 
 public class Externals {
@@ -38,6 +39,20 @@ public class Externals {
         if (Bukkit.getPluginManager().getPlugin("ProtocolLib") != null) {
             try {
                 RAProtocolLib.connectProtocolLib();
+            } catch (Throwable ignore) {
+            }
+        }
+
+        if (Bukkit.getPluginManager().getPlugin("WorldEdit") != null) {
+            try {
+                RAWorldEdit.init();
+            } catch (Throwable ignore) {
+            }
+        }
+
+        if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null) {
+            try {
+                RAWorldGuard.init();
             } catch (Throwable ignore) {
             }
         }

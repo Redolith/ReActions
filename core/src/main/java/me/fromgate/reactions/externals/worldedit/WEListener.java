@@ -1,13 +1,30 @@
-/**
- * Created by MaxDikiy on 12/10/2017.
+/*
+ *  ReActions, Minecraft bukkit plugin
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
+ *  http://dev.bukkit.org/server-mods/reactions/
+ *
+ *  This file is part of ReActions.
+ *
+ *  ReActions is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  ReActions is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with ReActions.  If not, see <http://www.gnorg/licenses/>.
+ *
  */
-package me.fromgate.reactions.module.worldedit;
+
+package me.fromgate.reactions.externals.worldedit;
 
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.IncompleteRegionException;
-import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.bukkit.selections.Selection;
 import com.sk89q.worldedit.event.extent.EditSessionEvent;
 import com.sk89q.worldedit.event.platform.PlayerInputEvent;
@@ -19,10 +36,12 @@ import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.event.WEChangeEvent;
 import me.fromgate.reactions.event.WESelectionRegionEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import static me.fromgate.reactions.externals.RAWorldEdit.getRegionSelector;
-import static me.fromgate.reactions.externals.RAWorldEdit.getSelection;
+import static me.fromgate.reactions.externals.worldedit.RAWorldEdit.getRegionSelector;
+import static me.fromgate.reactions.externals.worldedit.RAWorldEdit.getSelection;
 
 public class WEListener {
     private static Region regionSelection = null;
@@ -46,7 +65,7 @@ public class WEListener {
                             // Check Region Selection
                             checkChangeSelectionRegion(player, selection, region);
                         }
-                    } catch (IncompleteRegionException e) {
+                    } catch (IncompleteRegionException ignored) {
                         // e.printStackTrace();
                     }
                 }
@@ -83,14 +102,17 @@ public class WEListener {
     }
 
     public static boolean raiseChangeSelectionRegionEvent(Player player, Selection selection, Region region) {
-        WESelectionRegionEvent e = new WESelectionRegionEvent(player, selection, region);
+        WeSelection weSelection = new WeSelection(selection.getRegionSelector().getTypeName(),
+                selection.getMinimumPoint(), selection.getMaximumPoint(),
+                selection.getArea(), selection.getWorld(), region.toString());
+        WESelectionRegionEvent e = new WESelectionRegionEvent(player, weSelection);
         Bukkit.getServer().getPluginManager().callEvent(e);
         return e.isCancelled();
     }
 
     @SuppressWarnings("deprecation")
-    public static boolean raiseWEChangeEvent(Player player, Vector location, BaseBlock block) {
-        WEChangeEvent e = new WEChangeEvent(player, location, block);
+    public static boolean raiseWEChangeEvent(Player player, Location location, Material blockType) {
+        WEChangeEvent e = new WEChangeEvent(player, location, blockType);
         Bukkit.getServer().getPluginManager().callEvent(e);
         return e.isCancelled();
     }

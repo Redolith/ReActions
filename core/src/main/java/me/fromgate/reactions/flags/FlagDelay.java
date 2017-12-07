@@ -35,8 +35,8 @@ public class FlagDelay extends Flag {
     }
 
     @Override
-    public boolean checkFlag(Player p, String param) {
-        String playerName = this.globalDelay ? "" : (p != null ? p.getName() : "");
+    public boolean checkFlag(Player player, String param) {
+        String playerName = this.globalDelay ? "" : (player != null ? player.getName() : "");
         long updateTime = 0;
         String id = param;
 

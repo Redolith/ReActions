@@ -22,6 +22,8 @@
 
 package me.fromgate.reactions.externals;
 
+import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.protection.managers.RegionManager;
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.ActivatorType;
 import me.fromgate.reactions.activators.Activators;
@@ -32,6 +34,7 @@ import me.fromgate.reactions.module.wgbridge.WGBridge;
 import me.fromgate.reactions.module.wgbridge.WGBridge6x;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -45,17 +48,16 @@ public class RAWorldGuard {
     protected static WGBridge bridge = null;
     private static Set<String> regionActivators = null;
 
-    public static boolean init() {
+    public static void init() {
         bridge = getWGBridge();
         updateRegionCache();
-        return isConnected();
     }
 
     public static WGBridge getWGBridge() {
-        Plugin twn = Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
-        if (twn == null) return null;
-        if (!twn.getClass().getName().equals("com.sk89q.worldguard.bukkit.WorldGuardPlugin")) return null;
-        String version = twn.getDescription().getVersion().replaceAll("[^0-9]", "");
+        Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
+        if (plugin == null) return null;
+        if (!plugin.getClass().getName().equals("com.sk89q.worldguard.bukkit.WorldGuardPlugin")) return null;
+        String version = plugin.getDescription().getVersion().replaceAll("[^0-9]", "");
         if (version.startsWith("5")) {
             try {
                 Class<?> c = Class.forName("me.fromgate.reactions.module.wgbridge.WGBridge5x");
@@ -141,5 +143,13 @@ public class RAWorldGuard {
 
     public static boolean isLocationInRegion(Location loc, String regionName) {
         return bridge.isLocationInRegion(loc, regionName);
+    }
+
+    public static LocalPlayer getWrapPlayer(Player player) {
+        return bridge.getWrapPlayer(player);
+    }
+
+    public static RegionManager getRegionManager(World world) {
+        return bridge.getRegionManager(world);
     }
 }

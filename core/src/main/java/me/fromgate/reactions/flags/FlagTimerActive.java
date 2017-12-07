@@ -28,7 +28,7 @@ import org.bukkit.entity.Player;
 public class FlagTimerActive extends Flag {
 
     @Override
-    public boolean checkFlag(Player p, String param) {
+    public boolean checkFlag(Player player, String param) {
         return Timers.isTimerWorking(param);
     }
 

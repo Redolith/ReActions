@@ -38,7 +38,7 @@ import org.bukkit.entity.Player;
 public class FlagPlayersInRel extends Flag {
     @SuppressWarnings("deprecation")
     @Override
-    public boolean checkFlag(Player p, String param) {
+    public boolean checkFlag(Player player, String param) {
         if (!Externals.isConnectedFactions()) return false;
         String[] params = param.split("\\s");
         Player player1 = Bukkit.getPlayer(params[0].trim());

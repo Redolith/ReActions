@@ -26,9 +26,9 @@ import org.bukkit.entity.Player;
 
 public class FlagWeather extends Flag {
     @Override
-    public boolean checkFlag(Player p, String param) {
-        if (param.equalsIgnoreCase("rain")) return !p.getWorld().isThundering() && p.getWorld().hasStorm();
-        if (param.equalsIgnoreCase("thunder")) return p.getWorld().isThundering() && p.getWorld().hasStorm();
-        return !p.getWorld().hasStorm();
+    public boolean checkFlag(Player player, String param) {
+        if (param.equalsIgnoreCase("rain")) return !player.getWorld().isThundering() && player.getWorld().hasStorm();
+        if (param.equalsIgnoreCase("thunder")) return player.getWorld().isThundering() && player.getWorld().hasStorm();
+        return !player.getWorld().hasStorm();
     }
 }

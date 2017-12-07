@@ -33,7 +33,7 @@ import org.bukkit.material.Lever;
 public class FlagPowered extends Flag {
 
     @Override
-    public boolean checkFlag(Player p, String param) {
+    public boolean checkFlag(Player player, String param) {
         Param params = new Param(param);
         String locStr = params.isParamsExists("loc") ? params.getParam("loc", "") : param;
         if (locStr.isEmpty()) return false;

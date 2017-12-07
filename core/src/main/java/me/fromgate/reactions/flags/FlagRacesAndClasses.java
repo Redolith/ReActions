@@ -34,9 +34,9 @@ public class FlagRacesAndClasses extends Flag {
     }
 
     @Override
-    public boolean checkFlag(Player p, String param) {
+    public boolean checkFlag(Player player, String param) {
         if (!RARacesAndClasses.isEnabled()) return false;
-        return this.checkRace ? RARacesAndClasses.checkRace(p, param) : RARacesAndClasses.checkClass(p, param);
+        return this.checkRace ? RARacesAndClasses.checkRace(player, param) : RARacesAndClasses.checkClass(player, param);
     }
 
 }

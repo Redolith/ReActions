@@ -28,9 +28,9 @@ import org.bukkit.entity.Player;
 public class FlagXP extends Flag {
 
     @Override
-    public boolean checkFlag(Player p, String param) {
+    public boolean checkFlag(Player player, String param) {
         if (!Util.isInteger(param)) return false;
-        return p.getTotalExperience() >= Integer.parseInt(param);
+        return player.getTotalExperience() >= Integer.parseInt(param);
     }
 
 }

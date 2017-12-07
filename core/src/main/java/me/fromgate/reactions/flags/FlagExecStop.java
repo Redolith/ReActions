@@ -28,9 +28,9 @@ import org.bukkit.entity.Player;
 public class FlagExecStop extends Flag {
 
     @Override
-    public boolean checkFlag(Player p, String param) {
+    public boolean checkFlag(Player player, String param) {
         if (param.isEmpty()) return false;
-        return Activators.isStopped(p, param, false);
+        return Activators.isStopped(player, param, false);
     }
 
 }

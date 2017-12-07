@@ -1,6 +1,6 @@
 package me.fromgate.reactions.actions;
 
-import me.fromgate.reactions.externals.RAWorldEdit;
+import me.fromgate.reactions.externals.worldedit.RAWorldEdit;
 import me.fromgate.reactions.util.Param;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

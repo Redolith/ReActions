@@ -35,7 +35,7 @@ public class FlagFlagSet extends Flag {
     private final static Pattern BRACES_GROUP = Pattern.compile("\\S+:\\{[^\\{\\}]*\\}|\\S+");
 
     @Override
-    public boolean checkFlag(Player p, String param) {
+    public boolean checkFlag(Player player, String param) {
         if (param.isEmpty()) return false;
         List<String> flagList = parseParamsList(param);
         if (flagList.isEmpty()) return false;
@@ -44,7 +44,7 @@ public class FlagFlagSet extends Flag {
             if (negative) flagStr = flagStr.replaceFirst("!", "");
             String[] fnv = flagStr.split(":", 2);
             if (fnv.length != 2) continue;
-            if (Flags.checkFlag(p, fnv[0], BRACES.matcher(fnv[1]).replaceAll(""), negative)) {
+            if (Flags.checkFlag(player, fnv[0], BRACES.matcher(fnv[1]).replaceAll(""), negative)) {
                 return true;
             }
         }

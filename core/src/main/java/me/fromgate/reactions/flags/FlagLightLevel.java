@@ -28,8 +28,8 @@ import org.bukkit.entity.Player;
 public class FlagLightLevel extends Flag {
 
     @Override
-    public boolean checkFlag(Player p, String param) {
+    public boolean checkFlag(Player player, String param) {
         if (!Util.isInteger(param)) return false;
-        return p.getEyeLocation().getBlock().getLightLevel() >= Integer.parseInt(param);
+        return player.getEyeLocation().getBlock().getLightLevel() >= Integer.parseInt(param);
     }
 }

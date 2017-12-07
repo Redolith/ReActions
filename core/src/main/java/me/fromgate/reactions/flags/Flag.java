@@ -25,5 +25,5 @@ package me.fromgate.reactions.flags;
 import org.bukkit.entity.Player;
 
 public abstract class Flag {
-    public abstract boolean checkFlag(Player p, String param);
+    public abstract boolean checkFlag(Player player, String param);
 }

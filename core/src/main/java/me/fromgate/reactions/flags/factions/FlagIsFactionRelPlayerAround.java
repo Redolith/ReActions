@@ -36,17 +36,17 @@ import org.bukkit.entity.Player;
 public class FlagIsFactionRelPlayerAround extends Flag {
 
     @Override
-    public boolean checkFlag(Player p, String param) {
+    public boolean checkFlag(Player player, String param) {
         if (!Externals.isConnectedFactions()) return false;
         String[] params = param.split("\\s");
         double radius = Double.valueOf(params[0].trim());
         String targetRel = params[1].trim();
 
-        for (Entity entity : p.getNearbyEntities(radius, radius, radius)) {
+        for (Entity entity : player.getNearbyEntities(radius, radius, radius)) {
             if (!(entity instanceof Player)) continue;
             String curTargetFaction = RAFactions.getPlayerFaction((Player) entity);
 
-            if (RAFactions.getRelationWith(p, curTargetFaction).equalsIgnoreCase(targetRel)) return true;
+            if (RAFactions.getRelationWith(player, curTargetFaction).equalsIgnoreCase(targetRel)) return true;
         }
         return false;
     }

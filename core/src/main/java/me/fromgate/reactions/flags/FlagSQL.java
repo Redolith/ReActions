@@ -34,7 +34,7 @@ public class FlagSQL extends Flag {
     }
 
     @Override
-    public boolean checkFlag(Player p, String param) {
+    public boolean checkFlag(Player player, String param) {
         if (!SQLManager.isEnabled()) return false;
         Param params = new Param(param);
         if (!params.isParamsExists("value", "select", "from") &&

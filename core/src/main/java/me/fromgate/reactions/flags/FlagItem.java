@@ -39,18 +39,18 @@ public class FlagItem extends Flag {
     }
 
     @Override
-    public boolean checkFlag(Player p, String itemStr) {
+    public boolean checkFlag(Player player, String itemStr) {
         switch (flagType) {
             case 0:
-                ItemStack inHand = BukkitCompatibilityFix.getItemInHand(p);
+                ItemStack inHand = BukkitCompatibilityFix.getItemInHand(player);
                 Variables.setTempVar("item_amount", inHand == null ? "0" : String.valueOf(inHand.getAmount()));
                 return ItemUtil.compareItemStr(inHand, itemStr, true);
             case 1:
-                return hasItemInInventory(p, itemStr);
+                return hasItemInInventory(player, itemStr);
             case 2:
-                return isItemWeared(p, itemStr);
+                return isItemWeared(player, itemStr);
             case 3:
-                ItemStack inOffhand = BukkitCompatibilityFix.getItemInOffHand(p);
+                ItemStack inOffhand = BukkitCompatibilityFix.getItemInOffHand(player);
                 Variables.setTempVar("item_amount", inOffhand == null ? "0" : String.valueOf(inOffhand.getAmount()));
                 return ItemUtil.compareItemStr(inOffhand, itemStr, true);
         }

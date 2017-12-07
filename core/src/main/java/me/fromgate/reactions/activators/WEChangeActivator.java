@@ -35,12 +35,9 @@ public class WEChangeActivator extends Activator {
     public boolean activate(Event event) {
         if (!(event instanceof WEChangeEvent)) return false;
         WEChangeEvent e = (WEChangeEvent) event;
-
-        //noinspection deprecation
-        String type = Material.getMaterial(e.getBlock().getId()).name();
+        String type = e.getBlockType();
         Variables.setTempVar("blocktype", type);
         if (!checkBlockType(type)) return false;
-
         Variables.setTempVar("blocklocation", Locator.locationToString(e.getLocation()));
 
         if (!region.isEmpty() && !RAWorldGuard.isLocationInRegion(e.getLocation(), region)) return false;

@@ -30,8 +30,6 @@ import me.fromgate.reactions.externals.RACraftConomy;
 import me.fromgate.reactions.externals.RAEffects;
 import me.fromgate.reactions.externals.RARacesAndClasses;
 import me.fromgate.reactions.externals.RAVault;
-import me.fromgate.reactions.externals.RAWorldEdit;
-import me.fromgate.reactions.externals.RAWorldGuard;
 import me.fromgate.reactions.menu.InventoryMenu;
 import me.fromgate.reactions.placeholders.Placeholders;
 import me.fromgate.reactions.sql.SQLManager;
@@ -51,7 +49,6 @@ import me.fromgate.reactions.util.playerselector.PlayerSelectors;
 import me.fromgate.reactions.util.waiter.ActionsWaiter;
 import org.bstats.bukkit.MetricsLite;
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 
@@ -72,10 +69,7 @@ public class ReActions extends JavaPlugin {
         UpdateChecker.init(this, "ReActions", "61726", "reactions", Cfg.checkUpdates);
 
         if (!getDataFolder().exists()) getDataFolder().mkdirs();
-        PluginManager pm = this.getServer().getPluginManager();
-        pm.registerEvents(new ReActionsListener(), this);
-        MoveListener.init();
-        pm.registerEvents(new InventoryMenu(), this);
+
 
         Commander.init(this);
         Timers.init();
@@ -87,21 +81,17 @@ public class ReActions extends JavaPlugin {
         Externals.init();
         RAVault.init();
         RACraftConomy.init();
-        RAWorldGuard.init();
-        RAWorldEdit.init();
         ActionsWaiter.init();
-
         Delayer.load();
         if (!Cfg.playerSelfVarFile) Variables.load();
         else Variables.loadVars();
         Locator.loadLocs();
-
         SQLManager.init();
         InventoryMenu.init();
         Placeholders.init();
-
         Bukkit.getLogger().addHandler(new LogHandler());
-
+        getServer().getPluginManager().registerEvents(new ReActionsListener(), this);
+        MoveListener.init();
 
         try {
             if (Class.forName("org.bukkit.event.player.PlayerInteractAtEntityEvent") != null) {

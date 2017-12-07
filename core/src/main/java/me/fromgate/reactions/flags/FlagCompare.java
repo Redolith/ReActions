@@ -30,7 +30,7 @@ import org.bukkit.entity.Player;
 public class FlagCompare extends Flag {
 
     @Override
-    public boolean checkFlag(Player p, String param) {
+    public boolean checkFlag(Player player, String param) {
         Param params = new Param(param, "unknown");
         String paramValue = params.getParam("param", "");
         if (paramValue.isEmpty()) return false;

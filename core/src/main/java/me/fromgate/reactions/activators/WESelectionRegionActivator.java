@@ -1,9 +1,8 @@
 package me.fromgate.reactions.activators;
 
-import com.sk89q.worldedit.bukkit.selections.Selection;
-import com.sk89q.worldedit.regions.Region;
 import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.event.WESelectionRegionEvent;
+import me.fromgate.reactions.externals.worldedit.WeSelection;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Variables;
 import org.bukkit.Location;
@@ -32,25 +31,25 @@ public class WESelectionRegionActivator extends Activator {
     public boolean activate(Event event) {
         if (!(event instanceof WESelectionRegionEvent)) return false;
         WESelectionRegionEvent e = (WESelectionRegionEvent) event;
-        Selection selection = e.getSelection();
-        if (selection == null) return false;
+        WeSelection selection = e.getSelection();
+        if (!selection.isValid()) return false;
 
         int selectionBlocks = selection.getArea();
         Variables.setTempVar("selblocks", Integer.toString(selectionBlocks));
         if (selectionBlocks < minBlocks) return false;
         if (selectionBlocks > maxBlocks && maxBlocks != 0) return false;
 
-        String selType = selection.getRegionSelector().getTypeName();
+        String selType = selection.getSelType();
         Variables.setTempVar("seltype", selType);
         if (!checkTypeSelection(selType)) return false;
 
-        Region region = e.getRegion();
-        if (region == null) return false;
+        String region = selection.getRegion();
+        if (region == null || region.isEmpty()) return false;
 
         World world = selection.getWorld();
         Variables.setTempVar("world", (world != null) ? world.getName() : "");
 
-        Variables.setTempVar("region", region.toString());
+        Variables.setTempVar("region", region);
         return Actions.executeActivator(e.getPlayer(), this);
     }
 

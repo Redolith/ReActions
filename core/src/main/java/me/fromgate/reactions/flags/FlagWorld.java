@@ -29,10 +29,10 @@ import org.bukkit.entity.Player;
 public class FlagWorld extends Flag {
 
     @Override
-    public boolean checkFlag(Player p, String param) {
+    public boolean checkFlag(Player player, String param) {
         World w = Bukkit.getWorld(param);
         if (w == null) return false;
-        return p.getWorld().equals(w);
+        return player.getWorld().equals(w);
     }
 
 }

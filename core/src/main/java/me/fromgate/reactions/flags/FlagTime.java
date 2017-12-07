@@ -34,10 +34,10 @@ public class FlagTime extends Flag {
     private final static Pattern INT = Pattern.compile("\\d+");
 
     @Override
-    public boolean checkFlag(Player p, String time) {
+    public boolean checkFlag(Player player, String time) {
         saveTempVar(time);
         Long currentTime = Bukkit.getWorlds().get(0).getTime();
-        if (p != null) currentTime = p.getWorld().getTime();
+        if (player != null) currentTime = player.getWorld().getTime();
 
         if (time.equalsIgnoreCase("day")) {
             return ((currentTime >= 0) && (currentTime < 12000));

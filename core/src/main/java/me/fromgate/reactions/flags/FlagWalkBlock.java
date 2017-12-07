@@ -33,8 +33,8 @@ public class FlagWalkBlock extends Flag {
 
     @SuppressWarnings("deprecation")
     @Override
-    public boolean checkFlag(Player p, String param) {
-        Block walk = p.getLocation().getBlock();
+    public boolean checkFlag(Player player, String param) {
+        Block walk = player.getLocation().getBlock();
         if (walk.getType() == Material.AIR) walk = walk.getRelative(BlockFace.DOWN);
         return ItemUtil.compareItemStr(new ItemStack(walk.getType(), 1, walk.getData()), param);
     }

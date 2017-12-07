@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 public class FlagBlock extends Flag {
 
     @Override
-    public boolean checkFlag(Player p, String param) {
+    public boolean checkFlag(Player player, String param) {
         if (param.isEmpty()) return false;
         Param params = new Param(param, "loc");
         Location loc = Locator.parseLocation(params.getParam("loc", ""), null);

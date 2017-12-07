@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class InventoryMenu implements Listener {
+
     private static Map<Integer, List<String>> activeMenus = new HashMap<>();
     private static Map<String, VirtualInventory> menu = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private static Param tempvars;
@@ -35,6 +36,7 @@ public class InventoryMenu implements Listener {
     public static void init() {
         load();
         save();
+        Bukkit.getPluginManager().registerEvents(new InventoryMenu(), ReActions.getPlugin());
     }
 
     public static void save() {

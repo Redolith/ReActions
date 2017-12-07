@@ -29,7 +29,7 @@ import org.bukkit.entity.Player;
 public class FlagChance extends Flag {
 
     @Override
-    public boolean checkFlag(Player p, String param) {
+    public boolean checkFlag(Player player, String param) {
         Variables.setTempVar("CHANCE", param + "%");
         int d = 50;
         if (Util.isInteger(param)) d = Integer.parseInt(param);

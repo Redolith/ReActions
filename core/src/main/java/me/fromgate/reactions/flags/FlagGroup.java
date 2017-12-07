@@ -28,8 +28,8 @@ import org.bukkit.entity.Player;
 public class FlagGroup extends Flag {
 
     @Override
-    public boolean checkFlag(Player p, String param) {
-        return RAVault.playerInGroup(p, param);
+    public boolean checkFlag(Player player, String param) {
+        return RAVault.playerInGroup(player, param);
     }
 
 }

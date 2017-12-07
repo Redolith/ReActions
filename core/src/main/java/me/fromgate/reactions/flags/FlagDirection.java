@@ -27,8 +27,8 @@ import org.bukkit.entity.Player;
 public class FlagDirection extends Flag {
 
     @Override
-    public boolean checkFlag(Player p, String param) {
-        return isPlayerDirected(p, param);
+    public boolean checkFlag(Player player, String param) {
+        return isPlayerDirected(player, param);
     }
 
     enum Direction {

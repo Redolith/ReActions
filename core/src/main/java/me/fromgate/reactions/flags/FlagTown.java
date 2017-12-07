@@ -29,9 +29,9 @@ import org.bukkit.entity.Player;
 public class FlagTown extends Flag {
 
     @Override
-    public boolean checkFlag(Player p, String param) {
+    public boolean checkFlag(Player player, String param) {
         if (!Externals.isTownyConnected()) return false;
-        return RATowny.playerInTown(p, param);
+        return RATowny.playerInTown(player, param);
     }
 
 }

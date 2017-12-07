@@ -28,13 +28,13 @@ import org.bukkit.entity.Player;
 
 public class FlagMoney extends Flag {
     @Override
-    public boolean checkFlag(Player p, String param) {
+    public boolean checkFlag(Player player, String param) {
         if (!RAEconomics.isEconomyFound()) return false;
         Param params = new Param(param, "amount");
         String amountStr = params.getParam("amount", "a");
         if (!RAEconomics.isFloat(amountStr)) return false;
         double amount = Double.parseDouble(amountStr);
-        String account = params.getParam("account", params.getParam("player", p == null ? "" : p.getName()));
+        String account = params.getParam("account", params.getParam("player", player == null ? "" : player.getName()));
         if (account.isEmpty()) return false;
         String currency = params.getParam("currency", "");
         String world = params.getParam("world", "");

@@ -9,9 +9,9 @@ import org.bukkit.entity.Player;
  */
 public class FlagFlySpeed extends Flag {
     @Override
-    public boolean checkFlag(Player p, String param) {
+    public boolean checkFlag(Player player, String param) {
         if (!Util.isInteger(param)) return false;
-        long flySpeed = Math.round(p.getFlySpeed() * 10);
+        long flySpeed = Math.round(player.getFlySpeed() * 10);
         Variables.setTempVar("flyspeed", Integer.toString((int) flySpeed));
         return flySpeed >= Integer.parseInt(param);
     }

@@ -3,21 +3,21 @@
  */
 package me.fromgate.reactions.event;
 
-import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.blocks.BaseBlock;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 public class WEChangeEvent extends RAEvent {
     private Player player;
     private Location location;
-    private BaseBlock block;
+    private Material blockType;
 
-    public WEChangeEvent(Player player, Vector location, BaseBlock block) {
+    public WEChangeEvent(Player player, Location location, Material blockType) {
         super(player);
         this.player = player;
-        this.location = new Location(player.getWorld(), location.getX(), location.getY(), location.getZ());
-        this.block = block;
+        this.location = location; //new Location(player.getWorld(), location.getX(), location.getY(), location.getZ());
+        this.blockType = blockType;
+
     }
 
     public Player getPlayer() {
@@ -28,11 +28,15 @@ public class WEChangeEvent extends RAEvent {
         return location;
     }
 
-    public BaseBlock getBlock() {
-        return block;
-    }
+    /*  public BaseBlock getBlock() {
+          return block;
+      }
 
-    public void setBlock(BaseBlock block) {
-        this.block = block;
+      public void setBlock(BaseBlock block) {
+          this.block = block;
+      }
+  */
+    public String getBlockType() {
+        return blockType.name();
     }
 }

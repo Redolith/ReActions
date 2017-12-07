@@ -29,14 +29,14 @@ import org.bukkit.entity.Player;
 public class FlagPVP extends Flag {
 
     @Override
-    public boolean checkFlag(Player p, String param) {
-        if (!p.hasMetadata("reactions-pvp-time")) return false;
+    public boolean checkFlag(Player player, String param) {
+        if (!player.hasMetadata("reactions-pvp-time")) return false;
         Param params = new Param(param, "time");
         String timeStr = params.getParam("time");
         Long delay = Util.parseTime(timeStr);
         if (delay == 0) return false;
         Long curtime = System.currentTimeMillis();
-        Long pvptime = p.getMetadata("reactions-pvp-time").get(0).asLong();
+        Long pvptime = player.getMetadata("reactions-pvp-time").get(0).asLong();
         return ((curtime - pvptime) < delay);
     }
 

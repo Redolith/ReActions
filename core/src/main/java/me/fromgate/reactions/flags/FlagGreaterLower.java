@@ -15,7 +15,7 @@ public class FlagGreaterLower extends Flag {
     }
 
     @Override
-    public boolean checkFlag(Player p, String param) {
+    public boolean checkFlag(Player player, String param) {
         Param params = new Param(param, "unknown");
         float paramValue = params.getParam("param", 0);
         float value = params.getParam("value", 0);
