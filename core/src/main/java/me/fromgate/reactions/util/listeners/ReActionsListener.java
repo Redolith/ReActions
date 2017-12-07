@@ -170,7 +170,8 @@ public class ReActionsListener implements Listener {
     public void onPlayerItemHeldEvent(PlayerItemHeldEvent event) {
         EventManager.raiseItemHoldEvent(event.getPlayer());
         EventManager.raiseItemWearEvent(event.getPlayer());
-        if (EventManager.raiseItemHeldEvent(event.getPlayer(), event.getNewSlot(), event.getPreviousSlot())) event.setCancelled(true);
+        if (EventManager.raiseItemHeldEvent(event.getPlayer(), event.getNewSlot(), event.getPreviousSlot()))
+            event.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -274,7 +275,8 @@ public class ReActionsListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onMobDamageByPlayer(EntityDamageEvent event) {
-        if ((event.getCause() != DamageCause.ENTITY_ATTACK) && (event.getCause() != DamageCause.PROJECTILE) && (event.getCause() != DamageCause.MAGIC)) return;
+        if ((event.getCause() != DamageCause.ENTITY_ATTACK) && (event.getCause() != DamageCause.PROJECTILE) && (event.getCause() != DamageCause.MAGIC))
+            return;
         if (!(event instanceof EntityDamageByEntityEvent)) return;
         EntityDamageByEntityEvent evdmg = (EntityDamageByEntityEvent) event;
         LivingEntity damager = Util.getDamagerEntity(evdmg);
@@ -285,7 +287,8 @@ public class ReActionsListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onDamageByMob(EntityDamageEvent event) {
-        if ((event.getCause() != DamageCause.ENTITY_ATTACK) && (event.getCause() != DamageCause.PROJECTILE) && (event.getCause() != DamageCause.MAGIC)) return;
+        if ((event.getCause() != DamageCause.ENTITY_ATTACK) && (event.getCause() != DamageCause.PROJECTILE) && (event.getCause() != DamageCause.MAGIC))
+            return;
         if (!(event instanceof EntityDamageByEntityEvent)) return;
         EntityDamageByEntityEvent evdmg = (EntityDamageByEntityEvent) event;
         LivingEntity damager = Util.getDamagerEntity(evdmg);
@@ -331,7 +334,7 @@ public class ReActionsListener implements Listener {
                 damager = (LivingEntity) ((Projectile) entityDamager).getShooter();
             }
             if (EventManager.raisePlayerDamageByMobEvent(evdmg, damager, entityDamager)) event.setCancelled(true);
-        } else if ((event instanceof EntityDamageByBlockEvent)){
+        } else if ((event instanceof EntityDamageByBlockEvent)) {
             source = "BLOCK";
             EntityDamageByBlockEvent evdmg = (EntityDamageByBlockEvent) event;
             Block blockDamager = evdmg.getDamager();
@@ -340,7 +343,7 @@ public class ReActionsListener implements Listener {
             source = "OTHER";
         }
 
-        if(EventManager.raisePlayerDamageEvent(event, source)) event.setCancelled(true);
+        if (EventManager.raisePlayerDamageEvent(event, source)) event.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -412,10 +415,12 @@ public class ReActionsListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
     public void onPlayerJoin(PlayerJoinEvent event) {
-        TempOp.removeTempOp(event.getPlayer());
+        Player player = event.getPlayer();
+        TempOp.removeTempOp(player);
         ActionsWaiter.refresh();
-        RADebug.offPlayerDebug(event.getPlayer());
-        UpdateChecker.updateMsg(event.getPlayer());
+        RADebug.offPlayerDebug(player);
+        UpdateChecker.updateMsg(player);
+        MoveListener.initLocation(player);
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -499,6 +504,7 @@ public class ReActionsListener implements Listener {
     public void onPlayerQuitActivators(PlayerQuitEvent event) {
         TempOp.removeTempOp(event.getPlayer());
         EventManager.raiseQuitEvent(event);
+        MoveListener.removeLocation(event.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.HIGH)

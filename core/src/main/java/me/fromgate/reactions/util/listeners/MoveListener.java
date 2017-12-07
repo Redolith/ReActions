@@ -30,26 +30,28 @@ import me.fromgate.reactions.util.PushBack;
 import me.fromgate.reactions.util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MoveListener implements Listener {
+
+    private static Map<String, Location> prevLocations = new HashMap<>();
 
     public static void init() {
         if (Cfg.playerMoveTaskUse) {
             Bukkit.getScheduler().runTaskTimer(ReActions.getPlugin(), () -> {
                 Bukkit.getOnlinePlayers().forEach(player -> {
-                    Location from = PushBack.getPlayerPrevLoc1(player);
-                    if (from == null) {
-                        from = player.getLocation();
-                    }
+                    Location from = prevLocations.getOrDefault(player.getName(), null);
                     Location to = player.getLocation();
-                    PushBack.rememberLocations(player, from, to);
-                    if (!Util.isSameBlock(from, to)) {
-                        EventManager.raiseAllRegionEvents(player, to, from);
-                    }
+                    if (!to.getWorld().equals(from.getWorld())) from = null;
+                    proccesMove(player, from, to);
+                    prevLocations.put(player.getName(), to);
                 });
             }, 30, Cfg.playerMoveTaskTick);
         } else {
@@ -59,9 +61,26 @@ public class MoveListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent event) {
-        PushBack.rememberLocations(event.getPlayer(), event.getFrom(), event.getTo());
-        if (!Util.isSameBlock(event.getFrom(), event.getTo())) {
-            EventManager.raiseAllRegionEvents(event.getPlayer(), event.getTo(), event.getFrom());
+        proccesMove(event.getPlayer(), event.getFrom(), event.getTo());
+    }
+
+    private static void proccesMove(Player player, Location from, Location to) {
+        PushBack.rememberLocations(player, from, to);
+        if (!Util.isSameBlock(from, to)) {
+            EventManager.raiseAllRegionEvents(player, to, from);
         }
     }
+
+    public static void initLocation(Player player) {
+        if (Cfg.playerMoveTaskUse) {
+            prevLocations.put(player.getName(), player.getLocation());
+        }
+    }
+
+    public static void removeLocation(Player player) {
+        if (prevLocations.containsKey(player.getName())) {
+            prevLocations.remove(player.getName());
+        }
+    }
+
 }

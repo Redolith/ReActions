@@ -67,7 +67,7 @@ public class PushBack {
         if (prev1 == null) {
             setPlayerPrevLoc1(player, from);
             setPlayerPrevLoc2(player, from);
-        } else if (isSameBlock(prev1, to)) {
+        } else if (!isSameBlock(prev1, to)) {
             setPlayerPrevLoc2(player, prev1);
             setPlayerPrevLoc1(player, from);
         }
