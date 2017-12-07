@@ -313,9 +313,6 @@ public class ReActionsListener implements Listener {
             else if (GodMode.setGod(player) && EventManager.raisePlayerGodChangeEvent(player, true)) {
                 GodMode.removeGod(player);
             }
-        /* } /* else if (GodUtil.checkGod(player) && event.getCause() == DamageCause.CUSTOM && Math.round(event.getDamage()) == 0) {
-            event.setCancelled(true);
-            return; */
         } else if (GodMode.removeGod(player) && EventManager.raisePlayerGodChangeEvent(player, false)) {
             GodMode.setGod(player);
             event.setCancelled(true);
