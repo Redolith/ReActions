@@ -22,6 +22,8 @@ public class Cfg {
     public static boolean playerAsynchSaveSelfVarFile = false;
     public static boolean playerMoveTaskUse = false;
     public static int playerMoveTaskTick = 5;
+    public static boolean godActivatorEnable = true;
+    public static int godActivatorCheckTicks = 10;
 
 
     public static void save() {
@@ -31,6 +33,8 @@ public class Cfg {
         config.set("general.player-asynch-save-self-variable-file", playerAsynchSaveSelfVarFile);
         config.set("general.player-move-event.use-task", playerMoveTaskUse);
         config.set("general.player-move-event.task-tick", playerMoveTaskTick);
+        config.set("reactions.activators.god.enable", godActivatorEnable);
+        config.set("reactions.activators.god.recheck-ticks", godActivatorCheckTicks);
         config.set("reactions.save-empty-actions-and-flags-sections", saveEmptySections);
         config.set("reactions.show-messages-for-actions", actionMsg);
         config.set("reactions.center-player-teleport", centerTpCoords);
@@ -53,6 +57,8 @@ public class Cfg {
         playerAsynchSaveSelfVarFile = config.getBoolean("general.player-asynch-save-self-variable-file", false);
         playerMoveTaskUse = config.getBoolean("general.player-move-event.use-task", false);
         playerMoveTaskTick = config.getInt("general.player-move-event.task-tick", 5);
+        godActivatorEnable = config.getBoolean("reactions.activators.god.enable", true);
+        godActivatorCheckTicks = config.getInt("reactions.activators.god.recheck-ticks", 10);
         chatLength = config.getInt("reactions.default-chat-line-length", 55);
         saveEmptySections = config.getBoolean("reactions.save-empty-actions-and-flags-sections", false);
         centerTpCoords = config.getBoolean("reactions.center-player-teleport", true);

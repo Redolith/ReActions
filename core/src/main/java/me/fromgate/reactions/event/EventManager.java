@@ -34,7 +34,6 @@ import me.fromgate.reactions.activators.SignActivator;
 import me.fromgate.reactions.externals.RAWorldGuard;
 import me.fromgate.reactions.util.BukkitCompatibilityFix;
 import me.fromgate.reactions.util.Cfg;
-import me.fromgate.reactions.util.GodMode;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.item.ItemUtil;
@@ -126,7 +125,6 @@ public class EventManager {
 
 
     public static boolean raiseJoinEvent(Player player, boolean joinfirst) {
-        GodMode.setEventGod(player);
         JoinEvent e = new JoinEvent(player, joinfirst);
         Bukkit.getServer().getPluginManager().callEvent(e);
         return true;
@@ -230,10 +228,6 @@ public class EventManager {
 
     public static boolean raiseCommandEvent(Player p, String command, boolean canceled) {
         if (command.isEmpty()) return false;
-        if (p != null) {
-            Bukkit.getScheduler().runTaskLater(plg(), () -> GodMode.setEventGod(p), 1);
-        }
-
         String[] args = command.split(" ");
         CommandEvent ce = new CommandEvent(p, command, args, canceled);
         Bukkit.getServer().getPluginManager().callEvent(ce);
@@ -320,7 +314,6 @@ public class EventManager {
 
     private static void raiseRgEnterEvent(Player player, List<String> regionTo, List<String> regionFrom) {
         if (regionTo.isEmpty()) return;
-        GodMode.setEventGod(player);
         for (String rg : regionTo)
             if (!regionFrom.contains(rg)) {
                 RegionEnterEvent wge = new RegionEnterEvent(player, rg);
@@ -330,7 +323,6 @@ public class EventManager {
 
     private static void raiseRgLeaveEvent(Player player, List<String> regionTo, List<String> regionFrom) {
         if (regionFrom.isEmpty()) return;
-        GodMode.setEventGod(player);
         for (String rg : regionFrom)
             if (!regionTo.contains(rg)) {
                 RegionLeaveEvent wge = new RegionLeaveEvent(player, rg);
@@ -354,8 +346,6 @@ public class EventManager {
         if (!RAWorldGuard.isPlayerInRegion(player, region)) return;
         String rg = "rg-" + region;
         if (!isTimeToRaiseEvent(player, rg, Cfg.worlduardRecheck, repeat)) return;
-
-        GodMode.setEventGod(player);
 
         RegionEvent wge = new RegionEvent(player, region);
         Bukkit.getServer().getPluginManager().callEvent(wge);

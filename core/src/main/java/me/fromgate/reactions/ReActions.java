@@ -37,6 +37,7 @@ import me.fromgate.reactions.timer.Timers;
 import me.fromgate.reactions.util.Cfg;
 import me.fromgate.reactions.util.Delayer;
 import me.fromgate.reactions.util.FakeCmd;
+import me.fromgate.reactions.util.GodMode;
 import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.UpdateChecker;
 import me.fromgate.reactions.util.Variables;
@@ -92,6 +93,7 @@ public class ReActions extends JavaPlugin {
         Bukkit.getLogger().addHandler(new LogHandler());
         getServer().getPluginManager().registerEvents(new ReActionsListener(), this);
         MoveListener.init();
+        GodMode.init();
 
         try {
             if (Class.forName("org.bukkit.event.player.PlayerInteractAtEntityEvent") != null) {

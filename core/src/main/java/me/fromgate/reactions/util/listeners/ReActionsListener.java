@@ -310,17 +310,7 @@ public class ReActionsListener implements Listener {
     public void onPlayerDamage(EntityDamageEvent event) {
         String source = "ANY";
         if (event.getEntity().getType() != EntityType.PLAYER) return;
-        Player player = (Player) event.getEntity();
-        if (event.isCancelled()) {
-            if (GodMode.checkGod(player) && GodMode.setGod(player)) return;
-            else if (GodMode.setGod(player) && EventManager.raisePlayerGodChangeEvent(player, true)) {
-                GodMode.removeGod(player);
-            }
-        } else if (GodMode.removeGod(player) && EventManager.raisePlayerGodChangeEvent(player, false)) {
-            GodMode.setGod(player);
-            event.setCancelled(true);
-            return;
-        }
+
         if (event.getCause() == DamageCause.CUSTOM && Math.round(event.getDamage()) == 0) {
             event.setCancelled(true);
             return;
