@@ -1,6 +1,6 @@
 package me.fromgate.reactions.commands;
 
-import me.fromgate.reactions.util.RADebug;
+import me.fromgate.reactions.util.RaDebug;
 import me.fromgate.reactions.util.message.M;
 import org.bukkit.entity.Player;
 
@@ -11,13 +11,13 @@ public class CmdDebug extends Cmd {
     public boolean execute(Player player, String[] args) {
         String arg = args.length >= 2 ? args[1] : "off";
         if (arg.equalsIgnoreCase("false")) {
-            RADebug.setPlayerDebug(player, false);
+            RaDebug.setPlayerDebug(player, false);
             M.printMSG(player, "cmd_debugfalse");
         } else if (arg.equalsIgnoreCase("true")) {
-            RADebug.setPlayerDebug(player, true);
+            RaDebug.setPlayerDebug(player, true);
             M.printMSG(player, "cmd_debugtrue");
         } else {
-            RADebug.offPlayerDebug(player);
+            RaDebug.offPlayerDebug(player);
             M.printMSG(player, "cmd_debugoff");
         }
         return true;

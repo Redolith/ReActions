@@ -1,6 +1,6 @@
 package me.fromgate.reactions.util.playerselector;
 
-import me.fromgate.reactions.externals.RAVault;
+import me.fromgate.reactions.externals.RaVault;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -13,12 +13,12 @@ public class GroupPlayers extends PlayerSelector {
     @Override
     public Set<Player> selectPlayers(String param) {
         Set<Player> players = new HashSet<>();
-        if (!RAVault.isPermissionConected()) return players;
+        if (!RaVault.isPermissionConected()) return players;
         if (param.isEmpty()) return players;
         String[] group = param.split(",\\s*");
         for (Player player : Bukkit.getOnlinePlayers())
             for (String g : group)
-                if (RAVault.playerInGroup(player, g)) players.add(player);
+                if (RaVault.playerInGroup(player, g)) players.add(player);
         return players;
     }
 }

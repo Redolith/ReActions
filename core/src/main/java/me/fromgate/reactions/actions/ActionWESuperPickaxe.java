@@ -1,6 +1,6 @@
 package me.fromgate.reactions.actions;
 
-import me.fromgate.reactions.externals.worldedit.RAWorldEdit;
+import me.fromgate.reactions.externals.worldedit.RaWorldEdit;
 import me.fromgate.reactions.util.Param;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -20,8 +20,8 @@ public class ActionWESuperPickaxe extends Action {
             player = playerName.isEmpty() ? null : Bukkit.getPlayerExact(playerName);
         } else isSP = params.getParam("param-line", false);
 
-        if (isSP) RAWorldEdit.getSession(player).enableSuperPickAxe();
-        else RAWorldEdit.getSession(player).disableSuperPickAxe();
+        if (isSP) RaWorldEdit.getSession(player).enableSuperPickAxe();
+        else RaWorldEdit.getSession(player).disableSuperPickAxe();
         return true;
 
     }

@@ -22,7 +22,7 @@
 
 package me.fromgate.reactions.flags;
 
-import me.fromgate.reactions.externals.RARacesAndClasses;
+import me.fromgate.reactions.externals.RaRacesAndClasses;
 import org.bukkit.entity.Player;
 
 public class FlagRacesAndClasses extends Flag {
@@ -35,8 +35,8 @@ public class FlagRacesAndClasses extends Flag {
 
     @Override
     public boolean checkFlag(Player player, String param) {
-        if (!RARacesAndClasses.isEnabled()) return false;
-        return this.checkRace ? RARacesAndClasses.checkRace(player, param) : RARacesAndClasses.checkClass(player, param);
+        if (!RaRacesAndClasses.isEnabled()) return false;
+        return this.checkRace ? RaRacesAndClasses.checkRace(player, param) : RaRacesAndClasses.checkClass(player, param);
     }
 
 }

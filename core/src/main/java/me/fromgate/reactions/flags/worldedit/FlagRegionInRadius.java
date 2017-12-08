@@ -22,7 +22,7 @@
 
 package me.fromgate.reactions.flags.worldedit;
 
-import me.fromgate.reactions.externals.worldedit.RAWorldEdit;
+import me.fromgate.reactions.externals.worldedit.RaWorldEdit;
 import me.fromgate.reactions.flags.Flag;
 import org.bukkit.entity.Player;
 
@@ -31,6 +31,6 @@ public class FlagRegionInRadius extends Flag {
     public boolean checkFlag(Player player, String param) {
         int radius = 0;
         if (!param.isEmpty()) radius = Integer.parseInt(param);
-        return RAWorldEdit.checkRegionInRadius(player, radius);
+        return RaWorldEdit.checkRegionInRadius(player, radius);
     }
 }

@@ -7,12 +7,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-public class WEChangeEvent extends RAEvent {
+public class WeChangeEvent extends RAEvent {
     private Player player;
     private Location location;
     private Material blockType;
 
-    public WEChangeEvent(Player player, Location location, Material blockType) {
+    public WeChangeEvent(Player player, Location location, Material blockType) {
         super(player);
         this.player = player;
         this.location = location; //new Location(player.getWorld(), location.getX(), location.getY(), location.getZ());

@@ -18,7 +18,7 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import me.fromgate.reactions.externals.RAWorldGuard;
+import me.fromgate.reactions.externals.RaWorldGuard;
 import me.fromgate.reactions.util.message.M;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -30,7 +30,7 @@ import org.bukkit.plugin.Plugin;
  * Created by MaxDikiy on 9/10/2017.
  */
 
-public class RAWorldEdit {
+public class RaWorldEdit {
     private static boolean connected = false;
     private static WorldEditPlugin worldedit = null;
 
@@ -43,7 +43,7 @@ public class RAWorldEdit {
         try {
             plugin = Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
             worldedit = (WorldEditPlugin) plugin;
-            worldedit.getWorldEdit().getEventBus().register(new WEListener());
+            worldedit.getWorldEdit().getEventBus().register(new WeListener());
             connected = true;
         } catch (Throwable e) {
             M.logMessage("Worledit not found...");
@@ -138,15 +138,15 @@ public class RAWorldEdit {
     public static boolean checkRegionInRadius(Player p, int radius) {
         if (!isConnected()) return false;
         World world = p.getWorld();
-        LocalPlayer player = RAWorldGuard.getWrapPlayer(p);
+        LocalPlayer player = RaWorldGuard.getWrapPlayer(p);
         String id = "__canbuild__";
         Vector loc = player.getPosition();
         BlockVector min = new Vector(loc.getBlockX() + radius, 0, loc.getBlockZ() + radius).toBlockVector();
         BlockVector max = new Vector(loc.getBlockX() - radius, world.getMaxHeight(), loc.getBlockZ() - radius).toBlockVector();
         ProtectedRegion region = new ProtectedCuboidRegion(id, min, max);
 
-        ApplicableRegionSet set = RAWorldGuard.getRegionManager(world).getApplicableRegions(region);
-        if (RAWorldGuard.getRegionManager(world).overlapsUnownedRegion(region, player)) {
+        ApplicableRegionSet set = RaWorldGuard.getRegionManager(world).getApplicableRegions(region);
+        if (RaWorldGuard.getRegionManager(world).overlapsUnownedRegion(region, player)) {
             for (ProtectedRegion each : set) {
                 if (each != null && !each.getOwners().contains(player) && !each.getMembers().contains(player))
                     return true;
@@ -158,12 +158,12 @@ public class RAWorldEdit {
     public static int canBuildSelection(Player p) throws CommandException {
         boolean canBuild = false;
         World world = p.getWorld();
-        LocalPlayer player = RAWorldGuard.getWrapPlayer(p);
+        LocalPlayer player = RaWorldGuard.getWrapPlayer(p);
         String id = "__canbuild__";
         ProtectedRegion region = checkRegionFromSelection(p, id);
         if (region == null) return 3;
-        ApplicableRegionSet set = RAWorldGuard.getRegionManager(world).getApplicableRegions(region);
-        if (RAWorldGuard.getRegionManager(world).overlapsUnownedRegion(region, player)) {
+        ApplicableRegionSet set = RaWorldGuard.getRegionManager(world).getApplicableRegions(region);
+        if (RaWorldGuard.getRegionManager(world).overlapsUnownedRegion(region, player)) {
             for (ProtectedRegion each : set) {
                 if (each != null) {
                     if (!each.getOwners().contains(player) && !each.getMembers().contains(player)) {

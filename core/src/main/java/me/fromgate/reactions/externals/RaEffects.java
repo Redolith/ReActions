@@ -35,7 +35,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 
-public class RAEffects {
+public class RaEffects {
 
 
     private static String effTypes = "smoke,flame,ender,potion";

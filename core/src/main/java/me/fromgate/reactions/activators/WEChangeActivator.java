@@ -4,8 +4,8 @@
 package me.fromgate.reactions.activators;
 
 import me.fromgate.reactions.actions.Actions;
-import me.fromgate.reactions.event.WEChangeEvent;
-import me.fromgate.reactions.externals.RAWorldGuard;
+import me.fromgate.reactions.event.WeChangeEvent;
+import me.fromgate.reactions.externals.RaWorldGuard;
 import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Variables;
@@ -33,14 +33,14 @@ public class WEChangeActivator extends Activator {
 
     @Override
     public boolean activate(Event event) {
-        if (!(event instanceof WEChangeEvent)) return false;
-        WEChangeEvent e = (WEChangeEvent) event;
+        if (!(event instanceof WeChangeEvent)) return false;
+        WeChangeEvent e = (WeChangeEvent) event;
         String type = e.getBlockType();
         Variables.setTempVar("blocktype", type);
         if (!checkBlockType(type)) return false;
         Variables.setTempVar("blocklocation", Locator.locationToString(e.getLocation()));
 
-        if (!region.isEmpty() && !RAWorldGuard.isLocationInRegion(e.getLocation(), region)) return false;
+        if (!region.isEmpty() && !RaWorldGuard.isLocationInRegion(e.getLocation(), region)) return false;
 
         return Actions.executeActivator(e.getPlayer(), this);
     }

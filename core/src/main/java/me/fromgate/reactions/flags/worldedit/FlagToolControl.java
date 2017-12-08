@@ -3,7 +3,7 @@ package me.fromgate.reactions.flags.worldedit;
 import me.fromgate.reactions.flags.Flag;
 import org.bukkit.entity.Player;
 
-import static me.fromgate.reactions.externals.worldedit.RAWorldEdit.isToolControl;
+import static me.fromgate.reactions.externals.worldedit.RaWorldEdit.isToolControl;
 
 /**
  * Created by MaxDikiy on 11/10/2017.

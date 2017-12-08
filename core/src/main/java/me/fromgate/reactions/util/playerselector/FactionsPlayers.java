@@ -1,7 +1,7 @@
 package me.fromgate.reactions.util.playerselector;
 
 import me.fromgate.reactions.externals.Externals;
-import me.fromgate.reactions.externals.RAFactions;
+import me.fromgate.reactions.externals.RaFactions;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
@@ -17,7 +17,7 @@ public class FactionsPlayers extends PlayerSelector {
         if (factionNames.isEmpty()) return players;
         String[] arrFaction = factionNames.split(",\\s*");
         for (String factionName : arrFaction)
-            players.addAll(RAFactions.playersInFaction(factionName));
+            players.addAll(RaFactions.playersInFaction(factionName));
         return players;
     }
 

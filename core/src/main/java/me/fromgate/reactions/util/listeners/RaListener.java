@@ -73,14 +73,14 @@ import me.fromgate.reactions.event.RegionLeaveEvent;
 import me.fromgate.reactions.event.SignEvent;
 import me.fromgate.reactions.event.SneakEvent;
 import me.fromgate.reactions.event.VariableEvent;
-import me.fromgate.reactions.event.WEChangeEvent;
-import me.fromgate.reactions.event.WESelectionRegionEvent;
-import me.fromgate.reactions.externals.RAEconomics;
-import me.fromgate.reactions.externals.RAVault;
+import me.fromgate.reactions.event.WeChangeEvent;
+import me.fromgate.reactions.event.WeSelectionRegionEvent;
+import me.fromgate.reactions.externals.RaEconomics;
+import me.fromgate.reactions.externals.RaVault;
 import me.fromgate.reactions.util.BukkitCompatibilityFix;
 import me.fromgate.reactions.util.GodMode;
 import me.fromgate.reactions.util.PlayerRespawner;
-import me.fromgate.reactions.util.RADebug;
+import me.fromgate.reactions.util.RaDebug;
 import me.fromgate.reactions.util.Teleporter;
 import me.fromgate.reactions.util.TempOp;
 import me.fromgate.reactions.util.UpdateChecker;
@@ -137,7 +137,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.List;
 
-public class ReActionsListener implements Listener {
+public class RaListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onChatCommand(AsyncPlayerChatEvent event) {
@@ -237,11 +237,11 @@ public class ReActionsListener implements Listener {
         }
 
         if (event.getEntity().hasMetadata("ReActions-money")) {
-            if (!RAVault.isEconomyConected()) return;
+            if (!RaVault.isEconomyConected()) return;
             if (killer != null) {
                 int money = Util.getMinMaxRandom(event.getEntity().getMetadata("ReActions-money").get(0).asString());
-                RAEconomics.creditAccount(killer.getName(), "", Double.toString(money), "", "");
-                M.MSG_MOBBOUNTY.print(killer, 'e', '6', RAEconomics.format(money, "", ""), event.getEntity().getType().name());
+                RaEconomics.creditAccount(killer.getName(), "", Double.toString(money), "", "");
+                M.MSG_MOBBOUNTY.print(killer, 'e', '6', RaEconomics.format(money, "", ""), event.getEntity().getType().name());
             }
         }
 
@@ -408,7 +408,7 @@ public class ReActionsListener implements Listener {
         Player player = event.getPlayer();
         TempOp.removeTempOp(player);
         ActionsWaiter.refresh();
-        RADebug.offPlayerDebug(player);
+        RaDebug.offPlayerDebug(player);
         UpdateChecker.updateMsg(player);
         MoveListener.initLocation(player);
     }
@@ -704,12 +704,12 @@ public class ReActionsListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onWESelectionRegionEvent(WESelectionRegionEvent event) {
+    public void onWESelectionRegionEvent(WeSelectionRegionEvent event) {
         event.setCancelled(Activators.activate(event));
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onWEChangeEvent(WEChangeEvent event) {
+    public void onWEChangeEvent(WeChangeEvent event) {
         event.setCancelled(Activators.activate(event));
     }
 

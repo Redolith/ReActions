@@ -23,7 +23,7 @@
 package me.fromgate.reactions.actions;
 
 import me.fromgate.reactions.externals.Externals;
-import me.fromgate.reactions.externals.RATowny;
+import me.fromgate.reactions.externals.RaTowny;
 import me.fromgate.reactions.util.Param;
 import org.bukkit.entity.Player;
 
@@ -34,7 +34,7 @@ public class ActionTownSet extends Action {
         if (!Externals.isTownyConnected()) return false;
         String town = params.getParam("param-line", "");
         if (town.isEmpty()) return false;
-        RATowny.addToTown(p, town);
+        RaTowny.addToTown(p, town);
         return true;
     }
 

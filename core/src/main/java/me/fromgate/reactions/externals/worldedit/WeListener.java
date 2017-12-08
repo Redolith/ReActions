@@ -33,17 +33,17 @@ import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionSelector;
 import com.sk89q.worldedit.util.eventbus.Subscribe;
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.event.WEChangeEvent;
-import me.fromgate.reactions.event.WESelectionRegionEvent;
+import me.fromgate.reactions.event.WeChangeEvent;
+import me.fromgate.reactions.event.WeSelectionRegionEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import static me.fromgate.reactions.externals.worldedit.RAWorldEdit.getRegionSelector;
-import static me.fromgate.reactions.externals.worldedit.RAWorldEdit.getSelection;
+import static me.fromgate.reactions.externals.worldedit.RaWorldEdit.getRegionSelector;
+import static me.fromgate.reactions.externals.worldedit.RaWorldEdit.getSelection;
 
-public class WEListener {
+public class WeListener {
     private static Region regionSelection = null;
 
     private static ReActions plg() {
@@ -72,7 +72,7 @@ public class WEListener {
             }, 2);
 
             if (event.getStage() == EditSession.Stage.BEFORE_CHANGE) {
-                event.setExtent(new WEDelegateExtent(actor, event.getExtent()));
+                event.setExtent(new WeDelegateExtent(actor, event.getExtent()));
             }
         }
     }
@@ -105,14 +105,14 @@ public class WEListener {
         WeSelection weSelection = new WeSelection(selection.getRegionSelector().getTypeName(),
                 selection.getMinimumPoint(), selection.getMaximumPoint(),
                 selection.getArea(), selection.getWorld(), region.toString());
-        WESelectionRegionEvent e = new WESelectionRegionEvent(player, weSelection);
+        WeSelectionRegionEvent e = new WeSelectionRegionEvent(player, weSelection);
         Bukkit.getServer().getPluginManager().callEvent(e);
         return e.isCancelled();
     }
 
     @SuppressWarnings("deprecation")
     public static boolean raiseWEChangeEvent(Player player, Location location, Material blockType) {
-        WEChangeEvent e = new WEChangeEvent(player, location, blockType);
+        WeChangeEvent e = new WeChangeEvent(player, location, blockType);
         Bukkit.getServer().getPluginManager().callEvent(e);
         return e.isCancelled();
     }

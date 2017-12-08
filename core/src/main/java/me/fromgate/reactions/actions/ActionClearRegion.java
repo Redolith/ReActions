@@ -22,7 +22,7 @@
 
 package me.fromgate.reactions.actions;
 
-import me.fromgate.reactions.externals.RAWorldGuard;
+import me.fromgate.reactions.externals.RaWorldGuard;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Util;
 import org.bukkit.Location;
@@ -40,8 +40,8 @@ public class ActionClearRegion extends Action {
         String region = params.getParam("region", "");
         String type = params.getParam("type", "all");
         if (region.isEmpty()) return false;
-        if (!RAWorldGuard.isConnected()) return false;
-        List<Location> locs = RAWorldGuard.getRegionMinMaxLocations(region);
+        if (!RaWorldGuard.isConnected()) return false;
+        List<Location> locs = RaWorldGuard.getRegionMinMaxLocations(region);
         if (locs.size() != 2) return false;
         List<Entity> en = Util.getEntities(locs.get(0), locs.get(1));
         int count = 0;

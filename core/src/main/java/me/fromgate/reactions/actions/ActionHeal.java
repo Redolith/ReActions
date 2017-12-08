@@ -22,7 +22,7 @@
 
 package me.fromgate.reactions.actions;
 
-import me.fromgate.reactions.externals.RAEffects;
+import me.fromgate.reactions.externals.RaEffects;
 import me.fromgate.reactions.util.BukkitCompatibilityFix;
 import me.fromgate.reactions.util.Param;
 import org.bukkit.Bukkit;
@@ -46,8 +46,8 @@ public class ActionHeal extends Action {
             BukkitCompatibilityFix
                     .setEntityHealth(player, hp == 0 ? healthMax : Math.min(hp + health, healthMax));
         }
-        if (playhearts && RAEffects.isPlayEffectConnected()) {
-            RAEffects.playEffect(player.getEyeLocation(), "HEART", "offset:0.5 num:4 speed:0.7");
+        if (playhearts && RaEffects.isPlayEffectConnected()) {
+            RaEffects.playEffect(player.getEyeLocation(), "HEART", "offset:0.5 num:4 speed:0.7");
         }
         setMessageParam(Double.toString(hp));
         return true;

@@ -43,7 +43,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class RAWorldGuard {
+public class RaWorldGuard {
 
     protected static WGBridge bridge = null;
     private static Set<String> regionActivators = null;

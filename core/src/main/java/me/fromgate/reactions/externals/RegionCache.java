@@ -28,8 +28,8 @@ public class RegionCache {
 
     public boolean putToCache(String worldName, String regionName) {
         String region = worldName + "." + regionName;
-        if (!RAWorldGuard.isRegionExists(region)) return false;
-        List<Location> minMaxLocs = RAWorldGuard.getRegionMinMaxLocations(region);
+        if (!RaWorldGuard.isRegionExists(region)) return false;
+        List<Location> minMaxLocs = RaWorldGuard.getRegionMinMaxLocations(region);
         if (minMaxLocs.size() != 2) return false;
         VRegion vr = new VRegion(worldName, regionName, minMaxLocs.get(0), minMaxLocs.get(1));
         cache.add(vr);

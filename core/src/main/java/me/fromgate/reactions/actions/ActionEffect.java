@@ -22,7 +22,7 @@
 
 package me.fromgate.reactions.actions;
 
-import me.fromgate.reactions.externals.RAEffects;
+import me.fromgate.reactions.externals.RaEffects;
 import me.fromgate.reactions.util.Param;
 import org.bukkit.entity.Player;
 
@@ -30,7 +30,7 @@ public class ActionEffect extends Action {
 
     @Override
     public boolean execute(Player p, Param params) {
-        RAEffects.playEffect(p, params);
+        RaEffects.playEffect(p, params);
         return true;
     }
 

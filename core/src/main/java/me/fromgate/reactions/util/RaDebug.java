@@ -26,7 +26,7 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 
-public class RADebug {
+public class RaDebug {
     private static HashMap<String, Boolean> debug = new HashMap<>();
 
     public static void setPlayerDebug(Player p, boolean debugmode) {

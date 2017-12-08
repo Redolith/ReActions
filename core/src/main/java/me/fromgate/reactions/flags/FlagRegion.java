@@ -22,7 +22,7 @@
 
 package me.fromgate.reactions.flags;
 
-import me.fromgate.reactions.externals.RAWorldGuard;
+import me.fromgate.reactions.externals.RaWorldGuard;
 import me.fromgate.reactions.util.Param;
 import org.bukkit.entity.Player;
 
@@ -42,18 +42,18 @@ public class FlagRegion extends Flag {
 
     @Override
     public boolean checkFlag(Player player, String param) {
-        if (!RAWorldGuard.isConnected()) return false;
+        if (!RaWorldGuard.isConnected()) return false;
         switch (flagType) {
             case REGION:
-                return RAWorldGuard.isPlayerInRegion(player, param);
+                return RaWorldGuard.isPlayerInRegion(player, param);
             case REGION_PLAYERS:
                 return playersInRegion(param);
             case REGION_MEMBER:
-                return RAWorldGuard.isPlayerIsMember(player, param);
+                return RaWorldGuard.isPlayerIsMember(player, param);
             case REGION_OWNER:
-                return RAWorldGuard.isPlayerIsOwner(player, param);
+                return RaWorldGuard.isPlayerIsOwner(player, param);
             case REGION_STATE:
-                return RAWorldGuard.isFlagInRegion(player, param);
+                return RaWorldGuard.isFlagInRegion(player, param);
         }
         return false;
     }
@@ -62,6 +62,6 @@ public class FlagRegion extends Flag {
         Param params = Param.fromOldFormat(param, "/", "region", "players");
         String rg = params.getParam("region");
         int minp = params.getParam("players", 1);
-        return (minp <= RAWorldGuard.countPlayersInRegion(rg));
+        return (minp <= RaWorldGuard.countPlayersInRegion(rg));
     }
 }

@@ -39,7 +39,7 @@ import org.bukkit.plugin.Plugin;
 import static com.palmergames.bukkit.towny.object.TownyObservableType.TOWN_ADD_RESIDENT;
 import static com.palmergames.bukkit.towny.object.TownyObservableType.TOWN_REMOVE_RESIDENT;
 
-public class RATowny {
+public class RaTowny {
     private static Towny towny = null;
     private static boolean connected = false;
 

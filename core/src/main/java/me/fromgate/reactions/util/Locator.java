@@ -24,7 +24,7 @@
 package me.fromgate.reactions.util;
 
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.externals.RAWorldGuard;
+import me.fromgate.reactions.externals.RaWorldGuard;
 import me.fromgate.reactions.util.message.M;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -131,7 +131,7 @@ public class Locator {
 
 
     public static Location getRegionLocation(String regionStr, boolean land) {
-        List<Location> minmax = RAWorldGuard.getRegionMinMaxLocations(regionStr);
+        List<Location> minmax = RaWorldGuard.getRegionMinMaxLocations(regionStr);
         if (minmax.isEmpty()) return null;
         return getMinMaxLocation(minmax, land);
     }

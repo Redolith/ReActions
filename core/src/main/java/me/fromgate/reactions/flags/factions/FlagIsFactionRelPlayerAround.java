@@ -23,7 +23,7 @@
 package me.fromgate.reactions.flags.factions;
 
 import me.fromgate.reactions.externals.Externals;
-import me.fromgate.reactions.externals.RAFactions;
+import me.fromgate.reactions.externals.RaFactions;
 import me.fromgate.reactions.flags.Flag;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -44,9 +44,9 @@ public class FlagIsFactionRelPlayerAround extends Flag {
 
         for (Entity entity : player.getNearbyEntities(radius, radius, radius)) {
             if (!(entity instanceof Player)) continue;
-            String curTargetFaction = RAFactions.getPlayerFaction((Player) entity);
+            String curTargetFaction = RaFactions.getPlayerFaction((Player) entity);
 
-            if (RAFactions.getRelationWith(player, curTargetFaction).equalsIgnoreCase(targetRel)) return true;
+            if (RaFactions.getRelationWith(player, curTargetFaction).equalsIgnoreCase(targetRel)) return true;
         }
         return false;
     }

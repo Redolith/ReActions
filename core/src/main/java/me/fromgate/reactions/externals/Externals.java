@@ -1,6 +1,6 @@
 package me.fromgate.reactions.externals;
 
-import me.fromgate.reactions.externals.worldedit.RAWorldEdit;
+import me.fromgate.reactions.externals.worldedit.RaWorldEdit;
 import org.bukkit.Bukkit;
 
 public class Externals {
@@ -14,7 +14,7 @@ public class Externals {
     public static void init() {
         if (Bukkit.getPluginManager().getPlugin("Factions") != null) {
             try {
-                factions = RAFactions.init();
+                factions = RaFactions.init();
             } catch (Throwable ignore) {
 
             }
@@ -22,7 +22,7 @@ public class Externals {
 
         if (Bukkit.getPluginManager().getPlugin("Towny") != null) {
             try {
-                townyConected = RATowny.init();
+                townyConected = RaTowny.init();
             } catch (Throwable ignore) {
 
             }
@@ -30,7 +30,7 @@ public class Externals {
 
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             try {
-                RAPlaceholderAPI.init();
+                RaPlaceholderAPI.init();
             } catch (Throwable ignore) {
             }
         }
@@ -38,21 +38,21 @@ public class Externals {
 
         if (Bukkit.getPluginManager().getPlugin("ProtocolLib") != null) {
             try {
-                RAProtocolLib.connectProtocolLib();
+                RaProtocolLib.connectProtocolLib();
             } catch (Throwable ignore) {
             }
         }
 
         if (Bukkit.getPluginManager().getPlugin("WorldEdit") != null) {
             try {
-                RAWorldEdit.init();
+                RaWorldEdit.init();
             } catch (Throwable ignore) {
             }
         }
 
         if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null) {
             try {
-                RAWorldGuard.init();
+                RaWorldGuard.init();
             } catch (Throwable ignore) {
             }
         }

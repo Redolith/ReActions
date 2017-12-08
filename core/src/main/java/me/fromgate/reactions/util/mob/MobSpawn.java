@@ -23,8 +23,8 @@
 package me.fromgate.reactions.util.mob;
 
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.externals.RAEffects;
-import me.fromgate.reactions.externals.RAWorldGuard;
+import me.fromgate.reactions.externals.RaEffects;
+import me.fromgate.reactions.externals.RaWorldGuard;
 import me.fromgate.reactions.util.BukkitCompatibilityFix;
 import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.Param;
@@ -86,7 +86,7 @@ public class MobSpawn {
         String exec = params.getParam("run", "");
         String exec_delay = params.getParam("rundelay", "1t");
 
-        if (RAWorldGuard.isRegionExists(region)) loc = Locator.getRegionLocation(region, land);
+        if (RaWorldGuard.isRegionExists(region)) loc = Locator.getRegionLocation(region, land);
         else if (radius > 0) loc = Locator.getRadiusLocation(loc, radius, land);
         if (loc == null) return;
 
@@ -164,7 +164,7 @@ public class MobSpawn {
         if (playeffect.isEmpty()) return;
         int data = 0;
         if (playeffect.equalsIgnoreCase("smoke")) data = 9;
-        RAEffects.playEffect(loc, playeffect, data);
+        RaEffects.playEffect(loc, playeffect, data);
     }
 
     public static void setMobName(LivingEntity e, String name) {

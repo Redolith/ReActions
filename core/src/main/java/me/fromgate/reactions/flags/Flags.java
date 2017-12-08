@@ -33,7 +33,7 @@ import me.fromgate.reactions.flags.worldedit.FlagSuperPickAxe;
 import me.fromgate.reactions.flags.worldedit.FlagToolControl;
 import me.fromgate.reactions.placeholders.Placeholders;
 import me.fromgate.reactions.util.FlagVal;
-import me.fromgate.reactions.util.RADebug;
+import me.fromgate.reactions.util.RaDebug;
 import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.Variables;
 import me.fromgate.reactions.util.message.M;
@@ -155,7 +155,7 @@ public enum Flags {
     }
 
     public static boolean checkFlags(Player p, Activator c) {
-        return RADebug.checkFlagAndDebug(p, checkAllFlags(p, c));
+        return RaDebug.checkFlagAndDebug(p, checkAllFlags(p, c));
     }
 
     public static boolean checkAllFlags(Player p, Activator c) {

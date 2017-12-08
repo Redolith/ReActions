@@ -34,7 +34,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RAVault {
+public class RaVault {
     private static boolean vault_perm = false;
     private static boolean vault_eco = false;
     private static Permission permission = null;
@@ -134,7 +134,7 @@ public class RAVault {
      */
     @SuppressWarnings("deprecation")
     public static boolean hasMoney(String account, String worldName, double amount) {
-        if (!RAVault.isEconomyConected()) return false;
+        if (!RaVault.isEconomyConected()) return false;
         if (worldName.isEmpty()) return economy.has(account, amount);
         if (Bukkit.getWorld(worldName) == null) return false;
         return economy.has(account, worldName, amount);
@@ -142,7 +142,7 @@ public class RAVault {
 
 
     public static boolean creditAccount(String target, String source, double amount, String worldName) {
-        if (!RAVault.isEconomyConected()) return false;
+        if (!RaVault.isEconomyConected()) return false;
         if (!source.isEmpty()) {
             if (hasMoney(source, worldName, amount)) return false;
             withdrawAccount(source, worldName, amount);
@@ -152,7 +152,7 @@ public class RAVault {
     }
 
     public static boolean debitAccount(String accountFrom, String accountTo, double amount, String worldName) {
-        if (!RAVault.isEconomyConected()) return false;
+        if (!RaVault.isEconomyConected()) return false;
         if (!hasMoney(accountFrom, worldName, amount)) return false;
         withdrawAccount(accountFrom, worldName, amount);
         if (!accountTo.isEmpty()) depositAccount(accountTo, worldName, amount);

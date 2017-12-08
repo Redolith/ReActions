@@ -30,17 +30,17 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 
-public class RAEconomics {
+public class RaEconomics {
     private final static Pattern FLOAT = Pattern.compile("[0-9]+(\\.?[0-9]*)?");
 
     public static boolean isEconomyFound() {
-        if (RACraftConomy.isEnabled()) return true;
-        return RAVault.isEconomyConected();
+        if (RaCraftConomy.isEnabled()) return true;
+        return RaVault.isEconomyConected();
     }
 
     public static boolean hasMoney(String account, double amount, String currencyName, String worldName) {
-        if (RACraftConomy.isEnabled()) return RACraftConomy.hasAmount(account, amount, currencyName, worldName);
-        if (RAVault.isEconomyConected()) return RAVault.hasMoney(account, worldName, amount);
+        if (RaCraftConomy.isEnabled()) return RaCraftConomy.hasAmount(account, amount, currencyName, worldName);
+        if (RaVault.isEconomyConected()) return RaVault.hasMoney(account, worldName, amount);
         return false;
     }
 
@@ -49,12 +49,12 @@ public class RAEconomics {
         if (target.isEmpty()) return "";
         if (!isFloat(amountStr)) return "";
         double amount = Double.parseDouble(amountStr);
-        if (RACraftConomy.isEnabled()) {
-            if (RACraftConomy.creditAccount(target, source, amount, currencyName, worldName))
-                return RACraftConomy.format(amount, currencyName, worldName);
-        } else if (RAVault.isEconomyConected()) {
-            if (RAVault.creditAccount(target, source, amount, worldName))
-                return RAVault.format(amount, worldName);
+        if (RaCraftConomy.isEnabled()) {
+            if (RaCraftConomy.creditAccount(target, source, amount, currencyName, worldName))
+                return RaCraftConomy.format(amount, currencyName, worldName);
+        } else if (RaVault.isEconomyConected()) {
+            if (RaVault.creditAccount(target, source, amount, worldName))
+                return RaVault.format(amount, worldName);
         }
         return "";
     }
@@ -63,12 +63,12 @@ public class RAEconomics {
         if (accountFrom.isEmpty()) return "";
         if (!isFloat(amountStr)) return "";
         double amount = Double.parseDouble(amountStr);
-        if (RACraftConomy.isEnabled()) {
-            if (RACraftConomy.debitAccount(accountFrom, accountTo, amount, currencyName, worldName))
-                return RACraftConomy.format(amount, currencyName, worldName);
-        } else if (RAVault.isEconomyConected()) {
-            if (RAVault.debitAccount(accountFrom, accountTo, amount, worldName))
-                return RAVault.format(amount, worldName);
+        if (RaCraftConomy.isEnabled()) {
+            if (RaCraftConomy.debitAccount(accountFrom, accountTo, amount, currencyName, worldName))
+                return RaCraftConomy.format(amount, currencyName, worldName);
+        } else if (RaVault.isEconomyConected()) {
+            if (RaVault.debitAccount(accountFrom, accountTo, amount, worldName))
+                return RaVault.format(amount, worldName);
         }
         return "";
     }
@@ -78,15 +78,15 @@ public class RAEconomics {
     }
 
     public static Map<String, String> getBalances(Player p) {
-        if (RACraftConomy.isEnabled()) return RACraftConomy.getAllBalances(p.getName());
-        else if (RAVault.isEconomyConected()) return RAVault.getAllBalances(p.getName());
+        if (RaCraftConomy.isEnabled()) return RaCraftConomy.getAllBalances(p.getName());
+        else if (RaVault.isEconomyConected()) return RaVault.getAllBalances(p.getName());
         return new HashMap<>();
     }
 
     public static String format(double amount, String currencyName, String worldName) {
-        if (RACraftConomy.isEnabled()) return RACraftConomy.format(amount, currencyName, worldName);
-        if (RAVault.isEconomyConected())
-            return RAVault.format(amount, worldName.isEmpty() ? Bukkit.getWorlds().get(0).getName() : worldName);
+        if (RaCraftConomy.isEnabled()) return RaCraftConomy.format(amount, currencyName, worldName);
+        if (RaVault.isEconomyConected())
+            return RaVault.format(amount, worldName.isEmpty() ? Bukkit.getWorlds().get(0).getName() : worldName);
         return Double.toString(amount);
     }
 

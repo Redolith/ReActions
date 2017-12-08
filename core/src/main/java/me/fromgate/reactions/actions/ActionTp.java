@@ -22,7 +22,7 @@
 
 package me.fromgate.reactions.actions;
 
-import me.fromgate.reactions.externals.RAEffects;
+import me.fromgate.reactions.externals.RaEffects;
 import me.fromgate.reactions.util.Cfg;
 import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.Param;
@@ -71,7 +71,7 @@ public class ActionTp extends Action {
             String playeffect = params.getParam("effect", "");
             if (!playeffect.isEmpty()) {
                 if (playeffect.equalsIgnoreCase("smoke") && (!params.isParamsExists("wind"))) params.set("wind", "all");
-                RAEffects.playEffect(loc, playeffect, params);
+                RaEffects.playEffect(loc, playeffect, params);
             }
         }
         return loc;

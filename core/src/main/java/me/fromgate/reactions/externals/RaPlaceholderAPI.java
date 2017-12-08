@@ -5,7 +5,7 @@ import me.fromgate.reactions.util.message.M;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-public class RAPlaceholderAPI {
+public class RaPlaceholderAPI {
 
     private static boolean enabled;
 

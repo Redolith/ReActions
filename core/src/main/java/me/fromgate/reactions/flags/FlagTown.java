@@ -23,7 +23,7 @@
 package me.fromgate.reactions.flags;
 
 import me.fromgate.reactions.externals.Externals;
-import me.fromgate.reactions.externals.RATowny;
+import me.fromgate.reactions.externals.RaTowny;
 import org.bukkit.entity.Player;
 
 public class FlagTown extends Flag {
@@ -31,7 +31,7 @@ public class FlagTown extends Flag {
     @Override
     public boolean checkFlag(Player player, String param) {
         if (!Externals.isTownyConnected()) return false;
-        return RATowny.playerInTown(player, param);
+        return RaTowny.playerInTown(player, param);
     }
 
 }

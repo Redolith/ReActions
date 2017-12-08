@@ -31,7 +31,7 @@ import me.fromgate.reactions.activators.ItemWearActivator;
 import me.fromgate.reactions.activators.MessageActivator;
 import me.fromgate.reactions.activators.PlayerDeathActivator;
 import me.fromgate.reactions.activators.SignActivator;
-import me.fromgate.reactions.externals.RAWorldGuard;
+import me.fromgate.reactions.externals.RaWorldGuard;
 import me.fromgate.reactions.util.BukkitCompatibilityFix;
 import me.fromgate.reactions.util.Cfg;
 import me.fromgate.reactions.util.Param;
@@ -298,11 +298,11 @@ public class EventManager {
     }
 
     public static void raiseAllRegionEvents(final Player player, final Location to, final Location from) {
-        if (!RAWorldGuard.isConnected()) return;
+        if (!RaWorldGuard.isConnected()) return;
         Bukkit.getScheduler().runTaskLaterAsynchronously(ReActions.instance, () -> {
 
-            final List<String> regionsTo = RAWorldGuard.getRegions(to);
-            final List<String> regionsFrom = RAWorldGuard.getRegions(from);
+            final List<String> regionsTo = RaWorldGuard.getRegions(to);
+            final List<String> regionsFrom = RaWorldGuard.getRegions(from);
 
             Bukkit.getScheduler().runTask(ReActions.instance, () -> {
                 raiseRegionEvent(player, regionsTo);
@@ -343,7 +343,7 @@ public class EventManager {
         if (player == null) return;
         if (!player.isOnline()) return;
         if (player.isDead()) return;
-        if (!RAWorldGuard.isPlayerInRegion(player, region)) return;
+        if (!RaWorldGuard.isPlayerInRegion(player, region)) return;
         String rg = "rg-" + region;
         if (!isTimeToRaiseEvent(player, rg, Cfg.worlduardRecheck, repeat)) return;
 

@@ -22,7 +22,7 @@
 
 package me.fromgate.reactions.flags.worldedit;
 
-import me.fromgate.reactions.externals.worldedit.RAWorldEdit;
+import me.fromgate.reactions.externals.worldedit.RaWorldEdit;
 import me.fromgate.reactions.flags.Flag;
 import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.Variables;
@@ -32,9 +32,9 @@ import org.bukkit.util.Vector;
 public class FlagSelectionBlocks extends Flag {
     @Override
     public boolean checkFlag(Player player, String param) {
-        int selectionBlocks = RAWorldEdit.getArea(player);
-        Vector minPoint = RAWorldEdit.getMinimumPoint(player);
-        Vector maxPoint = RAWorldEdit.getMaximumPoint(player);
+        int selectionBlocks = RaWorldEdit.getArea(player);
+        Vector minPoint = RaWorldEdit.getMinimumPoint(player);
+        Vector maxPoint = RaWorldEdit.getMaximumPoint(player);
         Variables.setTempVar("minpoint", (minPoint == null) ? "" : minPoint.toString());
         Variables.setTempVar("minX", (minPoint == null) ? "" : Integer.toString(minPoint.getBlockX()));
         Variables.setTempVar("minY", (minPoint == null) ? "" : Integer.toString(minPoint.getBlockY()));

@@ -1,6 +1,6 @@
 package me.fromgate.reactions.util.playerselector;
 
-import me.fromgate.reactions.externals.RAWorldGuard;
+import me.fromgate.reactions.externals.RaWorldGuard;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
@@ -13,11 +13,11 @@ public class RegionsPlayers extends PlayerSelector {
     @Override
     public Set<Player> selectPlayers(String regionStr) {
         Set<Player> players = new HashSet<>();
-        if (!RAWorldGuard.isConnected()) return players;
+        if (!RaWorldGuard.isConnected()) return players;
         if (regionStr.isEmpty()) return players;
         String[] arrRegion = regionStr.split(",\\s*");
         for (String regionName : arrRegion)
-            players.addAll(RAWorldGuard.playersInRegion(regionName));
+            players.addAll(RaWorldGuard.playersInRegion(regionName));
         return players;
     }
 

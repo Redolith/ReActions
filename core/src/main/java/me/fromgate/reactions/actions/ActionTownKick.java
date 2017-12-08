@@ -23,7 +23,7 @@
 package me.fromgate.reactions.actions;
 
 import me.fromgate.reactions.externals.Externals;
-import me.fromgate.reactions.externals.RATowny;
+import me.fromgate.reactions.externals.RaTowny;
 import me.fromgate.reactions.util.Param;
 import org.bukkit.entity.Player;
 
@@ -32,7 +32,7 @@ public class ActionTownKick extends Action {
     @Override
     public boolean execute(Player p, Param params) {
         if (!Externals.isTownyConnected()) return false;
-        RATowny.kickFromTown(p);
+        RaTowny.kickFromTown(p);
         return true;
     }
 

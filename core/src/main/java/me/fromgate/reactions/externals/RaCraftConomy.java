@@ -35,7 +35,7 @@ import org.bukkit.plugin.Plugin;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RACraftConomy {
+public class RaCraftConomy {
     private static boolean enabled = false;
     private static Common craftconomy = null;
 

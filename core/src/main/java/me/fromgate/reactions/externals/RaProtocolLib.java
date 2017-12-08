@@ -37,7 +37,7 @@ import org.json.simple.JSONValue;
 
 import java.util.regex.Pattern;
 
-public class RAProtocolLib {
+public class RaProtocolLib {
     private final static Pattern TEXT = Pattern.compile("^\\{\"text\":\".*\"\\}");
     private final static Pattern TEXT_START = Pattern.compile("^\\{\"text\":\"");
     private final static Pattern TEXT_END = Pattern.compile("\"\\}$");

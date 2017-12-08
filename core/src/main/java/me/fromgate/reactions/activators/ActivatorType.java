@@ -65,8 +65,8 @@ import me.fromgate.reactions.event.RegionLeaveEvent;
 import me.fromgate.reactions.event.SignEvent;
 import me.fromgate.reactions.event.SneakEvent;
 import me.fromgate.reactions.event.VariableEvent;
-import me.fromgate.reactions.event.WEChangeEvent;
-import me.fromgate.reactions.event.WESelectionRegionEvent;
+import me.fromgate.reactions.event.WeChangeEvent;
+import me.fromgate.reactions.event.WeSelectionRegionEvent;
 import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.message.M;
 import org.bukkit.block.Block;
@@ -119,8 +119,8 @@ public enum ActivatorType {
     DAMAGE_BY_MOB("damagebymob", DamageByMobActivator.class, DamageByMobEvent.class),
     DAMAGE_BY_BLOCK("damagebyblock", DamageByBlockActivator.class, DamageByBlockEvent.class, true),
     VARIABLE("var", VariableActivator.class, VariableEvent.class),
-    WE_SELECTION_REGION("weselectionregion", WESelectionRegionActivator.class, WESelectionRegionEvent.class),
-    WE_CHANGE("wechange", WEChangeActivator.class, WEChangeEvent.class),
+    WE_SELECTION_REGION("weselectionregion", WESelectionRegionActivator.class, WeSelectionRegionEvent.class),
+    WE_CHANGE("wechange", WEChangeActivator.class, WeChangeEvent.class),
     GAME_MODE("gamemode", GameModeActivator.class, GameModeEvent.class),
     GOD("god", GodActivator.class, GodEvent.class);
 

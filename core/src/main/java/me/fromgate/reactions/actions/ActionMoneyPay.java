@@ -22,7 +22,7 @@
 
 package me.fromgate.reactions.actions;
 
-import me.fromgate.reactions.externals.RAEconomics;
+import me.fromgate.reactions.externals.RaEconomics;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Util;
 import org.bukkit.entity.Player;
@@ -34,7 +34,7 @@ public class ActionMoneyPay extends Action {
 
     @Override
     public boolean execute(Player p, Param params) {
-        if (!RAEconomics.isEconomyFound()) return false;
+        if (!RaEconomics.isEconomyFound()) return false;
         if (params.size() == 0) return false;
         if (params.size() <= 2) params = parseOldFormat(p, params.getParam("param-line"));
         String amountStr = params.getParam("amount", "");
@@ -44,7 +44,7 @@ public class ActionMoneyPay extends Action {
         String target = params.getParam("target", "");
         String source = params.getParam("source", params.getParam("player", (p != null ? p.getName() : "")));
         if (source.isEmpty()) return false;
-        String message = RAEconomics.debitAccount(source, target, amountStr, currencyName, worldName);
+        String message = RaEconomics.debitAccount(source, target, amountStr, currencyName, worldName);
         if (message.isEmpty()) return false;
         setMessageParam(message);
         return true;

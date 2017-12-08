@@ -34,7 +34,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 
-public class WEDelegateExtent extends AbstractDelegateExtent {
+public class WeDelegateExtent extends AbstractDelegateExtent {
     private final Player player;
 
     /**
@@ -43,7 +43,7 @@ public class WEDelegateExtent extends AbstractDelegateExtent {
      * @param actor
      * @param extent the extent
      */
-    public WEDelegateExtent(Actor actor, Extent extent) {
+    public WeDelegateExtent(Actor actor, Extent extent) {
         super(extent);
         this.player = Bukkit.getPlayer(actor.getUniqueId());
     }
@@ -52,7 +52,7 @@ public class WEDelegateExtent extends AbstractDelegateExtent {
     public boolean setBlock(Vector vector, BaseBlock block) throws WorldEditException {
         Location loc = new Location(player.getWorld(), vector.getX(), vector.getY(), vector.getZ());
         Material blockType = Material.getMaterial(block.getId());
-        return !WEListener.raiseWEChangeEvent(player, loc, blockType) && super.setBlock(vector, block);
+        return !WeListener.raiseWEChangeEvent(player, loc, blockType) && super.setBlock(vector, block);
     }
 
 }

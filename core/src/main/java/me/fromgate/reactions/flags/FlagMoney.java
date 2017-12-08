@@ -22,22 +22,22 @@
 
 package me.fromgate.reactions.flags;
 
-import me.fromgate.reactions.externals.RAEconomics;
+import me.fromgate.reactions.externals.RaEconomics;
 import me.fromgate.reactions.util.Param;
 import org.bukkit.entity.Player;
 
 public class FlagMoney extends Flag {
     @Override
     public boolean checkFlag(Player player, String param) {
-        if (!RAEconomics.isEconomyFound()) return false;
+        if (!RaEconomics.isEconomyFound()) return false;
         Param params = new Param(param, "amount");
         String amountStr = params.getParam("amount", "a");
-        if (!RAEconomics.isFloat(amountStr)) return false;
+        if (!RaEconomics.isFloat(amountStr)) return false;
         double amount = Double.parseDouble(amountStr);
         String account = params.getParam("account", params.getParam("player", player == null ? "" : player.getName()));
         if (account.isEmpty()) return false;
         String currency = params.getParam("currency", "");
         String world = params.getParam("world", "");
-        return RAEconomics.hasMoney(account, amount, currency, world);
+        return RaEconomics.hasMoney(account, amount, currency, world);
     }
 }

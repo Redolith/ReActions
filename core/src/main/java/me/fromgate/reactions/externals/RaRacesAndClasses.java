@@ -29,7 +29,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-public class RARacesAndClasses {
+public class RaRacesAndClasses {
 
     private static boolean enabled = false;
 

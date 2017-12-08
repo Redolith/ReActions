@@ -4,7 +4,7 @@ import me.fromgate.reactions.actions.Actions;
 import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.ActivatorType;
 import me.fromgate.reactions.activators.Activators;
-import me.fromgate.reactions.externals.RAWorldGuard;
+import me.fromgate.reactions.externals.RaWorldGuard;
 import me.fromgate.reactions.flags.Flags;
 import me.fromgate.reactions.menu.InventoryMenu;
 import me.fromgate.reactions.timer.Timers;
@@ -127,7 +127,7 @@ public class CmdAdd extends Cmd {
             M.CMD_NOTADDBADDED.print(sender, activator.toString());
         }
         FakeCmd.updateAllCommands();
-        RAWorldGuard.updateRegionCache();
+        RaWorldGuard.updateRegionCache();
         return true;
     }
 

@@ -22,7 +22,7 @@
 
 package me.fromgate.reactions.actions;
 
-import me.fromgate.reactions.externals.RAWorldGuard;
+import me.fromgate.reactions.externals.RaWorldGuard;
 import me.fromgate.reactions.util.Locator;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Util;
@@ -59,7 +59,7 @@ public class ActionBlockFill extends Action {
 
         String regionName = params.getParam("region", "");
         if (!regionName.isEmpty()) {
-            List<Location> locs = RAWorldGuard.getRegionMinMaxLocations(regionName);
+            List<Location> locs = RaWorldGuard.getRegionMinMaxLocations(regionName);
             if (locs.size() == 2) {
                 loc1 = locs.get(0);
                 loc2 = locs.get(1);

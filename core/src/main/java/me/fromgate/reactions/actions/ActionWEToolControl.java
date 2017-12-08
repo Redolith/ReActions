@@ -1,6 +1,6 @@
 package me.fromgate.reactions.actions;
 
-import me.fromgate.reactions.externals.worldedit.RAWorldEdit;
+import me.fromgate.reactions.externals.worldedit.RaWorldEdit;
 import me.fromgate.reactions.util.Param;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -20,7 +20,7 @@ public class ActionWEToolControl extends Action {
             player = playerName.isEmpty() ? null : Bukkit.getPlayerExact(playerName);
         } else isToolControl = params.getParam("param-line", false);
 
-        RAWorldEdit.getSession(player).setToolControl(isToolControl);
+        RaWorldEdit.getSession(player).setToolControl(isToolControl);
         return true;
     }
 }

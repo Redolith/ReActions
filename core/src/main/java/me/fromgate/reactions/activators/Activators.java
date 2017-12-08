@@ -24,7 +24,7 @@ package me.fromgate.reactions.activators;
 
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.event.RAEvent;
-import me.fromgate.reactions.externals.RAWorldGuard;
+import me.fromgate.reactions.externals.RaWorldGuard;
 import me.fromgate.reactions.timer.Timers;
 import me.fromgate.reactions.util.ActVal;
 import me.fromgate.reactions.util.FlagVal;
@@ -63,7 +63,7 @@ public class Activators {
                 loadActivators(group);
 
         Timers.updateIngameTimers();
-        RAWorldGuard.updateRegionCache();
+        RaWorldGuard.updateRegionCache();
     }
 
     private static List<String> findGroupsInDir() {

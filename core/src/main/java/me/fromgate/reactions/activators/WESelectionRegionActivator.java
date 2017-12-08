@@ -1,7 +1,7 @@
 package me.fromgate.reactions.activators;
 
 import me.fromgate.reactions.actions.Actions;
-import me.fromgate.reactions.event.WESelectionRegionEvent;
+import me.fromgate.reactions.event.WeSelectionRegionEvent;
 import me.fromgate.reactions.externals.worldedit.WeSelection;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Variables;
@@ -29,8 +29,8 @@ public class WESelectionRegionActivator extends Activator {
 
     @Override
     public boolean activate(Event event) {
-        if (!(event instanceof WESelectionRegionEvent)) return false;
-        WESelectionRegionEvent e = (WESelectionRegionEvent) event;
+        if (!(event instanceof WeSelectionRegionEvent)) return false;
+        WeSelectionRegionEvent e = (WeSelectionRegionEvent) event;
         WeSelection selection = e.getSelection();
         if (!selection.isValid()) return false;
 

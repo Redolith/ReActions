@@ -22,14 +22,14 @@
 
 package me.fromgate.reactions.flags;
 
-import me.fromgate.reactions.externals.RAVault;
+import me.fromgate.reactions.externals.RaVault;
 import org.bukkit.entity.Player;
 
 public class FlagGroup extends Flag {
 
     @Override
     public boolean checkFlag(Player player, String param) {
-        return RAVault.playerInGroup(player, param);
+        return RaVault.playerInGroup(player, param);
     }
 
 }

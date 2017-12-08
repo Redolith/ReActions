@@ -22,7 +22,7 @@
 
 package me.fromgate.reactions.actions;
 
-import me.fromgate.reactions.externals.RARacesAndClasses;
+import me.fromgate.reactions.externals.RaRacesAndClasses;
 import me.fromgate.reactions.util.Param;
 import org.bukkit.entity.Player;
 
@@ -35,8 +35,8 @@ public class ActionRacesAndClasses extends Action {
 
     @Override
     public boolean execute(Player p, Param params) {
-        if (!RARacesAndClasses.isEnabled()) return false;
-        return this.setRace ? RARacesAndClasses.setRace(p, params.getParam("race", "")) : RARacesAndClasses.setClass(p, params.getParam("class", ""));
+        if (!RaRacesAndClasses.isEnabled()) return false;
+        return this.setRace ? RaRacesAndClasses.setRace(p, params.getParam("race", "")) : RaRacesAndClasses.setClass(p, params.getParam("class", ""));
     }
 
 }

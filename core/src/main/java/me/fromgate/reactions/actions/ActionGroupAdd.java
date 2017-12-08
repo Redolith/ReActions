@@ -22,7 +22,7 @@
 
 package me.fromgate.reactions.actions;
 
-import me.fromgate.reactions.externals.RAVault;
+import me.fromgate.reactions.externals.RaVault;
 import me.fromgate.reactions.util.Param;
 import org.bukkit.entity.Player;
 
@@ -30,7 +30,7 @@ public class ActionGroupAdd extends Action {
 
     @Override
     public boolean execute(Player p, Param params) {
-        return (RAVault.playerAddGroup(p, params.getParam("param-line", "")));
+        return (RaVault.playerAddGroup(p, params.getParam("param-line", "")));
     }
 
 }
