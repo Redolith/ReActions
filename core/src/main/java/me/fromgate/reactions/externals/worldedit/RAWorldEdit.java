@@ -43,6 +43,7 @@ public class RAWorldEdit {
         try {
             plugin = Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
             worldedit = (WorldEditPlugin) plugin;
+            worldedit.getWorldEdit().getEventBus().register(new WEListener());
             connected = true;
         } catch (Throwable e) {
             M.logMessage("Worledit not found...");
