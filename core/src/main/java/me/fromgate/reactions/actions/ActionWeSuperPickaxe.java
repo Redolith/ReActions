@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 /**
  * Created by MaxDikiy on 18/10/2017.
  */
-public class ActionWESuperPickaxe extends Action {
+public class ActionWeSuperPickaxe extends Action {
     @Override
     public boolean execute(Player p, Param params) {
         Player player = p;

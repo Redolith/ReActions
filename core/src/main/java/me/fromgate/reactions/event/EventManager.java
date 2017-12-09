@@ -181,16 +181,16 @@ public class EventManager {
 
 
     // PVP Kill Event
-    public static void raisePVPKillEvent(PlayerDeathEvent event) {
+    public static void raisePvpKillEvent(PlayerDeathEvent event) {
         Player deadplayer = event.getEntity();
         Player killer = Util.getKiller(deadplayer.getLastDamageCause());
         if (killer == null) return;
-        PVPKillEvent pe = new PVPKillEvent(killer, deadplayer);
+        PvpKillEvent pe = new PvpKillEvent(killer, deadplayer);
         Bukkit.getServer().getPluginManager().callEvent(pe);
     }
 
     // PVP Death Event
-    public static void raisePVPDeathEvent(PlayerDeathEvent event) {
+    public static void raisePvpDeathEvent(PlayerDeathEvent event) {
         Player deadplayer = event.getEntity();
         LivingEntity killer = Util.getAnyKiller(deadplayer.getLastDamageCause());
         PlayerDeathActivator.DeathCause ds = (killer == null) ? PlayerDeathActivator.DeathCause.OTHER : (killer instanceof Player) ? PlayerDeathActivator.DeathCause.PVP : PlayerDeathActivator.DeathCause.PVE;

@@ -10,12 +10,12 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
 
-public class WESelectionRegionActivator extends Activator {
+public class WeSelectionRegionActivator extends Activator {
     private int maxBlocks;
     private int minBlocks;
     private String typeSelection;
 
-    public WESelectionRegionActivator(String name, String param) {
+    public WeSelectionRegionActivator(String name, String param) {
         super(name, "activators");
         Param params = new Param(param);
         minBlocks = params.getParam("minblocks", 0);
@@ -23,7 +23,7 @@ public class WESelectionRegionActivator extends Activator {
         typeSelection = params.getParam("type", "ANY");
     }
 
-    public WESelectionRegionActivator(String name, String group, YamlConfiguration cfg) {
+    public WeSelectionRegionActivator(String name, String group, YamlConfiguration cfg) {
         super(name, group, cfg);
     }
 

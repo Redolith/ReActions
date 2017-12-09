@@ -12,7 +12,7 @@ import java.util.UUID;
 /**
  * Created by MaxDikiy on 5/6/2017.
  */
-public class ActionPlayerID extends Action {
+public class ActionPlayerId extends Action {
     private Boolean isOnlineMode;
 
     @Override

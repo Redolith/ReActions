@@ -55,7 +55,7 @@ public enum Flags {
     TOWN("town", true, new FlagTown()),
     MONEY("money", false, new FlagMoney()),
     CHANCE("chance", false, new FlagChance()),
-    PVP("pvp", true, new FlagPVP()),
+    PVP("pvp", true, new FlagPvp()),
     ONLINE("online", false, new FlagOnline()),
     DELAY("delay", false, new FlagDelay(true)),
     DELAY_PLAYER("pdelay", true, new FlagDelay(false)),

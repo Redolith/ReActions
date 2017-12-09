@@ -28,8 +28,8 @@ import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.ActivatorType;
 import me.fromgate.reactions.activators.Activators;
 import me.fromgate.reactions.activators.RegionActivator;
-import me.fromgate.reactions.activators.RgEnterActivator;
-import me.fromgate.reactions.activators.RgLeaveActivator;
+import me.fromgate.reactions.activators.RegionEnterActivator;
+import me.fromgate.reactions.activators.RegionLeaveActivator;
 import me.fromgate.reactions.module.wgbridge.WGBridge;
 import me.fromgate.reactions.module.wgbridge.WGBridge6x;
 import org.bukkit.Bukkit;
@@ -75,11 +75,11 @@ public class RaWorldGuard {
             regionActivators.add(r.getRegion());
         }
         for (Activator a : Activators.getActivators(ActivatorType.REGION_ENTER)) {
-            RgEnterActivator r = (RgEnterActivator) a;
+            RegionEnterActivator r = (RegionEnterActivator) a;
             regionActivators.add(r.getRegion());
         }
         for (Activator a : Activators.getActivators(ActivatorType.REGION_LEAVE)) {
-            RgLeaveActivator r = (RgLeaveActivator) a;
+            RegionLeaveActivator r = (RegionLeaveActivator) a;
             regionActivators.add(r.getRegion());
         }
     }

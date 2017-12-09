@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 /**
  * Created by MaxDikiy on 18/10/2017.
  */
-public class ActionWEToolControl extends Action {
+public class ActionWeToolControl extends Action {
     @Override
     public boolean execute(Player p, Param params) {
         Player player = p;

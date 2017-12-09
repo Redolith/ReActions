@@ -23,29 +23,29 @@
 package me.fromgate.reactions.activators;
 
 import me.fromgate.reactions.actions.Actions;
-import me.fromgate.reactions.event.PVPKillEvent;
+import me.fromgate.reactions.event.PvpKillEvent;
 import me.fromgate.reactions.util.Variables;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
 
-public class PVPKillActivator extends Activator {
-    PVPKillActivator(String name) {
+public class PvpKillActivator extends Activator {
+    PvpKillActivator(String name) {
         super(name, "activators");
     }
 
-    public PVPKillActivator(String name, String param) {
+    public PvpKillActivator(String name, String param) {
         this(name);
     }
 
-    public PVPKillActivator(String name, String group, YamlConfiguration cfg) {
+    public PvpKillActivator(String name, String group, YamlConfiguration cfg) {
         super(name, group, cfg);
     }
 
     @Override
     public boolean activate(Event event) {
-        if (!(event instanceof PVPKillEvent)) return false;
-        PVPKillEvent pe = (PVPKillEvent) event;
+        if (!(event instanceof PvpKillEvent)) return false;
+        PvpKillEvent pe = (PvpKillEvent) event;
         Variables.setTempVar("targetplayer", pe.getKilledPlayer().getName());
         return Actions.executeActivator(pe.getPlayer(), this);
     }

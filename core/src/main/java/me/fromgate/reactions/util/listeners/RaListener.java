@@ -59,7 +59,7 @@ import me.fromgate.reactions.event.MessageEvent;
 import me.fromgate.reactions.event.MobClickEvent;
 import me.fromgate.reactions.event.MobDamageEvent;
 import me.fromgate.reactions.event.MobKillEvent;
-import me.fromgate.reactions.event.PVPKillEvent;
+import me.fromgate.reactions.event.PvpKillEvent;
 import me.fromgate.reactions.event.PickupItemEvent;
 import me.fromgate.reactions.event.PlateEvent;
 import me.fromgate.reactions.event.PlayerBlockBreakEvent;
@@ -195,8 +195,8 @@ public class RaListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerDeath(PlayerDeathEvent event) {
         PlayerRespawner.addPlayerRespawn(event);
-        EventManager.raisePVPKillEvent(event);
-        EventManager.raisePVPDeathEvent(event);
+        EventManager.raisePvpKillEvent(event);
+        EventManager.raisePvpDeathEvent(event);
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -543,17 +543,17 @@ public class RaListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onPVPKillActivator(PVPKillEvent event) {
+    public void onPvpKillActivator(PvpKillEvent event) {
         event.setCancelled(Activators.activate(event));
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onPVPDeathActivator(PlayerWasKilledEvent event) {
+    public void onPvpDeathActivator(PlayerWasKilledEvent event) {
         event.setCancelled(Activators.activate(event));
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onPVPRespawnActivator(PlayerRespawnedEvent event) {
+    public void onPvpRespawnActivator(PlayerRespawnedEvent event) {
         event.setCancelled(Activators.activate(event));
     }
 

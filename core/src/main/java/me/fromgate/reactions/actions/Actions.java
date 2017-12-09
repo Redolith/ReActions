@@ -99,26 +99,26 @@ public enum Actions {
     TIMER_STOP("timerstop", false, new ActionTimer(true)),
     TIMER_RESUME("timerresume", false, new ActionTimer(false)),
     CANCEL_EVENT("cancel", false, new ActionCancelEvent()),
-    SQL_SELECT("sqlselect", false, new ActionSQL(0)),
-    SQL_UPDATE("sqlupdate", false, new ActionSQL(2)),
-    SQL_INSERT("sqlinsert", false, new ActionSQL(1)),
-    SQL_DELETE("sqldelete", false, new ActionSQL(3)),
-    SQL_SET("sqlset", false, new ActionSQL(4)),
+    SQL_SELECT("sqlselect", false, new ActionSql(0)),
+    SQL_UPDATE("sqlupdate", false, new ActionSql(2)),
+    SQL_INSERT("sqlinsert", false, new ActionSql(1)),
+    SQL_DELETE("sqldelete", false, new ActionSql(3)),
+    SQL_SET("sqlset", false, new ActionSql(4)),
     REGEX("regex", false, new ActionRegex()),
     ACTION_DELAYED("actdelay", false, new ActionDelayed()),
     MENU_ITEM("itemmenu", true, new ActionMenuItem()),
     FCT_POWER_ADD("factaddpower", false, new ActionFactionsPowerAdd()),
     WAIT("wait", false, new ActionWait()),
     LOG("log", false, new ActionLog()),
-    PLAYER_ID("playerid", false, new ActionPlayerID()),
+    PLAYER_ID("playerid", false, new ActionPlayerId()),
     FILE("file", false, new ActionFile()),
     FLY("fly", false, new ActionFly()),
     GLIDE("glide", false, new ActionGlide()),
     WALK_SPEED("walkspeed", false, new ActionWalkSpeed()),
     FLY_SPEED("flyspeed", false, new ActionFlySpeed()),
     IF_ELSE("ifelse", false, new ActionIfElse()),
-    WE_TOOLCONTROL("wetoolcontrol", true, new ActionWEToolControl()),
-    WE_SUPERPICKAXE("wesuperpickaxe", true, new ActionWESuperPickaxe()),
+    WE_TOOLCONTROL("wetoolcontrol", true, new ActionWeToolControl()),
+    WE_SUPERPICKAXE("wesuperpickaxe", true, new ActionWeSuperPickaxe()),
     RADIUS_CLEAR("clearradius", true, new ActionClearRadius());
 
     private String alias;
@@ -180,7 +180,7 @@ public enum Actions {
                 aw.executeDelayed(player, futureList, isAction, time);
                 return cancelParentEvent;
             }
-            if (at.performAction(player, isAction, new Param(Placeholders.replacePlaceholderButRaw(player, av.value)))) {
+            if (at != null && at.performAction(player, isAction, new Param(Placeholders.replacePlaceholderButRaw(player, av.value)))) {
                 cancelParentEvent = true;
             }
         }
@@ -227,6 +227,4 @@ public enum Actions {
         }
         return nearest;
     }
-
-
 }

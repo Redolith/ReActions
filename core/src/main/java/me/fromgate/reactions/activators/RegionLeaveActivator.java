@@ -23,7 +23,7 @@
 package me.fromgate.reactions.activators;
 
 import me.fromgate.reactions.actions.Actions;
-import me.fromgate.reactions.event.RegionEnterEvent;
+import me.fromgate.reactions.event.RegionLeaveEvent;
 import me.fromgate.reactions.externals.RaWorldGuard;
 import me.fromgate.reactions.module.wgbridge.WGBridge;
 import me.fromgate.reactions.util.Util;
@@ -33,24 +33,23 @@ import org.bukkit.event.Event;
 
 import java.util.List;
 
-public class RgEnterActivator extends Activator {
+public class RegionLeaveActivator extends Activator {
 
     private String region;
 
-    RgEnterActivator(String name, String group, YamlConfiguration cfg) {
+    RegionLeaveActivator(String name, String group, YamlConfiguration cfg) {
         super(name, group, cfg);
     }
 
-    public RgEnterActivator(String name, String region) {
+    public RegionLeaveActivator(String name, String region) {
         super(name, "activators");
         this.region = region;
     }
 
-
     @Override
     public boolean activate(Event event) {
-        if (!(event instanceof RegionEnterEvent)) return false;
-        RegionEnterEvent be = (RegionEnterEvent) event;
+        if (!(event instanceof RegionLeaveEvent)) return false;
+        RegionLeaveEvent be = (RegionLeaveEvent) event;
         if (!be.getRegion().equalsIgnoreCase(WGBridge.getFullRegionName(this.region))) return false;
         return Actions.executeActivator(be.getPlayer(), this);
     }
@@ -75,7 +74,7 @@ public class RgEnterActivator extends Activator {
 
     @Override
     public ActivatorType getType() {
-        return ActivatorType.REGION_ENTER;
+        return ActivatorType.REGION_LEAVE;
     }
 
     @Override

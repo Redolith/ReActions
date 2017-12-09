@@ -15,11 +15,11 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
 
-public class WEChangeActivator extends Activator {
+public class WeChangeActivator extends Activator {
     private String blockType;
     private String region;
 
-    public WEChangeActivator(String name, String param) {
+    public WeChangeActivator(String name, String param) {
         super(name, "activators");
         Param params = new Param(param);
         blockType = params.getParam("block-type");
@@ -27,7 +27,7 @@ public class WEChangeActivator extends Activator {
         blockType();
     }
 
-    public WEChangeActivator(String name, String group, YamlConfiguration cfg) {
+    public WeChangeActivator(String name, String group, YamlConfiguration cfg) {
         super(name, group, cfg);
     }
 

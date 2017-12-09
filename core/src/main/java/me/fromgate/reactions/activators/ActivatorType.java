@@ -51,7 +51,7 @@ import me.fromgate.reactions.event.MessageEvent;
 import me.fromgate.reactions.event.MobClickEvent;
 import me.fromgate.reactions.event.MobDamageEvent;
 import me.fromgate.reactions.event.MobKillEvent;
-import me.fromgate.reactions.event.PVPKillEvent;
+import me.fromgate.reactions.event.PvpKillEvent;
 import me.fromgate.reactions.event.PickupItemEvent;
 import me.fromgate.reactions.event.PlateEvent;
 import me.fromgate.reactions.event.PlayerBlockBreakEvent;
@@ -82,12 +82,12 @@ public enum ActivatorType {
     BUTTON("b", ButtonActivator.class, ButtonEvent.class, true),
     PLATE("plt", PlateActivator.class, PlateEvent.class, true),
     REGION("rg", RegionActivator.class, RegionEvent.class),
-    REGION_ENTER("rgenter", RgEnterActivator.class, RegionEnterEvent.class),
-    REGION_LEAVE("rgleave", RgLeaveActivator.class, RegionLeaveEvent.class),
+    REGION_ENTER("rgenter", RegionEnterActivator.class, RegionEnterEvent.class),
+    REGION_LEAVE("rgleave", RegionLeaveActivator.class, RegionLeaveEvent.class),
     EXEC("exe", ExecActivator.class, ExecEvent.class),
     COMMAND("cmd", CommandActivator.class, CommandEvent.class),
     MESSAGE("msg", MessageActivator.class, MessageEvent.class),
-    PVP_KILL("pvpkill", PVPKillActivator.class, PVPKillEvent.class),
+    PVP_KILL("pvpkill", PvpKillActivator.class, PvpKillEvent.class),
     PLAYER_DEATH("PVP_DEATH", PlayerDeathActivator.class, PlayerWasKilledEvent.class),
     PLAYER_RESPAWN("PVP_RESPAWN", PlayerRespawnActivator.class, PlayerRespawnedEvent.class),
     LEVER("lvr", LeverActivator.class, LeverEvent.class, true),
@@ -119,8 +119,8 @@ public enum ActivatorType {
     DAMAGE_BY_MOB("damagebymob", DamageByMobActivator.class, DamageByMobEvent.class),
     DAMAGE_BY_BLOCK("damagebyblock", DamageByBlockActivator.class, DamageByBlockEvent.class, true),
     VARIABLE("var", VariableActivator.class, VariableEvent.class),
-    WE_SELECTION_REGION("weselectionregion", WESelectionRegionActivator.class, WeSelectionRegionEvent.class),
-    WE_CHANGE("wechange", WEChangeActivator.class, WeChangeEvent.class),
+    WE_SELECTION_REGION("weselectionregion", WeSelectionRegionActivator.class, WeSelectionRegionEvent.class),
+    WE_CHANGE("wechange", WeChangeActivator.class, WeChangeEvent.class),
     GAME_MODE("gamemode", GameModeActivator.class, GameModeEvent.class),
     GOD("god", GodActivator.class, GodEvent.class);
 
