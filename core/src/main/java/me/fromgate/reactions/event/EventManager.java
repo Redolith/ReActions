@@ -134,6 +134,9 @@ public class EventManager {
         if (!((event.getAction() == Action.RIGHT_CLICK_BLOCK) || (event.getAction() == Action.LEFT_CLICK_BLOCK)))
             return false;
         if (!Util.isDoorBlock(event.getClickedBlock())) return false;
+        if (!BukkitCompatibilityFix.isHandSlot(event)) {
+            return false;
+        }
         DoorEvent e = new DoorEvent(event.getPlayer(), Util.getDoorBottomBlock(event.getClickedBlock()));
         Bukkit.getServer().getPluginManager().callEvent(e);
         return e.isCancelled();
@@ -149,6 +152,9 @@ public class EventManager {
     public static boolean raiseItemClickEvent(PlayerInteractEntityEvent event) {
         ItemStack itemInHand = BukkitCompatibilityFix.getItemInHand(event.getPlayer());
         if (itemInHand == null || itemInHand.getType() == Material.AIR) return false;
+        if (!BukkitCompatibilityFix.isHandSlot(event)) {
+            return false;
+        }
         ItemClickEvent ice = new ItemClickEvent(event.getPlayer());
         Bukkit.getServer().getPluginManager().callEvent(ice);
         return true;
@@ -156,6 +162,9 @@ public class EventManager {
 
     public static boolean raiseItemClickEvent(PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return false;
+        }
+        if (!BukkitCompatibilityFix.isHandSlot(event)) {
             return false;
         }
         ItemStack itemInHand = BukkitCompatibilityFix.getItemInHand(event.getPlayer());
@@ -173,6 +182,9 @@ public class EventManager {
     public static boolean raiseLeverEvent(PlayerInteractEvent event) {
         if (!((event.getAction() == Action.RIGHT_CLICK_BLOCK) || (event.getAction() == Action.LEFT_CLICK_BLOCK)))
             return false;
+        if (!BukkitCompatibilityFix.isHandSlot(event)) {
+            return false;
+        }
         if (event.getClickedBlock().getType() != Material.LEVER) return false;
         LeverEvent e = new LeverEvent(event.getPlayer(), event.getClickedBlock());
         Bukkit.getServer().getPluginManager().callEvent(e);
@@ -200,10 +212,15 @@ public class EventManager {
 
     // Button Event
     public static boolean raiseButtonEvent(PlayerInteractEvent event) {
-        if (!((event.getAction() == Action.RIGHT_CLICK_BLOCK) || (event.getAction() == Action.LEFT_CLICK_BLOCK)))
+        if (!((event.getAction() == Action.RIGHT_CLICK_BLOCK) || (event.getAction() == Action.LEFT_CLICK_BLOCK))) {
             return false;
-        if (!((event.getClickedBlock().getType() == Material.STONE_BUTTON) || (event.getClickedBlock().getType() == Material.WOOD_BUTTON)))
+        }
+        if (!((event.getClickedBlock().getType() == Material.STONE_BUTTON) || (event.getClickedBlock().getType() == Material.WOOD_BUTTON))) {
             return false;
+        }
+        if (!BukkitCompatibilityFix.isHandSlot(event)) {
+            return false;
+        }
         BlockState state = event.getClickedBlock().getState();
         if (state.getData() instanceof Button) {
             Button button = (Button) state.getData();
@@ -286,8 +303,9 @@ public class EventManager {
     // Plate Event
     public static boolean raisePlateEvent(PlayerInteractEvent event) {
         if (event.getAction() != Action.PHYSICAL) return false;
-        if (!((event.getClickedBlock().getType() == Material.WOOD_PLATE) || (event.getClickedBlock().getType() == Material.STONE_PLATE)))
+        if (!((event.getClickedBlock().getType() == Material.WOOD_PLATE) || (event.getClickedBlock().getType() == Material.STONE_PLATE))) {
             return false;
+        }
         final Player p = event.getPlayer();
         final Location l = event.getClickedBlock().getLocation();
         Bukkit.getScheduler().runTaskLater(plg(), () -> {
@@ -451,7 +469,9 @@ public class EventManager {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) leftClick = false;
         else if (event.getAction() == Action.LEFT_CLICK_BLOCK) leftClick = true;
         else return false;
-        if (!BukkitCompatibilityFix.isHandSlot(event)) return false;
+        if (!BukkitCompatibilityFix.isHandSlot(event)) {
+            return false;
+        }
         BlockClickEvent e = new BlockClickEvent(event.getPlayer(), event.getClickedBlock(), leftClick);
         Bukkit.getServer().getPluginManager().callEvent(e);
         return e.isCancelled();
@@ -506,6 +526,9 @@ public class EventManager {
     }
 
     public static boolean raiseEntityClickEvent(PlayerInteractEntityEvent event) {
+        if (!BukkitCompatibilityFix.isHandSlot(event)) {
+            return false;
+        }
         EntityClickEvent e = new EntityClickEvent(event.getPlayer(), event.getRightClicked());
         Bukkit.getServer().getPluginManager().callEvent(e);
         return e.isCancelled();
