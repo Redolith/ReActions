@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 import java.util.Arrays;
 
 
-@CmdDefine(command = "react", description = M.CMD_SET, permission = "reactions.config", subCommands = {"set"}, allowConsole = true, shortDescription = "&3/react set delay|var <id> player:<player> delay:<time> id:<id>")
+@CmdDefine(command = "react", description = M.CMD_SET, permission = "reactions.config", subCommands = {"set"}, allowConsole = true, shortDescription = "&3/react set delay|var id:<id> player:<player> delay:<time>")
 public class CmdSet extends Cmd {
 
 
