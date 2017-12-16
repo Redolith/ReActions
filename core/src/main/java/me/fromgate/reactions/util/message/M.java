@@ -528,8 +528,9 @@ public enum M {
      * @return — always returns true.
      */
     public boolean debug(Object... s) {
-        if (debugMode)
+        if (debugMode) {
             log(messenger.clean(getText(s)));
+        }
         return true;
     }
 
@@ -713,9 +714,8 @@ public enum M {
         messenger = mess;
         language = lang;
         debugMode = debug;
-        boolean saveLanguage = save;
         initMessages();
-        if (saveLanguage) saveMessages();
+        if (save) saveMessages();
         LNG_CONFIG.debug(M.values().length, language, true, debugMode);
         testRequiredMessages();
     }
