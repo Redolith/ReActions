@@ -66,7 +66,7 @@ public class ReActions extends JavaPlugin {
         instance = this;
         Cfg.load();
         Cfg.save();
-        M.init("ReActions", new BukkitMessenger(this), Cfg.language, false, Cfg.languageSave);
+        M.init("ReActions", new BukkitMessenger(this), Cfg.language, Cfg.debugMode, Cfg.languageSave);
         UpdateChecker.init(this, "ReActions", "61726", "reactions", Cfg.checkUpdates);
 
         if (!getDataFolder().exists()) getDataFolder().mkdirs();

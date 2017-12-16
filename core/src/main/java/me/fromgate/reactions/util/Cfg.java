@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 public class Cfg {
     private static FileConfiguration config;
 
+    public static boolean debugMode = false;
     public static boolean saveEmptySections = false;
     public static String actionMsg = "tp,grpadd,grprmv,townset,townkick,itemrmv,invitemrmv,itemgive,moneypay,moneygive"; //отображать сообщения о выполнении действий
     public static String language = "english";
@@ -29,6 +30,7 @@ public class Cfg {
     public static void save() {
         config.set("general.language", language);
         config.set("general.check-updates", checkUpdates);
+        config.set("general.debug", debugMode);
         config.set("general.player-self-variable-file", playerSelfVarFile);
         config.set("general.player-asynch-save-self-variable-file", playerAsynchSaveSelfVarFile);
         config.set("general.player-move-event.use-task", playerMoveTaskUse);
@@ -53,6 +55,7 @@ public class Cfg {
         language = config.getString("general.language", "english");
         checkUpdates = config.getBoolean("general.check-updates", true);
         languageSave = config.getBoolean("general.language-save", false);
+        debugMode = config.getBoolean("general.debug", false);
         playerSelfVarFile = config.getBoolean("general.player-self-variable-file", false);
         playerAsynchSaveSelfVarFile = config.getBoolean("general.player-asynch-save-self-variable-file", false);
         playerMoveTaskUse = config.getBoolean("general.player-move-event.use-task", false);
