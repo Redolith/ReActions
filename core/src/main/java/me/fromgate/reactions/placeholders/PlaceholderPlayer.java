@@ -11,38 +11,38 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 @PlaceholderDefine(id = "BasicPlayer", needPlayer = true,
-        keys = {"PLAYER_LOC", "PLAYER_LOC_EYE", "PLAYER_LOC_VIEW", "PLAYER_NAME", "player", "PLAYER_DISPLAY", "dplayer", "PLAYER_ITEM_HAND", "itemplayer", "PLAYER_INV", "invplayer", "HEALTH", "PLAYER_LOC_DEATH", "deathpoint"})
+        keys = {"player_loc", "player_loc_eye", "player_loc_view", "player_name", "player",
+                "player_display", "dplayer", "player_item_hand", "itemplayer", "player_inv", "invplayer",
+                "health", "player_loc_death", "deathpoint"})
 public class PlaceholderPlayer extends Placeholder {
     @Override
     public String processPlaceholder(Player player, String key, String param) {
         if (player == null) return null;
-        Key k = Key.valueOf(key.toUpperCase());
-        if (k == null) return null;
-        switch (k) {
-            case HEALTH:
+        switch (key.toLowerCase()) {
+            case "health":
                 return Double.toString(BukkitCompatibilityFix.getEntityHealth(player));
-            case PLAYER_INV:
-            case INVPLAYER:
+            case "player_inv":
+            case "invplayer":
                 return getPlayerInventory(player, param);
-            case PLAYER_ITEM_HAND:
-            case ITEMPLAYER:
+            case "player_item_hand":
+            case "itemplayer":
                 return getPlayerItemInHand(player);
-            case PLAYER_DISPLAY:
-            case DPLAYER:
+            case "player_display":
+            case "dplayer":
                 return player.getDisplayName();
-            case PLAYER_LOC:
+            case "player_loc":
                 return Locator.locationToString(player.getLocation());
-            case PLAYER_LOC_DEATH:
-            case DEATHPOINT:
+            case "player_loc_death":
+            case "deathpoint":
                 Location loc = PlayerRespawner.getLastDeathPoint(player);
                 if (loc == null) loc = player.getLocation();
                 return Locator.locationToString(loc);
-            case PLAYER_LOC_EYE:
+            case "player_loc_eye":
                 return Locator.locationToString(player.getEyeLocation());
-            case PLAYER_LOC_VIEW:
+            case "player_loc_view":
                 return Locator.locationToString(getViewLocation(player));
-            case PLAYER_NAME:
-            case PLAYER:
+            case "player_name":
+            case "player":
                 return player.getName();
         }
         return null;
@@ -70,41 +70,28 @@ public class PlaceholderPlayer extends Placeholder {
             if (slotNum < 0 || slotNum >= player.getInventory().getSize()) return "";
             vi = ItemUtil.itemFromItemStack(player.getInventory().getItem(slotNum));
         } else {
-            if (value.equalsIgnoreCase("hand")) return getPlayerItemInHand(player);
-            else if (value.equalsIgnoreCase("helm") || value.equalsIgnoreCase("helmet"))
-                vi = ItemUtil.itemFromItemStack(player.getInventory().getHelmet());
-            else if (value.equalsIgnoreCase("chestplate") || value.equalsIgnoreCase("chest"))
-                vi = ItemUtil.itemFromItemStack(player.getInventory().getChestplate());
-            else if (value.equalsIgnoreCase("Leggings") || value.equalsIgnoreCase("legs"))
-                vi = ItemUtil.itemFromItemStack(player.getInventory().getLeggings());
-            else if (value.equalsIgnoreCase("boot") || value.equalsIgnoreCase("boots"))
-                vi = ItemUtil.itemFromItemStack(player.getInventory().getBoots());
+            switch (value.toLowerCase()) {
+                case "hand":
+                    return getPlayerItemInHand(player);
+                case "helm":
+                case "helmet":
+                    vi = ItemUtil.itemFromItemStack(player.getInventory().getHelmet());
+                    break;
+                case "chestplate":
+                case "chest":
+                    vi = ItemUtil.itemFromItemStack(player.getInventory().getChestplate());
+                    break;
+                case "leggings":
+                case "legs":
+                    vi = ItemUtil.itemFromItemStack(player.getInventory().getLeggings());
+                    break;
+                case "boots":
+                case "boot":
+                    vi = ItemUtil.itemFromItemStack(player.getInventory().getBoots());
+                    break;
+            }
         }
         if (vi == null) return "";
         return vi.toString();
     }
-
-    enum Key {
-        PLAYER_LOC,
-        PLAYER_LOC_EYE,
-        PLAYER_LOC_VIEW,
-        PLAYER_NAME, PLAYER,
-        PLAYER_DISPLAY, DPLAYER,
-        PLAYER_ITEM_HAND, ITEMPLAYER,
-        PLAYER_INV, INVPLAYER,
-        HEALTH,
-        PLAYER_LOC_DEATH, DEATHPOINT
-    }
-
-	
-	/*
-     * TODO
-	 *     	Location l = PushBack.getPlayerPrevLoc1(p);
-    	if (l!=null) Variables.setTempVar("backloc1", Locator.locationToString(l));
-    	l = PushBack.getPlayerPrevLoc2(p);
-    	if (l!=null) Variables.setTempVar("backloc2", Locator.locationToString(l));
-
-	 * 
-	 */
-
 }
