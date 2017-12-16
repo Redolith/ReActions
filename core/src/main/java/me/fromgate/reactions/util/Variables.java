@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Variables {
@@ -318,7 +317,7 @@ public class Variables {
         String newStr = str;
         for (String key : vars.keySet()) {
             String replacement = vars.get(key);
-            replacement = FLOAT_0.matcher(replacement).matches() ? Integer.toString((int) Double.parseDouble(replacement)) : Matcher.quoteReplacement(replacement);
+            replacement = FLOAT_0.matcher(replacement).matches() ? Integer.toString((int) Double.parseDouble(replacement)) : replacement; // Matcher.quoteReplacement(replacement);
             if (key.startsWith("general.")) {
                 String id = id = key.substring(8); // key.replaceFirst("general\\.", "");
                 newStr = newStr.replaceAll("(?i)%var:" + Pattern.quote(id) + "%", replacement);
@@ -342,7 +341,7 @@ public class Variables {
         String newStr = str;
         for (String key : tempvars.keySet()) {
             String replacement = tempvars.get(key);
-            replacement = FLOAT_0.matcher(replacement).matches() ? Integer.toString((int) Double.parseDouble(replacement)) : Matcher.quoteReplacement(replacement);
+            replacement = FLOAT_0.matcher(replacement).matches() ? Integer.toString((int) Double.parseDouble(replacement)) : replacement; // Matcher.quoteReplacement(replacement);
             newStr = newStr.replaceAll("(?i)%" + key + "%", replacement);
         }
         return newStr;
