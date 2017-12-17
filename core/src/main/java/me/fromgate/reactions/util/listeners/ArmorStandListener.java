@@ -2,6 +2,7 @@ package me.fromgate.reactions.util.listeners;
 
 import me.fromgate.reactions.event.EventManager;
 import me.fromgate.reactions.util.BukkitCompatibilityFix;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -14,9 +15,9 @@ public class ArmorStandListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
     public void onPlayerInteractAtEntityEvent(PlayerInteractAtEntityEvent event) {
         if (!BukkitCompatibilityFix.isHandSlot(event)) return;
-        if (event.getRightClicked() instanceof LivingEntity) {
-            EventManager.raiseMobClickEvent(event.getPlayer(), (LivingEntity) event.getRightClicked());
-        }
+        if (event.getRightClicked() == null) return;
+        if (event.getRightClicked().getType() != EntityType.ARMOR_STAND) return;
+        EventManager.raiseMobClickEvent(event.getPlayer(), (LivingEntity) event.getRightClicked());
     }
 
 }
