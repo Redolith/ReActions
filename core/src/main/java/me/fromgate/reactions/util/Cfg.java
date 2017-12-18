@@ -23,7 +23,7 @@ public class Cfg {
     public static boolean playerAsynchSaveSelfVarFile = false;
     public static boolean playerMoveTaskUse = false;
     public static int playerMoveTaskTick = 5;
-    public static boolean godActivatorEnable = true;
+    public static boolean godActivatorEnable = false; // experimental, disabled by default
     public static int godActivatorCheckTicks = 10;
 
 
