@@ -24,6 +24,7 @@ package me.fromgate.reactions.util;
 
 import me.fromgate.reactions.util.message.M;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -45,6 +46,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.Set;
 
 public class BukkitCompatibilityFix {
     /*
@@ -488,5 +490,17 @@ public class BukkitCompatibilityFix {
             M.logOnce("sound.UI_BUTTON_CLICK", "Failed to execute sound constant in Sound.class. Older server?");
         }
         return null;
+    }
+
+    public static Block getTargetBlock(LivingEntity entity, int maxDistance) {
+        if (entity == null) return null;
+        Block block = null;
+        try {
+            Method method = entity.getClass().getMethod("getTargetBlock", Set.class, int.class);
+            block = (Block) method.invoke(entity, null, maxDistance);
+        } catch (Exception e) {
+            M.logOnce("Block getTargetBlock", "Failed to get target block of living entity. Older server?");
+        }
+        return block;
     }
 }
