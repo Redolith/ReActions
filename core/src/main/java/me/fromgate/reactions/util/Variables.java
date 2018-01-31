@@ -219,7 +219,7 @@ public class Variables {
 
     public static void saveAsynch(String player) {
         JavaPlugin pluginInstance = ReActions.instance;
-        pluginInstance.getServer().getScheduler().runTaskAsynchronously(pluginInstance, () -> save(player));
+        pluginInstance.getServer().getScheduler().runTaskAsynchronously(pluginInstance, () -> savePlayer(player));
     }
 
     private static void saveGeneral() {
