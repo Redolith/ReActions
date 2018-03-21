@@ -226,7 +226,7 @@ public class Util {
                 Projectile prj = (Projectile) evdmg.getDamager();
                 LivingEntity shooterEntity = BukkitCompatibilityFix.getShooter(prj);
                 if (shooterEntity == null) return null;
-                if (shooterEntity instanceof LivingEntity) return shooterEntity;
+                return shooterEntity;
             }
         }
         return null;
@@ -260,11 +260,13 @@ public class Util {
                 Entity entityDamager = evdmg.getDamager();
                 LivingEntity shooterEntity = null;
                 if (entityDamager instanceof ThrownPotion) {
-                    shooterEntity = (LivingEntity) ((ThrownPotion) entityDamager).getShooter();
+                    shooterEntity = BukkitCompatibilityFix.getShooter((ThrownPotion) entityDamager);
                 }
                 if (shooterEntity == null) return null;
                 return shooterEntity;
-            } else if (evdmg.getDamager() instanceof LivingEntity) return (LivingEntity) evdmg.getDamager();
+            } else if (evdmg.getDamager() instanceof LivingEntity) {
+                return (LivingEntity) evdmg.getDamager();
+            }
         }
         return null;
     }

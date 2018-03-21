@@ -321,9 +321,11 @@ public class RaListener implements Listener {
             Entity entityDamager = evdmg.getDamager();
             LivingEntity damager = Util.getDamagerEntity(event);
             if (damager == null && entityDamager != null && entityDamager instanceof Projectile) {
-                damager = (LivingEntity) ((Projectile) entityDamager).getShooter();
+                damager = BukkitCompatibilityFix.getShooter((Projectile) entityDamager);
             }
-            if (EventManager.raisePlayerDamageByMobEvent(evdmg, damager, entityDamager)) event.setCancelled(true);
+            if (EventManager.raisePlayerDamageByMobEvent(evdmg, damager, entityDamager)) {
+                event.setCancelled(true);
+            }
         } else if ((event instanceof EntityDamageByBlockEvent)) {
             source = "BLOCK";
             EntityDamageByBlockEvent evdmg = (EntityDamageByBlockEvent) event;
@@ -338,7 +340,7 @@ public class RaListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPotionSplash(PotionSplashEvent event) {
-        LivingEntity damager = (LivingEntity) event.getPotion().getShooter();
+        // LivingEntity damager = (LivingEntity) event.getPotion().getShooter();
         // TODO PotionSplashbyMob and PotionSplashbyPlayer activators
     }
 
