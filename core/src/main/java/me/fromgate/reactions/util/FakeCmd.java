@@ -5,6 +5,7 @@ import me.fromgate.reactions.activators.Activator;
 import me.fromgate.reactions.activators.ActivatorType;
 import me.fromgate.reactions.activators.Activators;
 import me.fromgate.reactions.activators.CommandActivator;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -26,25 +27,31 @@ public class FakeCmd implements CommandExecutor {
     }
 
     public static void updateAllCommands() {
+        StringBuilder commands = new StringBuilder();
         for (Activator a : Activators.getActivators(ActivatorType.COMMAND)) {
             CommandActivator c = (CommandActivator) a;
             if (c.useRegex()) continue; // Пропускаем, эти команды будут регистрироваться в реальном времени
-            if (!c.isCommandRegistered()) registerNewCommand(c.getCommand());
+            if (!c.isCommandRegistered() && registerNewCommand(c.getCommand())) {
+                if (commands.length() > 0) commands.append(", ");
+                commands.append(c.getCommand());
+            }
         }
+        M.CMD_REGISTERED.log(commands.toString());
     }
 
-    public static void registerNewCommand(String commandStr) {
-        if (ReActions.getPlugin().getCommand(commandStr) != null) return;
+    public static boolean registerNewCommand(String commandStr) {
+        if (ReActions.getPlugin().getCommand(commandStr) != null) return false;
         PluginCommand cmd = findCommand(commandStr);
-        if (cmd == null) return;
+        if (cmd == null) return false;
         CommandMap commandMap = getCommandMap();
-        if (commandMap == null) return;
+        if (commandMap == null) return false;
         commandMap.register(commandStr.toLowerCase(), cmd);
         try {
             ReActions.getPlugin().getCommand(commandStr).setExecutor(fakeCmd);
-            ReActions.getPlugin().getLogger().info("Activator command registered: " + commandStr);
+            return true;
         } catch (Exception ignored) {
         }
+        return false;
     }
 
     @Override

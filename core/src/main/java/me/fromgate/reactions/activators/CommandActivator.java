@@ -29,6 +29,7 @@ import me.fromgate.reactions.util.FakeCmd;
 import me.fromgate.reactions.util.Param;
 import me.fromgate.reactions.util.Util;
 import me.fromgate.reactions.util.Variables;
+import me.fromgate.reactions.util.message.M;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -124,7 +125,9 @@ public class CommandActivator extends Activator {
         if (ce.isParentCanceled() && !this.override) return false;
         if (!commandMatches(ce.getCommand())) return false;
         setTempVars(ce.getCommand(), ce.getArgs());
-        if (!isCommandRegistered()) FakeCmd.registerNewCommand(ce.getCommand());
+        if (!isCommandRegistered() && FakeCmd.registerNewCommand(ce.getCommand())) {
+            M.CMD_REGISTERED.log(ce.getCommand());
+        }
         return Actions.executeActivator(ce.getPlayer(), this);
     }
 
