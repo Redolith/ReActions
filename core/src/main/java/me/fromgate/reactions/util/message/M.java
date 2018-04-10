@@ -359,6 +359,7 @@ public enum M {
     FLAG_FOODLEVEL("Check food level. Parameter: <food level>"),
     FLAG_XP("Check player total experience. Parameter: <xp>"),
     FLAG_LEVEL("Check player experience level. Parameter: <level>"),
+    FLAG_HEALTH("Check player health level. Parameter: <health>"),
     FLAG_POWER("Check redstone power state of block. Parameter: <location>"),
     FLAG_WORLD("Player in world? Parameter: <world>"),
     FLAG_BIOME("Player in biome? Parameter: <biome>"),

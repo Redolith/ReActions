@@ -69,6 +69,7 @@ public enum Flags {
     FOODLEVEL("food", true, new FlagFoodlevel()),
     XP("xp", true, new FlagXP()),
     LEVEL("level", true, new FlagLevel()),
+    HEALTH("hp", true, new FlagHealth()),
     POWER("powered", false, new FlagPowered()),
     WORLD("world", true, new FlagWorld()),
     BIOME("biome", true, new FlagBiome()),
