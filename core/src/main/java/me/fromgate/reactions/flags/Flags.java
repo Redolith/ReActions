@@ -152,6 +152,7 @@ public enum Flags {
         Variables.setTempVar((flag + "_flag").toUpperCase(), param);
         boolean check = ft.check(p, param);
         if (not) return !check;
+        Variables.setTempVar((flag + "_flag_val").toUpperCase(), String.valueOf(check));
         return check;
     }
 
