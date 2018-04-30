@@ -12,6 +12,10 @@ ReActions is a plugin for craftbukkit (spigot) server. It brings to Minecraft se
 
 ## Documentation
 
-[**Documentation Site**](http://reactions.fromgate.me) | [**Сайт документации**](http://reactions.fromgate.ru) 
-
-[Documentation (Github Wiki)](https://github.com/Redolith/ReActions/wiki) | [Old Documentation](http://reactions.fromgate.me) | [Документация (старая)](http://reactions.fromgate.ru)
+[**Documentation Site**](http://reactions.fromgate.me) | [**Сайт документации**](http://reactions.fromgate.ru) |
+[Documentation (Github Wiki)](https://github.com/Redolith/ReActions/wiki)
+ 
+ 
+ 
+ ## Developed using Intellij IDEA by Jetbrains
+ [![Intellij IDEA](http://reactions.fromgate.ru/images/intellij-logo-300.png)](https://www.jetbrains.com/)
